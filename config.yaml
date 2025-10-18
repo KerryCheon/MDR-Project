@@ -1,0 +1,71 @@
+pipeline:
+  request:
+    base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01"
+    station: "WA_Spokane_17_SSW"
+    start_year: 2007 # < 2007 = non existent data
+    end_year: 2025
+    timeout: 20
+    min_bytes: 500
+    out_dir: "data/raw"
+
+  parse:
+    in_dir: data/raw
+    out_dir: data/processed
+    drop_duplicates: true
+    col_indices:
+      station_id: 0 # WBANNO
+      date: 1 # LST_DATE (YYYYMMDD)
+      crx_vn: 2 # CRX_VN  (station/version)
+      longitude: 3 # LONGITUDE (decimal degrees, already negative for W)
+      latitude: 4 # LATITUDE  (decimal degrees)
+      air_temp_max: 5 # T_DAILY_MAX (°C)
+      air_temp_min: 6 # T_DAILY_MIN (°C)
+      air_temp_mean: 7 # T_DAILY_MEAN (°C)
+      air_temp_avg: 8 # T_DAILY_AVG (°C)
+      precipitation: 9 # P_DAILY_CALC (mm)
+      solar_radiation: 10 # SOLARAD_DAILY (MJ/m^2)
+      sur_temp_type: 11 # SUR_TEMP_DAILY_TYPE (R/C/U)
+      sur_temp_max: 12 # SUR_TEMP_DAILY_MAX (°C)
+      sur_temp_min: 13 # SUR_TEMP_DAILY_MIN (°C)
+      sur_temp_avg: 14 # SUR_TEMP_DAILY_AVG (°C)
+      rh_max: 15 # RH_DAILY_MAX (%)
+      rh_min: 16 # RH_DAILY_MIN (%)
+      rh_mean: 17 # RH_DAILY_AVG (%)
+      soil_moisture_5cm: 18 # SOIL_MOISTURE_5_DAILY (m^3/m^3)
+      soil_moisture_10cm: 19
+      soil_moisture_20cm: 20
+      soil_moisture_50cm: 21
+      soil_moisture_100cm: 22
+      soil_temp_5cm: 23 # SOIL_TEMP_5_DAILY (°C)
+      soil_temp_10cm: 24
+      soil_temp_20cm: 25
+      soil_temp_50cm: 26
+      soil_temp_100cm: 27
+
+  clean:
+    drop_missing: true
+    fillna_value: null
+    keep_columns: [] # == KEEP ALL, configure later
+
+  merge:
+    on_columns: ["station_id", "date"]
+    how: "outer"
+
+  save:
+    out_path: "data/processed/final.csv"
+    format: "csv"
+    index: false
+
+  temporal_fill:
+    target_columns:
+      - soil_moisture_5cm
+    max_gap_days: 5 # only interpolate gaps up to 5 days long
+
+logging:
+  level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_to_file: true
+  file_path: "logs/pipeline.log"
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+  datefmt: "%Y-%m-%d %H:%M:%S"
+  max_bytes: 10485760 # 10 MB
+  backup_count: 5
