@@ -1,104 +1,119 @@
 # Jakob Balkovec
-# Data Validation Tests for final.csv
+# test_data_validation.py
 
+# Pytest version of MDR data validation tests
+
+import pytest # type: ignore
 import pandas as pd
-import numpy as np
 from pathlib import Path
-
-# ANSI color codes
-GREEN = "\033[92m"
-RED = "\033[91m"
-YELLOW = "\033[93m"
-CYAN = "\033[96m"
-RESET = "\033[0m"
-BOLD = "\033[1m"
 
 DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "processed" / "final.csv"
 
-def status(tag, msg):
-    color = {"PASS": GREEN, "FAIL": RED, "WARN": YELLOW}.get(tag, RESET)
-    print(f"{BOLD}{color}[{tag}]\t{RESET} {msg}")
-
-def load_data():
+@pytest.fixture(scope="session")
+def df():
+    """Load the final.csv once per test session."""
     if not DATA_PATH.exists():
-        status("FAIL", f"File not found: {DATA_PATH}")
-        return None
+        pytest.skip(f"Data file not found: {DATA_PATH}")
     try:
-        df = pd.read_csv(DATA_PATH)
-        status("PASS", f"Loaded {len(df)} rows, {len(df.columns)} columns.")
-        return df
+        return pd.read_csv(DATA_PATH)
     except Exception as e:
-        status("FAIL", f"Could not read CSV: {e}")
-        return None
+        pytest.fail(f"Could not read CSV: {e}")
 
-def test_columns(df):
-    expected = {"date","station_id","longitude","latitude",
-                "air_temp_mean","precipitation","soil_moisture_5cm",
-                "DOY","Rain_3d"}
-    missing = expected - set(df.columns)
-    if missing:
-        status("FAIL", f"Missing columns: {missing}")
-    else:
-        status("PASS", "All expected columns present.")
+# ---------------------------------------------------------------------
+# Structural Tests
+# ---------------------------------------------------------------------
 
-def test_coordinates(df):
-    if "longitude" not in df or "latitude" not in df:
-        status("FAIL", "No coordinate columns found.")
-        return
-    lon, lat = df["longitude"].median(), df["latitude"].median()
-    if 116 < abs(lon) < 119 and 46 < lat < 48:
-        status("PASS", f"Coordinates plausible (lat≈{lat:.2f}, lon≈{lon:.2f}).")
-    else:
-        status("FAIL", f"Coordinates look wrong (lat={lat}, lon={lon}).")
-
-def test_dates(df):
-    try:
-        df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    except Exception as e:
-        status("FAIL", f"Date parsing failed: {e}")
-        return
-    if df["date"].isna().sum() == 0:
-        status("PASS", "All dates parsed successfully.")
-    else:
-        status("FAIL", "Some dates could not be parsed.")
-    year_range = (df["date"].dt.year.min(), df["date"].dt.year.max())
-    if 2006 < year_range[0] <= 2007 and year_range[1] >= 2024:
-        status("PASS", f"Date range plausible: {year_range[0]}–{year_range[1]}.")
-    else:
-        status("FAIL", f"Unexpected date range: {year_range}.")
-
-def test_ranges(df):
-    checks = {
-        "precipitation": (0, 200),
-        "air_temp_mean": (-50, 60),
-        "soil_moisture_5cm": (-99.0, 1.5) # as place holder
+def test_columns_present(df):
+    expected = {
+        "date", "station_id", "longitude", "latitude",
+        "air_temp_mean", "precipitation", "soil_moisture_5cm",
+        "DOY", "Rain_3d"
     }
-    for col, (lo, hi) in checks.items():
-        if col not in df:
-            status("WARN", f"{col} missing, skipping range check.")
-            continue
-        valid = df[col].dropna().between(lo, hi)
-        if valid.mean() > 0.95:
-            status("PASS", f"{col} values mostly in expected range ({lo}, {hi}).")
+    missing = expected - set(df.columns)
+    assert not missing, f"Missing columns: {missing}"
+
+def test_no_duplicate_rows(df):
+    duplicates = df.duplicated().sum()
+    assert duplicates == 0, f"Found {duplicates} duplicate rows."
+
+def test_no_all_null_columns(df):
+    """Allow SM_label to be empty for now."""
+    allowed_empty = {"SM_label"}
+    all_null_cols = [
+        c for c in df.columns
+        if df[c].isna().all() and c not in allowed_empty
+    ]
+    assert not all_null_cols, f"Columns entirely null: {all_null_cols}"
+
+# ---------------------------------------------------------------------
+# Data Quality Tests
+# ---------------------------------------------------------------------
+
+def test_date_parsing_and_range(df):
+    parsed = pd.to_datetime(df["date"], errors="coerce")
+    assert parsed.notna().all(), "Some dates could not be parsed."
+    min_year, max_year = parsed.dt.year.min(), parsed.dt.year.max()
+    assert min_year <= 2007 and max_year >= 2024, f"Unexpected date range: {min_year}–{max_year}"
+
+def test_coordinates_reasonable(df):
+    assert df["longitude"].between(-180, 180).all(), "Invalid longitude values."
+    assert df["latitude"].between(-90, 90).all(), "Invalid latitude values."
+    lon_med, lat_med = df["longitude"].median(), df["latitude"].median()
+    assert 116 < abs(lon_med) < 119 and 46 < lat_med < 48, (
+        f"Median coordinates look off: lat={lat_med}, lon={lon_med}"
+    )
+
+@pytest.mark.parametrize(
+    "col,low,high",
+    [
+        ("precipitation", 0, 200),
+        ("air_temp_mean", -50, 60),
+        ("soil_moisture_5cm", -99.0, 1.5),
+    ],
+)
+def test_numeric_ranges(df, col, low, high):
+    if col not in df:
+        pytest.skip(f"{col} missing, skipping range check.")
+    valid_ratio = df[col].dropna().between(low, high).mean()
+    assert valid_ratio > 0.95, f"{col} has too many out-of-range values."
+
+def test_derived_features_valid(df):
+    assert "Rain_3d" in df and "DOY" in df, "Derived features missing."
+    assert df["Rain_3d"].notna().all(), "Rain_3d contains NaNs."
+    assert df["DOY"].between(1, 366).all(), "DOY out of valid range."
+
+def test_missing_value_threshold(df):
+    """Allow up to 30% missing data globally, except critical fields."""
+    CRITICAL_FIELDS = {
+        "date", "station_id", "longitude", "latitude",
+        "air_temp_mean", "precipitation", "soil_moisture_5cm"
+    }
+    missing_ratio = df.isna().mean()
+    too_many = missing_ratio[missing_ratio > 0.3].drop(labels=["SM_label"], errors="ignore")
+    # Fail only if critical columns exceed threshold
+    critical_fail = [c for c in too_many.index if c in CRITICAL_FIELDS]
+    assert not critical_fail, f"Critical columns exceed missing threshold: {critical_fail}"
+
+# ---------------------------------------------------------------------
+# Schema / Type Checks
+# ---------------------------------------------------------------------
+
+def test_expected_dtypes(df):
+    expected_types = {
+        "station_id": ("int64", "object"),  # accept both
+        "longitude": "float64",
+        "latitude": "float64",
+        "air_temp_mean": "float64",
+        "precipitation": "float64",
+        "soil_moisture_5cm": "float64",
+        "DOY": "int64",
+        "Rain_3d": "float64",
+    }
+    for col, expected_type in expected_types.items():
+        if col not in df.columns:
+            pytest.skip(f"{col} missing, skipping dtype check.")
+        actual = str(df[col].dtype)
+        if isinstance(expected_type, tuple):
+            assert any(t in actual for t in expected_type), f"{col} wrong dtype: {actual}"
         else:
-            status("FAIL", f"{col} contains out-of-range values.")
-
-def test_features(df):
-    if "Rain_3d" not in df or "DOY" not in df:
-        status("FAIL", "Derived features missing.")
-        return
-    if df["Rain_3d"].isna().sum() == 0 and df["DOY"].between(1, 366).all():
-        status("PASS", "Derived features (Rain_3d, DOY) look valid.")
-    else:
-        status("FAIL", "Derived feature values look suspicious.")
-
-if __name__ == "__main__":
-    print(f"\n{BOLD}{CYAN}=== Running Data Validation for final.csv ==={RESET}\n\n")
-    df = load_data()
-    if df is not None:
-        test_columns(df)
-        test_coordinates(df)
-        test_dates(df)
-        test_ranges(df)
-        test_features(df)
-    print(f"\n\n{BOLD}{CYAN}=== Validation Complete ==={RESET}\n")
+            assert expected_type in actual, f"{col} wrong dtype: {actual}, expected {expected_type}"
