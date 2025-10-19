@@ -59,7 +59,17 @@ pipeline:
   temporal_fill:
     target_columns:
       - soil_moisture_5cm
-    max_gap_days: 5 # only interpolate gaps up to 5 days long
+      - soil_moisture_10cm
+      - soil_moisture_20cm
+      - soil_moisture_50cm
+      - soil_moisture_100cm
+      - air_temp_mean
+      - rh_mean
+      - solar_radiation
+      - sur_temp_avg
+    max_gap_days: 5
+    switch_gap: 4
+    regression_window: 7
 
 logging:
   level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
