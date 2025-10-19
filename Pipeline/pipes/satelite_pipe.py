@@ -34,53 +34,107 @@ class SatellitePipe:
             ee.Initialize(project="mdr-project-475522")
 
     def fetch_satellite_batch(self, lat, lon, start_date, end_date):
-        # pre: latitude, longitude, start_date, end_date
-        # post: retrieves average satellite data for given location and date range
-        # desc: Fetches LST, NDVI, and Rain data from GEE for given point.
         point = ee.Geometry.Point([lon, lat])
+        buffer_region = point.buffer(1000)  # 1km buffer for robust sampling
+
+        # Add temporal padding - expand window by ±3 days
+        from datetime import datetime, timedelta
+        start_dt = datetime.strptime(start_date, "%Y-%m-%d") - timedelta(days=3)
+        end_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=3)
+        padded_start = start_dt.strftime("%Y-%m-%d")
+        padded_end = end_dt.strftime("%Y-%m-%d")
+
+        results = {"LST": None, "NDVI": None, "Rain_sat": None}
 
         try:
-            # MODIS LST (Kelvin scaled ×0.02)
-            lst = (
-                ee.ImageCollection(self.MODIS_LST)
-                .filterBounds(point)
-                .filterDate(start_date, end_date)
-                .select("LST_Day_1km")
-                .mean()
-                .multiply(0.02)
-                .reduceRegion(ee.Reducer.mean(), point, 1000)
-                .get("LST_Day_1km")
-                .getInfo()
-            )
+            # MODIS LST
+            try:
+                lst_collection = (
+                    ee.ImageCollection(self.MODIS_LST)
+                    .filterBounds(buffer_region)
+                    .filterDate(padded_start, padded_end)
+                    .select("LST_Day_1km")
+                )
 
-            # MODIS NDVI (scale ×0.0001)
-            ndvi = (
-                ee.ImageCollection(self.MODIS_NDVI)
-                .filterBounds(point)
-                .filterDate(start_date, end_date)
-                .select("NDVI")
-                .mean()
-                .multiply(0.0001)
-                .reduceRegion(ee.Reducer.mean(), point, 250)
-                .get("NDVI")
-                .getInfo()
-            )
+                count = lst_collection.size().getInfo()
+                if count > 0:
+                    raw_lst = (
+                        lst_collection.mean()
+                        .reduceRegion(
+                            reducer=ee.Reducer.mean(),
+                            geometry=buffer_region,
+                            scale=1000,
+                            bestEffort=True,
+                            maxPixels=1e9
+                        )
+                    )
 
-            # GPM Rain (handle possible key variations)
-            rain_img = (
-                ee.ImageCollection(self.GPM_RAIN)
-                .filterBounds(point)
-                .filterDate(start_date, end_date)
-                .select(["precipitationCal"], ["precipitation"])
-                .mean()
-            )
-            rain = (
-                rain_img.reduceRegion(ee.Reducer.mean(), point, 10000)
-                .get("precipitation")
-                .getInfo()
-            )
+                    lst_val = raw_lst.get("LST_Day_1km").getInfo()
+                    if lst_val is not None:
+                        results["LST"] = float(lst_val) * 0.02
 
-            return {"LST": lst, "NDVI": ndvi, "Rain_sat": rain}
+            except Exception as e:
+                self.logger.debug(f"LST failed: {e}")
+
+            # MODIS NDVI
+            try:
+                ndvi_collection = (
+                    ee.ImageCollection(self.MODIS_NDVI)
+                    .filterBounds(buffer_region)
+                    .filterDate(padded_start, padded_end)
+                    .select("NDVI")
+                )
+
+                count = ndvi_collection.size().getInfo()
+                if count > 0:
+                    raw_ndvi = (
+                        ndvi_collection.mean()
+                        .reduceRegion(
+                            reducer=ee.Reducer.mean(),
+                            geometry=buffer_region,
+                            scale=250,
+                            bestEffort=True,
+                            maxPixels=1e9
+                        )
+                    )
+
+                    ndvi_val = raw_ndvi.get("NDVI").getInfo()
+                    if ndvi_val is not None:
+                        results["NDVI"] = float(ndvi_val) * 0.0001
+
+            except Exception as e:
+                self.logger.debug(f"NDVI failed: {e}")
+
+            # GPM Rain
+            try:
+                rain_collection = (
+                    ee.ImageCollection(self.GPM_RAIN)
+                    .filterBounds(buffer_region)
+                    .filterDate(padded_start, padded_end)
+                    .select("precipitation")
+                )
+
+                count = rain_collection.size().getInfo()
+                if count > 0:
+                    raw_rain = (
+                        rain_collection.mean()
+                        .reduceRegion(
+                            reducer=ee.Reducer.mean(),
+                            geometry=buffer_region,
+                            scale=10000,
+                            bestEffort=True,
+                            maxPixels=1e9
+                        )
+                    )
+
+                    rain_val = raw_rain.get("precipitation").getInfo()
+                    if rain_val is not None:
+                        results["Rain_sat"] = float(rain_val)
+
+            except Exception as e:
+                self.logger.debug(f"Rain failed: {e}")
+
+            return results
 
         except Exception as e:
             self.logger.warning(f"Batch satellite retrieval failed: {e}")
