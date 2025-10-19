@@ -1,1 +1,54 @@
+# --- macOS system files ---
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# --- Python cache and build files ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyo
+
+# --- Virtual environments ---
+.venv/
+venv/
+ENV/
+env/
+.ipynb_checkpoints
+
+# --- Logs and temporary outputs ---
+*.log
+*.out
+*.err
+*.tmp
+
+# --- Data files (excluded from Git) ---
+*.txt
+*.csv
+*.json
+
+# --- IDE / Editor configs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Unit test / coverage ---
+.coverage
+.pytest_cache/
+htmlcov/
+
+# --- Jupyter and notebooks ---
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# --- Git / Misc ---
+.gitignore~
