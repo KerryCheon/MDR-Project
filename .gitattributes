@@ -1,0 +1,18 @@
+* text=auto eol=lf
+
+*.py text
+*.yaml text
+*.yml text
+*.toml text
+*.md text
+*.sh text
+
+*.png binary
+*.jpg binary
+*.zip binary
+*.pkl binary
+*.h5 binary
+
+*.csv binary
+
+*.ipynb diff=ipynb
