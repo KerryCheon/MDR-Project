@@ -9,7 +9,7 @@ from pathlib import Path
 
 from utils.logger import get_logger
 
-CONFIG_FILE = Path("config.yaml").resolve()
+CONFIG_FILE = (Path(__file__).resolve().parent.parent / "config.yaml").resolve()
 
 def load_config(path=CONFIG_FILE):
   # pre: path is valid
@@ -31,4 +31,4 @@ def load_config(path=CONFIG_FILE):
 # [TEST]
 if __name__ == "__main__":
     config = load_config()
-    print(config)
+    print(yaml.dump(config, sort_keys=False))
