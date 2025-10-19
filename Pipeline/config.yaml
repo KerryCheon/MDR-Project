@@ -12,19 +12,21 @@ pipeline:
     in_dir: data/raw
     out_dir: data/processed
     drop_duplicates: true
+    # Column indices for USCRN daily01 format (28 columns, indices 0-27)
+    # All columns must be defined to prevent column misalignment
     col_indices:
-      station_id: 0 # WBANNO
+      station_id: 0 # WBANNO - Station identifier
       date: 1 # LST_DATE (YYYYMMDD)
-      crx_vn: 2 # CRX_VN  (station/version)
-      longitude: 3 # LONGITUDE (decimal degrees, already negative for W)
-      latitude: 4 # LATITUDE  (decimal degrees)
+      crx_vn: 2 # CRX_VN - Station/version
+      longitude: 3 # LONGITUDE (decimal degrees, negative for W)
+      latitude: 4 # LATITUDE (decimal degrees)
       air_temp_max: 5 # T_DAILY_MAX (°C)
       air_temp_min: 6 # T_DAILY_MIN (°C)
       air_temp_mean: 7 # T_DAILY_MEAN (°C)
       air_temp_avg: 8 # T_DAILY_AVG (°C)
       precipitation: 9 # P_DAILY_CALC (mm)
       solar_radiation: 10 # SOLARAD_DAILY (MJ/m^2)
-      sur_temp_type: 11 # SUR_TEMP_DAILY_TYPE (R/C/U)
+      sur_temp_type: 11 # SUR_TEMP_DAILY_TYPE (R=IR sensor, C=TC sensor, U=unknown)
       sur_temp_max: 12 # SUR_TEMP_DAILY_MAX (°C)
       sur_temp_min: 13 # SUR_TEMP_DAILY_MIN (°C)
       sur_temp_avg: 14 # SUR_TEMP_DAILY_AVG (°C)
@@ -32,15 +34,15 @@ pipeline:
       rh_min: 16 # RH_DAILY_MIN (%)
       rh_mean: 17 # RH_DAILY_AVG (%)
       soil_moisture_5cm: 18 # SOIL_MOISTURE_5_DAILY (m^3/m^3)
-      soil_moisture_10cm: 19
-      soil_moisture_20cm: 20
-      soil_moisture_50cm: 21
-      soil_moisture_100cm: 22
+      soil_moisture_10cm: 19 # SOIL_MOISTURE_10_DAILY (m^3/m^3)
+      soil_moisture_20cm: 20 # SOIL_MOISTURE_20_DAILY (m^3/m^3)
+      soil_moisture_50cm: 21 # SOIL_MOISTURE_50_DAILY (m^3/m^3)
+      soil_moisture_100cm: 22 # SOIL_MOISTURE_100_DAILY (m^3/m^3)
       soil_temp_5cm: 23 # SOIL_TEMP_5_DAILY (°C)
-      soil_temp_10cm: 24
-      soil_temp_20cm: 25
-      soil_temp_50cm: 26
-      soil_temp_100cm: 27
+      soil_temp_10cm: 24 # SOIL_TEMP_10_DAILY (°C)
+      soil_temp_20cm: 25 # SOIL_TEMP_20_DAILY (°C)
+      soil_temp_50cm: 26 # SOIL_TEMP_50_DAILY (°C)
+      soil_temp_100cm: 27 # SOIL_TEMP_100_DAILY (°C)
 
   clean:
     drop_missing: true
