@@ -4,6 +4,7 @@
 .LSOverride
 Icon?
 ._*
+.idea
 
 # --- Python cache and build files ---
 __pycache__/
