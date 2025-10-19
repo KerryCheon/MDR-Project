@@ -44,11 +44,6 @@ class FeaturePipe:
         if "soil_moisture_5cm" in df.columns:
             df["SM_prev"] = df["soil_moisture_5cm"].shift(1)
 
-        # [PLACEHOLDERS]
-        # satellite features
-        df["LST"] = pd.NA
-        df["NDVI"] = pd.NA
-
         # ECE
         df["SM_label"] = pd.NA
 
