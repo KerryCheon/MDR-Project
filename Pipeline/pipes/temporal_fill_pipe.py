@@ -18,7 +18,7 @@ class TemporalFillPipe:
         self.config = config or load_config()
         fill_cfg = self.config["pipeline"]["temporal_fill"]
 
-        self.target_columns = fill_cfg.get("target_columns", ["soil_moisture_5cm"])
+        self.target_columns = fill_cfg.get("target_columns", [])
         self.max_gap_days = fill_cfg.get("max_gap_days", 5)
         self.switch_gap = fill_cfg.get("switch_gap", 4)  # threshold for switching to regression
         self.regression_window = fill_cfg.get("regression_window", 7)
@@ -68,7 +68,7 @@ class TemporalFillPipe:
             full_index = pd.date_range(group.index.min(), group.index.max(), freq="D")
             group = group.reindex(full_index)
             group["station_id"] = station
-            group = group.infer_objects(copy=False)  # prevents FutureWarning from interpolate()
+            group = group.infer_objects(copy=False)
 
             for col in self.target_columns:
                 if col not in group.columns:
@@ -97,6 +97,7 @@ class TemporalFillPipe:
                         # large gap = regression-based fill
                         group = self.rolling_regression_fill(group, window=self.regression_window)
                         self.logger.debug(f"{station}: regression fill ({length} days) for {col}.")
+
                     # FIXME: add max_gap_days enforcement if needed #1
                     # FIXME: use XGBoost or similar for more advanced regression if needed #2
                     # FIXME: 1 or 2 but not both
