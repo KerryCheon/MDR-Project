@@ -1,4 +1,4 @@
-# Jakob Balkovec
+# Jakob Balkovec & Kerry Cheon
 # Satellite Pipe
 
 # This module defines the SatellitePipe class, which retrieves satellite-derived
