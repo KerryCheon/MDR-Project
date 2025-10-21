@@ -604,3 +604,111 @@ Image.select: Band pattern 'precipitationCal' did not match any bands. Available
 2025-10-19 13:19:23 [INFO] pipeline.merge: MergePipe complete — 6656 rows total.
 2025-10-19 13:19:23 [INFO] pipeline.save: Saving DataFrame (6656 rows) to data/processed/final.csv as CSV.
 2025-10-19 13:19:23 [INFO] pipeline.save: SavePipe complete — wrote data/processed/final.csv
+2025-10-20 15:48:14 [INFO] pipeline: Logger initialized.
+2025-10-20 15:48:15 [INFO] pipeline.satellite: Authenticated with Google Earth Engine (mdr-project-475522).
+2025-10-20 15:48:15 [INFO] pipeline.request: starting request_pipe for WA_Spokane_17_SSW (2007-2025)
+2025-10-20 15:48:16 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2007.txt
+2025-10-20 15:48:16 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2008.txt
+2025-10-20 15:48:17 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2009.txt
+2025-10-20 15:48:17 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2010.txt
+2025-10-20 15:48:18 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2011.txt
+2025-10-20 15:48:19 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2012.txt
+2025-10-20 15:48:19 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2013.txt
+2025-10-20 15:48:20 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2014.txt
+2025-10-20 15:48:21 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2015.txt
+2025-10-20 15:48:21 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2016.txt
+2025-10-20 15:48:22 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2017.txt
+2025-10-20 15:48:22 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2018.txt
+2025-10-20 15:48:23 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2019.txt
+2025-10-20 15:48:24 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2020.txt
+2025-10-20 15:48:24 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2021.txt
+2025-10-20 15:48:25 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2022.txt
+2025-10-20 15:48:25 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2023.txt
+2025-10-20 15:48:26 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2024.txt
+2025-10-20 15:48:27 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2025.txt
+2025-10-20 15:48:27 [INFO] pipeline.request: request_pipe complete, saved 19 files.
+2025-10-20 15:48:27 [INFO] pipeline.parse: Found 19 USCRN files — parsing all years.
+2025-10-20 15:48:27 [INFO] pipeline.parse: Combined 19 files into 6657 total rows.
+2025-10-20 15:48:27 [INFO] pipeline.parse: Removed 0 duplicate rows.
+2025-10-20 15:48:27 [INFO] pipeline.clean: Cleaning DataFrame with 6657 rows.
+2025-10-20 15:48:27 [INFO] pipeline.clean: Removed 0 rows with invalid coordinates.
+2025-10-20 15:48:27 [INFO] pipeline.clean: DataFrame contains 13044 NaN values (no dropping applied).
+2025-10-20 15:48:27 [INFO] pipeline.clean: CleanPipe complete — 6657 rows after cleaning.
+2025-10-20 15:48:27 [INFO] pipeline.temporal_fill: TemporalFillPipe complete — 6657 rows (from 6657).
+2025-10-20 15:48:27 [INFO] pipeline.satellite: Starting batched satellite retrieval for 6657 rows...
+2025-10-20 15:48:27 [INFO] pipeline.satellite: SatellitePipe complete — 6657 records retrieved. Coverage — LST: 100.00%, NDVI: 100.00%, Rain: 100.00%
+2025-10-20 15:48:27 [INFO] pipeline.feature: FeaturePipe complete — added derived temporal features.
+2025-10-20 15:48:27 [INFO] pipeline.merge: Received single DataFrame — returning unchanged.
+2025-10-20 15:48:27 [INFO] pipeline.merge: MergePipe complete — 6657 rows total.
+2025-10-20 15:48:27 [INFO] pipeline.save: Saving DataFrame (6657 rows) to data/processed/final.csv as CSV.
+2025-10-20 15:48:27 [INFO] pipeline.save: SavePipe complete — wrote data/processed/final.csv
+2025-10-21 13:12:27 [INFO] pipeline: Logger initialized.
+2025-10-21 13:12:29 [INFO] pipeline.satellite: Authenticated with Google Earth Engine (mdr-project-475522).
+2025-10-21 13:12:29 [INFO] pipeline.request: starting request_pipe for WA_Spokane_17_SSW (2007-2025)
+2025-10-21 13:12:30 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2007.txt
+2025-10-21 13:12:31 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2008.txt
+2025-10-21 13:12:32 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2009.txt
+2025-10-21 13:12:32 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2010.txt
+2025-10-21 13:12:33 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2011.txt
+2025-10-21 13:12:34 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2012.txt
+2025-10-21 13:12:34 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2013.txt
+2025-10-21 13:12:35 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2014.txt
+2025-10-21 13:12:36 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2015.txt
+2025-10-21 13:12:36 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2016.txt
+2025-10-21 13:12:37 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2017.txt
+2025-10-21 13:12:38 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2018.txt
+2025-10-21 13:12:38 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2019.txt
+2025-10-21 13:12:39 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2020.txt
+2025-10-21 13:12:40 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2021.txt
+2025-10-21 13:12:40 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2022.txt
+2025-10-21 13:12:41 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2023.txt
+2025-10-21 13:12:42 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2024.txt
+2025-10-21 13:12:42 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2025.txt
+2025-10-21 13:12:42 [INFO] pipeline.request: request_pipe complete, saved 19 files.
+2025-10-21 13:12:42 [INFO] pipeline.parse: Found 19 USCRN files — parsing all years.
+2025-10-21 13:12:43 [INFO] pipeline.parse: Combined 19 files into 6658 total rows.
+2025-10-21 13:12:43 [INFO] pipeline.parse: Removed 0 duplicate rows.
+2025-10-21 13:12:43 [INFO] pipeline.clean: Cleaning DataFrame with 6658 rows.
+2025-10-21 13:12:43 [INFO] pipeline.clean: All coordinates are valid.
+2025-10-21 13:12:43 [INFO] pipeline.clean: DataFrame contains 22982 NaN values (11.9% of data) — no dropping applied.
+2025-10-21 13:12:43 [INFO] pipeline.clean: CleanPipe complete — 6658 rows after cleaning (0 removed).
+2025-10-21 13:13:10 [INFO] pipeline.temporal_fill: TemporalFillPipe complete — 6658 rows (from 6658).
+2025-10-21 13:13:10 [INFO] pipeline.satellite: Starting batched satellite retrieval for 6658 rows...
+2025-10-21 13:14:33 [INFO] pipeline: Logger initialized.
+2025-10-21 13:14:34 [INFO] pipeline.satellite: Authenticated with Google Earth Engine (mdr-project-475522).
+2025-10-21 13:14:34 [INFO] pipeline.request: starting request_pipe for WA_Spokane_17_SSW (2007-2025)
+2025-10-21 13:14:35 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2007.txt
+2025-10-21 13:14:35 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2008.txt
+2025-10-21 13:14:36 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2009.txt
+2025-10-21 13:14:36 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2010.txt
+2025-10-21 13:14:37 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2011.txt
+2025-10-21 13:14:37 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2012.txt
+2025-10-21 13:14:38 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2013.txt
+2025-10-21 13:14:38 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2014.txt
+2025-10-21 13:14:39 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2015.txt
+2025-10-21 13:14:39 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2016.txt
+2025-10-21 13:14:40 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2017.txt
+2025-10-21 13:14:40 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2018.txt
+2025-10-21 13:14:41 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2019.txt
+2025-10-21 13:14:42 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2020.txt
+2025-10-21 13:14:42 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2021.txt
+2025-10-21 13:14:43 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2022.txt
+2025-10-21 13:14:43 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2023.txt
+2025-10-21 13:14:44 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2024.txt
+2025-10-21 13:14:44 [INFO] pipeline.request: saved data/raw/uscrn_WA_Spokane_17_SSW_2025.txt
+2025-10-21 13:14:44 [INFO] pipeline.request: request_pipe complete, saved 19 files.
+2025-10-21 13:14:44 [INFO] pipeline.parse: Found 19 USCRN files — parsing all years.
+2025-10-21 13:14:44 [INFO] pipeline.parse: Combined 19 files into 6658 total rows.
+2025-10-21 13:14:44 [INFO] pipeline.parse: Removed 0 duplicate rows.
+2025-10-21 13:14:44 [INFO] pipeline.clean: Cleaning DataFrame with 6658 rows.
+2025-10-21 13:14:44 [INFO] pipeline.clean: All coordinates are valid.
+2025-10-21 13:14:44 [INFO] pipeline.clean: DataFrame contains 22982 NaN values (11.9% of data) — no dropping applied.
+2025-10-21 13:14:44 [INFO] pipeline.clean: CleanPipe complete — 6658 rows after cleaning (0 removed).
+2025-10-21 13:15:12 [INFO] pipeline.temporal_fill: TemporalFillPipe complete — 6658 rows (from 6658).
+2025-10-21 13:15:12 [INFO] pipeline.satellite: Starting batched satellite retrieval for 6658 rows...
+2025-10-21 13:20:02 [INFO] pipeline.satellite: SatellitePipe complete — 6658 records retrieved. Coverage — LST: 100.00%, NDVI: 100.00%, Rain: 100.00%
+2025-10-21 13:20:02 [INFO] pipeline.feature: FeaturePipe complete — added derived temporal features.
+2025-10-21 13:20:02 [INFO] pipeline.merge: Received single DataFrame — returning unchanged.
+2025-10-21 13:20:02 [INFO] pipeline.merge: MergePipe complete — 6658 rows total.
+2025-10-21 13:20:02 [INFO] pipeline.save: Saving DataFrame (6658 rows) to data/processed/final.csv as CSV.
+2025-10-21 13:20:02 [INFO] pipeline.save: SavePipe complete — wrote data/processed/final.csv

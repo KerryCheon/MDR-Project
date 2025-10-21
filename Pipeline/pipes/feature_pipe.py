@@ -1,4 +1,4 @@
-# Jakob Balkovec
+# Jakob Balkovec & Kerry Cheon
 # Feature Engineering Pipe
 
 # This module defines the FeaturePipe class, which adds derived temporal features

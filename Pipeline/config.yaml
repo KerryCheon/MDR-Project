@@ -43,7 +43,7 @@ pipeline:
       soil_temp_100cm: 27
 
   clean:
-    drop_missing: true
+    drop_missing: false # Keep NaNs
     fillna_value: null
     keep_columns: [] # == KEEP ALL, configure later
 

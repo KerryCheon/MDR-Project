@@ -1,4 +1,4 @@
-# Jakob Balkovec
+# Jakob Balkovec & Kerry Cheon
 # Main Pipeline Execution
 
 # This script orchestrates the execution of the full data processing pipeline,
