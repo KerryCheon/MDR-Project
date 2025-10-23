@@ -20,7 +20,7 @@ from pipes.merge_pipe import MergePipe
 from pipes.save_pipe import SavePipe
 from pipes.temporal_fill_pipe import TemporalFillPipe
 from pipes.feature_pipe import FeaturePipe
-from pipes.satelite_pipe import SatellitePipe
+from pipes.satellite_pipe import SatellitePipe
 
 def main():
     config = load_config()

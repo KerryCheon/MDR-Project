@@ -1,16 +1,16 @@
 pipeline:
   request:
-    base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01"
-    station: "WA_Spokane_17_SSW"
+    base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01" # UPDATE
+    station: "WA_Spokane_17_SSW" # UPDATE
     start_year: 2007 # < 2007 = non existent data
     end_year: 2025
     timeout: 20
     min_bytes: 500
-    out_dir: "data/raw"
+    out_dir: "data/spokane/raw" # UPDATE
 
   parse:
-    in_dir: data/raw
-    out_dir: data/processed
+    in_dir: data/spokane/raw
+    out_dir: data/spokane/processed
     drop_duplicates: true
     col_indices:
       station_id: 0 # WBANNO
@@ -52,7 +52,7 @@ pipeline:
     how: "outer"
 
   save:
-    out_path: "data/processed/final.csv"
+    out_path: "data/processed/spokane/final.csv" # UPDATE
     format: "csv"
     index: false
 
@@ -70,6 +70,9 @@ pipeline:
     max_gap_days: 5
     switch_gap: 4
     regression_window: 7
+
+  satellite:
+    cache_path: "Pipeline/data/cache/satellite_cache.json"
 
 logging:
   level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
