@@ -21,9 +21,12 @@ class SatellitePipe:
     MODIS_NDVI = "MODIS/061/MOD13Q1"
     GPM_RAIN = "NASA/GPM_L3/IMERG_V07"
 
+    # NASA is a lot better for temporal data compared to Sentinel!
+
     def __init__(self, config=None):
         self.config = config or load_config()
         self.logger = get_logger().getChild("satellite")
+        self.cache_path = Path(self.config["satellite"].get("cache_path", "data/cache/satellite_cache.json"))
 
         try:
             ee.Initialize(project="mdr-project-475522")
@@ -149,8 +152,13 @@ class SatellitePipe:
             self.logger.warning("No data received in SatellitePipe.")
             return pd.DataFrame()
 
-        cache_path = Path("data/processed/satellite_cache.json")
-        cache = json.load(open(cache_path)) if cache_path.exists() else {}
+        cache_path = self.cache_path
+        if cache_path.exists():
+            self.logger.info(f"Using satellite cache at {cache_path.resolve()}")
+            with open(cache_path) as f:
+                cache = json.load(f)
+        else:
+            cache = {}
 
         self.logger.info(f"Starting batched satellite retrieval for {len(df)} rows...")
         df["date"] = pd.to_datetime(df["date"])
@@ -185,6 +193,8 @@ class SatellitePipe:
                 results.append({"date": date.strftime("%Y-%m-%d"), **res})
 
         # save cache
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+
         with open(cache_path, "w") as f:
             json.dump(cache, f, indent=2)
 
