@@ -1,0 +1,9 @@
+requests
+charset-normalizer
+pandas
+pytest
+numpy
+pyyaml
+requests
+earthengine-api
+xgboost
