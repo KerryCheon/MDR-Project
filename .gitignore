@@ -31,11 +31,6 @@ env/
 *.err
 *.tmp
 
-# --- Data files (excluded from Git) ---
-*.txt
-*.csv
-*.json
-
 # --- IDE / Editor configs ---
 .vscode/
 .idea/
