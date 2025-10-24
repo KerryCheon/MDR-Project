@@ -9,6 +9,15 @@ import pandas as pd
 from utils.logger import get_logger
 from utils.config import load_config
 
+# cuz I just couldn't be bothered to fix all the FutureWarnings right now
+import warnings
+warnings.filterwarnings(
+    "ignore",
+    message="Series.interpolate with object dtype is deprecated",
+    category=FutureWarning
+)
+# cuz I just couldn't be bothered to fix all the FutureWarnings right now
+
 
 class TemporalFillPipe:
     def __init__(self, config=None, station_name=None):
