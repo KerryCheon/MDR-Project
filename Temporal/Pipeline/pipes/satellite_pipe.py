@@ -24,21 +24,28 @@ class SatellitePipe:
     def __init__(self, config=None, station_name=None):
         # pre:  config is the global config (not per-station)
         # post: initializes SatellitePipe with GEE connection and caching settings
+        # desc: Initializes Earth Engine and sets up cache path per station
 
         self.config = config or load_config()
         self.station_name = station_name or "global"
-        self.cache_path = Path(self.config["satellite"].get("cache_path", "data/cache/satellite_cache.json"))
-
-        # optional: per-station cache isolation
-        self.cache_path = self.cache_path.with_name(f"{self.station_name}_satellite_cache.json")
         self.logger = get_logger().getChild(f"satellite.{self.station_name}")
 
-        # Initialize Earth Engine
+        # per-station cache template
+        cache_template = self.config["satellite"].get(
+            "cache_path",
+            "Pipeline/data/cache/{station}_satellite_cache.json"
+        )
+
+        # resolve per-station cache file
+        self.cache_path = Path(cache_template.format(station=self.station_name))
+
+        self.logger.info(f"Satellite cache path set to: {self.cache_path}")
+
         try:
             ee.Initialize(project="mdr-project-475522")
             self.logger.info("Authenticated with Google Earth Engine (mdr-project-475522).")
         except Exception as e:
-            self.logger.warning(f"EE init failed ({e}), attempting interactive authentication...")
+            self.logger.warning(f"EE init failed ({e}), trying to authenticate...")
             ee.Authenticate()
             ee.Initialize(project="mdr-project-475522")
 

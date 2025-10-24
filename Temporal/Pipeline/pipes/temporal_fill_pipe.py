@@ -18,7 +18,7 @@ class TemporalFillPipe:
 
         self.config = config or load_config()
         self.station_name = station_name or "global"
-        fill_cfg = self.config["temporal_fill"]
+        fill_cfg = self.config
 
         self.target_columns = fill_cfg.get("target_columns", [])
         self.max_gap_days = fill_cfg.get("max_gap_days", 5)
