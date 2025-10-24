@@ -21,11 +21,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500 # Skip if file too small
-      out_dir: "data/spokane/raw" # Raw data output directory
+      out_dir: "data/raw/spokane/" # Raw data output directory
 
     parse:
-      in_dir: data/spokane/raw # Raw input directory
-      out_dir: data/spokane/processed
+      in_dir: data/raw/spokane/ # Raw input directory
+      out_dir: data/processed/spokane
       drop_duplicates: true
       col_indices: # Column index mapping (0-based)
         station_id: 0 # WBANNO
@@ -72,22 +72,51 @@ stations:
       index: false
 
   # -----------------------------------------------------------
-  # STATION 2: Pullman 20 NE
+  # STATION 2: Quinault 4 NE (WA_Quinault_4_NE)
   # -----------------------------------------------------------
-  pullman_20_ne:
+  quinault_4_ne:
     request:
       base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01"
-      station: "WA_Pullman_20_NE"
+      station: "WA_Quinault_4_NE"
       start_year: 2007
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "data/pullman/raw"
+      out_dir: "data/raw/quinault/"
 
     parse:
-      in_dir: data/pullman/raw
-      out_dir: data/pullman/processed
+      in_dir: data/raw/quinault/
+      out_dir: data/processed/quinault
       drop_duplicates: true
+      col_indices:
+        station_id: 0 # WBANNO
+        date: 1 # DATE (YYYYMMDD)
+        crx_vn: 2 # CRX_VN
+        longitude: 3 # LONGITUDE (°)
+        latitude: 4 # LATITUDE (°)
+        air_temp_max: 5
+        air_temp_min: 6
+        air_temp_mean: 7
+        air_temp_avg: 8
+        precipitation: 9
+        solar_radiation: 10
+        sur_temp_type: 11
+        sur_temp_max: 12
+        sur_temp_min: 13
+        sur_temp_avg: 14
+        rh_max: 15
+        rh_min: 16
+        rh_mean: 17
+        soil_moisture_5cm: 18
+        soil_moisture_10cm: 19
+        soil_moisture_20cm: 20
+        soil_moisture_50cm: 21
+        soil_moisture_100cm: 22
+        soil_temp_5cm: 23
+        soil_temp_10cm: 24
+        soil_temp_20cm: 25
+        soil_temp_50cm: 26
+        soil_temp_100cm: 27
 
     clean:
       drop_missing: true
@@ -99,27 +128,56 @@ stations:
       how: "outer"
 
     save:
-      out_path: "data/processed/pullman/final.csv"
+      out_path: "data/processed/quinault/final.csv"
       format: "csv"
       index: false
 
   # -----------------------------------------------------------
-  # STATION 3: Wenatchee 10 W
+  # STATION 3: Darrington 21 NNE (WA_Darrington_21_NNE)
   # -----------------------------------------------------------
-  wenatchee_10_w:
+  darrington_21_nne:
     request:
       base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01"
-      station: "WA_Wenatchee_10_W"
+      station: "WA_Darrington_21_NNE"
       start_year: 2007
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "data/wenatchee/raw"
+      out_dir: "data/raw/darrington/"
 
     parse:
-      in_dir: data/wenatchee/raw
-      out_dir: data/wenatchee/processed
+      in_dir: data/raw/darrington
+      out_dir: data/processed/darrington
       drop_duplicates: true
+      col_indices:
+        station_id: 0
+        date: 1
+        crx_vn: 2
+        longitude: 3
+        latitude: 4
+        air_temp_max: 5
+        air_temp_min: 6
+        air_temp_mean: 7
+        air_temp_avg: 8
+        precipitation: 9
+        solar_radiation: 10
+        sur_temp_type: 11
+        sur_temp_max: 12
+        sur_temp_min: 13
+        sur_temp_avg: 14
+        rh_max: 15
+        rh_min: 16
+        rh_mean: 17
+        soil_moisture_5cm: 18
+        soil_moisture_10cm: 19
+        soil_moisture_20cm: 20
+        soil_moisture_50cm: 21
+        soil_moisture_100cm: 22
+        soil_temp_5cm: 23
+        soil_temp_10cm: 24
+        soil_temp_20cm: 25
+        soil_temp_50cm: 26
+        soil_temp_100cm: 27
 
     clean:
       drop_missing: true
@@ -131,7 +189,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "data/processed/wenatchee/final.csv"
+      out_path: "data/processed/darrington/final.csv"
       format: "csv"
       index: false
 
@@ -155,7 +213,7 @@ temporal_fill:
   regression_window: 7
 
 satellite:
-  cache_path: "Pipeline/data/cache/satellite_cache.json"
+  cache_path: "Pipeline/data/cache/{station}_satellite_cache.json"
 
 logging:
   level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
