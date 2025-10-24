@@ -15,7 +15,7 @@ class MergePipe:
         # desc: Sets up merging behavior for multiple DataFrames or datasets.
 
         self.config = config or load_config()
-        merge_cfg = self.config["merge"]
+        merge_cfg = self.config
 
         self.on_columns = merge_cfg.get("on_columns", [])
         self.how = merge_cfg.get("how", "outer")

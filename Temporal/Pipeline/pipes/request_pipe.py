@@ -16,14 +16,13 @@ class RequestPipe:
     OUTPUT_PREFIX = "uscrn_"
 
     def __init__(self, config=None):
-        # pre:  config is a dictionary loaded from config.yaml or None
+        # pre: config is a dictionary loaded from config.yaml or None
         # post: initializes the RequestPipe with configuration settings
         # desc: reads request parameters from the config file and sets up logging/output paths.
 
         self.config = config or load_config()
-        req_cfg = self.config["request"]
+        req_cfg = self.config
 
-        # Core parameters
         self.base_url = req_cfg["base_url"]
         self.station = req_cfg["station"]
         self.start_year = req_cfg["start_year"]
@@ -31,11 +30,9 @@ class RequestPipe:
         self.timeout = req_cfg.get("timeout", 20)
         self.min_bytes = req_cfg.get("min_bytes", 500)
 
-        # Output directory
         self.out_dir = Path(req_cfg.get("out_dir", f"data/{self.station}/raw"))
         self.out_dir.mkdir(parents=True, exist_ok=True)
 
-        # Logger (namespaced per station)
         self.logger = get_logger().getChild(f"request.{self.station}")
 
     def run(self, _=None):

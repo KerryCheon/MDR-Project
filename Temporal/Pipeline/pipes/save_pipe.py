@@ -20,7 +20,7 @@ class SavePipe:
 
         self.config = config or load_config()
         self.station_name = station_name or "unknown_station"
-        save_cfg = self.config["save"]
+        save_cfg = self.config
 
         self.out_path = Path(save_cfg.get("out_path", self.OUT_PATH))
         self.format = save_cfg.get("format", "csv").lower()

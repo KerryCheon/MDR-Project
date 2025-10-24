@@ -20,7 +20,7 @@ class CleanPipe:
         #       filling NaNs, and selecting specific columns
 
         self.config = config or load_config()
-        clean_cfg = self.config["clean"]
+        clean_cfg = self.config
 
         self.drop_missing = clean_cfg.get("drop_missing", False)
         self.fillna_value = clean_cfg.get("fillna_value", None)

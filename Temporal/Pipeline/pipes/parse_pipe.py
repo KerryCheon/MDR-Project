@@ -21,7 +21,7 @@ class ParsePipe:
         # desc: Sets up parsing behavior, column indices, and output configuration.
 
         self.config = config or load_config()
-        parse_cfg = self.config["parse"]
+        parse_cfg = self.config
 
         self.in_dir = Path(parse_cfg.get("in_dir", "data/raw"))
         self.out_dir = Path(parse_cfg.get("out_dir", "data/processed"))
