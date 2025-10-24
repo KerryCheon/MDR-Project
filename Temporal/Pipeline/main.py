@@ -11,38 +11,48 @@ from requests import packages
 warnings.filterwarnings("ignore", category=UserWarning, module="requests")
 # MUTE THE ANNOYING INSECURE REQUESTS WARNING
 
+# Jakob Balkovec & Kerry Cheon
+# MDR Project - Main Pipeline Runner
+
 from utils.config import load_config
-from utils.logger import setup_logger
+from utils.logger import get_logger
+
 from pipes.request_pipe import RequestPipe
 from pipes.parse_pipe import ParsePipe
 from pipes.clean_pipe import CleanPipe
 from pipes.merge_pipe import MergePipe
-from pipes.save_pipe import SavePipe
 from pipes.temporal_fill_pipe import TemporalFillPipe
-from pipes.feature_pipe import FeaturePipe
 from pipes.satellite_pipe import SatellitePipe
+from pipes.feature_pipe import FeaturePipe
+from pipes.save_pipe import SavePipe
 
-def main():
-    config = load_config()
-    setup_logger(config)
+def run_pipeline_for_station(station_name, station_cfg, global_cfg):
+    logger = get_logger().getChild(f"main.{station_name}")
+    logger.info(f"=== Starting pipeline for {station_name} ===")
 
-    request = RequestPipe(config)
-    parser = ParsePipe(config)
-    cleaner = CleanPipe(config)
-    filler = TemporalFillPipe(config)
-    satellite = SatellitePipe(config)
-    feature = FeaturePipe(config)
-    merger = MergePipe(config)
-    saver = SavePipe(config)
+    request_pipe = RequestPipe(config=station_cfg["request"])
+    request_pipe.run()
+    parsed = ParsePipe(config=station_cfg["parse"]).run()
+    cleaned = CleanPipe(config=station_cfg["clean"]).run(parsed)
+    merged = MergePipe(config=station_cfg["merge"]).run(cleaned)
+    filled = TemporalFillPipe(config=global_cfg["temporal_fill"]).run(merged)
+    with_sat = SatellitePipe(config=global_cfg, station_name=station_name).run(filled)
+    featured = FeaturePipe(config=station_cfg.get("feature", {})).run(with_sat)
+    SavePipe(config=station_cfg["save"]).run(featured)
 
-    request.run()
-    parsed_df = parser.run()
-    clean_df = cleaner.run(parsed_df)
-    filled_df = filler.run(clean_df)
-    sat_df = satellite.run(filled_df)
-    feat_df = feature.run(sat_df)
-    merged_df = merger.run(feat_df)
-    saver.run(merged_df)
+    logger.info(f"=== Pipeline complete for {station_name} ===\n")
+
 
 if __name__ == "__main__":
-    main()
+    config = load_config()
+    logger = get_logger()
+
+    stations_cfg = config.get("stations", {})
+    if not stations_cfg:
+        logger.error("No stations found. Check the 'config' file!")
+        exit(1)
+
+    for station_name, station_cfg in stations_cfg.items():
+        run_pipeline_for_station(station_name, station_cfg, config)
+
+    logger.info("All station pipelines completed successfully.")
