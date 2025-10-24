@@ -1,78 +1,161 @@
-pipeline:
-  request:
-    base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01" # UPDATE
-    station: "WA_Spokane_17_SSW" # UPDATE
-    start_year: 2007 # < 2007 = non existent data
-    end_year: 2025
-    timeout: 20
-    min_bytes: 500
-    out_dir: "data/spokane/raw" # UPDATE
+# ===========================================================
+# Multi-Station MDR Pipeline Configuration
+# ===========================================================
+# This configuration defines all parameters for the full
+# pipeline — request, parse, clean, merge, save, temporal fill,
+# satellite caching, and logging.
+#
+# Each station block contains the same structure and can be
+# processed automatically by looping through `stations:`.
+# ===========================================================
 
-  parse:
-    in_dir: data/spokane/raw
-    out_dir: data/spokane/processed
-    drop_duplicates: true
-    col_indices:
-      station_id: 0 # WBANNO
-      date: 1 # DATE (YYYYMMDD)
-      crx_vn: 2 # CRX_VN  (station/version)
-      longitude: 3 # LONGITUDE (decimal degrees, already negative for W)
-      latitude: 4 # LATITUDE  (decimal degrees)
-      air_temp_max: 5 # TEMP_DAILY_MAX (°C)
-      air_temp_min: 6 # TEMP_DAILY_MIN (°C)
-      air_temp_mean: 7 # TEMP_DAILY_MEAN (°C)
-      air_temp_avg: 8 # TEMP_DAILY_AVG (°C)
-      precipitation: 9 # PERCIP_DAILY_CALC (mm)
-      solar_radiation: 10 # SOLAR_RAD_DAILY (MJ/m^2)
-      sur_temp_type: 11 # SURFACE_TEMP_DAILY_TYPE (R/C/U)
-      sur_temp_max: 12 # SURFACE_TEMP_DAILY_MAX (°C)
-      sur_temp_min: 13 # SURFACE_TEMP_DAILY_MIN (°C)
-      sur_temp_avg: 14 # SURFACE_TEMP_DAILY_AVG (°C)
-      rh_max: 15 # RELATIVE_HUMIDITY_DAILY_MAX (%)
-      rh_min: 16 # RELATIVE_HUMIDITY_DAILY_MIN (%)
-      rh_mean: 17 # RELATIVE_HUMIDITY_DAILY_AVG (%)
-      soil_moisture_5cm: 18 # SOIL_MOISTURE_5_DAILY (m^3/m^3)
-      soil_moisture_10cm: 19
-      soil_moisture_20cm: 20
-      soil_moisture_50cm: 21
-      soil_moisture_100cm: 22
-      soil_temp_5cm: 23 # SOIL_TEMP_5_DAILY (°C)
-      soil_temp_10cm: 24
-      soil_temp_20cm: 25
-      soil_temp_50cm: 26
-      soil_temp_100cm: 27
+stations:
+  # -----------------------------------------------------------
+  # STATION 1: Spokane 17 SSW
+  # -----------------------------------------------------------
+  spokane_17_ssw:
+    request:
+      base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01" # NOAA USCRN daily dataset base URL
+      station: "WA_Spokane_17_SSW" # Station code
+      start_year: 2007 # < 2007 = non-existent data
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500 # Skip if file too small
+      out_dir: "data/spokane/raw" # Raw data output directory
 
-  clean:
-    drop_missing: true
-    fillna_value: null
-    keep_columns: [] # == KEEP ALL, configure later
+    parse:
+      in_dir: data/spokane/raw # Raw input directory
+      out_dir: data/spokane/processed
+      drop_duplicates: true
+      col_indices: # Column index mapping (0-based)
+        station_id: 0 # WBANNO
+        date: 1 # DATE (YYYYMMDD)
+        crx_vn: 2 # CRX_VN (station/version)
+        longitude: 3 # LONGITUDE (decimal degrees)
+        latitude: 4 # LATITUDE (decimal degrees)
+        air_temp_max: 5 # TEMP_DAILY_MAX (°C)
+        air_temp_min: 6 # TEMP_DAILY_MIN (°C)
+        air_temp_mean: 7 # TEMP_DAILY_MEAN (°C)
+        air_temp_avg: 8 # TEMP_DAILY_AVG (°C)
+        precipitation: 9 # PERCIP_DAILY_CALC (mm)
+        solar_radiation: 10 # SOLAR_RAD_DAILY (MJ/m^2)
+        sur_temp_type: 11 # SURFACE_TEMP_DAILY_TYPE (R/C/U)
+        sur_temp_max: 12 # SURFACE_TEMP_DAILY_MAX (°C)
+        sur_temp_min: 13 # SURFACE_TEMP_DAILY_MIN (°C)
+        sur_temp_avg: 14 # SURFACE_TEMP_DAILY_AVG (°C)
+        rh_max: 15 # RELATIVE_HUMIDITY_DAILY_MAX (%)
+        rh_min: 16 # RELATIVE_HUMIDITY_DAILY_MIN (%)
+        rh_mean: 17 # RELATIVE_HUMIDITY_DAILY_AVG (%)
+        soil_moisture_5cm: 18 # SOIL_MOISTURE_5_DAILY (m³/m³)
+        soil_moisture_10cm: 19
+        soil_moisture_20cm: 20
+        soil_moisture_50cm: 21
+        soil_moisture_100cm: 22
+        soil_temp_5cm: 23 # SOIL_TEMP_5_DAILY (°C)
+        soil_temp_10cm: 24
+        soil_temp_20cm: 25
+        soil_temp_50cm: 26
+        soil_temp_100cm: 27
 
-  merge:
-    on_columns: ["station_id", "date"]
-    how: "outer"
+    clean:
+      drop_missing: true
+      fillna_value: null
+      keep_columns: [] # == KEEP ALL, configure later
 
-  save:
-    out_path: "data/processed/spokane/final.csv" # UPDATE
-    format: "csv"
-    index: false
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
 
-  temporal_fill:
-    target_columns:
-      - soil_moisture_5cm
-      - soil_moisture_10cm
-      - soil_moisture_20cm
-      - soil_moisture_50cm
-      - soil_moisture_100cm
-      - air_temp_mean
-      - rh_mean
-      - solar_radiation
-      - sur_temp_avg
-    max_gap_days: 5
-    switch_gap: 4
-    regression_window: 7
+    save:
+      out_path: "data/processed/spokane/final.csv"
+      format: "csv"
+      index: false
 
-  satellite:
-    cache_path: "Pipeline/data/cache/satellite_cache.json"
+  # -----------------------------------------------------------
+  # STATION 2: Pullman 20 NE
+  # -----------------------------------------------------------
+  pullman_20_ne:
+    request:
+      base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01"
+      station: "WA_Pullman_20_NE"
+      start_year: 2007
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "data/pullman/raw"
+
+    parse:
+      in_dir: data/pullman/raw
+      out_dir: data/pullman/processed
+      drop_duplicates: true
+
+    clean:
+      drop_missing: true
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "data/processed/pullman/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 3: Wenatchee 10 W
+  # -----------------------------------------------------------
+  wenatchee_10_w:
+    request:
+      base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01"
+      station: "WA_Wenatchee_10_W"
+      start_year: 2007
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "data/wenatchee/raw"
+
+    parse:
+      in_dir: data/wenatchee/raw
+      out_dir: data/wenatchee/processed
+      drop_duplicates: true
+
+    clean:
+      drop_missing: true
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "data/processed/wenatchee/final.csv"
+      format: "csv"
+      index: false
+
+# ===========================================================
+# GLOBAL SECTIONS
+# ===========================================================
+
+temporal_fill:
+  target_columns:
+    - soil_moisture_5cm
+    - soil_moisture_10cm
+    - soil_moisture_20cm
+    - soil_moisture_50cm
+    - soil_moisture_100cm
+    - air_temp_mean
+    - rh_mean
+    - solar_radiation
+    - sur_temp_avg
+  max_gap_days: 5
+  switch_gap: 4
+  regression_window: 7
+
+satellite:
+  cache_path: "Pipeline/data/cache/satellite_cache.json"
 
 logging:
   level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
