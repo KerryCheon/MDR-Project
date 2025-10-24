@@ -1,7 +1,7 @@
 # Jakob Balkovec
 # Parse Pipe
 
-# This modules defines the ParsePipe class, which is parsing the data retrieved by the
+# This module defines the ParsePipe class, which parses the data retrieved by the
 # RequestPipe into a structured format for further processing.
 
 import pandas as pd
@@ -21,7 +21,7 @@ class ParsePipe:
         # desc: Sets up parsing behavior, column indices, and output configuration.
 
         self.config = config or load_config()
-        parse_cfg = self.config["pipeline"]["parse"]
+        parse_cfg = self.config["parse"]
 
         self.in_dir = Path(parse_cfg.get("in_dir", "data/raw"))
         self.out_dir = Path(parse_cfg.get("out_dir", "data/processed"))
@@ -35,9 +35,9 @@ class ParsePipe:
             "soil_moisture_5cm": 17,
         })
 
-        # [optional] dedup by station/date
         self.drop_duplicates = parse_cfg.get("drop_duplicates", True)
-        self.logger = get_logger().getChild("parse")
+        self.station_name = self.config.get("request", {}).get("station", "unknown_station")
+        self.logger = get_logger().getChild(f"parse.{self.station_name}")
 
     def run(self, _=None):
         # pre:  raw yearly files exist in in_dir and follow CRND0103 format
@@ -52,11 +52,10 @@ class ParsePipe:
             self.logger.warning(f"No USCRN files found in {self.in_dir}")
             return pd.DataFrame()
 
-        self.logger.info(f"Found {len(files)} USCRN files — parsing all years.")
+        self.logger.info(f"[{self.station_name}] Found {len(files)} USCRN files — parsing all years.")
 
         for file_path in files:
             try:
-                # read raw file
                 df = pd.read_csv(
                     file_path,
                     sep=self.DELIM,
@@ -69,14 +68,13 @@ class ParsePipe:
                 rename_map = {idx: name for name, idx in self.col_indices.items() if idx in df.columns}
                 df = df.rename(columns=rename_map)
 
-                # ensure *all* columns exist (named or unnamed)
-                # any missing indices get generic names like col_5, col_6...
+                # ensure all expected columns are present
                 df.columns = [
                     c if isinstance(c, str) else rename_map.get(c, f"col_{c}")
                     for c in df.columns
                 ]
 
-                # convert date safely
+                # safely convert date
                 if "date" in df.columns:
                     df["date"] = pd.to_datetime(df["date"], format=self.DATE_FORMAT, errors="coerce")
 
@@ -85,26 +83,27 @@ class ParsePipe:
                     if pd.api.types.is_numeric_dtype(df[col]):
                         df[col] = df[col].replace(self.NA_VALUE, pd.NA)
 
-                # tag file name
+                # tag file source
                 df["source_file"] = file_path.name
                 parsed_dfs.append(df)
 
-                self.logger.debug(f"Parsed {file_path.name}: {len(df)} rows, {len(df.columns)} cols")
+                self.logger.debug(f"[{self.station_name}] Parsed {file_path.name}: {len(df)} rows, {len(df.columns)} cols")
 
             except Exception as e:
-                self.logger.error(f"Failed to parse {file_path.name}: {e}")
+                self.logger.error(f"[{self.station_name}] Failed to parse {file_path.name}: {e}")
 
         if not parsed_dfs:
-            self.logger.warning("No valid data parsed from any files :(")
+            self.logger.warning(f"[{self.station_name}] No valid data parsed from any files.")
             return pd.DataFrame()
 
         combined_df = pd.concat(parsed_dfs, ignore_index=True)
-        self.logger.info(f"Combined {len(parsed_dfs)} files into {len(combined_df)} total rows.")
+        self.logger.info(f"[{self.station_name}] Combined {len(parsed_dfs)} files into {len(combined_df)} total rows.")
 
-        # optional dedup
+        # [optional] deduplication
         if self.drop_duplicates and {"station_id", "date"} <= set(combined_df.columns):
             before = len(combined_df)
             combined_df = combined_df.drop_duplicates(subset=["station_id", "date"])
-            self.logger.info(f"Removed {before - len(combined_df)} duplicate rows.")
+            removed = before - len(combined_df)
+            self.logger.info(f"[{self.station_name}] Removed {removed} duplicate rows.")
 
         return combined_df

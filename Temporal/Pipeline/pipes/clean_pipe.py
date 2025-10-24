@@ -20,19 +20,14 @@ class CleanPipe:
         #       filling NaNs, and selecting specific columns
 
         self.config = config or load_config()
-        clean_cfg = self.config["pipeline"]["clean"]
+        clean_cfg = self.config["clean"]
 
-        self.drop_missing = clean_cfg.get("drop_missing", False)  # Changed default to False
+        self.drop_missing = clean_cfg.get("drop_missing", False)
         self.fillna_value = clean_cfg.get("fillna_value", None)
         self.keep_columns = clean_cfg.get("keep_columns", [])
         self.logger = get_logger().getChild("clean")
 
     def run(self, df):
-        # pre: parsed DataFrame passed in from previous pipe
-        # post: returns cleaned DataFrame with consistent types and normalized coordinates
-        # desc: performs cleaning operations such as replacing NA values,
-        #       validating coordinates, and handling missing data
-
         if df is None or df.empty:
             self.logger.warning("Received empty DataFrame in CleanPipe.")
             return pd.DataFrame()
@@ -46,14 +41,13 @@ class CleanPipe:
         # Validate coordinates (keep only valid ranges)
         if "longitude" in df.columns and "latitude" in df.columns:
             invalid_coords = (
-                    df["longitude"].isna() |
-                    df["latitude"].isna() |
-                    ~df["longitude"].between(-180, 180) |
-                    ~df["latitude"].between(-90, 90)
+                df["longitude"].isna()
+                | df["latitude"].isna()
+                | ~df["longitude"].between(-180, 180)
+                | ~df["latitude"].between(-90, 90)
             )
 
             invalid_count = invalid_coords.sum()
-
             if invalid_count > 0:
                 df = df[~invalid_coords]
                 self.logger.info(f"Removed {invalid_count} rows with invalid coordinates.")

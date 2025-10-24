@@ -1,7 +1,7 @@
 # Jakob Balkovec
 # Merge Pipe
 
-# This modules defines the MergePipe class, which is responsible for merging
+# This module defines the MergePipe class, which is responsible for merging
 # multiple DataFrames or datasets into a unified DataFrame.
 
 import pandas as pd
@@ -9,14 +9,13 @@ from utils.logger import get_logger
 from utils.config import load_config
 
 class MergePipe:
-
     def __init__(self, config=None):
         # pre:  config is a dictionary loaded from config.yaml or None
         # post: initializes MergePipe with merging strategy parameters
         # desc: Sets up merging behavior for multiple DataFrames or datasets.
 
         self.config = config or load_config()
-        merge_cfg = self.config["pipeline"]["merge"]
+        merge_cfg = self.config["merge"]
 
         self.on_columns = merge_cfg.get("on_columns", [])
         self.how = merge_cfg.get("how", "outer")
@@ -37,10 +36,13 @@ class MergePipe:
             self.logger.info("Received single DataFrame — returning unchanged.")
             merged = data
 
-        # dedup
+        # Drop duplicates based on merge keys
         if self.on_columns:
+            before = len(merged)
             merged = merged.drop_duplicates(subset=self.on_columns)
-            self.logger.debug(f"Deduplicated on {self.on_columns}.")
+            after = len(merged)
+            removed = before - after
+            self.logger.debug(f"Deduplicated on {self.on_columns} ({removed} rows removed).")
 
         self.logger.info(f"MergePipe complete — {len(merged)} rows total.")
         return merged
