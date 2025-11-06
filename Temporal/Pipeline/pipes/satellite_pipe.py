@@ -147,18 +147,22 @@ class SatellitePipe:
 
         self.logger.info(f"[{self.station_name}] Starting batched satellite retrieval for {len(df)} rows...")
         df["date"] = pd.to_datetime(df["date"])
-        grouped = df.groupby(df["date"].dt.to_period("M"))
+        grouped = df.groupby(df["date"].dt.to_period("W"))  # weekly grouping for efficiency
 
         results = []
         futures = {}
 
         with ThreadPoolExecutor(max_workers=4) as executor:
             for period, group in grouped:
-                date_key = str(period)
-                if date_key in cache:
-                    continue
+                # Use precise date-based cache key instead of month-only
                 start = group["date"].min().strftime("%Y-%m-%d")
                 end = (group["date"].max() + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+                date_key = f"{start}_{end}"
+
+                # Skip if this exact date range is already cached
+                if date_key in cache:
+                    continue
+
                 lat, lon = group["latitude"].median(), group["longitude"].median()
                 futures[executor.submit(self.fetch_satellite_batch, lat, lon, start, end)] = date_key
 
@@ -170,16 +174,21 @@ class SatellitePipe:
                     self.logger.warning(f"Batch {date_key} failed: {e}")
                     cache[date_key] = {"LST": None, "NDVI": None, "Rain_sat": None}
 
+        # Assign cached results to every row in the corresponding week
         for period, group in grouped:
-            date_key = str(period)
+            start = group["date"].min().strftime("%Y-%m-%d")
+            end = (group["date"].max() + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+            date_key = f"{start}_{end}"
             res = cache.get(date_key, {"LST": None, "NDVI": None, "Rain_sat": None})
             for date in group["date"]:
                 results.append({"date": date.strftime("%Y-%m-%d"), **res})
 
+        # Save updated cache with all new date ranges included
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         with open(cache_path, "w") as f:
             json.dump(cache, f, indent=2)
 
+        # Merge satellite results with input dataframe
         sat_df = pd.DataFrame(results).dropna(subset=["LST", "NDVI", "Rain_sat"], how="all")
         sat_df["date"] = pd.to_datetime(sat_df["date"], errors="coerce")
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
