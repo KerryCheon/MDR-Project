@@ -9,6 +9,16 @@ from pathlib import Path
 from utils.logger import get_logger
 from utils.config import load_config
 
+# Try to import SNOTELPipe - handle both absolute and relative imports
+try:
+    from pipes.snotel_pipe import SNOTELPipe
+except ImportError:
+    try:
+        from snotel_pipe import SNOTELPipe
+    except ImportError:
+        # If SNOTELPipe not available, create a placeholder
+        SNOTELPipe = None
+
 class ParsePipe:
     FILE_GLOB = "uscrn_*.txt"
     NA_VALUE = -9999.0
@@ -36,12 +46,47 @@ class ParsePipe:
         })
 
         self.drop_duplicates = parse_cfg.get("drop_duplicates", True)
-        self.station_name = self.config.get("request", {}).get("station", "unknown_station")
+        # Get station name from either request config or parse config (for SNOTEL)
+        self.station_name = (
+                self.config.get("station") or
+                self.config.get("request", {}).get("station", "unknown_station")
+        )
         self.logger = get_logger().getChild(f"parse.{self.station_name}")
 
     def run(self, _=None):
-        # pre:  raw yearly files exist in in_dir and follow CRND0103 format
+        # pre:  raw yearly files exist in in_dir and follow CRND0103 format OR
+        #       master.csv exists for SNOTEL stations
         # post: returns unified DataFrame of all parsed files
+        # desc: Reads all downloaded USCRN files OR pre-generated SNOTEL master.csv,
+        #       maps columns, replaces missing values, and returns clean DataFrame.
+
+        # Check if this is a SNOTEL station (has snotel_mode flag)
+        if self.config.get("snotel_mode", False):
+            return self._parse_snotel()
+        else:
+            return self._parse_uscrn()
+
+    def _parse_snotel(self):
+        # pre:  .stm files exist in in_dir OR master.csv exists
+        # post: returns DataFrame with standardized column names
+        # desc: Delegates to SNOTELPipe for complete SNOTEL data processing
+
+        if SNOTELPipe is None:
+            self.logger.error(
+                f"[{self.station_name}] SNOTELPipe not available. "
+                f"Please ensure snotel_pipe.py is in the pipes/ directory."
+            )
+            return pd.DataFrame()
+
+        self.logger.info(f"[{self.station_name}] Using SNOTEL pipe for data processing")
+
+        # Use SNOTELPipe to handle all SNOTEL parsing
+        snotel_pipe = SNOTELPipe(config=self.config)
+        return snotel_pipe.run()
+
+    def _parse_uscrn(self):
+        # pre:  raw yearly files exist in in_dir and follow CRND0103 format
+        # post: returns unified DataFrame of all parsed USCRN files
         # desc: Reads all downloaded USCRN files, maps columns, replaces missing values,
         #       and concatenates them into a clean unified DataFrame.
 

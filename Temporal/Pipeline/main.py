@@ -30,8 +30,14 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
     logger = get_logger().getChild(f"main.{station_name}")
     logger.info(f"=== Starting pipeline for {station_name} ===")
 
-    request_pipe = RequestPipe(config=station_cfg["request"])
-    request_pipe.run()
+    # Skip RequestPipe for SNOTEL stations (they use local .stm files, not HTTP downloads)
+    if station_cfg.get("parse", {}).get("snotel_mode", False):
+        logger.info(f"[{station_name}] SNOTEL mode - skipping RequestPipe, will parse .stm files directly")
+    else:
+        request_pipe = RequestPipe(config=station_cfg["request"])
+        request_pipe.run()
+
+    # ParsePipe handles both USCRN and SNOTEL formats automatically
     parsed = ParsePipe(config=station_cfg["parse"]).run()
     cleaned = CleanPipe(config=station_cfg["clean"]).run(parsed)
     merged = MergePipe(config=station_cfg["merge"]).run(cleaned)
