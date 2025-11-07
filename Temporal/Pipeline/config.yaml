@@ -193,6 +193,84 @@ stations:
       format: "csv"
       index: false
 
+  # -----------------------------------------------------------
+  # STATION 4: Sourdough Gulch SNOTEL #985
+  # -----------------------------------------------------------
+  sourdough_gulch:
+    request:
+      base_url: null # SNOTEL data - no download needed
+      station: "SourdoughGulch_WA_985"
+      start_year: 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "data/raw/sourdough/"
+
+    parse:
+      in_dir: data/raw/SourdoughGulch/
+      out_dir: data/processed/SourdoughGulch
+      drop_duplicates: true
+      snotel_mode: true # Flag for SNOTEL data format
+      station: "SourdoughGulch_WA_985"
+      latitude: 46.233333
+      longitude: -117.4
+      elevation: 1210
+      add_rolling_rain: true # Add 3-day rolling precipitation
+      col_indices: {} # SNOTEL uses different format
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "data/processed/sourdough/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 5: Touchet SNOTEL #824
+  # -----------------------------------------------------------
+  touchet:
+    request:
+      base_url: null # SNOTEL data - no download needed
+      station: "Touchet_WA_824"
+      start_year: 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "data/raw/touchet/"
+
+    parse:
+      in_dir: data/raw/Touchet/
+      out_dir: data/processed/touchet
+      drop_duplicates: true
+      snotel_mode: true # Flag for SNOTEL data format
+      station: "Touchet_WA_824"
+      latitude: 46.116667
+      longitude: -117.85
+      elevation: 1682
+      add_rolling_rain: true # Add 3-day rolling precipitation
+      col_indices: {} # SNOTEL uses different format
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "data/processed/touchet/final.csv"
+      format: "csv"
+      index: false
+
 # ===========================================================
 # GLOBAL SECTIONS
 # ===========================================================
