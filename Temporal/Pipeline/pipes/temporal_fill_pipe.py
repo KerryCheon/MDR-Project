@@ -6,8 +6,10 @@
 
 import numpy as np
 import pandas as pd
+
 from utils.logger import get_logger
 from utils.config import load_config
+from utils.impute_models import run_xgboost
 
 # cuz I just couldn't be bothered to fix all the FutureWarnings right now
 import warnings
@@ -112,4 +114,19 @@ class TemporalFillPipe:
         self.logger.info(
             f"[{self.station_name}] TemporalFillPipe complete — {len(filled_df)} rows (from {len(df)})."
         )
+
+        satellite_cols = [c for c in ["LST", "NDVI", "Rain_sat"] if c in filled_df.columns]
+        if satellite_cols:
+            self.logger.info(f"[{self.station_name}] Running XGBoost imputation for satellite data only...")
+            for col in satellite_cols:
+                try:
+                    df_temp = filled_df[["date", col]].copy().drop_duplicates(subset="date").sort_values("date")
+                    imputed = run_xgboost(df_temp, col)
+                    filled_df[col + "_imputed"] = imputed[col + "_interp"]
+                    self.logger.info(f"{col}: imputed coverage = {filled_df[col + '_imputed'].notna().mean():.2%}")
+                except Exception as e:
+                    self.logger.warning(f"XGBoost imputation failed for {col}: {e}")
+        else:
+            self.logger.info(f"[{self.station_name}] No satellite columns found for imputation.")
+
         return filled_df
