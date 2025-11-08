@@ -32,17 +32,45 @@ def run_rolling(df, col, window=7):
     return df
 
 def run_xgboost(df, col):
-    # pre: the df has a datetime index and a column 'col' with missing values
-    # post: the df with an additional column 'col_interp' with imputed values
-    # desc: Imputes missing values in 'col' using an XGBoost regression model based on the index position.
+    # pre: df has a 'date' column and numeric features including the target col
+    # post: adds col_interp (model predictions) to df
+    # desc: XGBoost-based imputation leveraging temporal and cross-satellite context.
 
+    df = df.copy().sort_values("date").reset_index(drop=True)
+    df["day_of_year"] = df["date"].dt.dayofyear
+    df["year"] = df["date"].dt.year
+
+    # temporal encoding (sin/cos improves continuity across year boundaries)
+    df["DOY_sin"] = np.sin(2 * np.pi * df["day_of_year"] / 365)
+    df["DOY_cos"] = np.cos(2 * np.pi * df["day_of_year"] / 365)
+
+    # select predictors — temporal + cross-satellite context if available
+    features = ["DOY_sin", "DOY_cos", "year"]
+    aux = [c for c in ["LST", "NDVI", "Rain_sat"] if c != col and c in df.columns]
+    features += aux
+
+    # fallback if too few known values
     known = df.dropna(subset=[col])
-    X = np.arange(len(known)).reshape(-1, 1)
-    y = known[col].values
-    model = XGBRegressor(n_estimators=200, learning_rate=0.1, max_depth=3)
-    model.fit(X, y)
-    full_pred = model.predict(np.arange(len(df)).reshape(-1, 1))
-    df[col + "_interp"] = full_pred
+    if len(known) < 5:
+        df[col + "_interp"] = df[col]
+        return df
+
+    X_train = known[features].fillna(method="ffill").fillna(method="bfill")
+    y_train = known[col]
+
+    model = XGBRegressor(
+        n_estimators=300,
+        learning_rate=0.05,
+        max_depth=4,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        random_state=42
+    )
+    model.fit(X_train, y_train)
+
+    X_pred = df[features].fillna(method="ffill").fillna(method="bfill")
+    df[col + "_interp"] = model.predict(X_pred)
+
     return df
 
 
