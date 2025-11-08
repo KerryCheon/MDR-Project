@@ -147,22 +147,17 @@ class SatellitePipe:
 
         self.logger.info(f"[{self.station_name}] Starting batched satellite retrieval for {len(df)} rows...")
         df["date"] = pd.to_datetime(df["date"])
-        grouped = df.groupby(df["date"].dt.to_period("W"))  # weekly grouping for efficiency
+        grouped = df.groupby(df["date"].dt.to_period("W"))  # weekly for efficiency
 
-        results = []
+        # fetch only missing weeks
         futures = {}
-
         with ThreadPoolExecutor(max_workers=4) as executor:
             for period, group in grouped:
-                # Use precise date-based cache key instead of month-only
                 start = group["date"].min().strftime("%Y-%m-%d")
                 end = (group["date"].max() + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
                 date_key = f"{start}_{end}"
-
-                # Skip if this exact date range is already cached
                 if date_key in cache:
                     continue
-
                 lat, lon = group["latitude"].median(), group["longitude"].median()
                 futures[executor.submit(self.fetch_satellite_batch, lat, lon, start, end)] = date_key
 
@@ -174,25 +169,29 @@ class SatellitePipe:
                     self.logger.warning(f"Batch {date_key} failed: {e}")
                     cache[date_key] = {"LST": None, "NDVI": None, "Rain_sat": None}
 
-        # Assign cached results to every row in the corresponding week
-        for period, group in grouped:
-            start = group["date"].min().strftime("%Y-%m-%d")
-            end = (group["date"].max() + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
-            date_key = f"{start}_{end}"
-            res = cache.get(date_key, {"LST": None, "NDVI": None, "Rain_sat": None})
-            for date in group["date"]:
-                results.append({"date": date.strftime("%Y-%m-%d"), **res})
-
-        # Save updated cache with all new date ranges included
+        # save updated cache
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         with open(cache_path, "w") as f:
             json.dump(cache, f, indent=2)
 
-        # Merge satellite results with input dataframe
-        sat_df = pd.DataFrame(results).dropna(subset=["LST", "NDVI", "Rain_sat"], how="all")
-        sat_df["date"] = pd.to_datetime(sat_df["date"], errors="coerce")
-        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        sat_rows = []
+        for period, group in grouped:
+            start = group["date"].min()
+            end = group["date"].max()
+            date_key = f"{start.strftime('%Y-%m-%d')}_{(end + pd.Timedelta(days=1)).strftime('%Y-%m-%d')}"
+            res = cache.get(date_key, {"LST": None, "NDVI": None, "Rain_sat": None})
 
+            # pick midpoint of the week as representative day
+            mid_date = start + (end - start) / 2
+            sat_rows.append({"date": mid_date, **res})
+
+        sat_df = pd.DataFrame(sat_rows)
+
+        sat_df = pd.DataFrame(sat_rows)
+        sat_df["date"] = pd.to_datetime(sat_df["date"])
+        df["date"] = pd.to_datetime(df["date"])
+
+        # merge (keep NaNs — let TemporalFillPipe handle later)
         merged = pd.merge(df, sat_df, on="date", how="left")
 
         coverage = {
@@ -205,4 +204,5 @@ class SatellitePipe:
             f"[{self.station_name}] SatellitePipe complete — {len(merged)} records retrieved. "
             f"Coverage — LST: {coverage['LST']:.2%}, NDVI: {coverage['NDVI']:.2%}, Rain: {coverage['Rain_sat']:.2%}"
         )
+
         return merged
