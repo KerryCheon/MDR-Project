@@ -277,21 +277,17 @@ stations:
 
 temporal_fill:
   target_columns:
-    - soil_moisture_5cm
-    - soil_moisture_10cm
-    - soil_moisture_20cm
-    - soil_moisture_50cm
-    - soil_moisture_100cm
-    - air_temp_mean
-    - rh_mean
-    - solar_radiation
-    - sur_temp_avg
-  max_gap_days: 5
-  switch_gap: 4
-  regression_window: 7
+    - LST
+    - NDVI
+    - Rain_sat
+
+  # The rest are legacy params from linear/regression filling.
+  max_gap_days: 30 # unused (kept for safety)
+  switch_gap: 4 # unused (kept for safety)
+  regression_window: 7 # unused (kept for safety)
 
 satellite:
-  cache_path: "Pipeline/data/cache/{station}_satellite_cache.json"
+  cache_path: "data/cache/{station}_satellite_cache.json"
 
 logging:
   level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
