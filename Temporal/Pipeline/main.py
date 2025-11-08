@@ -11,9 +11,6 @@ from requests import packages
 warnings.filterwarnings("ignore", category=UserWarning, module="requests")
 # MUTE THE ANNOYING INSECURE REQUESTS WARNING
 
-# Jakob Balkovec & Kerry Cheon
-# MDR Project - Main Pipeline Runner
-
 from utils.config import load_config
 from utils.logger import get_logger
 
@@ -32,21 +29,26 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
 
     # Skip RequestPipe for SNOTEL stations (they use local .stm files, not HTTP downloads)
     if station_cfg.get("parse", {}).get("snotel_mode", False):
-        logger.info(f"[{station_name}] SNOTEL mode - skipping RequestPipe, will parse .stm files directly")
-    else:
+        logger.warning(f"[{station_name}] SNOTEL mode detected — skipping entire station (SNOTELPipe not available).")
+        return
+
+    # USCRN pipeline
+    try:
         request_pipe = RequestPipe(config=station_cfg["request"])
         request_pipe.run()
 
-    # ParsePipe handles both USCRN and SNOTEL formats automatically
-    parsed = ParsePipe(config=station_cfg["parse"]).run()
-    cleaned = CleanPipe(config=station_cfg["clean"]).run(parsed)
-    merged = MergePipe(config=station_cfg["merge"]).run(cleaned)
-    filled = TemporalFillPipe(config=global_cfg["temporal_fill"]).run(merged)
-    with_sat = SatellitePipe(config=global_cfg, station_name=station_name).run(filled)
-    featured = FeaturePipe(config=station_cfg.get("feature", {})).run(with_sat)
-    SavePipe(config=station_cfg["save"]).run(featured)
+        parsed = ParsePipe(config=station_cfg["parse"]).run()
+        cleaned = CleanPipe(config=station_cfg["clean"]).run(parsed)
+        merged = MergePipe(config=station_cfg["merge"]).run(cleaned)
+        with_sat = SatellitePipe(config=global_cfg, station_name=station_name).run(merged)
+        filled = TemporalFillPipe(config=global_cfg["temporal_fill"]).run(with_sat)
+        featured = FeaturePipe(config=station_cfg.get("feature", {})).run(filled)
+        SavePipe(config=station_cfg["save"]).run(featured)
 
-    logger.info(f"=== Pipeline complete for {station_name} ===\n")
+        logger.info(f"=== Pipeline complete for {station_name} ===\n")
+
+    except Exception as e:
+        logger.error(f"[{station_name}] Pipeline failed: {e}")
 
 
 if __name__ == "__main__":
@@ -59,6 +61,12 @@ if __name__ == "__main__":
         exit(1)
 
     for station_name, station_cfg in stations_cfg.items():
+
+        # Explicit skip for SNOTEL mode stations
+        if station_cfg.get("parse", {}).get("snotel_mode", False):
+            logger.warning(f"[{station_name}] Skipping SNOTEL station — awaiting SNOTELPipe integration.")
+            continue
+
         run_pipeline_for_station(station_name, station_cfg, config)
 
     logger.info("All station pipelines completed successfully.")
