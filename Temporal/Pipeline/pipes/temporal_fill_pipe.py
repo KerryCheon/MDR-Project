@@ -23,10 +23,6 @@ warnings.filterwarnings(
 
 class TemporalFillPipe:
     def __init__(self, config=None, station_name=None):
-        # pre: cleaned & time-aligned DataFrame with 'station_id' and 'date' columns
-        # post: returns DataFrame with missing timestamps filled using hybrid strategy
-        # desc: Fills small gaps via linear interpolation and large gaps via rolling regression.
-
         self.config = config or load_config()
         self.station_name = station_name or "global"
         fill_cfg = self.config
@@ -36,97 +32,56 @@ class TemporalFillPipe:
         self.switch_gap = fill_cfg.get("switch_gap", 4)
         self.regression_window = fill_cfg.get("regression_window", 7)
 
-        # Station-specific logger
         self.logger = get_logger().getChild(f"temporal_fill.{self.station_name}")
 
-    def rolling_regression_fill(self, df, window=7):
-        # pre: numeric time-series with missing values
-        # post: fills large gaps (> switch_gap) using local regression
-        # desc: Fits a short-term linear trend within a window to estimate missing values.
-
-        df = df.sort_index()
-        df = df.infer_objects(copy=False)
-
-        for col in self.target_columns:
-            mask = df[col].isna()
-            for i in df.index[mask]:
-                sub = df[col].loc[i - pd.Timedelta(days=window):i - pd.Timedelta(days=1)].dropna()
-                if len(sub) >= 2:
-                    try:
-                        sub = sub.astype(float)
-                        coeffs = np.polyfit(range(len(sub)), sub.values, deg=1)
-                        df.loc[i, col] = coeffs[1] + coeffs[0] * len(sub)
-                    except Exception as e:
-                        self.logger.debug(f"[{self.station_name}] Regression fill failed for {col} at {i}: {e}")
-        return df
-
     def run(self, df):
-        # pre: cleaned DataFrame grouped by station and sorted by date
-        # post: returns fully interpolated DataFrame
-        # desc: Performs linear interpolation for small gaps and regression for larger ones.
-
         if df is None or df.empty:
             self.logger.warning(f"[{self.station_name}] Received empty DataFrame in TemporalFillPipe.")
             return pd.DataFrame()
 
-        if not {"date", "station_id"}.issubset(df.columns):
-            self.logger.error(f"[{self.station_name}] DataFrame missing required columns: 'date', 'station_id'.")
+        if "date" not in df.columns:
+            self.logger.error(f"[{self.station_name}] DataFrame missing required column: 'date'.")
             return df
 
         df = df.copy()
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        df = df.sort_values("date").reset_index(drop=True)
 
-        all_filled = []
-        for station, group in df.groupby("station_id"):
-            group = group.sort_values("date").set_index("date")
-            full_index = pd.date_range(group.index.min(), group.index.max(), freq="D")
-            group = group.reindex(full_index)
-            group["station_id"] = station
-            group = group.infer_objects(copy=False)
+        satellite_cols = [c for c in ["LST", "NDVI", "Rain_sat"] if c in df.columns]
+        if not satellite_cols:
+            self.logger.info(f"[{self.station_name}] No satellite columns found for XGBoost imputation.")
+            return df
 
-            for col in self.target_columns:
-                if col not in group.columns:
-                    continue
-
-                is_na = group[col].isna()
-                gap_groups = (is_na != is_na.shift()).cumsum()
-                gaps = [
-                    (g.index[0], g.index[-1], len(g))
-                    for _, g in group[is_na].groupby(gap_groups[is_na])
-                ]
-
-                for start, end, length in gaps:
-                    if length <= self.switch_gap:
-                        try:
-                            group.loc[start:end, col] = group[col].interpolate(
-                                method="linear", limit=self.max_gap_days
-                            ).loc[start:end]
-                            self.logger.debug(f"[{self.station_name}] {station}: linear fill ({length}d) for {col}.")
-                        except Exception as e:
-                            self.logger.debug(f"[{self.station_name}] Linear fill failed for {col} ({length}d): {e}")
-                    else:
-                        group = self.rolling_regression_fill(group, window=self.regression_window)
-                        self.logger.debug(f"[{self.station_name}] {station}: regression fill ({length}d) for {col}.")
-
-            all_filled.append(group.reset_index().rename(columns={"index": "date"}))
-
-        filled_df = pd.concat(all_filled, ignore_index=True)
         self.logger.info(
-            f"[{self.station_name}] TemporalFillPipe complete — {len(filled_df)} rows (from {len(df)})."
+            f"[{self.station_name}] Running XGBoost imputation for satellite data: {', '.join(satellite_cols)}"
         )
 
-        satellite_cols = [c for c in ["LST", "NDVI", "Rain_sat"] if c in filled_df.columns]
-        if satellite_cols:
-            self.logger.info(f"[{self.station_name}] Running XGBoost imputation for satellite data only...")
-            for col in satellite_cols:
-                try:
-                    df_temp = filled_df[["date", col]].copy().drop_duplicates(subset="date").sort_values("date")
-                    imputed = run_xgboost(df_temp, col)
-                    filled_df[col + "_imputed"] = imputed[col + "_interp"]
-                    self.logger.info(f"{col}: imputed coverage = {filled_df[col + '_imputed'].notna().mean():.2%}")
-                except Exception as e:
-                    self.logger.warning(f"XGBoost imputation failed for {col}: {e}")
-        else:
-            self.logger.info(f"[{self.station_name}] No satellite columns found for imputation.")
+        for col in satellite_cols:
+            try:
+                work = df[["date", col]].drop_duplicates(subset="date").sort_values("date")
+                work = work.dropna(subset=["date"])
 
-        return filled_df
+                n_known = work[col].notna().sum()
+                if n_known < 2:
+                    self.logger.warning(f"[{self.station_name}] Skipping {col}: insufficient known values ({n_known}).")
+                    continue
+
+                imputed = run_xgboost(work.copy(), col)
+
+                # Merge predictions back by date
+                merged = df.merge(
+                    imputed[["date", col + "_interp"]],
+                    on="date",
+                    how="left"
+                )
+
+                # Replace original values with XGBoost predictions where missing
+                df[col] = merged[col].combine_first(merged[col + "_interp"])
+                coverage = df[col].notna().mean()
+                self.logger.info(f"[{self.station_name}] {col}: XGBoost imputed coverage = {coverage:.2%}")
+
+            except Exception as e:
+                self.logger.warning(f"[{self.station_name}] XGBoost imputation failed for {col}: {e}")
+
+        self.logger.info(f"[{self.station_name}] TemporalFillPipe complete — {len(df)} rows processed.")
+        return df
