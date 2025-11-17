@@ -4,6 +4,12 @@
 
 # This module defines imputation models for handling missing values in satellite data
 
+#---------------- DEPRECATION WARNING ----------------#
+# This module has been deprecated.
+# The contents are here for reference as well as testing
+raise DeprecationWarning("impute_models.py has been deprecated. Check your import statements")
+#---------------- DEPRECATION WARNING ----------------#
+
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from xgboost import XGBRegressor
