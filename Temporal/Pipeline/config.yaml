@@ -290,11 +290,55 @@ satellite:
   cache_path: "data/cache/{station}_satellite_cache.json"
 
 logging:
-  level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
   log_to_file: true
   file_path: "logs/pipeline.log"
-  imputer_logs: "logs/imputer.log"
+
+  # new dedicated imputer log
+  imputer_file_path: "logs/imputer.log"
+  imputer_level: "DEBUG" # vote breakdowns, weights, etc
+
   format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
   datefmt: "%Y-%m-%d %H:%M:%S"
-  max_bytes: 10485760 # 10 MB
+  max_bytes: 10485760
   backup_count: 5
+
+imputer:
+  # toggle on/off (T/F)
+  enabled:
+    linear_interp: true
+    ffill_bfill: true
+    rolling_mean: true
+    climatology: true
+    xgboost: true
+
+  base_weights:
+    linear_model: 0.40
+    xgboost: 0.30
+    ffill_bfill: 0.10
+    linear_interp: 0.08
+    rolling_mean: 0.07
+    climatology: 0.05
+
+  # hyperparameters
+  linear_interp:
+    tau_days: 7.0
+
+  linear_model:
+    enabled: true
+    min_known: 15
+    use_cross_features: true
+
+  ffill_bfill:
+    tau_days: 3.0
+
+  rolling_mean:
+    window: 7
+
+  climatology:
+    min_count_for_high_conf: 10
+
+  xgboost:
+    min_known: 30
+
+  outlier_factor: 3.0
