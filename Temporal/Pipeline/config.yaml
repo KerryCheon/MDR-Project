@@ -293,6 +293,7 @@ logging:
   level: "INFO" # DEBUG, INFO, WARNING, ERROR, CRITICAL
   log_to_file: true
   file_path: "logs/pipeline.log"
+  imputer_logs: "logs/imputer.log"
   format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
   datefmt: "%Y-%m-%d %H:%M:%S"
   max_bytes: 10485760 # 10 MB
