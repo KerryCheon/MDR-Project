@@ -15,9 +15,9 @@
 |           11            | Rolling Maximum                                      | $$\max(x)$$                             | ✅ Keep  | Derived     |
 |           12            | Z-Score Anomaly                                      | $$z_t$$                                 | ✅ Keep  | Derived     |
 |           13            | Seasonal Anomaly                                     | $$\text{SA}_t$$                         | ✅ Keep  | Derived     |
-|           14            | Lag-1 Feature                                        | $$x_{t-1}$$                             | ✅ Keep  | Derived     |
-|           15            | Lag-7 Feature                                        | $$x_{t-7}$$                             | ✅ Keep  | Derived     |
-|           16            | Lag-30 Feature                                       | $$x_{t-30}$$                            | ✅ Keep  | Derived     |
+|           14            | Lag-6 Feature                                        | $$x_{t-1}$$                             | ✅ Keep  | Derived     |
+|           15            | Lag-12 Feature                                       | $$x_{t-2}$$                             | ✅ Keep  | Derived     |
+|           16            | Lag-30 Feature                                       | $$x_{t-5}$$                             | ✅ Keep  | Derived     |
 |           17            | Rolling Range                                        | $$\text{range}_t$$                      | ✅ Keep  | Derived     |
 |           18            | Dominant Fourier Frequency                           | $$k^*$$                                 | ✅ Keep  | Derived     |
 |           19            | Spectral Entropy                                     | $$H$$                                   | ✅ Keep  | Derived     |
