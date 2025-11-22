@@ -37,3 +37,11 @@
 |           33            | Radar Temporal Roughness Index                       | $$\text{RTI}$$                          | ✅ Keep  | Sentinel-1  |
 |           34            | Temperature–Moisture Temporal Coupling               | $$C_{TM}(k)$$                           | ✅ Keep  | S1 + LST    |
 |           35            | Antecedent Precipitation Index (API)                 | $$\text{API}_t$$                        | ✅ Keep  | Precip Data |
+
+---
+
+> **This section should be removed after the features have been updated**
+
+- Kerry: #1-12
+- Jacob: #13-24
+- Daniel: #25-35

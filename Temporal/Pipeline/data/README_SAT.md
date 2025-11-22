@@ -175,28 +175,37 @@ $$\text{SA}_t = x_t - \mu_{\text{month}(t)}$$
 
 > **Why useful**: Seasonal patterns can hide what’s really going on with moisture. By stripping out the “expected” behavior for that time of year, you can spot when the soil is genuinely wetter or drier than normal. It separates real events from just regular seasonal swings.
 
-### 14. Lag-1 Feature
+### 14. Lag-6 Feature
 
 **Formula**:
 $$x_{t-1}$$
 
+> **Note**: the 1 stands for 1 satellite passes
+
 > **Description**: Previous timestep value.
+> `**REDEFINED**`: Leave formula as is, the new description is previous satellite observation (~6 days) instead of previous timestamp value.
 
 > **Why useful**: Soil moisture doesn’t swing wildly from one observation to the next, it usually changes gradually. Yesterday’s value is often the single best clue about today’s, and giving the model that immediate context makes its predictions way more grounded.
 
-### 15. Lag-7 Feature
+### 15. Lag-12 Feature
 
 **Formula**:
-$$x_{t-7}$$
+$$x_{t-2}$$
 
+> **Note**: the 2 stands for 2 satellite passes
 > **Description**: Weekly memory.
+
+> **`REDEFINED`**: Leave formula as is, description is similar, but instead of weekly memory it's 12-day memory instead of previous timestamp value.
 
 > **Why useful**: Soil moisture doesn’t usually overhaul itself in just a few days. A weekly lag captures that medium-term “echo” of past conditions, helping the model understand whether today’s moisture is building off a still-wet week or recovering from a long dry stretch.
 
 ### 16. Lag-30 Feature
 
 **Formula**:
-$$x_{t-30}$$
+$$x_{t-5}$$
+
+> **Note1**: the 5 stands for 5 satellite passes
+> **Note2**: This remains unchanged since 30 is evenly divisible by 6.
 
 > **Description**: Monthly memory.
 
