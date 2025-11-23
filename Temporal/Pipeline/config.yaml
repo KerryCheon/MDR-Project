@@ -341,4 +341,19 @@ imputer:
   xgboost:
     min_known: 30
 
+  ndvi_max_gap: 10
+  tau_gap: 10
+  high_freq_feat:
+    [
+      "first_difference",
+      "second_difference",
+      "temporal_gradient",
+      "spectral_entropy",
+    ]
+
   outlier_factor: 3.0
+
+validator:
+  n_folds: 5
+  mask_fraction: 0.1
+  random_seed: 42
