@@ -169,6 +169,10 @@ Things that we have to stick to at all times...
 
 4. Provide evidence the imputer is accurate enough, before relying on daily temporal features.
 
+5. **NEVER IMPUTE BEYOND THE TEMPORAL SUPPORT OF THE MODEL**
+
+- If the longest gap is `x` we don't want to impute for `x + n`; where `n < 0`...means the model could/would hallucinate.
+
 ---
 
 ### 6. Action Items (Implementation Checklist)
@@ -197,3 +201,59 @@ Things that we have to stick to at all times...
 - Rewrite definitions to specify imputed/daily/sparse inputs
 - Update rolling/lag windows to match cadence
 - Add warnings for features that rely on long-gap imputations
+
+No cross-feature dependency injection framework
+
+---
+
+**HARD TODOs:**
+
+- Learn the weights from validation
+
+Right now LM and XGB manually pull from: `["LST", "NDVI", "Rain_sat"]`
+
+But the rules for what cross-features to use should be dynamic.
+
+You need:
+
+`CrossFeatureRegistry`
+
+A small object that:
+
+- looks up permitted predictors for each feature
+- enforces no circular dependencies
+- applies per-feature masks
+- provides derived predictors (like NDVI anomalies, smoothed LST, etc.)
+
+Right now cross-feature usage is too hardcoded..
+
+If a cross-feature is missing during training or inference, LM and XGB quietly ffill/bfill it.
+
+That is a correctness bomb.
+
+You need:
+
+`MissingnessPropagator`
+
+If predictors are unreliable, the target should be considered unreliable too.
+
+This requires:
+
+- per-predictor confidence
+- predictor gap lengths
+- predictor missingness masks feeding into target
+
+Right now, missing predictors are silently imputed, which contaminates multivariate imputation
+
+No caching layer for repeated `.fit()` calls
+
+Every time you run imputation for NDVI, LST, Rain_sat, you train models from scratch.
+
+A caching layer saves:
+
+- trained models
+- fitted climatology
+- temporal encodings
+- weight estimates
+
+This is required once the dataset grows (10+ years daily sats? It’ll kill you).

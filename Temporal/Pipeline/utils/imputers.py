@@ -2,17 +2,68 @@
 # Nov 16th 2025
 # imputers.py
 
-# Implements the imputer models and the VotingImputer used for filling missing satellite data.
+raise DeprecationWarning("MDR.Temporal.Pipeline.utils.imputers is deprecated")
 
 from utils.logger import get_logger
 from utils.config import load_config
 
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, mean_absolute_error
 from xgboost import XGBRegressor
 import pandas as pd
 import numpy as np
-from typing import List, Dict, Optional, Tuple
+from typing import List, Optional
+
+from MDR.Temporal.Pipeline.validation.validator import (ValidationRunner,
+                       compute_all_gap_lengths,
+                       bucket_gap_statistics,
+                       compute_confidence_vs_gap,
+                       attach_gap_metadata)
+
+class DailyRecordBuilder:
+    def __init__(self, df, col):
+        self.df = df
+        self.col = col
+        self.real_mask = df[col].notna().values
+        self.real_dates = pd.to_datetime(df["date"][self.real_mask]).values
+
+    def compute_gap_length(self, t):
+        # pre: t is np.datetime64
+        # post: nearest distance to any real timestamp in days
+        if len(self.real_dates) == 0:
+            return None
+
+        diffs = np.abs(self.real_dates - t)
+        nearest = diffs.min()
+        return int(nearest.astype("timedelta64[D]").item())
+
+    def make_records(self, dates, filled, conf, excluded_mask=None):
+        records = []
+        gap_lengths = []
+
+        if excluded_mask is None:
+            excluded_mask = np.zeros(len(dates), dtype=bool)
+
+        for i, (t, v, c) in enumerate(zip(dates, filled, conf)):
+            is_real = self.real_mask[i]
+            source = "real" if is_real else "imputed"
+
+            gap_length = None
+            if not is_real:
+                gap_length = self.compute_gap_length(t)
+
+            gap_lengths.append(0 if gap_length is None else gap_length)
+
+            records.append({
+                "timestamp": str(t),
+                "value": None if np.isnan(v) else float(v),
+                "source": source,
+                "imputer": None,
+                "confidence": float(c),
+                "gap_length": gap_length,
+                "is_excluded": bool(excluded_mask[i]),
+            })
+
+        return records, np.array(gap_lengths, dtype=float)
 
 class BaseImputer:
     # desc: Base class for all imputers.
@@ -259,7 +310,11 @@ class LinearModelImputer(BaseImputer):
             self.model = None
             return self
 
-        X_train = known[feats].fillna(method="ffill").fillna(method="bfill")
+        X_train = aux_df.loc[known.index, feats]
+
+        mask_real_feats = X_train.notna().all(axis=1)
+        X_train = X_train[mask_real_feats]
+        y_train = y_train.loc[X_train.index]
         y_train = known[col]
 
         model = LinearRegression()
@@ -356,8 +411,19 @@ class XGBImputer(BaseImputer):
             self.model = None
             return self
 
-        X = known[self.features].fillna(method="ffill").fillna(method="bfill")
-        y = known[col]
+        X_all = aux_df.loc[known.index, self.features]
+        mask_real_feats = X_all.notna().all(axis=1)
+
+        X_train = X_all[mask_real_feats]
+        y_train = known[col].loc[X_train.index]
+
+        if len(X_train) < self.min_known:
+            self.active = False
+            self.logger.warning(
+                f"not enough clean samples ({len(X_train)}) -- DISABLING XGB"
+            )
+            self.model = None
+            return self
 
         model = XGBRegressor(
             n_estimators=300,
@@ -367,7 +433,8 @@ class XGBImputer(BaseImputer):
             colsample_bytree=0.8,
             random_state=42
         )
-        model.fit(X, y)
+
+        model.fit(X_train, y_train)
         self.model = model
 
         self.logger.debug(f"trained xgb model with {len(known)} samples")
@@ -418,7 +485,7 @@ class VotingImputer:
     # desc: Combines multiple imputers into a single voted result.
 
     def __init__(self, imputers: List[BaseImputer]):
-        cfg = load_config().get("imputer", {})          # <-- FIXED
+        cfg = load_config().get("imputer", {})
         self.imputers = imputers
 
         bw = cfg.get("base_weights", {})
@@ -459,6 +526,12 @@ class VotingImputer:
         self.logger.debug(f"starting ensemble imputation for feature '{values.name}'")
 
         index = pd.to_datetime(dates)
+        first_real = pd.to_datetime(dates[~values.isna()]).min()
+        last_real  = pd.to_datetime(dates[~values.isna()]).max()
+
+        if (index.min() < first_real) or (index.max() > last_real):
+            raise RuntimeError("ExtrapolationError: requested timestamps outside real observation bounds")
+
         original = pd.Series(values.values, index=index)
         mask_missing = original.isna()
 
@@ -636,24 +709,78 @@ class VotingImputer:
 
         return summary
 
+def _validate_inputs(df, col, logger):
+    # pre:  df must have 'date' column and 'col' to impute
+    # post: raises ValueError if checks fail
 
-def transform_with_ensemble(df, col, return_diag = False, diag_path = None
-                            ) -> pd.DataFrame | tuple[pd.DataFrame, dict]:
-    # desc: Convenience function for running full voting ensemble for one column.
-
-    logger = get_logger().getChild(f"imputer.ensemble.{col}")
-    logger.debug(f"starting ensemble transform for column '{col}'")
-
+    logger.debug("validating inputs...")
     if "date" not in df.columns:
         logger.error("missing required 'date' column")
-        raise ValueError("run_ensemble requires a 'date' column")
+        raise ValueError("transform_with_ensemble requires a 'date' column")
+    if col not in df.columns:
+        logger.error(f"column '{col}' does not exist in dataframe")
+        raise ValueError(f"column '{col}' does not exist in dataframe")
+    logger.debug("input validation passed")
 
-    df = df.copy().sort_values("date")
+
+def _prepare_dataframe(df, logger):
+    # pre:  df has 'date' column
+    # post: returns df sorted by date
+
+    logger.debug("preparing and sorting dataframe")
+    df = df.copy()
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.sort_values("date")
     logger.debug(f"sorted dataframe with {len(df)} rows")
+    return df
 
-    dates = pd.to_datetime(df["date"])
-    values = df[col]
 
+def _apply_ndvi_lockout(df, col, cfg, logger):
+    # pre: df has 'date' and col
+    # post: adds '_ndvi_lock' column if col is 'NDVI'
+
+    if col.lower() != "ndvi":
+        logger.debug("column is not NDVI; setting ndvi_lock=False")
+        df["_ndvi_lock"] = False
+        return df
+
+    logger.debug("applying NDVI lockout rule")
+    ndvi_max_gap = cfg.get("imputer", {}).get("ndvi_max_gap", 10)
+
+    s = df[col]
+    idx = df["date"]
+    mask_real = ~s.isna()
+
+    prev = idx.where(mask_real).ffill()
+    next = idx.where(mask_real).bfill()
+    gap_len = (next - prev).dt.days
+
+    df["_ndvi_lock"] = gap_len > ndvi_max_gap
+
+    logger.info(
+        f"NDVI: found {int(df['_ndvi_lock'].sum())} timestamps beyond "
+        f"max_gap={ndvi_max_gap}, locking these out of imputation."
+    )
+    return df
+
+
+def _should_skip_interpolation(col, cfg, logger):
+    # pre:  col is feature name
+    # post: returns True if col is in high_freq_feat list in config
+
+    high_freq_feat = cfg.get("imputer", {}).get("high_freq_feat", [])
+
+    if col in high_freq_feat:
+        logger.info(f"feature '{col}' is marked high-frequency; skipping interpolation")
+        return True
+    return False
+
+
+def _run_ensemble(df, col, dates, values, logger):
+    # pre:  df has 'date' and col
+    # post: runs VotingImputer and returns filled, conf, voter
+
+    logger.debug(f"initializing imputers for column '{col}'")
     imputers = [
         LinearInterpolationImputer(),
         ForwardBackwardImputer(),
@@ -663,33 +790,172 @@ def transform_with_ensemble(df, col, return_diag = False, diag_path = None
         XGBImputer(),
     ]
 
-    logger.debug(f"initialized {len(imputers)} imputers for column '{col}'")
+    logger.debug(f"initialized {len(imputers)} imputers")
 
     voter = VotingImputer(imputers)
 
-    logger.debug("fitting ensemble")
+    logger.debug("fitting ensemble...")
     voter.fit(dates, values, aux_df=df)
 
-    logger.debug("performing ensemble imputation")
+    logger.debug("performing ensemble imputation...")
     filled, conf = voter.impute(dates, values, aux_df=df)
+
+    logger.debug("ensemble imputation complete")
+    return filled, conf, voter
+
+
+def _apply_postprocessing(df, col, filled, conf, ndvi_lock, gap_lengths, logger):
+    # pre:  df has 'date' and col
+    # post: applies ndvi lockouts, adds metadata columns
+
+    logger.debug("applying postprocessing...")
+
+    # enforce NDVI lockouts
+    if ndvi_lock is not None and ndvi_lock.any():
+        logger.info(f"NDVI lockout: forcing {ndvi_lock.sum()} timestamps to remain sparse")
+        filled.values[ndvi_lock] = np.nan
+        conf.values[ndvi_lock] = 0.0
 
     df[col + "_interp"] = filled.values
     df[col + "_conf"] = conf.values
 
-    logger.debug(
-        f"completed ensemble transform for '{col}' "
-        f"with coverage={filled.notna().mean():.3f}"
+    # normalize confidence
+    df[col + "_conf_norm"] = df[col + "_conf"] / df[col + "_conf"].max()
+
+    # attach gap length metadata
+    df[col + "_gap_length"] = gap_lengths
+
+    logger.debug("postprocessing complete")
+    return df
+
+
+def _apply_gap_confidence(conf, gap_lengths, logger, tau_gap):
+    # pre: conf is a pandas Series, gap_lengths is np.array
+    # post: returns adjusted confidence scores
+
+    logger.debug("applying gap-based confidence scaling")
+
+    gap_lengths = np.asarray(gap_lengths, dtype=float)
+    gap_lengths = np.nan_to_num(gap_lengths, nan=0.0)
+
+    scale = np.exp(-gap_lengths / float(tau_gap))
+
+    conf_scaled = conf.values * scale
+    conf_scaled = np.clip(conf_scaled, 0.0, 1.0)
+
+    logger.debug("gap-based confidence scaling complete")
+    return conf_scaled
+
+
+def _run_diagnostics(voter, dates, values, df, diag_path, logger):
+    # pre:  voter is VotingImputer
+    # post: runs diagnostics and returns summary dict
+
+    logger.debug("running diagnostics...")
+    return voter.diagnostics(
+        dates,
+        values,
+        aux_df=df,
+        path=diag_path
     )
 
-    # optionally run diagnostics
+
+def transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_validate=False):
+    # pre:  df has 'date' and col
+    # post: returns df with imputed column and metadata; optionally diagnostics
+    # desc: main function to run ensemble imputation on a dataframe column
+    # note: adds columns ->
+    #       col + "_interp"      : imputed values
+    #       col + "_conf"        : confidence scores
+    #       col + "_gap_length"  : gap lengths in days
+    #       col + "_gap_norm"    : normalized gap lengths
+
+    logger = get_logger().getChild(f"imputer.ensemble.{col}")
+    logger.debug(f"starting ensemble transform for column '{col}'")
+
+    cfg = load_config()
+
+    _validate_inputs(df, col, logger)
+
+    df = _prepare_dataframe(df, logger)
+    dates = df["date"]
+    values = df[col]
+
+    df_original = df.copy()
+
+    df = _apply_ndvi_lockout(df, col, cfg, logger)
+    ndvi_lock = df["_ndvi_lock"].values
+
+    if _should_skip_interpolation(col, cfg, logger):
+        df[col + "_interp"] = df[col].values
+        df[col + "_conf"] = (1.0 * (~df[col].isna())).astype(float).values
+        df[col + "_gap_length"] = 0
+        df[col + "_gap_norm"] = 0
+        logger.debug("high-frequency feature bypass complete")
+        return df
+
+    filled, conf, voter = _run_ensemble(df, col, dates, values, logger)
+
+    builder = DailyRecordBuilder(df, col)
+    records, gap_lengths = builder.make_records(
+        dates, filled, conf, excluded_mask=ndvi_lock
+    )
+    logger.debug(f"DailyRecordBuilder created {len(records)} records")
+
+    # POSTPROCESSING
+    df = _apply_postprocessing(
+        df, col, filled, conf, ndvi_lock, gap_lengths, logger
+    )
+
+    tau_gap = cfg.get("imputer", {}).get("tau_gap", 10)
+
+    df[col + "_conf"] = _apply_gap_confidence(
+        df[col + "_conf"], gap_lengths, logger, tau_gap
+    )
+    df[col + "_conf_norm"] = df[col + "_conf"] / df[col + "_conf"].max()
+    # POSTPROCESSING
+
+    max_gap = gap_lengths.max() if gap_lengths.max() > 0 else 1.0
+    df[col + "_gap_norm"] = gap_lengths / max_gap
+
+    logger.debug(
+        f"completed ensemble transform for '{col}' with coverage={filled.notna().mean():.3f}"
+    )
+
     if return_diag or diag_path:
-        logger.debug("running diagnostics")
-        diag = voter.diagnostics(
-            dates,
-            values,
-            aux_df=df,
-            path=diag_path
-        )
+        df = attach_gap_metadata(df, col)
+        dataset_gaps = compute_all_gap_lengths(df, col)
+        gap_stats = bucket_gap_statistics(dataset_gaps)
+        conf_vs_gap = compute_confidence_vs_gap(df, col)
+
+        diag = _run_diagnostics(voter, dates, values, df, diag_path, logger)
+        diag["dataset_gap_stats"] = gap_stats
+        diag["confidence_vs_gap"] = conf_vs_gap
         return df, diag
+
+    if auto_validate:
+        try:
+            runner = ValidationRunner()
+
+            def ensemble_fn(d, c): # this is dangerous...the stack is gonna grow...
+                return transform_with_ensemble(
+                    d, c,
+                    return_diag=False,
+                    diag_path=None,
+                    auto_validate=False
+                )
+
+            val = runner.evaluate(df_original, col, ensemble_fn)
+
+        except Exception as e:
+            logger.error(f"auto-validation failed: {e}")
+            val = {"valid": False, "error": str(e)}
+
+        if return_diag or diag_path:
+            diag = diag or {}
+            diag["validation"] = val
+            return df, diag
+
+        return df, {"validation": val}
 
     return df
