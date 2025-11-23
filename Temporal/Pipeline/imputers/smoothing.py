@@ -3,7 +3,7 @@
 # smoothing.py
 
 import pandas as pd
-from MDR.Temporal.Pipeline.utils.imputers import BaseImputer
+from Temporal.Pipeline.imputers.base import BaseImputer
 
 class RollingMeanImputer(BaseImputer):
     # desc: Rolling mean for smoothing and medium-size gaps.

@@ -5,18 +5,18 @@
 import pandas as pd
 import numpy as np
 
-from MDR.Temporal.Pipeline.imputers.voting import VotingImputer
-from MDR.Temporal.Pipeline.imputers.interpolation import LinearInterpolationImputer
-from MDR.Temporal.Pipeline.imputers.fbfill import ForwardBackwardImputer
-from MDR.Temporal.Pipeline.imputers.smoothing import RollingMeanImputer
-from MDR.Temporal.Pipeline.imputers.climatology import ClimatologyImputer
-from MDR.Temporal.Pipeline.imputers.linear_model import LinearModelImputer
-from MDR.Temporal.Pipeline.imputers.xgb_model import XGBImputer
+from Temporal.Pipeline.imputers.voting import VotingImputer
+from Temporal.Pipeline.imputers.interpolation import LinearInterpolationImputer
+from Temporal.Pipeline.imputers.fbfill import ForwardBackwardImputer
+from Temporal.Pipeline.imputers.smoothing import RollingMeanImputer
+from Temporal.Pipeline.imputers.climatology import ClimatologyImputer
+from Temporal.Pipeline.imputers.linear_model import LinearModelImputer
+from Temporal.Pipeline.imputers.xgb_model import XGBImputer
 
-from MDR.Temporal.Pipeline.records.daily_records import DailyRecordBuilder
+from Temporal.Pipeline.records.daily_records import DailyRecordBuilder
 
-from MDR.Temporal.Pipeline.utils.config import load_config
-from MDR.Temporal.Pipeline.utils.logger import get_logger
+from Temporal.Pipeline.utils.config import load_config
+from Temporal.Pipeline.utils.logger import get_logger
 
 def _validate_inputs(df, col, logger):
     # pre:  df must have 'date' column and 'col' to impute

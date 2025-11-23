@@ -5,7 +5,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from MDR.Temporal.Pipeline.utils.imputers import BaseImputer
+from Temporal.Pipeline.imputers.base import BaseImputer
 
 class LinearModelImputer(BaseImputer):
     # desc: Linear regression imputer using temporal encodings and optional cross-feature predictors.

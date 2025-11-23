@@ -4,7 +4,7 @@
 
 import pandas as pd
 import numpy as np
-from MDR.Temporal.Pipeline.utils.imputers import BaseImputer
+from Temporal.Pipeline.imputers.base import BaseImputer
 from xgboost import XGBRegressor
 
 class XGBImputer(BaseImputer):

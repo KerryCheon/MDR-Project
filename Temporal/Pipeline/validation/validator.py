@@ -9,8 +9,8 @@
 import numpy as np
 import pandas as pd
 
-from MDR.Temporal.Pipeline.utils.config import load_config
-from MDR.Temporal.Pipeline.utils.logger import get_logger
+from Temporal.Pipeline.utils.config import load_config
+from Temporal.Pipeline.utils.logger import get_logger
 
 class ValidationRunner:
     # desc: Runs validation of imputation by masking real values

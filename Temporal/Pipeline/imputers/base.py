@@ -5,8 +5,8 @@
 from typing import Optional
 import pandas as pd
 
-from utils.logger import get_logger
-from utils.config import load_config
+from Temporal.Pipeline.utils.logger import get_logger
+from Temporal.Pipeline.utils.config import load_config
 
 class BaseImputer:
     # desc: Base class for all imputers.

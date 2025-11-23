@@ -9,7 +9,7 @@ from pathlib import Path
 from tqdm import tqdm
 import time
 
-from utils.logger import get_logger
+from Temporal.Pipeline.utils.logger import get_logger
 
 CONFIG_FILE = (Path(__file__).resolve().parent.parent / "config.yaml").resolve()
 
