@@ -24,6 +24,7 @@ from Temporal.Pipeline.utils.imputer_utils import (
     _run_ensemble,
     _apply_postprocessing,
     _apply_gap_confidence,
+    _apply_feature_engineering,
 )
 
 from Temporal.Pipeline.validation.validator import (
@@ -53,42 +54,41 @@ def transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_val
     _validate_inputs(df, col, logger)
 
     df = _prepare_dataframe(df, logger)
+    df = _apply_feature_engineering(df, logger)
+
     dates = df["date"]
     values = df[col]
-
     df_original = df.copy()
 
+    # NDVI lockouts
     df = _apply_ndvi_lockout(df, col, cfg, logger)
     ndvi_lock = df["_ndvi_lock"].values
 
+    # fast path for high-frequency data
     if _should_skip_interpolation(col, cfg, logger):
         df[col + "_interp"] = df[col].values
         df[col + "_conf"] = (1.0 * (~df[col].isna())).astype(float).values
         df[col + "_gap_length"] = 0
         df[col + "_gap_norm"] = 0
         logger.debug("high-frequency feature bypass complete")
-        return df
+        return (df, {}) if return_diag else df
 
+    # run ensemble
     filled, conf, voter = _run_ensemble(df, col, dates, values, logger)
 
+    # build per-day records
     builder = DailyRecordBuilder(df, col)
     records, gap_lengths = builder.make_records(
         dates, filled, conf, excluded_mask=ndvi_lock
     )
     logger.debug(f"DailyRecordBuilder created {len(records)} records")
 
-    # POSTPROCESSING
-    df = _apply_postprocessing(
-        df, col, filled, conf, ndvi_lock, gap_lengths, logger
-    )
+    # core postprocessing
+    df = _apply_postprocessing(df, col, filled, conf, ndvi_lock, gap_lengths, logger)
 
     tau_gap = cfg.get("imputer", {}).get("tau_gap", 10)
-
-    df[col + "_conf"] = _apply_gap_confidence(
-        df[col + "_conf"], gap_lengths, logger, tau_gap
-    )
+    df[col + "_conf"] = _apply_gap_confidence(df[col + "_conf"], gap_lengths, logger, tau_gap)
     df[col + "_conf_norm"] = df[col + "_conf"] / df[col + "_conf"].max()
-    # POSTPROCESSING
 
     max_gap = gap_lengths.max() if gap_lengths.max() > 0 else 1.0
     df[col + "_gap_norm"] = gap_lengths / max_gap
@@ -97,22 +97,26 @@ def transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_val
         f"completed ensemble transform for '{col}' with coverage={filled.notna().mean():.3f}"
     )
 
+    # undified
+    diag = {}
+
     if return_diag or diag_path:
         df = attach_gap_metadata(df, col)
         dataset_gaps = compute_all_gap_lengths(df, col)
         gap_stats = bucket_gap_statistics(dataset_gaps)
         conf_vs_gap = compute_confidence_vs_gap(df, col)
 
-        diag = _run_diagnostics(voter, dates, values, df, diag_path, logger)
-        diag["dataset_gap_stats"] = gap_stats
-        diag["confidence_vs_gap"] = conf_vs_gap
-        return df, diag
+        diag_core = _run_diagnostics(voter, dates, values, df, diag_path, logger)
+        diag_core["dataset_gap_stats"] = gap_stats
+        diag_core["confidence_vs_gap"] = conf_vs_gap
+
+        diag.update(diag_core)
 
     if auto_validate:
         try:
             runner = ValidationRunner()
 
-            def ensemble_fn(d, c): # this is dangerous...the stack is gonna grow...
+            def ensemble_fn(d, c):
                 return transform_with_ensemble(
                     d, c,
                     return_diag=False,
@@ -126,11 +130,8 @@ def transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_val
             logger.error(f"auto-validation failed: {e}")
             val = {"valid": False, "error": str(e)}
 
-        if return_diag or diag_path:
-            diag = diag or {}
-            diag["validation"] = val
-            return df, diag
-
-        return df, {"validation": val}
+        diag["validation"] = val
+    if diag:
+        return df, diag
 
     return df

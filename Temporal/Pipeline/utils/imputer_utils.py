@@ -156,6 +156,27 @@ def _apply_gap_confidence(conf, gap_lengths, logger, tau_gap):
     return conf_scaled
 
 
+def _apply_feature_engineering(df, logger):
+    # pre:  df has 'date' column
+    # post: returns df with added engineered features
+    # desc: adds basic temporal features for imputation models
+
+    logger.debug("applying internal feature engineering")
+
+    df = df.copy()
+
+    df["year"] = df["date"].dt.year
+    df["DOY"] = df["date"].dt.dayofyear
+
+    df["month"] = df["date"].dt.month
+
+    df["DOY_sin"] = np.sin(2 * np.pi * df["DOY"] / 365.25)
+    df["DOY_cos"] = np.cos(2 * np.pi * df["DOY"] / 365.25)
+
+    logger.debug("added year, DOY, DOY_sin, DOY_cos features")
+
+    return df
+
 def _run_diagnostics(voter, dates, values, df, diag_path, logger):
     # pre:  voter is VotingImputer
     # post: runs diagnostics and returns summary dict

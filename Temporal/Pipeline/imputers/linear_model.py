@@ -24,6 +24,7 @@ class LinearModelImputer(BaseImputer):
     def fit(self, dates, values, aux_df=None):
         if aux_df is None or "date" not in aux_df.columns:
             self.logger.debug("aux_df missing or has no 'date' column; skipping fit")
+            self.active = False
             return self
 
         self.logger.debug(f"starting fit for feature '{values.name}'")
@@ -32,44 +33,54 @@ class LinearModelImputer(BaseImputer):
         df["date"] = pd.to_datetime(df["date"])
         df = df.sort_values("date")
 
-        # temporal features
+        col = values.name
+        df[col] = values.values
+
         df["day_of_year"] = df["date"].dt.dayofyear
         df["year"] = df["date"].dt.year
-        df["DOY_sin"] = np.sin(2 * np.pi * df["day_of_year"] / 365)
-        df["DOY_cos"] = np.cos(2 * np.pi * df["day_of_year"] / 365)
+        df["DOY_sin"] = np.sin(2 * np.pi * df["day_of_year"] / 365.0)
+        df["DOY_cos"] = np.cos(2 * np.pi * df["day_of_year"] / 365.0)
 
-        col = values.name
         feats = ["DOY_sin", "DOY_cos", "year"]
 
+        # optional cross-features (only if present)
         if self.use_cross:
-            feats += [c for c in ["LST", "NDVI", "Rain_sat"] if c != col and c in df.columns]
+            for c in ["LST", "NDVI", "Rain_sat"]:
+                if c != col and c in df.columns:
+                    feats.append(c)
 
         self.features = feats
         self.logger.debug(f"using features: {self.features}")
 
-        df[col] = values.values
         known = df.dropna(subset=[col])
 
         if len(known) < self.min_known:
             self.active = False
             self.logger.warning(
-                f"not enough samples ({len(known)}) to train imputer...DISABLING LM"
+                f"not enough samples ({len(known)}) to train linear model -- DISABLING LM"
             )
             self.model = None
             return self
 
-        X_train = aux_df.loc[known.index, feats]
+        X_train = known[self.features]
+        mask = X_train.notna().all(axis=1)
+        X_train = X_train[mask]
 
-        mask_real_feats = X_train.notna().all(axis=1)
-        X_train = X_train[mask_real_feats]
-        y_train = y_train.loc[X_train.index]
-        y_train = known[col]
+        y_train = known.loc[mask, col]
+
+        if len(X_train) < self.min_known:
+            self.active = False
+            self.logger.warning(
+                f"not enough clean samples after feature mask ({len(X_train)}) -- DISABLING LM"
+            )
+            self.model = None
+            return self
 
         model = LinearRegression()
         model.fit(X_train, y_train)
         self.model = model
 
-        self.logger.debug(f"trained linear model with {len(known)} samples")
+        self.logger.debug(f"trained linear model with {len(X_train)} clean samples")
         return self
 
     def impute(self, dates, values, aux_df=None):

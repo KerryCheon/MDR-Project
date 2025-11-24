@@ -55,11 +55,19 @@ class VotingImputer:
         self.logger.debug(f"starting ensemble imputation for feature '{values.name}'")
 
         index = pd.to_datetime(dates)
-        first_real = pd.to_datetime(dates[~values.isna()]).min()
-        last_real  = pd.to_datetime(dates[~values.isna()]).max()
+        real_mask = ~values.isna()
 
-        if (index.min() < first_real) or (index.max() > last_real):
-            raise RuntimeError("ExtrapolationError: requested timestamps outside real observation bounds")
+        if real_mask.any():
+            first_real = index[real_mask].min()
+            last_real  = index[real_mask].max()
+
+            # clip to observed bounds
+            clipped = values.copy()
+            clipped[index < first_real] = values[real_mask].iloc[0]   # pre-fill
+            clipped[index > last_real]  = values[real_mask].iloc[-1]  # post-fill
+            values = clipped
+        else:
+            raise RuntimeError("No observed values available for imputation")
 
         original = pd.Series(values.values, index=index)
         mask_missing = original.isna()

@@ -7,20 +7,36 @@ import pandas as pd
 
 class DailyRecordBuilder:
     def __init__(self, df, col):
+        # pre: df contains a 'date' column and the target col
+        # post: initializes the record builder
+        # desc: builds daily records with metadata
+
         self.df = df
         self.col = col
+
         self.real_mask = df[col].notna().values
-        self.real_dates = pd.to_datetime(df["date"][self.real_mask]).values
+
+        self.real_dates = (
+            pd.to_datetime(df["date"])
+            .to_numpy(dtype="datetime64[ns]")   # proper vectorized datetime array
+        )
+
 
     def compute_gap_length(self, t):
-        # pre: t is np.datetime64
-        # post: nearest distance to any real timestamp in days
-        if len(self.real_dates) == 0:
+        # pre: t is a timestamp
+        # post: returns the gap length in days to the nearest real observation
+        # desc: computes gap length for imputed values
+
+        if self.real_dates.size == 0:
             return None
 
+        t = np.datetime64(t, "ns")
         diffs = np.abs(self.real_dates - t)
-        nearest = diffs.min()
-        return int(nearest.astype("timedelta64[D]").item())
+
+        nearest = diffs.min()   # timedelta64, crash-out fuel
+        days = nearest / np.timedelta64(1, "D")
+
+        return int(days)
 
     def make_records(self, dates, filled, conf, excluded_mask=None):
         records = []

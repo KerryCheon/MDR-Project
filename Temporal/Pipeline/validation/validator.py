@@ -58,23 +58,27 @@ class ValidationRunner:
 
     def _compute_metrics(self, true_vals, pred_vals):
         # pre: arrays of true and predicted values
-        # post: returns metrics dict
+        # post: returns metrics dict with safe handling for edge cases
 
         diff = pred_vals - true_vals
 
         rmse = float(np.sqrt(np.mean(diff ** 2)))
-        mae = float(np.mean(np.abs(diff)))
+        mae  = float(np.mean(np.abs(diff)))
 
-        with np.errstate(divide='ignore', invalid='ignore'):
-            mape = np.abs(diff / true_vals)
-            mape = float(np.nanmean(mape))
+        if len(true_vals) == 0 or np.any(true_vals == 0):
+            mape = float("nan")
+        else:
+            mape = float(np.mean(np.abs(diff / true_vals)))
 
         bias = float(np.mean(diff))
 
-        try:
-            corr = float(np.corrcoef(pred_vals, true_vals)[0, 1])
-        except Exception:
+        if len(true_vals) < 2:
             corr = float("nan")
+        else:
+            try:
+                corr = float(np.corrcoef(pred_vals, true_vals)[0, 1])
+            except Exception:
+                corr = float("nan")
 
         return {
             "rmse": rmse,
@@ -188,22 +192,27 @@ class ValidationRunner:
 
 def compute_all_gap_lengths(df, col):
     # pre: df has 'date' and col
-    # post: returns list of gap lengths in days
+    # post: returns list of gap lengths in days (ints)
     # desc: computes all natural gaps in the dataset for a given column
 
     s = df[col]
     dates = pd.to_datetime(df["date"])
 
     real_mask = s.notna()
-    real_dates = dates[real_mask].values
+    real_dates = dates[real_mask].to_numpy(dtype="datetime64[ns]")
 
-    if len(real_dates) < 2:
+    if real_dates.size < 2:
         return []
 
     gaps = []
     for i in range(1, len(real_dates)):
-        g = (real_dates[i] - real_dates[i - 1]).astype("timedelta64[D]").item()
-        gaps.append(int(g))
+        # timedelta64 difference
+        td = real_dates[i] - real_dates[i - 1]
+
+        # convert to numeric day count
+        days = td / np.timedelta64(1, "D")
+
+        gaps.append(int(days))
 
     return gaps
 
@@ -269,7 +278,8 @@ def attach_gap_metadata(df, col):
     for t in dates.values:
         diffs = np.abs(real_dates - t)
         nearest = diffs.min()
-        days = int(nearest.astype("timedelta64[D]").item())
+
+        days = int(nearest / np.timedelta64(1, "D")) # timedelta64
         gap_lengths.append(days)
 
     df[col + "_gap_length"] = gap_lengths
