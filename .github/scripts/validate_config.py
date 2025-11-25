@@ -9,7 +9,7 @@ def fail(msg):
     print(f"[CONFIG ERROR] {msg}")
     sys.exit(1)
 
-with open("config.yaml", "r") as f:
+with open("Temporal/Pipeline/config.yaml", "r") as f:
     cfg = yaml.safe_load(f)
 
 imputers = cfg.get("imputer", {})
