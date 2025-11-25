@@ -1,10 +1,15 @@
-select = ["E", "F"]
-ignore = ["E501", "F401", "F841"]
+# .ruff.toml
+
 line-length = 120
 
 [lint]
-ignore = ["E402", "E702"]
-exclude = ["*.ipynb", "experiments/", "deprecated/"]
+select = ["E", "F"]
+ignore = [
+    "E402",  # imports not at top of file (harmless in scripts)
+    "E702",  # multiple statements on one line
+    "F401",  # unused imports
+    "F841",  # unused variable
+]
 
 exclude = [
     "deprecated/",
