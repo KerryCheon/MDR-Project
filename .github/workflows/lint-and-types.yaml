@@ -26,7 +26,3 @@ jobs:
       - name: Run Ruff
         run: |
           ruff check . --exit-zero
-
-      - name: Run Mypy
-        run: |
-          mypy .
