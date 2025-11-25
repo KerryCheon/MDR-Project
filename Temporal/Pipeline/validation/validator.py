@@ -8,6 +8,7 @@
 
 import numpy as np
 import pandas as pd
+from collections import Counter
 
 from Temporal.Pipeline.utils.config import load_config
 from Temporal.Pipeline.utils.logger import get_logger
@@ -147,6 +148,9 @@ class ValidationRunner:
 
         gap_lengths = self._compute_gap_lengths(df, col, masked_points)
 
+        # aggregate gap--lentghs instead of adding them one by one...no duplicates
+        gap_lengths = {idx: gap_lengths[idx] for idx in masked_points}
+
         # buckets
         buckets = {
             "short_1_3":  lambda g: 1 <= g <= 3,
@@ -157,13 +161,29 @@ class ValidationRunner:
 
         stratified = {}
 
-        for name, cond in buckets.items():
-            pts = [idx for idx, g in gap_lengths.items() if cond(g)]
+        bucket_defs = {
+            "short_1_3":  (1, 3),
+            "medium_4_7": (4, 7),
+            "long_8_14":  (8, 14),
+            "huge_15+":   (15, None),
+        }
 
-            if len(pts) == 0:
+        for name, (lo, hi) in bucket_defs.items():
+            pts = []
+            for idx, gap in gap_lengths.items():
+                if hi is None:
+                    ok = gap >= lo
+                else:
+                    ok = lo <= gap <= hi
+                if ok:
+                    pts.append(idx)
+
+            if not pts:
                 stratified[name] = {
+                    "range": (lo, hi),
                     "n": 0,
-                    "metrics": None
+                    "percentage": 0.0,
+                    "metrics": None,
                 }
                 continue
 
@@ -171,8 +191,10 @@ class ValidationRunner:
             true_bucket = df.loc[pts, col].astype(float)
 
             stratified[name] = {
+                "range": (lo, hi),
                 "n": len(pts),
-                "metrics": self._compute_metrics(true_bucket.values, pred_bucket.values)
+                "percentage": len(pts) / len(masked_points),
+                "metrics": self._compute_metrics(true_bucket.values, pred_bucket.values),
             }
 
         logger.info(
@@ -222,21 +244,32 @@ def bucket_gap_statistics(gaps):
     # post: returns dict of bucketed gap statistics
     # desc: buckets gap lengths into predefined categories and computes stats
 
+    total = len(gaps)
+
     buckets = {
-        "short_1_3": lambda g: 1 <= g <= 3,
-        "medium_4_7": lambda g: 4 <= g <= 7,
-        "long_8_14": lambda g: 8 <= g <= 14,
-        "huge_15+": lambda g: g > 14,
+        "short_1_3":  {"range": (1, 3),  "cond": lambda g: 1 <= g <= 3},
+        "medium_4_7": {"range": (4, 7),  "cond": lambda g: 4 <= g <= 7},
+        "long_8_14":  {"range": (8, 14), "cond": lambda g: 8 <= g <= 14},
+        "huge_15+":   {"range": (15, None), "cond": lambda g: g > 14},
     }
 
     bucket_stats = {}
-    for name, cond in buckets.items():
+
+    for name, cfg in buckets.items():
+        cond = cfg["cond"]
         filtered = [g for g in gaps if cond(g)]
+
+        counts = dict(Counter(filtered))
+
         bucket_stats[name] = {
+            "range": cfg["range"],
             "n": len(filtered),
-            "values": filtered,
-            "mean": float(np.mean(filtered)) if filtered else None,
+            "percentage": (len(filtered) / total) if total > 0 else None,
+            "counts": counts,
+            "min": min(filtered) if filtered else None,
             "max": max(filtered) if filtered else None,
+            "mean": float(np.mean(filtered)) if filtered else None,
+            "std": float(np.std(filtered)) if filtered else None,
         }
 
     return bucket_stats
@@ -257,7 +290,7 @@ def compute_confidence_vs_gap(df, col):
     for g in sorted(gap.unique()):
         pts = conf[gap == g]
         if len(pts) > 0:
-            out[int(g)] = float(pts.mean())
+            out[int(g)] = float(pts.mean())  # keep int keys
 
     return out
 

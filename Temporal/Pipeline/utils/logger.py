@@ -5,51 +5,74 @@
 # severity levels (INFO, WARNING, ERROR).
 
 import logging
+import logging.handlers
 from pathlib import Path
 
-_LOGGER_NAME = "pipeline"
+_ROOT_LOGGER = "pipeline"
+_INITIALIZED = False
 
 def setup_logger(config):
-    # pre: config: dict (YAML loaded configuration)
-    # post: logging.Logger
-    # desc: Sets up the logger based on the provided configuration.
+    global _INITIALIZED
+
+    if _INITIALIZED:
+        return logging.getLogger(_ROOT_LOGGER)
 
     log_cfg = config.get("logging", {})
-    level = getattr(logging, log_cfg.get("level", "INFO").upper(), logging.INFO)
 
-    log_to_file = log_cfg.get("log_to_file", True)
-    log_file = Path(log_cfg.get("file_path", "logs/pipeline.log"))
-    log_file.parent.mkdir(parents=True, exist_ok=True)
+    root = logging.getLogger(_ROOT_LOGGER)
+    root.setLevel(log_cfg.get("level", "INFO").upper())
 
     fmt = log_cfg.get("format", "%(asctime)s [%(levelname)s] %(name)s: %(message)s")
     datefmt = log_cfg.get("datefmt", "%Y-%m-%d %H:%M:%S")
+    formatter = logging.Formatter(fmt=fmt, datefmt=datefmt)
 
-    logger = logging.getLogger(_LOGGER_NAME)
+    ch = logging.StreamHandler()
+    ch.setFormatter(formatter)
+    root.addHandler(ch)
 
-    # prevent duplicate handlers if setup_logger() is called multiple times
-    if not logger.handlers:
-        logger.setLevel(level)
-        formatter = logging.Formatter(fmt=fmt, datefmt=datefmt)
+    if log_cfg.get("log_to_file", True):
+        pipeline_file = Path(log_cfg.get("file_path", "logs/pipeline.log"))
+        pipeline_file.parent.mkdir(parents=True, exist_ok=True)
 
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
+        fh = logging.handlers.RotatingFileHandler(
+            pipeline_file,
+            maxBytes=log_cfg.get("max_bytes", 10_485_760),
+            backupCount=log_cfg.get("backup_count", 5)
+        )
+        fh.setFormatter(formatter)
+        root.addHandler(fh)
 
-        if log_to_file:
-            file_handler = logging.FileHandler(log_file, mode="a")
-            file_handler.setFormatter(formatter)
-            logger.addHandler(file_handler)
+    imputer_log = logging.getLogger(f"{_ROOT_LOGGER}.imputer")
+    imputer_log.setLevel(log_cfg.get("imputer_level", "DEBUG").upper())
+    imputer_log.propagate = False  # prevent sending logs to pipeline.log
 
-        logger.propagate = False
-        logger.info("Logger initialized.")
+    imputer_file = Path(log_cfg.get("imputer_file_path", "logs/imputer.log"))
+    imputer_file.parent.mkdir(parents=True, exist_ok=True)
+    fh_imp = logging.FileHandler(imputer_file, mode="a")
+    fh_imp.setFormatter(formatter)
+    imputer_log.addHandler(fh_imp)
 
-    return logger
+    val_log = logging.getLogger(f"{_ROOT_LOGGER}.validator")
+    val_log.setLevel("INFO")
+    val_log.propagate = False
 
-def get_logger():
+    val_file = Path("logs/validator.log")
+    val_file.parent.mkdir(parents=True, exist_ok=True)
+    fh_val = logging.FileHandler(val_file, mode="a")
+    fh_val.setFormatter(formatter)
+    val_log.addHandler(fh_val)
+
+    _INITIALIZED = True
+    root.info("Logger initialized.")
+    return root
+
+def get_logger(name=None):
     # pre: None
     # post: logging.Logger
     # desc: Retrieves the logger instance, this is here so that other modules
     #       can easily get the logger without needing to pass it around.
     # *** [SINGLETON PATTERN] ***
 
-    return logging.getLogger(_LOGGER_NAME)
+    if name is None:
+        return logging.getLogger(_ROOT_LOGGER)
+    return logging.getLogger(f"{_ROOT_LOGGER}.{name}")
