@@ -1,0 +1,32 @@
+name: Config Validator
+
+on:
+  push:
+    paths:
+      - "config.yaml"
+      - "utils/config.py"
+      - ".github/workflows/config-validator.yaml"
+  pull_request:
+    paths:
+      - "config.yaml"
+
+jobs:
+  validate-config:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+
+      - name: Validate config
+        run: |
+          python .github/scripts/validate_config.py
