@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Ruff
         run: |
-          ruff check . --exit-zero # do not fail on lint errors
+          ruff check . --fix
 
       - name: Run Mypy
         run: |
