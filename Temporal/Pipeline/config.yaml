@@ -304,21 +304,27 @@ logging:
   backup_count: 5
 
 imputer:
-  # toggle on/off (T/F)
   enabled:
     linear_interp: true
     ffill_bfill: true
     rolling_mean: true
     climatology: true
     xgboost: true
+    knn: true
+    gaussian_process: true
+    seasonal_naive: true
 
   base_weights:
-    linear_model: 0.40
-    xgboost: 0.30
-    ffill_bfill: 0.10
-    linear_interp: 0.08
-    rolling_mean: 0.07
-    climatology: 0.05
+    linear_model: 0.25
+    spline: 0.20
+    gaussian_process: 0.15
+    xgboost: 0.10
+    knn: 0.08
+    ffill_bfill: 0.07
+    linear_interp: 0.06
+    rolling_mean: 0.05
+    climatology: 0.02
+    seasonal_naive: 0.02
 
   # hyperparameters
   linear_interp:
@@ -341,15 +347,31 @@ imputer:
   xgboost:
     min_known: 30
 
+  knn:
+    n_neighbors: 5
+    distance_weighting: true
+
+  gaussian_process: # tune
+    length_scale: 20.0
+    noise_level: 0.5
+
+  seasonal_naive:
+    min_count_for_high_conf: 10
+    use_median: true
+
+  spline:
+    smooth: 0.5
+    degree: 3
+    extrap_penalty: 0.3
+
   ndvi_max_gap: 10
   tau_gap: 10
+
   high_freq_feat:
-    [
-      "first_difference",
-      "second_difference",
-      "temporal_gradient",
-      "spectral_entropy",
-    ]
+    - first_difference
+    - second_difference
+    - temporal_gradient
+    - spectral_entropy
 
   outlier_factor: 3.0
 

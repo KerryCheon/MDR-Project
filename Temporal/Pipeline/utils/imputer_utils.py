@@ -12,11 +12,10 @@ from Temporal.Pipeline.imputers.smoothing import RollingMeanImputer
 from Temporal.Pipeline.imputers.climatology import ClimatologyImputer
 from Temporal.Pipeline.imputers.linear_model import LinearModelImputer
 from Temporal.Pipeline.imputers.xgb_model import XGBImputer
-
-from Temporal.Pipeline.records.daily_records import DailyRecordBuilder
-
-from Temporal.Pipeline.utils.config import load_config
-from Temporal.Pipeline.utils.logger import get_logger
+from Temporal.Pipeline.imputers.gaussian_regression import GaussianProcessImputer
+from Temporal.Pipeline.imputers.knn_temporal import KNNImputer
+from Temporal.Pipeline.imputers.seasonal_naive import SeasonalNaiveImputer
+from Temporal.Pipeline.imputers.spline_interpolation import SplineImputer
 
 def _validate_inputs(df, col, logger):
     # pre:  df must have 'date' column and 'col' to impute
@@ -97,6 +96,10 @@ def _run_ensemble(df, col, dates, values, logger):
         ClimatologyImputer(),
         LinearModelImputer(),
         XGBImputer(),
+        GaussianProcessImputer(),
+        KNNImputer(),
+        SeasonalNaiveImputer(),
+        SplineImputer()
     ]
 
     logger.debug(f"initialized {len(imputers)} imputers")

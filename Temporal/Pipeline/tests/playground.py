@@ -8,7 +8,6 @@ import json as js
 from Temporal.Pipeline.utils.config import load_config
 from Temporal.Pipeline.utils.logger import setup_logger, get_logger
 from Temporal.Pipeline.imputers.api import transform_with_ensemble
-from Temporal.Pipeline.imputers.api import transform_with_ensemble
 
 config = load_config()
 setup_logger(config)
@@ -19,7 +18,7 @@ df = pd.read_csv(path)
 
 imp_df, diag = transform_with_ensemble(
     df,
-    col='LST',
+    col='NDVI',
     return_diag=True,
     auto_validate=True
 )
