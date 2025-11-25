@@ -292,7 +292,7 @@ satellite:
 logging:
   level: "INFO"
   log_to_file: true
-  file_path: "Pipeline/logs/pipeline.log"
+  file_path: "Temporal/Pipeline/logs/pipeline.log"
 
   # new dedicated imputer log
   imputer_file_path: "logs/imputer.log"
