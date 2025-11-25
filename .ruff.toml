@@ -1,3 +1,13 @@
 select = ["E", "F"]
 ignore = ["E501", "F401", "F841"]
 line-length = 120
+
+[lint]
+ignore = ["E402", "E702"]
+exclude = ["*.ipynb", "experiments/", "deprecated/"]
+
+exclude = [
+    "deprecated/",
+    "experiments/",
+    "*.ipynb",
+]
