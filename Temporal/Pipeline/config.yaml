@@ -24,8 +24,8 @@ stations:
       out_dir: "data/raw/spokane/" # Raw data output directory
 
     parse:
-      in_dir: data/raw/spokane/ # Raw input directory
-      out_dir: data/processed/spokane
+      in_dir: Temporal/Pipeline/data/raw/spokane/ # Raw input directory
+      out_dir: Temporal/Pipeline/data/processed/spokane
       drop_duplicates: true
       col_indices: # Column index mapping (0-based)
         station_id: 0 # WBANNO
@@ -67,7 +67,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "data/processed/spokane/final.csv"
+      out_path: "Temporal/Pipeline/data/processed/spokane/final.csv"
       format: "csv"
       index: false
 
@@ -82,11 +82,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "data/raw/quinault/"
+      out_dir: "Temporal/Pipeline/data/raw/quinault/"
 
     parse:
-      in_dir: data/raw/quinault/
-      out_dir: data/processed/quinault
+      in_dir: Temporal/Pipeline/data/raw/quinault/
+      out_dir: Temporal/Pipeline/data/processed/quinault
       drop_duplicates: true
       col_indices:
         station_id: 0 # WBANNO
@@ -128,7 +128,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "data/processed/quinault/final.csv"
+      out_path: "Temporal/Pipeline/data/processed/quinault/final.csv"
       format: "csv"
       index: false
 
@@ -143,11 +143,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "data/raw/darrington/"
+      out_dir: "Temporal/Pipeline/data/raw/darrington/"
 
     parse:
-      in_dir: data/raw/darrington
-      out_dir: data/processed/darrington
+      in_dir: Temporal/Pipeline/data/raw/darrington
+      out_dir: Temporal/Pipeline/data/processed/darrington
       drop_duplicates: true
       col_indices:
         station_id: 0
@@ -189,7 +189,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "data/processed/darrington/final.csv"
+      out_path: "Temporal/Pipeline/data/processed/darrington/final.csv"
       format: "csv"
       index: false
 
@@ -204,11 +204,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "data/raw/sourdough/"
+      out_dir: "Temporal/Pipeline/data/raw/sourdough/"
 
     parse:
-      in_dir: data/raw/SourdoughGulch/
-      out_dir: data/processed/SourdoughGulch
+      in_dir: "Temporal/Pipeline/ata/raw/SourdoughGulch/"
+      out_dir: "Temporal/Pipeline/data/processed/SourdoughGulch"
       drop_duplicates: true
       snotel_mode: true # Flag for SNOTEL data format
       station: "SourdoughGulch_WA_985"
@@ -228,7 +228,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "data/processed/sourdough/final.csv"
+      out_path: "Temporal/Pipeline/data/processed/sourdough/final.csv"
       format: "csv"
       index: false
 
@@ -243,11 +243,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "data/raw/touchet/"
+      out_dir: "Temporal/Pipeline/data/raw/touchet/"
 
     parse:
-      in_dir: data/raw/Touchet/
-      out_dir: data/processed/touchet
+      in_dir: "Temporal/Pipeline/data/raw/Touchet/"
+      out_dir: "Temporal/Pipeline/data/processed/touchet"
       drop_duplicates: true
       snotel_mode: true # Flag for SNOTEL data format
       station: "Touchet_WA_824"
@@ -267,7 +267,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "data/processed/touchet/final.csv"
+      out_path: "Temporal/Pipeline/data/processed/touchet/final.csv"
       format: "csv"
       index: false
 
@@ -287,7 +287,8 @@ temporal_fill:
   regression_window: 7 # unused (kept for safety)
 
 satellite:
-  cache_path: "data/cache/{station}_satellite_cache.json"
+  cache_path: "Temporal/Pipeline/data/cache/{station}_satellite_cache.json"
+  interpolate_level: "bands" # or "features"
 
 logging:
   level: "INFO"
@@ -295,7 +296,7 @@ logging:
   file_path: "Temporal/Pipeline/logs/pipeline.log"
 
   # new dedicated imputer log
-  imputer_file_path: "logs/imputer.log"
+  imputer_file_path: "Temporal/Pipeline/logs/imputer.log"
   imputer_level: "DEBUG" # vote breakdowns, weights, etc
 
   format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
