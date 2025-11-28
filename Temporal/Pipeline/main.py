@@ -4,12 +4,12 @@
 # This script orchestrates the execution of the full data processing pipeline,
 # chaining together the request, parse, clean, merge, and save pipes.
 
-# MUTE THE ANNOYING INSECURE REQUESTS WARNING
+# MUTE THE ANNOYING REQUESTS WARNING
 import warnings
 from requests import packages
 
 warnings.filterwarnings("ignore", category=UserWarning, module="requests")
-# MUTE THE ANNOYING INSECURE REQUESTS WARNING
+# MUTE THE ANNOYING REQUESTS WARNING
 
 from utils.config import load_config
 from utils.logger import get_logger
@@ -18,9 +18,11 @@ from pipes.request_pipe import RequestPipe
 from pipes.parse_pipe import ParsePipe
 from pipes.clean_pipe import CleanPipe
 from pipes.merge_pipe import MergePipe
-from pipes.temporal_fill_pipe import TemporalFillPipe
 from pipes.satellite_pipe import SatellitePipe
+from pipes.temporal_fill_pipe import TemporalFillPipe
+from pipes.whittaker_pipe import WhittakerPipe
 from pipes.feature_pipe import FeaturePipe
+
 from pipes.save_pipe import SavePipe
 
 def run_pipeline_for_station(station_name, station_cfg, global_cfg):
@@ -42,7 +44,9 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
         merged = MergePipe(config=station_cfg["merge"]).run(cleaned)
         with_sat = SatellitePipe(config=global_cfg, station_name=station_name).run(merged)
         filled = TemporalFillPipe(config=global_cfg["temporal_fill"]).run(with_sat)
-        featured = FeaturePipe(config=station_cfg.get("feature", {})).run(filled)
+        smoothed = WhittakerPipe(config=global_cfg["whittaker"]).run(filled)
+        featured = FeaturePipe(config=station_cfg.get("feature", {})).run(smoothed)
+
         SavePipe(config=station_cfg["save"]).run(featured)
 
         logger.info(f"=== Pipeline complete for {station_name} ===\n")
@@ -62,9 +66,9 @@ if __name__ == "__main__":
 
     for station_name, station_cfg in stations_cfg.items():
 
-        # Explicit skip for SNOTEL mode stations
+        # explicit skip for SNOTEL mode stations
         if station_cfg.get("parse", {}).get("snotel_mode", False):
-            logger.warning(f"[{station_name}] Skipping SNOTEL station — awaiting SNOTELPipe integration.")
+            logger.warning(f"[{station_name}] Skipping this station — awaiting [_station_]Pipe integration.")
             continue
 
         run_pipeline_for_station(station_name, station_cfg, config)
