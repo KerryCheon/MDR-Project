@@ -276,15 +276,29 @@ stations:
 # ===========================================================
 
 temporal_fill:
-  target_columns:
+  interpolate_cols:
     - LST
     - NDVI
-    - Rain_sat
+    - s1_vv
+    - s1_vh
+    - s2_b2
+    - s2_b3
+    - s2_b4
+    - s2_b8
+    - s2_b11
+    - s2_b12
+
+  min_known_required: 15
 
   # The rest are legacy params from linear/regression filling.
   max_gap_days: 30 # unused (kept for safety)
   switch_gap: 4 # unused (kept for safety)
   regression_window: 7 # unused (kept for safety)
+
+whittaker:
+  lambda: 5000 # tuned for NDVI smoothness
+  target_columns:
+    - NDVI
 
 satellite:
   cache_path: "Temporal/Pipeline/data/cache/{station}_satellite_cache.json"
