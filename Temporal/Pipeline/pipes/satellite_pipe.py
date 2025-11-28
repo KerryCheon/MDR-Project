@@ -1,12 +1,5 @@
 # Jakob Balkovec & Kerry Cheon
-# Satellite Pipe
-
-# This module defines the SatellitePipe class, which retrieves satellite-derived
-# features (LST, NDVI, Rain) from Google Earth Engine in batched requests
-# and merges them into the input dataframe.
-
-# Jakob Balkovec & Kerry Cheon
-# Satellite Pipe (Extended for Sentinel-1 + Sentinel-2)
+# Satellite Pipe (Sentinel-1, Sentinel-2, MODIS, GPM, DEM)
 
 import ee
 import pandas as pd
@@ -25,7 +18,7 @@ class SatellitePipe:
 
     S1_GRD = "COPERNICUS/S1_GRD"
     S2_L2A = "COPERNICUS/S2_SR_HARMONIZED"
-    SRTM_DEM = "USGS/SRTMGL1_003"
+    SRTM_DEM = "USGS/SRTMGL1_003"  # DEM dataset
 
     def __init__(self, config=None, station_name=None):
         self.config = config or load_config()
@@ -73,7 +66,7 @@ class SatellitePipe:
             "aspect": None,
         }
 
-        # ------------------ MODIS ------------------
+        # ------- MODIS LST -------
         try:
             lst = (
                 ee.ImageCollection(self.MODIS_LST)
@@ -93,6 +86,7 @@ class SatellitePipe:
         except Exception:
             pass
 
+        # ------- MODIS NDVI -------
         try:
             ndvi = (
                 ee.ImageCollection(self.MODIS_NDVI)
@@ -112,7 +106,7 @@ class SatellitePipe:
         except Exception:
             pass
 
-        # ------------------ GPM Rain ------------------
+        # ------- GPM Rain -------
         try:
             rain = (
                 ee.ImageCollection(self.GPM_RAIN)
@@ -132,7 +126,7 @@ class SatellitePipe:
         except Exception:
             pass
 
-        # ------------------ Sentinel-1 (VV/VH) ------------------
+        # ------- Sentinel-1 SAR -------
         try:
             s1 = (
                 ee.ImageCollection(self.S1_GRD)
@@ -159,7 +153,7 @@ class SatellitePipe:
         except Exception:
             pass
 
-        # ------------------ Sentinel-2 Reflectance ------------------
+        # ------- Sentinel-2 Reflectance -------
         try:
             s2 = (
                 ee.ImageCollection(self.S2_L2A)
@@ -182,22 +176,19 @@ class SatellitePipe:
         except Exception:
             pass
 
-        # ------------------ DEM (Elevation, Slope, Aspect) ------------------
+        # ------- DEM Elevation, Slope, Aspect -------
         try:
             dem = ee.Image(self.SRTM_DEM).clip(buffer)
 
-            # Elevation (meters)
             elev = dem.reduceRegion(
                 reducer=ee.Reducer.mean(),
                 geometry=buffer,
                 scale=30,
                 bestEffort=True
             ).get("elevation").getInfo()
-
             if elev is not None:
                 results["elev"] = float(elev)
 
-            # Slope and Aspect
             terrain = ee.Terrain.products(dem)
             terr_stats = terrain.reduceRegion(
                 reducer=ee.Reducer.mean(),
@@ -205,7 +196,6 @@ class SatellitePipe:
                 scale=30,
                 bestEffort=True
             )
-
             slope = terr_stats.get("slope").getInfo()
             aspect = terr_stats.get("aspect").getInfo()
 
@@ -213,7 +203,6 @@ class SatellitePipe:
                 results["slope"] = float(slope)
             if aspect is not None:
                 results["aspect"] = float(aspect)
-
         except Exception:
             pass
 
