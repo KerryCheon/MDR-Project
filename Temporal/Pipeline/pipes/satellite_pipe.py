@@ -13,7 +13,7 @@ from utils.config import load_config
 
 class SatellitePipe:
     MODIS_LST = "MODIS/061/MOD11A1"
-    MODIS_NDVI = "MODIS/061/MOD13Q1"
+    MODIS_NDVI = "MODIS/006/MOD13C2"
     GPM_RAIN = "NASA/GPM_L3/IMERG_V07"
 
     S1_GRD = "COPERNICUS/S1_GRD"
