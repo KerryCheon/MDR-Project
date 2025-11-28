@@ -24,8 +24,8 @@ class SatellitePipe:
     GPM_RAIN = "NASA/GPM_L3/IMERG_V07"
 
     S1_GRD = "COPERNICUS/S1_GRD"
-    S2_L2A = "COPERNICUS/S2_SR"  # surface reflectance (cloud mask handled below)
-    # S2_L2A = "COPERNICUS/S2_SR_HARMONIZED" # use this cuz the other one is deprecated
+    S2_L2A = "COPERNICUS/S2_SR_HARMONIZED"
+    SRTM_DEM = "USGS/SRTMGL1_003"
 
     def __init__(self, config=None, station_name=None):
         self.config = config or load_config()
@@ -68,6 +68,9 @@ class SatellitePipe:
             "s2_b8": None,
             "s2_b11": None,
             "s2_b12": None,
+            "elev": None,
+            "slope": None,
+            "aspect": None,
         }
 
         # ------------------ MODIS ------------------
@@ -176,6 +179,41 @@ class SatellitePipe:
                     val = stats.get(band).getInfo()
                     if val is not None:
                         results[f"s2_{band.lower()}"] = float(val)
+        except Exception:
+            pass
+
+        # ------------------ DEM (Elevation, Slope, Aspect) ------------------
+        try:
+            dem = ee.Image(self.SRTM_DEM).clip(buffer)
+
+            # Elevation (meters)
+            elev = dem.reduceRegion(
+                reducer=ee.Reducer.mean(),
+                geometry=buffer,
+                scale=30,
+                bestEffort=True
+            ).get("elevation").getInfo()
+
+            if elev is not None:
+                results["elev"] = float(elev)
+
+            # Slope and Aspect
+            terrain = ee.Terrain.products(dem)
+            terr_stats = terrain.reduceRegion(
+                reducer=ee.Reducer.mean(),
+                geometry=buffer,
+                scale=30,
+                bestEffort=True
+            )
+
+            slope = terr_stats.get("slope").getInfo()
+            aspect = terr_stats.get("aspect").getInfo()
+
+            if slope is not None:
+                results["slope"] = float(slope)
+            if aspect is not None:
+                results["aspect"] = float(aspect)
+
         except Exception:
             pass
 
