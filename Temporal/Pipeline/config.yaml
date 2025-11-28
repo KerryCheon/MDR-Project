@@ -21,7 +21,7 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500 # Skip if file too small
-      out_dir: "data/raw/spokane/" # Raw data output directory
+      out_dir: "Temporal/Pipeline/data/raw/spokane/" # Raw data output directory
 
     parse:
       in_dir: Temporal/Pipeline/data/raw/spokane/ # Raw input directory
