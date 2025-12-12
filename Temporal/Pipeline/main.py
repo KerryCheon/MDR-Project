@@ -100,7 +100,7 @@ if __name__ == "__main__":
         for station_name, station_cfg in stations_cfg.items():
 
             if station_cfg.get("parse", {}).get("snotel_mode", False):
-                logger.warning(f"[{station_name}] Skipping this station — awaiting [_station_]Pipe integration.")
+                logger.warning(f"[{station_name}] Skipping this station — awaiting {station_name}Pipe integration.")
                 continue
 
             run_pipeline_for_station(station_name, station_cfg, config)
