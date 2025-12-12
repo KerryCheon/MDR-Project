@@ -12,7 +12,9 @@ warnings.filterwarnings("ignore", category=UserWarning, module="requests")
 # MUTE THE ANNOYING REQUESTS WARNING
 
 from utils.config import load_config
-from utils.logger import get_logger
+from utils.logger import get_logger, setup_logger
+import argparse
+import sys
 
 from pipes.request_pipe import RequestPipe
 from pipes.parse_pipe import ParsePipe
@@ -56,21 +58,51 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
 
 
 if __name__ == "__main__":
-    config = load_config()
+    parser = argparse.ArgumentParser(description="Run the MDR Temporal Pipeline for configured stations.")
+    parser.add_argument("--station", "-s", help="Run pipeline for a single station key from config.yaml")
+    parser.add_argument("--config", "-c", help="Path to config YAML file (defaults to config.yaml in repo)")
+    parser.add_argument("--list-stations", action="store_true", help="List configured stations and exit")
+    args = parser.parse_args()
+
+    try:
+        config = load_config(args.config) if args.config else load_config()
+    except Exception as e:
+        print(f"Failed to load config: {e}")
+        sys.exit(1)
+
+    setup_logger(config)
     logger = get_logger()
 
     stations_cfg = config.get("stations", {})
     if not stations_cfg:
         logger.error("No stations found. Check the 'config' file!")
         exit(1)
+    if args.list_stations:
+        logger.info("Configured stations:")
+        for s in stations_cfg.keys():
+            logger.info(f" - {s}")
+        sys.exit(0)
 
-    for station_name, station_cfg in stations_cfg.items():
+    if args.station:
+        station_cfg = stations_cfg.get(args.station)
+        if station_cfg is None:
+            logger.error(f"Station '{args.station}' not found in configuration.")
+            sys.exit(1)
 
-        # explicit skip for SNOTEL mode stations
+        # explicit skip for SNOTEL mode stations (config flag)
         if station_cfg.get("parse", {}).get("snotel_mode", False):
-            logger.warning(f"[{station_name}] Skipping this station — awaiting [_station_]Pipe integration.")
-            continue
+            logger.warning(f"[{args.station}] Skipping this station — awaiting [_station_]Pipe integration.")
+            sys.exit(0)
 
-        run_pipeline_for_station(station_name, station_cfg, config)
+        run_pipeline_for_station(args.station, station_cfg, config)
+
+    else:
+        for station_name, station_cfg in stations_cfg.items():
+
+            if station_cfg.get("parse", {}).get("snotel_mode", False):
+                logger.warning(f"[{station_name}] Skipping this station — awaiting [_station_]Pipe integration.")
+                continue
+
+            run_pipeline_for_station(station_name, station_cfg, config)
 
     logger.info("All station pipelines completed successfully.")

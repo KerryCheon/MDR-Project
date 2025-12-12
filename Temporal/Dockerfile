@@ -2,13 +2,17 @@ FROM python:3.10-slim
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
+# Use Pipeline as the working directory (main.py lives in Pipeline/)
+WORKDIR /app/Temporal/Pipeline
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy and install only Pipeline requirements to speed up builds
+COPY Pipeline/requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-COPY . .
+# Copy the repository into /app so imports like `from Temporal.Pipeline...` work
+COPY . /app/Temporal
 
+# Make sure Python can import the top-level `Temporal` package
 ENV PYTHONPATH=/app
 
 CMD ["python", "main.py"]
