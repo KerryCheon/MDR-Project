@@ -1,133 +1,83 @@
-# Drawing Board
+# Imputers — Quick README
 
-**Jakob Balkovec**
+Casual tour of the imputer code in this folder. This is meant as a quick, usable guide for newcomers and for future-you when you need to tweak behaviour.
 
-## Voting Strategy for Filling Missing MDR Data
+Top-level idea: many small imputers try their best and then a voter combines them into one final guess plus a confidence score per timestamp.
 
-We have missing values in many features. There is no single “best” imputation method across all stations, seasons, or sensors. Some methods work well on short gaps, some only work on long gaps, and some collapse completely when data gets messy.
+Entry point
 
-So instead of picking one, we let multiple methods attempt to fill the same gap and then vote...
+- `imputers.api.transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_validate=False)` — the function the rest of the pipeline calls.
 
----
+How things fit together
 
-### 1. Goal
+- `imputer_utils._run_ensemble` creates the imputer instances, calls `VotingImputer.fit(...)`, then `VotingImputer.impute(...)`.
+- `VotingImputer` expects each imputer to implement `fit(dates, values, aux_df)` and `impute(dates, values, aux_df)` and to return `(filled_series, confidence_series)`.
 
-Produce a single “best guess” for each missing point by combining several imputation techniques:
+Core voting formula
 
-- Simple methods
-  - Linear interpolation
-  - Forward or backward fill
-  - Rolling mean
-- Seasonal or climatology methods
-  - Day-of-year averages
-  - Seasonal smoothing
-- Heavier statistical methods
-  - KNN imputation
-  - Low-rank matrix factorization
-- Model-based methods (optional)
-  - Small regression model trained on nearby stations
-  - A tiny temporal model
+- Each imputer i produces a value v_i and a confidence c_i (0..1).
+- There is a base weight b_i configured in `config.yaml` under `imputer.base_weights`.
+- Effective weight: w_i = b_i \* c_i
+- Final value (weighted average):
+  $$\hat v = \dfrac{\sum_i w_i v_i}{\sum_i w_i}$$
+- Confidence is similarly combined: a weighted average of individual confidences.
 
-Each one is treated as an independent **imputer**.
+Outlier suppression (what we do)
 
----
+- We compute the median and MAD of candidate values at each timestamp. If |v_i - median| > outlier_factor \* MAD we downweight that imputer by a factor (0.1 by default).
 
-### 2. Common interface for all imputers
+Imputer summaries and formulas
 
-Each imputer returns two things:
+- `base.py` — `BaseImputer` interface. Subclass this and implement `fit` / `impute`.
 
-1. A filled value
-2. A confidence score (the imputer's belief that its answer is reasonable)
+- `interpolation.py` — Linear time interpolation. Confidence decays with gap length:
+  $$\text{conf} = e^{-\text{gap_days} / \tau}$$
 
-Confidence might come from:
+- `fbfill.py` — Forward/backward fill for very short gaps and edges. Confidence uses nearest known-day distance:
+  $$\text{conf} = e^{-\text{distance} / \tau}$$
 
-- Gap length (shorter gaps mean higher confidence)
-- Historical error of the method on similar conditions
-- Smoothness of the filled segment
-- Seasonal alignment
-- Local variance (stable periods are easier to fill)
+- `smoothing.py` (RollingMeanImputer) — Centered rolling mean with window `w`. Confidence ≈ count / w where count is non-null count in the window.
 
-The voting system only requires that each method defines some confidence value.
+- `spline_interpolation.py` — Smooth cubic spline (UnivariateSpline). Confidence is a function of curvature:
+  $$\text{conf} \approx e^{- |\kappa| }$$
+  where curvature is approximated by the absolute second derivative; extrapolated regions are penalized.
 
----
+- `knn_temporal.py` — KNN in time (scikit-learn KNeighborsRegressor). Confidence is derived from neighbor distances:
+  $$\text{conf} = \dfrac{1}{1 + \text{mean_distance}}$$
 
-### 3. Base weighting per imputer
+- `gaussian_regression.py` — Gaussian Process regression (RBF + white-noise). For each prediction we get mean μ and std σ; confidence is set to:
+  $$\text{conf} = e^{-\sigma}$$
 
-Before filling anything, we evaluate all imputers on a known region with no missing data by **artificially masking** sections and testing how well each method recovers the truth.
+- `linear_model.py` — Linear regression on DOY encodings and optional cross-features. Confidence scales with how many clean samples were available (clipped at 1).
 
-From that, each imputer gets a **base weight**:
+- `xgb_model.py` — XGBoost model trained on DOY encodings + cross-features. Produces predictions with a moderate default confidence (0.7) when filling.
 
-- High weight if consistently accurate
-- Medium weight if it performs well only under some conditions
-- Low weight if it’s weak but still useful as a safety net
+- `climatology.py` and `seasonal_naive.py` — Day-of-year historical lookups. Very useful for long gaps; confidence is proportional to how many historical samples exist for that DOY.
 
-These are global weights that never change during actual imputation.
+- `voting.py` — The ensemble combiner. See the code for diagnostics (`VotingImputer.diagnostics`) — it reports per-imputer contributions and average confidence for missing timestamps.
 
----
+Configuration
 
-### 4. Sample-level voting
+- `config.yaml` has an `imputer` section. Important knobs:
+  - `base_weights`: per-imputer base weighting
+  - per-imputer params such as `tau_days`, `window`, `min_known`, `length_scale`, etc.
 
-For a missing value at time _t_ and station _s_:
+Diagnostics and validation
 
-1. Every imputer attempts to fill it.
-2. Every imputer produces a confidence score for that specific gap.
-3. Effective weight = base weight \* confidence.
-4. Combine values with weighted average: $$\text{filled value} = \frac{sum(w_i * v_i)}{sum(w_i)}$$
+- Call `transform_with_ensemble(df, col, return_diag=True)` to get a diagnostics dict. The voter also has `diagnostics(...)` to write out per-imputer contribution summaries.
 
-If a method is confident and historically good, it influences a lot. If it’s shaky, it still contributes but barely.
+Extending / adding a new imputer
 
----
+1. Create a new module that subclasses `BaseImputer` and implement `fit` and `impute` (both should accept `dates, values, aux_df`).
+2. Return `(filled_series, confidence_series)` from `impute` where both are aligned with the input `dates`.
+3. Add the new imputer class to the list in `utils/imputer_utils._run_ensemble` so it gets instantiated and included in the voter.
 
-### 5. Outlier suppression
+Testing tips
 
-Sometimes one imputer outputs nonsense (for example linear interpolation during a huge weather jump).
-To protect against this:
+- Unit-test a single imputer by feeding a small DataFrame with `date` and the target column and asserting reasonable fill and conf values.
+- Use `transform_with_ensemble(..., return_diag=True)` to inspect per-imputer activity on a real sample.
 
-- Compute the median of all imputed values.
-- If an imputer’s value is far outside a small band around the median, clamp its weight heavily.
-- Keep it in the vote but at a tiny influence so it can’t distort the result.
+Housekeeping
 
----
-
-### 6. Special cases
-
-Certain gap structures require special treatment:
-
-**Short gaps (1–3 days)**
-
-- Prefer linear interpolation, rolling means, short-term smoothing.
-- Confidence for simple methods goes up.
-
-**Long gaps (20+ days)**
-
-- Prefer climatology, seasonal decomposition, maybe KNN across stations.
-- Interpolation confidence collapses.
-
-**High variance periods**
-
-- Confidence for rolling mean drops.
-- Confidence for seasonal or neighbor regression increases.
-
-The voting system automatically adapts as long as each method adjusts its confidence correctly.
-
----
-
-### 7. Temporal smoothing after voting
-
-The filled series should behave like real environmental data.
-After combining:
-
-- Apply optional light smoothing.
-- Do not oversmooth since that hides real events.
-- Just enough to remove single-day spikes caused by imperfect imputers.
-
----
-
-### 8. Why this strategy matters
-
-- No single imputation method is reliable on its own.
-- Voting lets us combine strengths and cancel weaknesses.
-- We get station-level continuity even for nasty gaps.
-- This keeps downstream ML models from getting destabilized by garbage imputations.
-
-Overall, the voting system gives us a flexible and robust way to fill missing MDR data before we even start the soil moisture modeling.
+- If an imputer keeps failing or underperforming, just remove it from `_run_ensemble` — the voting system is robust and will adapt.
+- Keep the code small and focused: each imputer should be easy to reason about and quick to fit
