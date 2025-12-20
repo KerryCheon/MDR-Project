@@ -1,0 +1,47 @@
+{
+  "seed": 42,
+  "split_frac": {
+    "train": 0.6,
+    "val": 0.2,
+    "test": 0.2
+  },
+  "split_by": "station_id",
+  "target": "soil_moisture_5cm",
+  "features": [
+    "rain_mm",
+    "precip_mm",
+    "air_temp_mean",
+    "rh_mean",
+    "solar_radiation",
+    "NDVI",
+    "NDMI",
+    "MSI",
+    "s1_vv",
+    "s1_vh",
+    "SAR_ratio",
+    "elev",
+    "slope",
+    "DOY"
+  ],
+  "meta_cols_kept": [
+    "station_id",
+    "date",
+    "longitude",
+    "latitude"
+  ],
+  "stations": {
+    "train": [
+      4223,
+      4237
+    ],
+    "val": [
+      4136
+    ],
+    "test": []
+  },
+  "rows": {
+    "train": 9788,
+    "val": 4044,
+    "test": 0
+  }
+}
