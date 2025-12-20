@@ -1,4 +1,5 @@
 # Jakob Balkovec & Kerry Cheon
+# satellite_pipe.py
 # Satellite Pipe (Sentinel-1, Sentinel-2, MODIS, GPM, DEM)
 
 import ee
@@ -14,7 +15,7 @@ from utils.config import load_config
 class SatellitePipe:
     MODIS_LST = "MODIS/061/MOD11A1"
     MODIS_NDVI = "MODIS/006/MOD13C2"
-    GPM_RAIN = "NASA/GPM_L3/IMERG_V07"
+    # GPM_RAIN = "NASA/GPM_L3/IMERG_V07"  # deprecated: replaced by Open-Meteo rain/precip pipes
 
     S1_GRD = "COPERNICUS/S1_GRD"
     S2_L2A = "COPERNICUS/S2_SR_HARMONIZED"
@@ -48,9 +49,9 @@ class SatellitePipe:
         buffer = point.buffer(1000)
 
         results = {
-            "LST": None,
-            "NDVI": None,
-            "Rain_sat": None,
+            "LST_modis": None,
+            "NDVI_modis": None,
+            # "Rain_sat": None,  # deprecated: replaced by Open-Meteo rain/precip pipes
             "s1_vv": None,
             "s1_vh": None,
             "s1_vv_dB": None,
@@ -82,7 +83,7 @@ class SatellitePipe:
                     bestEffort=True
                 ).get("LST_Day_1km").getInfo()
                 if val is not None:
-                    results["LST"] = float(val) * 0.02
+                    results["LST_modis"] = float(val) * 0.02
         except Exception:
             pass
 
@@ -102,29 +103,29 @@ class SatellitePipe:
                     bestEffort=True
                 ).get("NDVI").getInfo()
                 if val is not None:
-                    results["NDVI"] = float(val) * 0.0001
+                    results["NDVI_modis"] = float(val) * 0.0001
         except Exception:
             pass
 
         # ------- GPM Rain -------
-        try:
-            rain = (
-                ee.ImageCollection(self.GPM_RAIN)
-                .filterBounds(buffer)
-                .filterDate(padded_start, padded_end)
-                .select("precipitation")
-            )
-            if rain.size().getInfo() > 0:
-                val = rain.mean().reduceRegion(
-                    reducer=ee.Reducer.mean(),
-                    geometry=buffer,
-                    scale=10000,
-                    bestEffort=True
-                ).get("precipitation").getInfo()
-                if val is not None:
-                    results["Rain_sat"] = float(val)
-        except Exception:
-            pass
+        # try:
+        #     rain = (
+        #         ee.ImageCollection(self.GPM_RAIN)
+        #         .filterBounds(buffer)
+        #         .filterDate(padded_start, padded_end)
+        #         .select("precipitation")
+        #     )
+        #     if rain.size().getInfo() > 0:
+        #         val = rain.mean().reduceRegion(
+        #             reducer=ee.Reducer.mean(),
+        #             geometry=buffer,
+        #             scale=10000,
+        #             bestEffort=True
+        #         ).get("precipitation").getInfo()
+        #         if val is not None:
+        #             results["Rain_sat"] = float(val)
+        # except Exception:
+        #     pass
 
         # ------- Sentinel-1 SAR -------
         try:
@@ -257,6 +258,10 @@ class SatellitePipe:
         sat_df["date"] = pd.to_datetime(sat_df["date"])
 
         merged = pd.merge(df, sat_df, on="date", how="left")
+
+        # hard guard: Rain_sat is deprecated and should not exist anymore
+        if "Rain_sat" in merged.columns:
+            merged = merged.drop(columns=["Rain_sat"])
 
         self.logger.info(f"[{self.station_name}] SatellitePipe complete — {len(merged)} rows")
 
