@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
         # explicit skip for SNOTEL mode stations (config flag)
         if station_cfg.get("parse", {}).get("snotel_mode", False):
-            logger.warning(f"[{args.station}] Skipping this station — awaiting [_station_]Pipe integration.")
+            logger.warning(f"[{args.station}] Skipping this station — awaiting [{args.station}]Pipe integration.")
             sys.exit(0)
 
         run_pipeline_for_station(args.station, station_cfg, config)
