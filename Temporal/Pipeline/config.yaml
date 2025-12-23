@@ -300,6 +300,9 @@ whittaker:
   target_columns:
     - NDVI
 
+weather:
+  cache_path: "Temporal/Pipeline/data/cache/{station}_weather_cache.json"
+
 satellite:
   cache_path: "Temporal/Pipeline/data/cache/{station}_satellite_cache.json"
   interpolate_level: "bands" # or "features"
