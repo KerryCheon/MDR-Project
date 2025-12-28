@@ -5,8 +5,8 @@
 # the final processed DataFrame to disk in a specified format.
 
 from pathlib import Path
-from utils.logger import get_logger
-from utils.config import load_config
+from ..utils.logger import get_logger
+from ..utils.config import load_config
 
 
 class SavePipe:

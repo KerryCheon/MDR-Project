@@ -5,9 +5,9 @@
 # and placeholders (FOR-NOW) for satellite-derived features to the cleaned dataset.
 
 import pandas as pd
-from utils.logger import get_logger
+from ..utils.logger import get_logger
 
-from utils.math_utils import (
+from ..utils.math_utils import (
     compute_ndvi,
     compute_ndmi,
     compute_msi,

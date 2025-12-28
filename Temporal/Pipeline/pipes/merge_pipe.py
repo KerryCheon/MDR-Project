@@ -5,8 +5,8 @@
 # multiple DataFrames or datasets into a unified DataFrame.
 
 import pandas as pd
-from utils.logger import get_logger
-from utils.config import load_config
+from ..utils.logger import get_logger
+from ..utils.config import load_config
 
 class MergePipe:
     def __init__(self, config=None):

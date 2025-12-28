@@ -7,9 +7,9 @@
 import pandas as pd
 import numpy as np
 
-from utils.logger import get_logger
-from utils.config import load_config
-from smoothing.whittaker import whittaker_smooth
+from ..utils.logger import get_logger
+from ..utils.config import load_config
+from ..smoothing.whittaker import whittaker_smooth
 
 class WhittakerPipe:
     def __init__(self, config=None, station_name=None):

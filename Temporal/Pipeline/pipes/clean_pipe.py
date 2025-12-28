@@ -6,8 +6,8 @@
 
 import pandas as pd
 import numpy as np
-from utils.logger import get_logger
-from utils.config import load_config
+from ..utils.logger import get_logger
+from ..utils.config import load_config
 
 class CleanPipe:
     # Multiple sentinel values used by USCRN

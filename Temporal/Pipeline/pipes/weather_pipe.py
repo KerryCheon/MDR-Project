@@ -11,8 +11,8 @@ import pandas as pd
 from pathlib import Path
 import json
 import requests
-from utils.logger import get_logger
-from utils.config import load_config
+from ..utils.logger import get_logger
+from ..utils.config import load_config
 
 
 class WeatherPipe:

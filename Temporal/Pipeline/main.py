@@ -11,21 +11,21 @@ from requests import packages
 warnings.filterwarnings("ignore", category=UserWarning, module="requests")
 # MUTE THE ANNOYING REQUESTS WARNING
 
-from utils.config import load_config
-from utils.logger import get_logger, setup_logger
+from .utils.config import load_config
+from .utils.logger import get_logger, setup_logger
 import argparse
 import sys
 
-from pipes.request_pipe import RequestPipe
-from pipes.parse_pipe import ParsePipe
-from pipes.clean_pipe import CleanPipe
-from pipes.merge_pipe import MergePipe
-from pipes.satellite_pipe import SatellitePipe
-from pipes.temporal_fill_pipe import TemporalFillPipe
-from pipes.whittaker_pipe import WhittakerPipe
-from pipes.feature_pipe import FeaturePipe
-from pipes.weather_pipe import WeatherPipe
-from pipes.save_pipe import SavePipe
+from .pipes.request_pipe import RequestPipe
+from .pipes.parse_pipe import ParsePipe
+from .pipes.clean_pipe import CleanPipe
+from .pipes.merge_pipe import MergePipe
+from .pipes.satellite_pipe import SatellitePipe
+from .pipes.temporal_fill_pipe import TemporalFillPipe
+from .pipes.whittaker_pipe import WhittakerPipe
+from .pipes.feature_pipe import FeaturePipe
+from .pipes.weather_pipe import WeatherPipe
+from .pipes.save_pipe import SavePipe
 
 def run_pipeline_for_station(station_name, station_cfg, global_cfg):
     logger = get_logger().getChild(f"main.{station_name}")

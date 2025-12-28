@@ -6,8 +6,8 @@
 
 import pandas as pd
 from pathlib import Path
-from utils.logger import get_logger
-from utils.config import load_config
+from ..utils.logger import get_logger
+from ..utils.config import load_config
 
 # Try to import SNOTELPipe - handle both absolute and relative imports
 try:
