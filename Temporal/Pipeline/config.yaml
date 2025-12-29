@@ -207,7 +207,7 @@ stations:
       out_dir: "Temporal/Pipeline/data/raw/sourdough/"
 
     parse:
-      in_dir: "Temporal/Pipeline/ata/raw/SourdoughGulch/"
+      in_dir: "Temporal/Pipeline/data/raw/SourdoughGulch/"
       out_dir: "Temporal/Pipeline/data/processed/SourdoughGulch"
       drop_duplicates: true
       snotel_mode: true # Flag for SNOTEL data format

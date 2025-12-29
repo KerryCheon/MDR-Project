@@ -31,22 +31,21 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
     logger = get_logger().getChild(f"main.{station_name}")
     logger.info(f"=== Starting pipeline for {station_name} ===")
 
-    # Skip RequestPipe for SNOTEL stations (they use local .stm files, not HTTP downloads)
-    if station_cfg.get("parse", {}).get("snotel_mode", False):
-        logger.warning(f"[{station_name}] SNOTEL mode detected — skipping entire station (SNOTELPipe not available).")
-        return
+    is_snotel = station_cfg.get("parse", {}).get("snotel_mode", False)
 
-    # USCRN pipeline
     try:
-        request_pipe = RequestPipe(config=station_cfg["request"])
-        request_pipe.run()
+        # Only skip the HTTP download step for SNOTEL
+        if not is_snotel:
+            request_pipe = RequestPipe(config=station_cfg["request"])
+            request_pipe.run()
+        else:
+            logger.info(f"[{station_name}] SNOTEL mode: skipping RequestPipe (using local .stm files).")
 
         parsed = ParsePipe(config=station_cfg["parse"]).run()
         cleaned = CleanPipe(config=station_cfg["clean"]).run(parsed)
         merged = MergePipe(config=station_cfg["merge"]).run(cleaned)
 
         with_sat = SatellitePipe(config=global_cfg, station_name=station_name).run(merged)
-
         with_weather = WeatherPipe(config=global_cfg, station_name=station_name).run(with_sat)
 
         filled = TemporalFillPipe(config=global_cfg["temporal_fill"]).run(with_weather)
@@ -59,7 +58,6 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
 
     except Exception as e:
         logger.error(f"[{station_name}] Pipeline failed: {e}")
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the MDR Temporal Pipeline for configured stations.")
@@ -94,18 +92,18 @@ if __name__ == "__main__":
             sys.exit(1)
 
         # explicit skip for SNOTEL mode stations (config flag)
-        if station_cfg.get("parse", {}).get("snotel_mode", False):
-            logger.warning(f"[{args.station}] Skipping this station — awaiting [{args.station}]Pipe integration.")
-            sys.exit(0)
+        # if station_cfg.get("parse", {}).get("snotel_mode", False):
+        #    logger.warning(f"[{args.station}] Skipping this station — awaiting [{args.station}]Pipe integration.")
+        #   sys.exit(0)
 
         run_pipeline_for_station(args.station, station_cfg, config)
 
     else:
         for station_name, station_cfg in stations_cfg.items():
 
-            if station_cfg.get("parse", {}).get("snotel_mode", False):
-                logger.warning(f"[{station_name}] Skipping this station — awaiting {station_name}Pipe integration.")
-                continue
+            #if station_cfg.get("parse", {}).get("snotel_mode", False):
+            #    logger.warning(f"[{station_name}] Skipping this station — awaiting {station_name}Pipe integration.")
+            #    continue
 
             run_pipeline_for_station(station_name, station_cfg, config)
 
