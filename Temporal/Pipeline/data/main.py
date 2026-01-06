@@ -11,6 +11,8 @@ from pathlib import Path
 SPOKANE_CSV = Path("processed/spokane/final.csv")
 DARRINGTON_CSV = Path("processed/darrington/final.csv")
 QUINAULT_CSV = Path("processed/quinault/final.csv")
+SOURDOUGH_CSV = Path("processed/sourdough/final.csv")
+
 
 SPOKANE_XLSX = Path("processed/spokane/final.xlsx")
 DARRINGTON_XLSX = Path("processed/darrington/final.xlsx")

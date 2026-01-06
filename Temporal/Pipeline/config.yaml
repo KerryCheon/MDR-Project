@@ -207,8 +207,8 @@ stations:
       out_dir: "Temporal/Pipeline/data/raw/sourdough/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/SourdoughGulch/"
-      out_dir: "Temporal/Pipeline/data/processed/SourdoughGulch"
+      in_dir: "Temporal/Pipeline/data/raw/sourdough/"
+      out_dir: "Temporal/Pipeline/data/processed/sourdough"
       drop_duplicates: true
       snotel_mode: true # Flag for SNOTEL data format
       station: "SourdoughGulch_WA_985"
@@ -246,7 +246,7 @@ stations:
       out_dir: "Temporal/Pipeline/data/raw/touchet/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/Touchet/"
+      in_dir: "Temporal/Pipeline/data/raw/touchet/"
       out_dir: "Temporal/Pipeline/data/processed/touchet"
       drop_duplicates: true
       snotel_mode: true # Flag for SNOTEL data format
