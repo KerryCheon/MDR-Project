@@ -1,0 +1,42 @@
+{
+  "seed": 42,
+  "split_by": "station_id + time",
+  "policy": "temporal_only: per-station time split into train/val/test, then concatenate",
+  "val_time_frac": 0.15,
+  "test_time_frac": 0.15,
+  "min_val_dates_per_station": 5,
+  "min_test_dates_per_station": 5,
+  "target": "soil_moisture_5cm",
+  "features": [
+    "rain_mm",
+    "precip_mm",
+    "air_temp_mean",
+    "rh_mean",
+    "solar_radiation",
+    "NDVI",
+    "NDMI",
+    "MSI",
+    "s1_vv",
+    "s1_vh",
+    "SAR_ratio",
+    "elev",
+    "slope",
+    "DOY"
+  ],
+  "meta_cols_kept": [
+    "station_id",
+    "date",
+    "longitude",
+    "latitude"
+  ],
+  "stations": [
+    4136,
+    4223,
+    4237
+  ],
+  "rows": {
+    "train": 9709,
+    "val": 2080,
+    "test": 2080
+  }
+}
