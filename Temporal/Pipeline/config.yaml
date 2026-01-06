@@ -314,7 +314,10 @@ logging:
 
   # new dedicated imputer log
   imputer_file_path: "Temporal/Pipeline/logs/imputer.log"
-  imputer_level: "DEBUG" # vote breakdowns, weights, etc
+  imputer_level: "DEBUG"
+
+  validator_file_path: "Temporal/Pipeline/logs/validator.log"
+  validator_level: "INFO"
 
   format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
   datefmt: "%Y-%m-%d %H:%M:%S"

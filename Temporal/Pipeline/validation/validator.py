@@ -20,6 +20,7 @@ class ValidationRunner:
         # pre: p_mask is fraction of real values to hide (0 < p_mask <= 1)
         # post: ValidationRunner stores config for repeatable evaluations
         self.cfg = load_config().get("validator", {})
+        self.log_cfg = self.cfg.get("logging", {})
 
         seed = self.cfg.get("random_seed", 42)
         p_mask = self.cfg.get("mask_fraction", 0.1)
