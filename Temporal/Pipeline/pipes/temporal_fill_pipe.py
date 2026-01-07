@@ -24,8 +24,8 @@ class TemporalFillPipe:
 
         # Features allowed to interpolate (fast or slow, but smooth enough)
         self.interpolate_cols = self.config.get("interpolate_cols", [
-            "LST",
-            "NDVI",
+            "LST_modis",
+            "NDVI_modis",
             "s1_vv",
             "s1_vh",
             "s2_b2",

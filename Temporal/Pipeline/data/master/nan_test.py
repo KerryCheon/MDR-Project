@@ -1,7 +1,7 @@
 import pandas as pd
 
 df = pd.read_csv(
-    "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/master_cleaned/final_master_cleaned.csv"
+    "final_master.csv"
 )
 
 n_rows = len(df)

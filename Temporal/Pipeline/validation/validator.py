@@ -27,7 +27,7 @@ class ValidationRunner:
 
         self.seed = int(seed)
         self.p_mask = float(p_mask)
-        self.logger = get_logger().getChild("imputer.validation")
+        self.logger = get_logger("validator")
 
     def _mask_values(self, df, col):
         # pre: df[col] exists

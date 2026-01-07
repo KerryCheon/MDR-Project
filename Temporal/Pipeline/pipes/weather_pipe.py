@@ -128,7 +128,7 @@ class WeatherPipe:
             daily_df = cache[cache_key]
         else:
             self.logger.info(f"Fetching Open-Meteo hourly weather in {self.chunk_years}y chunks: "
-                             f"{start.strftime('%Y-%m-%d')} → {end.strftime('%Y-%m-%d')}")
+                             f"{start.strftime('%Y-%m-%d')} -- {end.strftime('%Y-%m-%d')}")
 
             frames = []
             for s, e in self._date_chunks(start, end):

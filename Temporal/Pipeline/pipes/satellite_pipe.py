@@ -262,6 +262,8 @@ class SatellitePipe:
         if not sat_df.empty:
             sat_df["week"] = sat_df["week"].astype(str)
 
+        self.logger.debug(f"[{self.station_name}] sat_df columns: {list(sat_df.columns)}")
+
         # Merge satellite features onto *all rows in that week*
         merged = pd.merge(df, sat_df, on="week", how="left").drop(columns=["week"])
 

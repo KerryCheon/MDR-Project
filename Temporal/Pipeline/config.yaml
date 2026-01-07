@@ -197,7 +197,6 @@ stations:
   # STATION 4: Sourdough Gulch SNOTEL #985
   # -----------------------------------------------------------
   sourdough_gulch:
-    snotel_mode: true
     request:
       base_url: null # SNOTEL data - no download needed
       station: "SourdoughGulch_WA_985"
@@ -211,7 +210,7 @@ stations:
       in_dir: "Temporal/Pipeline/data/raw/SourdoughGulch/"
       out_dir: "Temporal/Pipeline/data/processed/sourdough"
       drop_duplicates: true
-      # snotel_mode: true # Flag for SNOTEL data format
+      snotel_mode: true # Flag for SNOTEL data format
       station: "SourdoughGulch_WA_985"
       latitude: 46.233333
       longitude: -117.4
@@ -236,7 +235,7 @@ stations:
   # -----------------------------------------------------------
   # STATION 5: Touchet SNOTEL #824
   # -----------------------------------------------------------
-  touchet:
+  touchnet:
     request:
       base_url: null # SNOTEL data - no download needed
       station: "Touchet_WA_824"

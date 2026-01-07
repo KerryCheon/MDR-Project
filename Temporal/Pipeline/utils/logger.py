@@ -53,12 +53,13 @@ def setup_logger(config):
     imputer_log.addHandler(fh_imp)
 
     val_log = logging.getLogger(f"{_ROOT_LOGGER}.validator")
-    val_log.setLevel("INFO")
+    val_log.setLevel(log_cfg.get("validator_level", "INFO").upper())
     val_log.propagate = False
 
-    val_file = Path("logs/validator.log")
+    val_file = Path(log_cfg.get("validator_file_path", "logs/validator.log"))
     val_file.parent.mkdir(parents=True, exist_ok=True)
-    fh_val = logging.FileHandler(val_file, mode="a")
+
+    fh_val = logging.FileHandler(val_file, mode="a", encoding="utf-8")
     fh_val.setFormatter(formatter)
     val_log.addHandler(fh_val)
 
