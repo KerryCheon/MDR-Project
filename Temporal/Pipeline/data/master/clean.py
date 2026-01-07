@@ -10,12 +10,31 @@ import os
 MASTER = '/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/master/final_master.pkl'
 df = pd.read_pickle(MASTER)
 
-# Filter out data before soil moisture becomes available
+# Normalizing station IDs to names to match the format of SNOTEL data
+station_id_map = {
+    4223: "Darrington",
+    4237: "Quinault",
+    4136: "Spokane",
+}
+
+df["station_id"] = df["station_id"].replace(station_id_map).astype(str)
+
+print("Station IDs after normalization:")
+print(sorted(df["station_id"].dropna().unique()))
+
+snotel_cols = [c for c in df.columns if c.startswith("SNOTEL")]
+if snotel_cols:
+    print(f"\nDropping {len(snotel_cols)} SNOTEL columns:")
+    print(snotel_cols)
+    df = df.drop(columns=snotel_cols)
+else:
+    print("\nNo SNOTEL columns found to drop.")
+
 df["date"] = pd.to_datetime(df["date"])
 CUTOFF_DATE = pd.Timestamp("2011-10-06")
 df = df[df["date"] >= CUTOFF_DATE].copy()
 
-print(f"Filtered Length (post-cutoff): {len(df)}")
+print(f"\nFiltered Length (post-cutoff): {len(df)}")
 
 CLEAN_DIR = '/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/master_cleaned'
 os.makedirs(CLEAN_DIR, exist_ok=True)

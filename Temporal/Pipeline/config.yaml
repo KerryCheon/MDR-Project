@@ -197,6 +197,7 @@ stations:
   # STATION 4: Sourdough Gulch SNOTEL #985
   # -----------------------------------------------------------
   sourdough_gulch:
+    snotel_mode: true
     request:
       base_url: null # SNOTEL data - no download needed
       station: "SourdoughGulch_WA_985"
@@ -204,13 +205,13 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/sourdough/"
+      out_dir: "Temporal/Pipeline/data/raw/SourdoughGulch/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/sourdough/"
+      in_dir: "Temporal/Pipeline/data/raw/SourdoughGulch/"
       out_dir: "Temporal/Pipeline/data/processed/sourdough"
       drop_duplicates: true
-      snotel_mode: true # Flag for SNOTEL data format
+      # snotel_mode: true # Flag for SNOTEL data format
       station: "SourdoughGulch_WA_985"
       latitude: 46.233333
       longitude: -117.4
@@ -243,10 +244,10 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/touchet/"
+      out_dir: "Temporal/Pipeline/data/raw/Touchet/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/touchet/"
+      in_dir: "Temporal/Pipeline/data/raw/Touchet/"
       out_dir: "Temporal/Pipeline/data/processed/touchet"
       drop_duplicates: true
       snotel_mode: true # Flag for SNOTEL data format
@@ -277,8 +278,8 @@ stations:
 
 temporal_fill:
   interpolate_cols:
-    - LST
-    - NDVI
+    - LST_modis
+    - NDVI_modis
     - s1_vv
     - s1_vh
     - s2_b2
@@ -297,8 +298,7 @@ temporal_fill:
 
 whittaker:
   lambda: 5000 # tuned for NDVI smoothness
-  target_columns:
-    - NDVI
+  target_columns: ["NDVI_modis"]
 
 weather:
   cache_path: "Temporal/Pipeline/data/cache/{station}_weather_cache.json"

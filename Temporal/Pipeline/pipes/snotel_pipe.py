@@ -55,6 +55,10 @@ class SNOTELPipe:
         match = re.search(r"_(\w+)_([\d.-]+)_([\d.-]+)_([\w\-]+?)(?:-([A-D]))?_", filename)
         if match:
             variable = match.group(1)      # e.g., sm, ts, ta
+
+            if "_" in variable:
+                variable = variable.split("_")[-1]
+
             depth_upper = match.group(2)   # e.g., 0.050800
             depth_lower = match.group(3)   # e.g., 0.050800
             sensor = match.group(4)        # e.g., Hydraprobe-Analog, Thermistor
@@ -257,12 +261,13 @@ class SNOTELPipe:
         master_df['date'] = pd.to_datetime(master_df['DateTime'], errors='coerce').dt.strftime('%Y-%m-%d')
         master_df['station_id'] = self.station_name
 
+        # edit: make it strongly typed
         if self.latitude is not None:
-            master_df['latitude'] = self.latitude
+            master_df["latitude"] = float(self.latitude)
         if self.longitude is not None:
-            master_df['longitude'] = self.longitude
+            master_df["longitude"] = float(self.longitude)
         if self.elevation is not None:
-            master_df['elevation'] = self.elevation
+            master_df["elevation"] = float(self.elevation)
 
         # Reorder columns: DateTime, date, station_id, lat, lon, then data columns, elevation last
         priority_cols = ['DateTime', 'date', 'station_id']

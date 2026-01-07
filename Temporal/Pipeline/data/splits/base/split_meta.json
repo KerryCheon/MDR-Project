@@ -30,9 +30,9 @@
     "latitude"
   ],
   "stations": [
-    4136,
-    4223,
-    4237
+    "Darrington",
+    "Quinault",
+    "Spokane"
   ],
   "rows": {
     "train": 9709,

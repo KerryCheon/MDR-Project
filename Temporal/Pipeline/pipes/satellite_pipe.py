@@ -221,17 +221,21 @@ class SatellitePipe:
 
         df = df.copy()
         df["date"] = pd.to_datetime(df["date"])
-        grouped = df.groupby(df["date"].dt.to_period("W"))
+
+        # Create a stable weekly key (STRING on purpose)
+        df["week"] = df["date"].dt.to_period("W-SUN").astype(str)
+        grouped = df.groupby("week")
 
         futures = {}
         with ThreadPoolExecutor(max_workers=4) as ex:
-            for period, group in grouped:
+            for week, group in grouped:
                 start = group["date"].min().strftime("%Y-%m-%d")
                 end = (group["date"].max() + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
                 date_key = f"{start}_{end}"
+
                 if date_key not in cache:
-                    lat = group["latitude"].median()
-                    lon = group["longitude"].median()
+                    lat = float(group["latitude"].median())
+                    lon = float(group["longitude"].median())
                     futures[ex.submit(self.fetch_satellite_batch, lat, lon, start, end)] = date_key
 
             for future in tqdm(as_completed(futures), total=len(futures), desc=f"Satellite ({self.station_name})"):
@@ -245,24 +249,25 @@ class SatellitePipe:
         with open(self.cache_path, "w") as f:
             json.dump(cache, f, indent=2)
 
+        # Build one satellite row per week key
         sat = []
-        for period, group in grouped:
+        for week, group in grouped:
             start = group["date"].min()
             end = group["date"].max()
             date_key = f"{start.strftime('%Y-%m-%d')}_{(end + pd.Timedelta(days=1)).strftime('%Y-%m-%d')}"
             res = cache.get(date_key, {})
-            mid_date = start + (end - start) / 2
-            sat.append({"date": mid_date, **res})
+            sat.append({"week": str(week), **res})  # ensure string
 
         sat_df = pd.DataFrame(sat)
-        sat_df["date"] = pd.to_datetime(sat_df["date"])
+        if not sat_df.empty:
+            sat_df["week"] = sat_df["week"].astype(str)
 
-        merged = pd.merge(df, sat_df, on="date", how="left")
+        # Merge satellite features onto *all rows in that week*
+        merged = pd.merge(df, sat_df, on="week", how="left").drop(columns=["week"])
 
         # hard guard: Rain_sat is deprecated and should not exist anymore
         if "Rain_sat" in merged.columns:
             merged = merged.drop(columns=["Rain_sat"])
 
         self.logger.info(f"[{self.station_name}] SatellitePipe complete — {len(merged)} rows")
-
         return merged

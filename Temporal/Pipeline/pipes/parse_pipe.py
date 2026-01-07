@@ -9,15 +9,10 @@ from pathlib import Path
 from ..utils.logger import get_logger
 from ..utils.config import load_config
 
-# Try to import SNOTELPipe - handle both absolute and relative imports
 try:
-    from .pipes.snotel_pipe import SNOTELPipe
+    from .snotel_pipe import SNOTELPipe
 except ImportError:
-    try:
-        from .snotel_pipe import SNOTELPipe
-    except ImportError:
-        # If SNOTELPipe not available, create a placeholder
-        SNOTELPipe = None
+    SNOTELPipe = None
 
 class ParsePipe:
     FILE_GLOB = "uscrn_*.txt"

@@ -18,7 +18,7 @@ class WhittakerPipe:
         ws_cfg = self.config.get("whittaker", {})
 
         # defaults if not defined
-        self.target_columns = ws_cfg.get("target_columns", ["NDVI"])
+        self.target_columns = ws_cfg.get("target_columns", ["NDVI_modis"])
         self.lmbda = ws_cfg.get("lambda", 5000)
 
         self.logger = get_logger().getChild(f"whittaker.{self.station_name}")
