@@ -8,6 +8,7 @@
 import warnings
 from requests import packages
 
+warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=UserWarning, module="requests")
 # MUTE THE ANNOYING REQUESTS WARNING
 
