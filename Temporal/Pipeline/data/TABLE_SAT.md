@@ -243,5 +243,3 @@ $$\text{EMA}_t = \alpha x_t + (1-\alpha) \text{EMA}_{t-1}$$
 - Daniel: #25-35
 
 -->
-
-## Feaut

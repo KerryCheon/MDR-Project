@@ -1,0 +1,47 @@
+{
+  "seed": 42,
+  "split_by": "station_id + time",
+  "policy": "temporal_only: per-station time split into train/val/test, then concatenate",
+  "variant": "base_excluding_airtemp_rh_solar",
+  "excluded_features": [
+    "air_temp_mean",
+    "rh_mean",
+    "solar_radiation"
+  ],
+  "val_time_frac": 0.15,
+  "test_time_frac": 0.15,
+  "min_val_dates_per_station": 5,
+  "min_test_dates_per_station": 5,
+  "target": "soil_moisture_5cm",
+  "features": [
+    "rain_mm",
+    "precip_mm",
+    "NDVI",
+    "NDMI",
+    "MSI",
+    "s1_vv",
+    "s1_vh",
+    "SAR_ratio",
+    "elev",
+    "slope",
+    "DOY"
+  ],
+  "meta_cols_kept": [
+    "station_id",
+    "date",
+    "longitude",
+    "latitude"
+  ],
+  "stations": [
+    "Darrington",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane",
+    "Touchet_WA_824"
+  ],
+  "rows": {
+    "train": 15904,
+    "val": 3408,
+    "test": 3408
+  }
+}
