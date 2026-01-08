@@ -1,0 +1,67 @@
+{
+  "seed": 42,
+  "split_by": "station_id + time",
+  "policy": "temporal_only: per-station tail split into train/val/test, then concatenate",
+  "variant": "derived_all_no_ground",
+  "target": "soil_moisture_5cm",
+  "meta_cols_kept": [
+    "station_id",
+    "date",
+    "longitude",
+    "latitude"
+  ],
+  "base_cols": [
+    "precip_mm",
+    "s1_vv",
+    "s1_vh",
+    "s2_b4",
+    "s2_b8",
+    "s2_b11",
+    "s2_b12",
+    "LST_modis",
+    "elev",
+    "slope",
+    "aspect",
+    "DOY"
+  ],
+  "prefixes": {
+    "META": "M",
+    "BASE": "B",
+    "MET": "G",
+    "RAD": "E",
+    "OPT": "F",
+    "DYN": "A",
+    "VOL": "V",
+    "MEM": "C",
+    "SEA": "D",
+    "EVT": "I"
+  },
+  "params": {
+    "eps": 1e-06,
+    "api_decay": 0.9,
+    "dslr_rain_threshold_mm": 0.5,
+    "smm_alpha": 0.85,
+    "win_obs_7": 7,
+    "win_obs_14": 14,
+    "rain_sum_days": [
+      3,
+      7,
+      30
+    ],
+    "spike_col": "s1_vv",
+    "spike_diff_col": "E_dVV_1",
+    "spike_z_thr": 2.0
+  },
+  "stations": [
+    "Darrington",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane",
+    "Touchet_WA_824"
+  ],
+  "rows": {
+    "train": 15904,
+    "val": 3408,
+    "test": 3408
+  }
+}
