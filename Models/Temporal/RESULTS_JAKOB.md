@@ -160,6 +160,48 @@ Derived feature set expanded using a small, curated subset informed by earlier f
 
 ---
 
+### v3.1.0 — **VALID Baseline (All Derived Features)**
+
+**Description:**
+Added all derived features except the unstable ones identified in prior analyses.
+
+#### Results
+
+| Split | MAE      | RMSE     | R²       |
+| ----- | -------- | -------- | -------- |
+| Train | 0.011984 | 0.016691 | 0.973135 |
+| Val   | 0.039207 | 0.050659 | 0.777642 |
+| Test  | 0.043802 | 0.056370 | 0.632453 |
+
+**Comments:**
+
+- Added all features (89 total)
+- All features verified to be temporally valid
+- **VALID** baseline
+
+---
+
+### v3.2.0 — **VALID Baseline (All Derived Features)**
+
+**Description:**
+Picked 40 features out of 89 by pruning the families with lowest importance from v3.1.0.
+
+#### Results
+
+| Split | MAE      | RMSE     | R²       |
+| ----- | -------- | -------- | -------- |
+| Train | 0.012754 | 0.017935 | 0.968981 |
+| Val   | 0.039758 | 0.051282 | 0.772138 |
+| Test  | 0.043800 | 0.056701 | 0.628125 |
+
+**Comments:**
+
+- 40 features selected from 89 in v3.1.0
+- All features verified to be temporally valid
+- **VALID** baseline
+
+---
+
 ## Template for New Model Versions
 
 ```markdown
