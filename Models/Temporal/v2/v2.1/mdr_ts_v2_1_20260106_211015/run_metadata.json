@@ -1,0 +1,55 @@
+{
+  "model_name": "MDR-TS",
+  "version": "v1.0",
+  "run_name": "mdr_ts_v2_1",
+  "timestamp": "20260106_211015",
+  "model_config": {
+    "n_estimators": 500,
+    "max_depth": 5,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_alpha": 0.0,
+    "reg_lambda": 1.0,
+    "objective": "reg:squarederror",
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "features": [
+    "rain_mm",
+    "precip_mm",
+    "air_temp_mean",
+    "rh_mean",
+    "solar_radiation",
+    "NDVI",
+    "NDMI",
+    "MSI",
+    "s1_vv",
+    "s1_vh",
+    "SAR_ratio",
+    "DOY"
+  ],
+  "target": "soil_moisture_5cm",
+  "splits": {
+    "train_stations": [
+      4136,
+      4223,
+      4237
+    ],
+    "val_stations": [
+      4136,
+      4223,
+      4237
+    ],
+    "test_stations": [
+      4136,
+      4223,
+      4237
+    ]
+  },
+  "data_sizes": {
+    "train": 9709,
+    "val": 2080,
+    "test": 2080
+  }
+}

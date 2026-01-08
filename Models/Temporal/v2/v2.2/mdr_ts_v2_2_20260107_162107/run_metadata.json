@@ -1,0 +1,58 @@
+{
+  "model_name": "MDR-TS",
+  "version": "v1.0",
+  "run_name": "mdr_ts_v2_2",
+  "timestamp": "20260107_162107",
+  "model_config": {
+    "n_estimators": 500,
+    "max_depth": 5,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_alpha": 0.0,
+    "reg_lambda": 1.0,
+    "objective": "reg:squarederror",
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "features": [
+    "rain_mm",
+    "precip_mm",
+    "NDVI",
+    "NDMI",
+    "MSI",
+    "s1_vv",
+    "s1_vh",
+    "SAR_ratio",
+    "DOY"
+  ],
+  "target": "soil_moisture_5cm",
+  "splits": {
+    "train_stations": [
+      "Darrington",
+      "Quinault",
+      "SourdoughGulch_WA_985",
+      "Spokane",
+      "Touchet_WA_824"
+    ],
+    "val_stations": [
+      "Darrington",
+      "Quinault",
+      "SourdoughGulch_WA_985",
+      "Spokane",
+      "Touchet_WA_824"
+    ],
+    "test_stations": [
+      "Darrington",
+      "Quinault",
+      "SourdoughGulch_WA_985",
+      "Spokane",
+      "Touchet_WA_824"
+    ]
+  },
+  "data_sizes": {
+    "train": 15904,
+    "val": 3408,
+    "test": 3408
+  }
+}
