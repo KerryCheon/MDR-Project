@@ -1,5 +1,7 @@
 # derived_features_all_math.py
 
+# TODO: document all functions...
+
 from __future__ import annotations
 
 import numpy as np
@@ -303,32 +305,135 @@ def train_only_monthly_zscore_global(
     sd_for_full = full_month.map(lambda m: sd.get(m, sd_fallback)).astype(float).clip(lower=eps)
     return (full_df[col].astype(float) - mu_for_full.values) / sd_for_full.values
 
-def compute_time_since_last_spike(
+def compute_time_since_last_spike_past_only(
     df: pd.DataFrame,
     diff_col: str,
     zthr: float = 2.0,
     group_col: str = "station_id",
     date_col: str = "date",
-) -> pd.Series:
+    eps: float = 1e-6,) -> pd.Series:
+
     out = pd.Series(index=df.index, dtype=float)
+
     for _, g in _group_sorted(df, group_col, date_col):
         d = g[diff_col].astype(float).values
         dates = pd.to_datetime(g[date_col]).values
-        mu = np.nanmean(d)
-        sd = np.nanstd(d)
-        if not np.isfinite(sd) or sd < 1e-6:
-            sd = 1.0
-        z = (d - mu) / sd
+
         ts = np.zeros(len(g), dtype=float)
         last = None
+
+        running_sum = 0.0
+        running_sumsq = 0.0
+        running_n = 0
+
         for i in range(len(g)):
-            if np.isfinite(z[i]) and z[i] >= zthr:
+            if running_n >= 2 and np.isfinite(d[i]):
+                mu = running_sum / running_n
+                var = (running_sumsq / running_n) - mu * mu
+                sd = np.sqrt(max(var, eps))
+                z = (d[i] - mu) / sd
+            else:
+                z = np.nan
+
+            if np.isfinite(z) and z >= zthr:
                 last = dates[i]
                 ts[i] = 0.0
             else:
-                if last is None:
-                    ts[i] = np.nan
-                else:
-                    ts[i] = float((dates[i] - last) / np.timedelta64(1, "D"))
+                ts[i] = np.nan if last is None else float((dates[i] - last) / np.timedelta64(1, "D"))
+
+            if np.isfinite(d[i]):
+                running_sum += float(d[i])
+                running_sumsq += float(d[i] * d[i])
+                running_n += 1
+
         out.loc[g.index] = ts
+
+    return out
+
+def rolling_corr(
+    df: pd.DataFrame,
+    x_col: str,
+    y_col: str,
+    window: int = 7,
+    group_col: str = "station_id",
+    date_col: str = "date",
+    min_periods: int | None = None,
+    past_only: bool = True,) -> pd.Series:
+
+    if min_periods is None:
+        min_periods = window
+    out = pd.Series(index=df.index, dtype=float)
+    for _, g in _group_sorted(df, group_col, date_col):
+        x = g[x_col].astype(float)
+        y = g[y_col].astype(float)
+        if past_only:
+            x = x.shift(1)
+            y = y.shift(1)
+        out.loc[g.index] = x.rolling(window=window, min_periods=min_periods).corr(y).values
+    return out
+
+def rolling_fft_dom_freq_and_entropy(
+    df: pd.DataFrame,
+    col: str,
+    window: int = 30,
+    group_col: str = "station_id",
+    date_col: str = "date",
+    past_only: bool = True,
+    eps: float = 1e-12,) -> tuple[pd.Series, pd.Series]:
+
+    dom_out = pd.Series(index=df.index, dtype=float)
+    ent_out = pd.Series(index=df.index, dtype=float)
+
+    for _, g in _group_sorted(df, group_col, date_col):
+        x = g[col].astype(float)
+        if past_only:
+            x = x.shift(1)
+
+        dom = np.full(len(g), np.nan, dtype=float)
+        ent = np.full(len(g), np.nan, dtype=float)
+
+        xv = x.values
+
+        for i in range(len(g)):
+            if i + 1 < window:
+                continue
+            w = xv[i + 1 - window : i + 1]
+
+            if not np.all(np.isfinite(w)):
+                continue
+
+            w = w - np.mean(w)
+            mag = np.abs(np.fft.rfft(w))
+            mag = mag[1:]
+            if mag.size == 0:
+                continue
+
+            dom[i] = float(np.argmax(mag) + 1)
+
+            p = mag / (np.sum(mag) + eps)
+            ent[i] = float(-np.sum(p * np.log(p + eps)) / np.log(len(p) + eps))
+
+        dom_out.loc[g.index] = dom
+        ent_out.loc[g.index] = ent
+
+    return dom_out, ent_out
+
+def rolling_mean_abs_change(
+    df: pd.DataFrame,
+    col: str,
+    window: int = 7,
+    group_col: str = "station_id",
+    date_col: str = "date",
+    past_only: bool = True,
+    min_periods: int | None = None,) -> pd.Series:
+    if min_periods is None:
+        min_periods = window
+
+    out = pd.Series(index=df.index, dtype=float)
+    for _, g in _group_sorted(df, group_col, date_col):
+        x = g[col].astype(float)
+        dx = x.diff(1)
+        if past_only:
+            dx = dx.shift(1)
+        out.loc[g.index] = dx.abs().rolling(window=window, min_periods=min_periods).mean().values
     return out

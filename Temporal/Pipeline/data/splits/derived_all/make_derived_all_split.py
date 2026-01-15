@@ -4,6 +4,7 @@ import os
 import json
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
 from utils.derived_features_all_math import (
     compute_ndvi,
@@ -14,22 +15,28 @@ from utils.derived_features_all_math import (
     compute_api,
     compute_days_since_last_rain,
     compute_rain_sums_days,
-    compute_time_since_last_spike,
+    compute_time_since_last_spike_past_only,
+
     series_lags,
     series_diffs,
     series_pct_change,
     series_gradient_kobs,
+
     rolling_mean,
     rolling_std,
     rolling_min,
     rolling_max,
     rolling_range,
     rolling_cv,
+    rolling_corr,
+    rolling_fft_dom_freq_and_entropy,
+    rolling_mean_abs_change,
+
     ema,
     smm_index,
+
     train_only_monthly_anomaly_global,
-    train_only_monthly_zscore_global,
-)
+    train_only_monthly_zscore_global)
 
 MASTER_CLEANED = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/master_cleaned/final_master_cleaned.csv"
 SPLIT_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_all/"
@@ -76,6 +83,11 @@ SMM_ALPHA = 0.85
 KOBS_SHORT = 1
 KOBS_MED = 2
 KOBS_LONG = 5
+
+EXTRA_DIFFS = [5, 7, 14, 30]
+EXTRA_LAGS  = [6, 12, 30]
+FFT_WIN = 30
+CORR_WINS = [7, 14]
 
 WIN_OBS_7 = 7
 WIN_OBS_14 = 14
@@ -197,6 +209,9 @@ def _add_derived_features(train_df, val_df, test_df):
 
     _require_no_dupes(full)
 
+    # ----------------------------
+    # 0) Core single-shot features
+    # ----------------------------
     full[f"{PFX['OPT']}_NDVI"] = compute_ndvi(full, nir_col="s2_b8", red_col="s2_b4", eps=EPS)
     full[f"{PFX['OPT']}_NDMI"] = compute_ndmi(full, nir_col="s2_b8", swir_col="s2_b11", eps=EPS)
     full[f"{PFX['OPT']}_MSI"]  = compute_msi(full, swir_col="s2_b11", nir_col="s2_b8", eps=EPS)
@@ -204,80 +219,167 @@ def _add_derived_features(train_df, val_df, test_df):
     full[f"{PFX['RAD']}_SAR_ratio"] = compute_sar_ratio(full, vv_col="s1_vv", vh_col="s1_vh", eps=EPS)
     full[f"{PFX['RAD']}_SAR_diff"]  = compute_sar_diff(full, vv_col="s1_vv", vh_col="s1_vh")
 
-    full[f"{PFX['MET']}_API"]  = compute_api(full, precip_col="precip_mm", decay=API_DECAY, group_col=GROUP_COL, date_col=DATE_COL)
-    full[f"{PFX['MET']}_DSLR"] = compute_days_since_last_rain(full, precip_col="precip_mm", threshold_mm=RAIN_THR_MM, group_col=GROUP_COL, date_col=DATE_COL)
+    full[f"{PFX['MET']}_API"]  = compute_api(
+        full, precip_col="precip_mm", decay=API_DECAY, group_col=GROUP_COL, date_col=DATE_COL
+    )
+    full[f"{PFX['MET']}_DSLR"] = compute_days_since_last_rain(
+        full, precip_col="precip_mm", threshold_mm=RAIN_THR_MM, group_col=GROUP_COL, date_col=DATE_COL
+    )
 
     for d in RAIN_SUM_DAYS:
         full[f"{PFX['MET']}_rain_sum_{d}d"] = compute_rain_sums_days(
             full, precip_col="precip_mm", window_days=d, group_col=GROUP_COL, date_col=DATE_COL
         )
 
-    train_full = full[full["_split"] == "train"].copy()
-    val_full   = full[full["_split"] == "val"].copy()
-    test_full  = full[full["_split"] == "test"].copy()
+    # ----------------------------
+    # 1) Family parameters
+    # ----------------------------
+    DIFF_KOBS_LIST = [1, 2, 5, 7, 14, 30]         # A
+    GRAD_KOBS_LIST = [WIN_OBS_7, WIN_OBS_14, 30]  # A
+    LAG_KOBS_LIST  = [1, 2, 5, 6, 12, 30]         # C
+    WIN_LIST       = [WIN_OBS_7, WIN_OBS_14, 30]  # B (+ used by H/E)
+    FFT_WIN        = 30                           # D
+    CORR_WINS      = [WIN_OBS_7, WIN_OBS_14]      # H
 
+    INCLUDE_SWIR_DYNAMICS = True
+
+    INCLUDE_NDVI_DYNAMICS = True
+    INCLUDE_SARDIFF_DYNAMICS = True
+
+    # ----------------------------
+    # 2) Signals to derive A/B/C from
+    # ----------------------------
     dyn_signals = {
         f"{PFX['MET']}_API": f"{PFX['MET']}_API",
         f"{PFX['OPT']}_NDMI": f"{PFX['OPT']}_NDMI",
         f"{PFX['RAD']}_SAR_ratio": f"{PFX['RAD']}_SAR_ratio",
         "LST_modis": "LST_modis",
     }
+    if INCLUDE_NDVI_DYNAMICS:
+        dyn_signals[f"{PFX['OPT']}_NDVI"] = f"{PFX['OPT']}_NDVI"
+    if INCLUDE_SARDIFF_DYNAMICS:
+        dyn_signals[f"{PFX['RAD']}_SAR_diff"] = f"{PFX['RAD']}_SAR_diff"
+    if INCLUDE_SWIR_DYNAMICS:
+        dyn_signals["s2_b11"] = "s2_b11"
+        dyn_signals["s2_b12"] = "s2_b12"
 
-    for col in dyn_signals.values():
-        out = series_diffs(full, col=col, kobs=1, group_col=GROUP_COL, date_col=DATE_COL)
-        full[f"{PFX['DYN']}_d_{col}_kobs1"] = out
+    # ----------------------------
+    # 3) Families A, B, C on selected signals
+    # ----------------------------
+    for i, col in enumerate(dyn_signals.values()):
+        # A: n-step diffs
+        if (i + 1) % 2 == 0:   # every 2 signals
+            full = full.copy()
 
-        out = series_diffs(full, col=col, kobs=2, group_col=GROUP_COL, date_col=DATE_COL)
-        full[f"{PFX['DYN']}_d_{col}_kobs2"] = out
+        for k in DIFF_KOBS_LIST:
+            full[f"{PFX['DYN']}_d_{col}_kobs{k}"] = series_diffs(
+                full, col=col, kobs=k, group_col=GROUP_COL, date_col=DATE_COL
+            )
 
-        out = series_gradient_kobs(full, col=col, kobs=WIN_OBS_7, group_col=GROUP_COL, date_col=DATE_COL)
-        full[f"{PFX['DYN']}_grad_{col}_kobs{WIN_OBS_7}"] = out
+        # A: gradients
+        for k in GRAD_KOBS_LIST:
+            full[f"{PFX['DYN']}_grad_{col}_kobs{k}"] = series_gradient_kobs(
+                full, col=col, kobs=k, group_col=GROUP_COL, date_col=DATE_COL
+            )
 
-        out = series_pct_change(full, col=col, group_col=GROUP_COL, date_col=DATE_COL, eps=EPS)
-        full[f"{PFX['DYN']}_pct_{col}"] = out
+        # A: percent change (1-step)
+        full[f"{PFX['DYN']}_pct_{col}"] = series_pct_change(
+            full, col=col, group_col=GROUP_COL, date_col=DATE_COL, eps=EPS
+        )
 
-        out = rolling_std(full, col=col, window=WIN_OBS_7, group_col=GROUP_COL, date_col=DATE_COL, ddof=0, min_periods=WIN_OBS_7)
-        full[f"{PFX['VOL']}_rollstd_{col}_kobs{WIN_OBS_7}"] = out
+        # B: rolling stats + EMA for multiple windows
+        for w in WIN_LIST:
+            full[f"{PFX['VOL']}_rollstd_{col}_kobs{w}"] = rolling_std(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, ddof=0, min_periods=w
+            )
+            full[f"{PFX['VOL']}_rollrng_{col}_kobs{w}"] = rolling_range(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, min_periods=w
+            )
+            full[f"{PFX['VOL']}_rollcv_{col}_kobs{w}"] = rolling_cv(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, eps=EPS, ddof=0, min_periods=w
+            )
+            full[f"{PFX['VOL']}_rollmean_{col}_kobs{w}"] = rolling_mean(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, min_periods=w
+            )
+            full[f"{PFX['VOL']}_rollmin_{col}_kobs{w}"] = rolling_min(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, min_periods=w
+            )
+            full[f"{PFX['VOL']}_rollmax_{col}_kobs{w}"] = rolling_max(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, min_periods=w
+            )
+            full[f"{PFX['VOL']}_ema_{col}_kobs{w}"] = ema(
+                full, col=col, alpha=2.0 / (w + 1.0), group_col=GROUP_COL, date_col=DATE_COL
+            )
 
-        out = rolling_range(full, col=col, window=WIN_OBS_7, group_col=GROUP_COL, date_col=DATE_COL, min_periods=WIN_OBS_7)
-        full[f"{PFX['VOL']}_rollrng_{col}_kobs{WIN_OBS_7}"] = out
+        # C: lags (more horizons)
+        for k in LAG_KOBS_LIST:
+            full[f"{PFX['MEM']}_lag_{col}_kobs{k}"] = series_lags(
+                full, col=col, lag_kobs=k, group_col=GROUP_COL, date_col=DATE_COL
+            )
 
-        out = rolling_cv(full, col=col, window=WIN_OBS_7, group_col=GROUP_COL, date_col=DATE_COL, eps=EPS, ddof=0, min_periods=WIN_OBS_7)
-        full[f"{PFX['VOL']}_rollcv_{col}_kobs{WIN_OBS_7}"] = out
+        # C: smoothed memory index (keep your original design)
+        full[f"{PFX['MEM']}_smm_{col}_alpha{SMM_ALPHA}_n{KOBS_LONG}"] = smm_index(
+            full, col=col, alpha=SMM_ALPHA, n_lags=KOBS_LONG, group_col=GROUP_COL, date_col=DATE_COL
+        )
 
-        out = rolling_mean(full, col=col, window=WIN_OBS_7, group_col=GROUP_COL, date_col=DATE_COL, min_periods=WIN_OBS_7)
-        full[f"{PFX['VOL']}_rollmean_{col}_kobs{WIN_OBS_7}"] = out
-
-        out = rolling_min(full, col=col, window=WIN_OBS_7, group_col=GROUP_COL, date_col=DATE_COL, min_periods=WIN_OBS_7)
-        full[f"{PFX['VOL']}_rollmin_{col}_kobs{WIN_OBS_7}"] = out
-
-        out = rolling_max(full, col=col, window=WIN_OBS_7, group_col=GROUP_COL, date_col=DATE_COL, min_periods=WIN_OBS_7)
-        full[f"{PFX['VOL']}_rollmax_{col}_kobs{WIN_OBS_7}"] = out
-
-        out = ema(full, col=col, alpha=2.0 / (WIN_OBS_7 + 1.0), group_col=GROUP_COL, date_col=DATE_COL)
-        full[f"{PFX['VOL']}_ema_{col}_kobs{WIN_OBS_7}"] = out
-
-        out = series_lags(full, col=col, lag_kobs=KOBS_SHORT, group_col=GROUP_COL, date_col=DATE_COL)
-        full[f"{PFX['MEM']}_lag_{col}_kobs{KOBS_SHORT}"] = out
-
-        out = series_lags(full, col=col, lag_kobs=KOBS_MED, group_col=GROUP_COL, date_col=DATE_COL)
-        full[f"{PFX['MEM']}_lag_{col}_kobs{KOBS_MED}"] = out
-
-        out = series_lags(full, col=col, lag_kobs=KOBS_LONG, group_col=GROUP_COL, date_col=DATE_COL)
-        full[f"{PFX['MEM']}_lag_{col}_kobs{KOBS_LONG}"] = out
-
-        out = smm_index(full, col=col, alpha=SMM_ALPHA, n_lags=KOBS_LONG, group_col=GROUP_COL, date_col=DATE_COL)
-        full[f"{PFX['MEM']}_smm_{col}_alpha{SMM_ALPHA}_n{KOBS_LONG}"] = out
-
+    # ----------------------------
+    # 4) Radar event timing + roughness (E + I)
+    # ----------------------------
+    # E: VV 1-step diff used for event timing + roughness
     full[f"{PFX['RAD']}_dVV_1"] = series_diffs(full, col="s1_vv", kobs=1, group_col=GROUP_COL, date_col=DATE_COL)
-    full[f"{PFX['EVT']}_ts_spike_{SPIKE_COL}"] = compute_time_since_last_spike(
+
+    # E: roughness proxies (past-only rolling abs change)
+    for w in CORR_WINS:
+        full[f"{PFX['RAD']}_rough_s1_vv_kobs{w}"] = rolling_mean_abs_change(
+            full, col="s1_vv", window=w, group_col=GROUP_COL, date_col=DATE_COL, past_only=True, min_periods=w
+        )
+        full[f"{PFX['RAD']}_rough_s1_vh_kobs{w}"] = rolling_mean_abs_change(
+            full, col="s1_vh", window=w, group_col=GROUP_COL, date_col=DATE_COL, past_only=True, min_periods=w
+        )
+
+    # I: time since last spike (leakage-safe, past-only expanding zscore)
+    full[f"{PFX['EVT']}_ts_spike_{SPIKE_COL}"] = compute_time_since_last_spike_past_only(
         full,
-        diff_col=SPIKE_DIFF_COL,
+        diff_col=f"{PFX['RAD']}_dVV_1",
         zthr=SPIKE_Z_THR,
         group_col=GROUP_COL,
         date_col=DATE_COL,
+        eps=EPS,
     )
 
+    # ----------------------------
+    # 5) Family H: cross-signal coupling (rolling correlations)
+    # ----------------------------
+    # Radar–Optical coupling (SAR ratio vs NDMI)
+    for w in CORR_WINS:
+        full[f"H_corr_{PFX['RAD']}_SAR_ratio__{PFX['OPT']}_NDMI_kobs{w}"] = rolling_corr(
+            full,
+            x_col=f"{PFX['RAD']}_SAR_ratio",
+            y_col=f"{PFX['OPT']}_NDMI",
+            window=w,
+            group_col=GROUP_COL,
+            date_col=DATE_COL,
+            min_periods=w,
+            past_only=True,
+        )
+
+    # Temperature–Moisture coupling (LST vs NDMI)
+    for w in CORR_WINS:
+        full[f"H_corr_LST_modis__{PFX['OPT']}_NDMI_kobs{w}"] = rolling_corr(
+            full,
+            x_col="LST_modis",
+            y_col=f"{PFX['OPT']}_NDMI",
+            window=w,
+            group_col=GROUP_COL,
+            date_col=DATE_COL,
+            min_periods=w,
+            past_only=True,
+        )
+
+    # ----------------------------
+    # 6) Family D: train-only seasonal anomaly + z-score (your existing logic)
+    # ----------------------------
+    full = full.copy()
     train_full = full[full["_split"] == "train"].copy()
     val_full   = full[full["_split"] == "val"].copy()
     test_full  = full[full["_split"] == "test"].copy()
@@ -287,14 +389,45 @@ def _add_derived_features(train_df, val_df, test_df):
         full[f"{PFX['SEA']}_z_{col}"] = np.nan
 
     for col in [f"{PFX['OPT']}_NDMI", f"{PFX['RAD']}_SAR_ratio", "LST_modis"]:
-        full.loc[train_full.index, f"{PFX['SEA']}_sa_{col}"] = train_only_monthly_anomaly_global(train_full, train_full, col=col, date_col=DATE_COL).values
-        full.loc[val_full.index,   f"{PFX['SEA']}_sa_{col}"] = train_only_monthly_anomaly_global(train_full, val_full,   col=col, date_col=DATE_COL).values
-        full.loc[test_full.index,  f"{PFX['SEA']}_sa_{col}"] = train_only_monthly_anomaly_global(train_full, test_full,  col=col, date_col=DATE_COL).values
+        full.loc[train_full.index, f"{PFX['SEA']}_sa_{col}"] = train_only_monthly_anomaly_global(
+            train_full, train_full, col=col, date_col=DATE_COL
+        ).values
+        full.loc[val_full.index,   f"{PFX['SEA']}_sa_{col}"] = train_only_monthly_anomaly_global(
+            train_full, val_full, col=col, date_col=DATE_COL
+        ).values
+        full.loc[test_full.index,  f"{PFX['SEA']}_sa_{col}"] = train_only_monthly_anomaly_global(
+            train_full, test_full, col=col, date_col=DATE_COL
+        ).values
 
-        full.loc[train_full.index, f"{PFX['SEA']}_z_{col}"] = train_only_monthly_zscore_global(train_full, train_full, col=col, date_col=DATE_COL, eps=EPS).values
-        full.loc[val_full.index,   f"{PFX['SEA']}_z_{col}"] = train_only_monthly_zscore_global(train_full, val_full,   col=col, date_col=DATE_COL, eps=EPS).values
-        full.loc[test_full.index,  f"{PFX['SEA']}_z_{col}"] = train_only_monthly_zscore_global(train_full, test_full,  col=col, date_col=DATE_COL, eps=EPS).values
+        full.loc[train_full.index, f"{PFX['SEA']}_z_{col}"] = train_only_monthly_zscore_global(
+            train_full, train_full, col=col, date_col=DATE_COL, eps=EPS
+        ).values
+        full.loc[val_full.index,   f"{PFX['SEA']}_z_{col}"] = train_only_monthly_zscore_global(
+            train_full, val_full, col=col, date_col=DATE_COL, eps=EPS
+        ).values
+        full.loc[test_full.index,  f"{PFX['SEA']}_z_{col}"] = train_only_monthly_zscore_global(
+            train_full, test_full, col=col, date_col=DATE_COL, eps=EPS
+        ).values
 
+    # ----------------------------
+    # 7) Family D: FFT dom frequency + spectral entropy (past-only rolling)
+    # ----------------------------
+    for sig in [f"{PFX['OPT']}_NDMI", f"{PFX['RAD']}_SAR_ratio", "LST_modis"]:
+        dom, ent = rolling_fft_dom_freq_and_entropy(
+            full,
+            col=sig,
+            window=FFT_WIN,
+            group_col=GROUP_COL,
+            date_col=DATE_COL,
+            past_only=True,
+            eps=1e-12,
+        )
+        full[f"{PFX['SEA']}_fft_dom_{sig}_kobs{FFT_WIN}"] = dom
+        full[f"{PFX['SEA']}_fft_ent_{sig}_kobs{FFT_WIN}"] = ent
+
+    # ----------------------------
+    # 8) Finalize: split back out + DSLR isnan flag
+    # ----------------------------
     train_full = full[full["_split"] == "train"].drop(columns=["_split"]).copy()
     val_full   = full[full["_split"] == "val"].drop(columns=["_split"]).copy()
     test_full  = full[full["_split"] == "test"].drop(columns=["_split"]).copy()
@@ -329,6 +462,7 @@ def main():
 
     print("\nSplit policy: temporal-only within each station")
     print(f"Stations: {len(stations)}")
+    print("Feature columns:", train_df.shape[1] - len(KEEP_META_COLS) - 1)
     print("\nRow counts (pre-derived):")
     print(f"  train rows: {len(train_df)}")
     print(f"  val rows:   {len(val_df)}")
@@ -363,7 +497,8 @@ def main():
             "win_obs_14": WIN_OBS_14,
             "rain_sum_days": list(RAIN_SUM_DAYS),
             "spike_col": SPIKE_COL,
-            "spike_diff_col": SPIKE_DIFF_COL,
+            "spike_diff_col": f"{PFX['RAD']}_dVV_1",
+            "spike_method": "past_only_expanding_zscore",
             "spike_z_thr": SPIKE_Z_THR,
         },
         "stations": stations,

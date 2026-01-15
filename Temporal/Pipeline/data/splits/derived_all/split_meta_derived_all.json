@@ -50,6 +50,7 @@
     ],
     "spike_col": "s1_vv",
     "spike_diff_col": "E_dVV_1",
+    "spike_method": "past_only_expanding_zscore",
     "spike_z_thr": 2.0
   },
   "stations": [
