@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from Utils.logging import get_logger
+from Modeling.Utils.logging import get_logger
 from Modeling.Src.soilmoist_fl.Ranking.score import compute_score
 
 

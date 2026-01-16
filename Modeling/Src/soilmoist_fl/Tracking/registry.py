@@ -29,10 +29,14 @@ def _save_registry(path, obj):
         json.dump(obj, f, indent=2)
 
 
-def register_run(base_runs_dir, run_id, meta=None):
+def register_run(run_dir, run_id=None, meta=None):
     log = get_logger("tracking.registry")
 
-    base = Path(base_runs_dir)
+    run_dir = Path(run_dir)
+    if run_id is None:
+        run_id = run_dir.name
+
+    base = run_dir.parent
     base.mkdir(parents=True, exist_ok=True)
 
     reg_path = base / REGISTRY_FILE
@@ -41,7 +45,7 @@ def register_run(base_runs_dir, run_id, meta=None):
     entry = {
         "run_id": str(run_id),
         "timestamp": datetime.now().isoformat(timespec="seconds"),
-        "path": str((base / str(run_id)).resolve()),
+        "path": str(run_dir.resolve()),
         "meta": meta or {},
     }
 
