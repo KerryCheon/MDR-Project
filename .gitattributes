@@ -1,18 +1,15 @@
 * text=auto eol=lf
-
 *.py text
 *.yaml text
 *.yml text
 *.toml text
 *.md text
 *.sh text
-
 *.png binary
 *.jpg binary
 *.zip binary
 *.pkl binary
 *.h5 binary
-
 *.csv binary
-
 *.ipynb diff=ipynb
+MDR/Temporal/Pipeline/data/splits/derived_all/train_derived_all.csv filter=lfs diff=lfs merge=lfs -text
