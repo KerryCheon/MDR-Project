@@ -1,0 +1,65 @@
+{
+  "data": {
+    "target": "soil_moisture_5cm",
+    "splits": {
+      "train": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/train_derived_new.csv",
+      "val": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/val_derived_new.csv",
+      "test": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/test_derived_new.csv"
+    },
+    "time_col": "date",
+    "id_cols": [
+      "station_id"
+    ],
+    "drop_cols": [
+      "station_id",
+      "date"
+    ]
+  },
+  "selection": {
+    "top_k": 40,
+    "stages": [
+      {
+        "kind": "mi",
+        "k": 120
+      },
+      {
+        "kind": "elasticnet",
+        "k": 60
+      },
+      {
+        "kind": "stability",
+        "min_freq": 0.6
+      }
+    ]
+  },
+  "models": [
+    {
+      "kind": "linear"
+    },
+    {
+      "kind": "xgb"
+    }
+  ],
+  "scoring": {
+    "score_weights": {
+      "mean_r2": 1.0,
+      "std_r2": -0.5,
+      "gap": -0.2,
+      "k_penalty": -0.001
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "console": true,
+    "log_to_file": true,
+    "runs_subdir": "logs",
+    "file_name": "pipeline_feat.log",
+    "max_bytes": 10485760,
+    "backup_count": 5,
+    "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    "datefmt": "%Y-%m-%d %H:%M:%S"
+  },
+  "_meta": {
+    "config_path": "/Users/jbalkovec/Desktop/MDR/Modeling/Configs/default.yaml"
+  }
+}

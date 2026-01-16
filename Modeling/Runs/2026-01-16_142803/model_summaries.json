@@ -1,0 +1,36 @@
+[
+  {
+    "model": "linear",
+    "robustness": {
+      "gap_r2": 0.016231495790134387,
+      "gap_rmse": -0.0005404703786558093,
+      "gap_rel_rmse": 0.03244388241529711,
+      "val_minus_test_r2": 0.06688937729783218
+    },
+    "stability": {
+      "train_r2_mean": 0.6749331777675286,
+      "train_r2_std": 0.0,
+      "val_r2_mean": 0.6587016819773942,
+      "val_r2_std": 0.0,
+      "test_r2_mean": 0.591812304679562,
+      "test_r2_std": 0.0
+    }
+  },
+  {
+    "model": "xgb",
+    "robustness": {
+      "gap_r2": 0.2108930228307293,
+      "gap_rmse": -0.033588753426411024,
+      "gap_rel_rmse": -0.14330884679860356,
+      "val_minus_test_r2": 0.0907836141217766
+    },
+    "stability": {
+      "train_r2_mean": 0.978617732161231,
+      "train_r2_std": 0.0,
+      "val_r2_mean": 0.7677247093305017,
+      "val_r2_std": 0.0,
+      "test_r2_mean": 0.6769410952087251,
+      "test_r2_std": 0.0
+    }
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "runs": [
+    {
+      "run_id": "2026-01-16_141028",
+      "timestamp": "2026-01-16T14:10:28",
+      "path": "/Users/jbalkovec/Desktop/MDR/Modeling/Runs/2026-01-16_141028",
+      "meta": {
+        "config": "/Users/jbalkovec/Desktop/MDR/Modeling/Configs/default.yaml"
+      }
+    },
+    {
+      "run_id": "2026-01-16_142048",
+      "timestamp": "2026-01-16T14:20:48",
+      "path": "/Users/jbalkovec/Desktop/MDR/Modeling/Runs/2026-01-16_142048",
+      "meta": {
+        "config": "/Users/jbalkovec/Desktop/MDR/Modeling/Configs/default.yaml"
+      }
+    },
+    {
+      "run_id": "2026-01-16_142803",
+      "timestamp": "2026-01-16T14:28:03",
+      "path": "/Users/jbalkovec/Desktop/MDR/Modeling/Runs/2026-01-16_142803",
+      "meta": {
+        "config": "/Users/jbalkovec/Desktop/MDR/Modeling/Configs/default.yaml"
+      }
+    }
+  ]
+}
