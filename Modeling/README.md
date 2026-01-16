@@ -131,9 +131,7 @@ Each remaining feature is tested independently for information content.
 
 Formally, the pipeline asks:
 
-\[
-I(X; y) > 0
-\]
+$$I(X; y) > 0$$
 
 If a feature has no mutual information with soil moisture, it is discarded
 
@@ -152,9 +150,8 @@ Surviving features are evaluated together using regularized linear models.
 
 Conceptually, the pipeline solves:
 
-\[
-\min\_{\beta} \|y - X\beta\|^2 - \lambda \left( \alpha \|\beta\|\_1 + (1-\alpha)\\beta\|\_2^2 \right)
-\]
+
+$$\min\_{\beta} \|y - X\beta\|^2 - \lambda \left( \alpha \|\beta\|\_1 + (1-\alpha)\\beta\|\_2^2 \right)$$
 
 > Yoinked from: https://hastie.su.domains/glmnet/glmnet_beta.html#install
 
