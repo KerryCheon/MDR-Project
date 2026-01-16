@@ -206,9 +206,7 @@ Instead, it computes a score that balances:
 - Generalization
 - Feature count
 
-\[
-\text{Score} = \mu(R^2) - \sigma(R^2) - |\text{train} - \text{val}| - \text{complexity penalty}
-\]
+$$\text{Score} = \mu(R^2) - \sigma(R^2) - |\text{train} - \text{val}| - \text{complexity penalty}$$
 
 This prevents fragile, overfit solutions from winning
 
