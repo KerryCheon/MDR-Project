@@ -1,40 +1,36 @@
 # Jakob Balkovec
 # Loader
 
-from __future__ import annotations
-
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 import os
 
 import pandas as pd
 
 from Modeling.Utils.logging import get_logger
 
-@dataclass(frozen=True)
+
 class SplitSet:
-    name: str
-    train: pd.DataFrame
-    val: pd.DataFrame
-    test: pd.DataFrame
-    paths: Dict[str, Path]
+    def __init__(self, name, train, val, test, paths):
+        self.name = name
+        self.train = train
+        self.val = val
+        self.test = test
+        self.paths = paths
 
 
-@dataclass(frozen=True)
 class LoadedData:
-    folds: List[SplitSet]
-    meta: Dict[str, Any]
+    def __init__(self, folds, meta):
+        self.folds = folds
+        self.meta = meta
 
 
-def _resolve_path(p: str | Path) -> Path:
+def _resolve_path(p):
     # desc: here if we transition to using .env vars at some point (path issues)
     s = os.path.expandvars(str(p))
-    resolved = Path(s).expanduser().resolve()
-    return resolved
+    return Path(s).expanduser().resolve()
 
 
-def _read_df(path: Path) -> pd.DataFrame:
+def _read_df(path):
     log = get_logger("data.load")
     if path.suffix.lower() != ".csv":
         raise ValueError(f"Unsupported file type (expected .csv): {path}")
@@ -42,13 +38,13 @@ def _read_df(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-def _require_keys(d: Dict[str, Any], keys: List[str], ctx: str) -> None:
+def _require_keys(d, keys, ctx):
     missing = [k for k in keys if k not in d or d[k] in (None, "")]
     if missing:
         raise ValueError(f"Missing required keys in {ctx}: {missing}")
 
 
-def load_splits(config: Dict[str, Any]) -> LoadedData:
+def load_splits(config):
     log = get_logger("data.load")
 
     data_cfg = (config or {}).get("data", {})
@@ -58,7 +54,7 @@ def load_splits(config: Dict[str, Any]) -> LoadedData:
 
     log.info("Loading data splits (target=%s)", target)
 
-    folds: List[SplitSet] = []
+    folds = []
 
     # mode B: explicit folds list
     if "folds" in data_cfg and data_cfg["folds"]:

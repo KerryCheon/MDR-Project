@@ -1,49 +1,38 @@
 # Jakob Balkovec
 # Validator (Splits)
-from __future__ import annotations
-
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Set, Tuple
 import numpy as np
 import pandas as pd
 
 from Modeling.Utils.logging import get_logger
-from Modeling.Src.soilmoist_fl.Data.load import LoadedData, SplitSet
 
 
-@dataclass(frozen=True)
 class ValidationIssue:
-    fold: str
-    level: str  # "ERROR" or "WARN"
-    message: str
+    def __init__(self, fold, level, message):
+        self.fold = fold
+        self.level = level  # "ERROR" or "WARN"
+        self.message = message
 
 
-@dataclass(frozen=True)
 class ValidationReport:
-    ok: bool
-    issues: List[ValidationIssue]
-    meta: Dict[str, Any]
+    def __init__(self, ok, issues, meta):
+        self.ok = ok
+        self.issues = issues
+        self.meta = meta
 
 
-def _is_finite_series(s: pd.Series) -> bool:
+def _is_finite_series(s):
     # handles numeric and object types safely
     s_num = pd.to_numeric(s, errors="coerce")
     arr = s_num.to_numpy()
     return np.isfinite(arr).all()
 
 
-def _colset(df: pd.DataFrame) -> Set[str]:
+def _colset(df):
     return set(map(str, df.columns.tolist()))
 
 
-def _check_same_columns(
-    fold: str,
-    train_cols: Set[str],
-    val_cols: Set[str],
-    test_cols: Set[str],
-    allow_missing_in_val_test: Optional[Set[str]] = None,
-) -> List[ValidationIssue]:
-    issues: List[ValidationIssue] = []
+def _check_same_columns(fold, train_cols, val_cols, test_cols, allow_missing_in_val_test=None):
+    issues = []
     allow = allow_missing_in_val_test or set()
 
     # train is the reference here
@@ -66,7 +55,7 @@ def _check_same_columns(
     return issues
 
 
-def validate_loaded_data(loaded: LoadedData, config: Dict[str, Any]) -> ValidationReport:
+def validate_loaded_data(loaded, config):
 
     log = get_logger("data.validate")
 
@@ -75,8 +64,8 @@ def validate_loaded_data(loaded: LoadedData, config: Dict[str, Any]) -> Validati
     if not target:
         raise ValueError("Missing required config: data.target")
 
-    time_col: Optional[str] = data_cfg.get("time_col")
-    id_cols: List[str] = list(data_cfg.get("id_cols", []) or [])
+    time_col = data_cfg.get("time_col")
+    id_cols = list(data_cfg.get("id_cols", []) or [])
     allow_missing = set(data_cfg.get("allow_missing_in_val_test", []) or [])
 
     log.info(
@@ -84,7 +73,7 @@ def validate_loaded_data(loaded: LoadedData, config: Dict[str, Any]) -> Validati
         len(loaded.folds), target, time_col, id_cols,
     )
 
-    issues: List[ValidationIssue] = []
+    issues = []
 
     for fold in loaded.folds:
         issues.extend(_validate_fold(fold, target, time_col, id_cols, allow_missing))
@@ -116,9 +105,9 @@ def validate_loaded_data(loaded: LoadedData, config: Dict[str, Any]) -> Validati
     return ValidationReport(ok=ok, issues=issues, meta=meta)
 
 
-def _validate_fold(fold: SplitSet, target: str, time_col: Optional[str], id_cols: List[str], allow_missing: Set[str]) -> List[ValidationIssue]:
+def _validate_fold(fold, target, time_col, id_cols, allow_missing):
     log = get_logger("data.validate")
-    issues: List[ValidationIssue] = []
+    issues = []
     name = fold.name
 
     log.debug(
