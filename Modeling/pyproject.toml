@@ -1,0 +1,11 @@
+[project]
+name = "soilmoist-feature-lab"
+version = "0.1.0"
+description = "Temporal-only feature selection lab for soil moisture modeling"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["Tests"]
+
+[tool.ruff]
+line-length = 100
