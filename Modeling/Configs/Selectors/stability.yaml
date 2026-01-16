@@ -1,0 +1,3 @@
+selector:
+  kind: "stability"
+  min_freq: 0.6

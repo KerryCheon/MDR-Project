@@ -1,0 +1,5 @@
+model:
+  kind: "rf"
+  params:
+    n_estimators: 500
+    max_depth: null

@@ -1,0 +1,3 @@
+selector:
+  kind: "mi"
+  top_k: 120

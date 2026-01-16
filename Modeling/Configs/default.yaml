@@ -1,0 +1,25 @@
+# Root experiment config (stub)
+data:
+  path: "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_all"
+  target: "soil_moisture_5cm"
+
+selection:
+  top_k: 40
+  stages:
+    - kind: "mi"
+      k: 120
+    - kind: "elasticnet"
+      k: 60
+    - kind: "stability"
+      min_freq: 0.6
+
+models:
+  - kind: "linear"
+  - kind: "xgb"
+
+scoring:
+  score_weights:
+    mean_r2: 1.0
+    std_r2: -0.5
+    gap: -0.2
+    k_penalty: -0.001

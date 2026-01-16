@@ -1,0 +1,5 @@
+selector:
+  kind: "elasticnet"
+  top_k: 60
+  alpha_grid: "auto"
+  l1_ratio_grid: "auto"
