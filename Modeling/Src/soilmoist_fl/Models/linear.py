@@ -19,13 +19,26 @@ class LinearModel(BaseModel):
         self.log = get_logger("models.linear")
 
         cfg = (config or {}).get("params", {}) if isinstance(config, dict) else {}
-        alpha = float(cfg.get("alpha", 1.0))
+
+        # Mild regularization by default (correlated features)
+        alpha = float(cfg.get("alpha", 3.0))
+        fit_intercept = bool(cfg.get("fit_intercept", True))
 
         self.model = Pipeline(steps=[
             ("imputer", SimpleImputer(strategy="median")),
             ("scaler", StandardScaler(with_mean=True, with_std=True)),
-            ("ridge", Ridge(alpha=alpha, random_state=42)),
+            ("ridge", Ridge(
+                alpha=alpha,
+                fit_intercept=fit_intercept,
+                random_state=42,
+            )),
         ])
+
+        self.log.info(
+            "init: alpha=%.3f fit_intercept=%s",
+            alpha,
+            str(fit_intercept),
+        )
 
     def fit(self, X, y):
         y_num = pd.to_numeric(y, errors="coerce").to_numpy()
@@ -37,5 +50,4 @@ class LinearModel(BaseModel):
         return self
 
     def predict(self, X):
-        yhat = self.model.predict(X)
-        return yhat
+        return self.model.predict(X)

@@ -119,6 +119,8 @@ def make_report(
             df[col] = df[col].map(lambda v: round(v, 4) if pd.notna(v) else v)
         lines.append("## Metrics")
         lines.append("")
+        lines.append("> Note: These models have not been tuned or optimized in any way")
+        lines.append("")
         lines.append(df.to_markdown(index=False))
         lines.append("")
     else:

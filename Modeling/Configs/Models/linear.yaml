@@ -1,2 +1,4 @@
 model:
   kind: "linear"
+  params:
+    alpha: 1.0
