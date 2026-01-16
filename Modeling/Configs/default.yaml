@@ -25,6 +25,7 @@ selection:
 models:
   - kind: linear
   - kind: xgb
+  - kind: rf
 
 scoring:
   score_weights:
