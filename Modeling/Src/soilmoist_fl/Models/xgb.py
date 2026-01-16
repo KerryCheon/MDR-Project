@@ -8,8 +8,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.ensemble import HistGradientBoostingRegressor
 
-from Utils.logging import get_logger
-from Src.soilmoist_fl.Models.base import BaseModel
+from Modeling.Utils.logging import get_logger
+from Modeling.Src.soilmoist_fl.Models.base import BaseModel
 
 
 class XGBModel(BaseModel):

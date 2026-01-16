@@ -53,6 +53,13 @@ def coerce_numeric(X, na_value=np.nan, drop_non_numeric=False):
             bad_cols.append(c)
         out[c] = coerced
 
+    # Replace inf values from upstream calculations to keep sklearn happy.
+    inf_mask = np.isinf(out.to_numpy(dtype="float64", copy=False))
+    inf_count = int(inf_mask.sum())
+    if inf_count > 0:
+        out = out.replace([np.inf, -np.inf], np.nan)
+        log.warning("coerce_numeric: replaced %d inf values with NaN", inf_count)
+
     if bad_cols:
         msg = f"coerce_numeric: non-numeric columns detected: {bad_cols[:20]}"
         if drop_non_numeric:

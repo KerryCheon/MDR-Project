@@ -1,7 +1,7 @@
 # Jakob Balkovec
 # Model Base
 
-from Utils.logging import get_logger
+from Modeling.Utils.logging import get_logger
 
 
 class BaseModel:

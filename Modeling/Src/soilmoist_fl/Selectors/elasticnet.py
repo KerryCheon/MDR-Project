@@ -37,7 +37,7 @@ def select_elasticnet(
         ("scaler", StandardScaler()),
         ("enet", ElasticNetCV(
             l1_ratio=list(l1_ratio) if isinstance(l1_ratio, (list, tuple)) else l1_ratio,
-            n_alphas=int(n_alphas),
+            alphas=int(n_alphas),
             cv=int(cv),
             max_iter=int(max_iter),
             random_state=int(random_state),

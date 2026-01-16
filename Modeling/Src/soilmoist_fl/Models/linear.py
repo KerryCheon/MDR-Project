@@ -9,8 +9,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Ridge
 
-from Utils.logging import get_logger
-from Src.soilmoist_fl.Models.base import BaseModel
+from Modeling.Utils.logging import get_logger
+from Modeling.Src.soilmoist_fl.Models.base import BaseModel
 
 
 class LinearModel(BaseModel):
