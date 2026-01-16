@@ -110,17 +110,17 @@ Captures rate-of-change effects, especially after rainfall
 
 ---
 
-### Family B — Smoothing & Volatility
+### Family B: Smoothing & Volatility
 
 High raw gain, but diminishing returns overall
 
 | name  | rank | feature                    | gain      |
 | ----- | ---- | -------------------------- | --------- |
-| raw+B | 1    | V_ema_LST_modis_kobs30     | 10.807203 |
-| raw+B | 2    | V_rollmin_G_API_kobs14     | 7.331640  |
-| raw+B | 3    | V_rollmin_LST_modis_kobs30 | 7.220735  |
-| raw+B | 4    | V_ema_G_API_kobs14         | 4.141772  |
-| raw+B | 5    | V_rollmean_G_API_kobs7     | 2.440078  |
+| raw+B | 1    | B_ema_LST_modis_kobs30     | 10.807203 |
+| raw+B | 2    | B_rollmin_G_API_kobs14     | 7.331640  |
+| raw+B | 3    | B_rollmin_LST_modis_kobs30 | 7.220735  |
+| raw+B | 4    | B_ema_G_API_kobs14         | 4.141772  |
+| raw+B | 5    | B_rollmean_G_API_kobs7     | 2.440078  |
 
 Interpretation
 
@@ -173,46 +173,46 @@ These are the final 40 features (40 to keep it consistent with what I've been do
 
 ```python
 [
-'V_ema_LST_modis_kobs30',
+'B_ema_LST_modis_kobs30',
 'C_smm_G_API_alpha0.85_n5',
-'V_rollmin_G_API_kobs14',
-'V_rollmin_LST_modis_kobs30',
+'B_rollmin_G_API_kobs14',
+'B_rollmin_LST_modis_kobs30',
 'C_lag_LST_modis_kobs12',
-'V_ema_G_API_kobs14',
+'B_ema_G_API_kobs14',
 'C_lag_LST_modis_kobs30',
-'V_rollmean_G_API_kobs7',
-'V_rollmin_G_API_kobs30',
-'V_ema_LST_modis_kobs14',
-'V_ema_G_API_kobs7',
-'V_rollmax_G_API_kobs14',
+'B_rollmean_G_API_kobs7',
+'B_rollmin_G_API_kobs30',
+'B_ema_LST_modis_kobs14',
+'B_ema_G_API_kobs7',
+'B_rollmax_G_API_kobs14',
 'C_lag_G_API_kobs6',
 'C_smm_F_NDMI_alpha0.85_n5',
 'C_lag_LST_modis_kobs6',
 'C_lag_G_API_kobs1',
 'G_API',
-'V_rollmin_F_NDMI_kobs7',
+'B_rollmin_F_NDMI_kobs7',
 'C_lag_G_API_kobs5',
-'V_rollmax_G_API_kobs7',
+'B_rollmax_G_API_kobs7',
 'C_lag_G_API_kobs12',
-'V_rollmin_E_SAR_diff_kobs30',
+'B_rollmin_E_SAR_diff_kobs30',
 'C_lag_G_API_kobs2',
-'V_rollmin_F_NDMI_kobs14',
-'V_ema_F_NDMI_kobs30',
-'V_rollcv_F_NDMI_kobs30',
-'V_rollmin_E_SAR_diff_kobs14',
-'V_rollmin_F_NDMI_kobs30',
+'B_rollmin_F_NDMI_kobs14',
+'B_ema_F_NDMI_kobs30',
+'B_rollcv_F_NDMI_kobs30',
+'B_rollmin_E_SAR_diff_kobs14',
+'B_rollmin_F_NDMI_kobs30',
 'C_lag_F_NDMI_kobs1',
 'C_smm_E_SAR_ratio_alpha0.85_n5',
 'C_lag_F_NDMI_kobs2',
 'C_smm_E_SAR_diff_alpha0.85_n5',
-'V_rollmin_G_API_kobs7',
-'V_rollmax_E_SAR_diff_kobs14',
+'B_rollmin_G_API_kobs7',
+'B_rollmax_E_SAR_diff_kobs14',
 'C_lag_E_SAR_diff_kobs2',
 'C_lag_s2_b11_kobs6',
 'A_d_G_API_kobs1',
-'V_ema_G_API_kobs30',
+'B_ema_G_API_kobs30',
 'C_lag_F_NDMI_kobs12',
-'V_rollmax_F_NDMI_kobs14'
+'B_rollmax_F_NDMI_kobs14'
 ]
 
 ```
@@ -223,59 +223,61 @@ These are the final 40 features (40 to keep it consistent with what I've been do
 [
 'E_SAR_ratio',
 'D_sa_E_SAR_ratio',
-'V_ema_LST_modis_kobs30',
-'V_ema_E_SAR_ratio_kobs30',
-'V_ema_E_SAR_ratio_kobs14',
+'B_ema_LST_modis_kobs30',
+'B_ema_E_SAR_ratio_kobs30',
+'B_ema_E_SAR_ratio_kobs14',
 'D_z_E_SAR_ratio',
 'D_z_F_NDMI',
-'V_rollmean_F_NDMI_kobs30',
-'V_rollmax_s2_b12_kobs30',
-'V_ema_F_NDMI_kobs30',
-'V_rollmin_s2_b12_kobs30',
-'V_rollmean_E_SAR_ratio_kobs30',
-'V_rollcv_LST_modis_kobs30',
-'V_rollmin_F_NDMI_kobs30',
-'V_rollstd_LST_modis_kobs30',
+'B_rollmean_F_NDMI_kobs30',
+'B_rollmax_s2_b12_kobs30',
+'B_ema_F_NDMI_kobs30',
+'B_rollmin_s2_b12_kobs30',
+'B_rollmean_E_SAR_ratio_kobs30',
+'B_rollcv_LST_modis_kobs30',
+'B_rollmin_F_NDMI_kobs30',
+'B_rollstd_LST_modis_kobs30',
 's1_vh',
-'V_rollstd_LST_modis_kobs14',
-'V_ema_G_API_kobs30',
-'V_rollcv_LST_modis_kobs14',
-'V_rollmax_s2_b11_kobs30',
-'V_ema_E_SAR_ratio_kobs7',
-'V_rollmean_s2_b12_kobs30',
+'B_rollstd_LST_modis_kobs14',
+'B_ema_G_API_kobs30',
+'B_rollcv_LST_modis_kobs14',
+'B_rollmax_s2_b11_kobs30',
+'B_ema_E_SAR_ratio_kobs7',
+'B_rollmean_s2_b12_kobs30',
 'C_lag_F_NDMI_kobs30',
-'V_rollmax_F_NDVI_kobs30',
+'B_rollmax_F_NDVI_kobs30',
 'C_lag_F_NDMI_kobs1',
-'V_rollmean_LST_modis_kobs30',
-'V_ema_s2_b12_kobs30',
+'B_rollmean_LST_modis_kobs30',
+'B_ema_s2_b12_kobs30',
 'C_lag_E_SAR_ratio_kobs1',
-'V_rollmin_s2_b11_kobs30',
-'V_ema_s2_b11_kobs30',
-'V_rollstd_s2_b12_kobs30',
-'V_rollmax_E_SAR_ratio_kobs30',
-'V_rollrng_F_NDVI_kobs30',
-'V_rollmean_LST_modis_kobs14',
+'B_rollmin_s2_b11_kobs30',
+'B_ema_s2_b11_kobs30',
+'B_rollstd_s2_b12_kobs30',
+'B_rollmax_E_SAR_ratio_kobs30',
+'B_rollrng_F_NDVI_kobs30',
+'B_rollmean_LST_modis_kobs14',
 'D_fft_ent_F_NDMI_kobs30',
 'D_sa_F_NDMI',
-'V_rollmin_F_NDVI_kobs30',
+'B_rollmin_F_NDVI_kobs30',
 'G_API',
 'A_d_F_NDMI_kobs30',
-'V_rollcv_s2_b11_kobs30'
+'B_rollcv_s2_b11_kobs30'
 ]
 ```
 
 **Common Features**
 
 ```python
-C_lag_F_NDMI_kobs1
-G_API
-V_ema_F_NDMI_kobs30
-V_ema_G_API_kobs30
-V_ema_LST_modis_kobs30
-V_rollmin_F_NDMI_kobs30
+[
+'C_lag_F_NDMI_kobs1'
+'G_API'
+'B_ema_F_NDMI_kobs30'
+'B_ema_G_API_kobs30'
+'B_ema_LST_modis_kobs30'
+'B_rollmin_F_NDMI_kobs30'
+]
 ```
 
-All in all, I think family V and family C are the clear winners...I think that's where we get most of our signal from.
+All in all, I think family B and family C are the clear winners...I think that's where we get most of our signal from.
 
 ## New XGBoost Model Results:
 
