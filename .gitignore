@@ -48,3 +48,13 @@ htmlcov/
 
 # --- Git / Misc ---
 .gitignore~
+
+# Model artifacts
+*.joblib
+*.pkl
+*.pt
+*.pth
+*.onnx
+*.h5
+*.ckpt
+Models/**/model_*
