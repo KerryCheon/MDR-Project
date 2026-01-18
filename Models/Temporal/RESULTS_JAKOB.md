@@ -26,6 +26,8 @@
    - [v4.1.0: Valid (Two-Stage Residual Model)](#v410--valid-two-stage-residual-model)
 7. [v5.x Series: Linear Diagnostic Models](#v5x-series--linear-diagnostic-models)
    - [v5.1.0: Valid (ElasticNet, Diagnostic)](#v510--valid-elasticnet-diagnostic)
+8. [v7.x Series: New Features](#v7x-series-new-features)
+   - [v7.1.0: Valid](#v710-valid-baseline)
 
 ---
 
@@ -336,8 +338,6 @@ Using a new type of model (ElasticNet) instead of XGB.
 
 #### Results
 
-INVALID
-
 | Split | MAE      | RMSE     | R²       |
 | ----- | -------- | -------- | -------- |
 | Train | 0.048441 | 0.060676 | 0.644965 |
@@ -351,3 +351,56 @@ INVALID
 - Preliminary results look promising, but further tuning and validation needed
 
 ---
+
+## v7.x Series: New Features
+
+### v7.1.0: **VALID BASELINE**
+
+**Description:**
+Used the 40 features obtained from the pipeline to train an new regressor + fully tuned
+
+#### Results
+
+| Split | MAE      | RMSE     | R²       |
+| ----- | -------- | -------- | -------- |
+| Train | 0.034470 | 0.043565 | 0.818483 |
+| Val   | 0.036769 | 0.047804 | 0.774720 |
+| Test  | 0.036493 | 0.046039 | 0.757695 |
+
+**Comments:**
+
+- Switched to ElasticNet for better interpretability and feature selection
+- Still using the same 40 features from v3.2.0
+- Preliminary results look promising, but further tuning and validation needed
+
+---
+
+## Best Params for Stacking
+
+### Best XGB params:
+
+```JSON
+{
+  "subsample": 0.9,
+  "reg_lambda": 2.0,
+  "reg_alpha": 0.05,
+  "n_estimators": 4000,
+  "min_child_weight": 3,
+  "max_depth": 7,
+  "learning_rate": 0.05,
+  "gamma": 0.0,
+  "colsample_bytree": 0.75
+}
+```
+
+### Best RF params:
+
+```JSON
+{
+  "model__n_estimators": 800,
+  "model__min_samples_split": 10,
+  "model__min_samples_leaf": 5,
+  "model__max_features": 0.5,
+  "model__max_depth": 16,
+}
+```
