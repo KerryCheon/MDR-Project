@@ -31,6 +31,8 @@
    - [v7.2.0: Valid](#v720-valid)
    - [v7.3.0: Valid](#v730-valid)
    - [v7.4.0: Valid](#v740-valid)
+   - [v7.5.0: Valid](#v750-valid)
+   - [v7.6.0: In Progress](#v760-in-progress)
 
 ---
 
@@ -382,6 +384,11 @@ Iterative pruning of features based on importance (remove bottom 10% after every
 | Val   | 0.7265 |
 | Test  | 0.7051 |
 
+**Comments:**
+
+- Quick pruning pass to test sensitivity
+- Performance dipped vs v7.1.x, so this was more diagnostic than final
+
 ### v7.3.0: **VALID**
 
 **Description:**
@@ -463,3 +470,52 @@ Weights: `[0.10768029, 0.88591085]` with intercept `0.00514084`
 ```
 
 ---
+
+### v7.5.0: **VALID**
+
+**Description:**
+Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridge calibration, and a basic XGB + RF stack.
+
+#### Results
+
+**Baseline XGB**
+
+| Split | MAE      | RMSE     | R²       | Bias Mean (True - Pred) |
+| ----- | -------- | -------- | -------- | ----------------------- |
+| Train | 0.001786 | 0.002553 | 0.999377 | -0.000003               |
+| Val   | 0.034186 | 0.045249 | 0.798166 | 0.022045                |
+| Test  | 0.039043 | 0.050376 | 0.709898 | 0.018762                |
+
+**After post-hoc Ridge calibration (XGB)**
+
+| Split | MAE      | RMSE     | R²       | Bias Mean (True - Pred) |
+| ----- | -------- | -------- | -------- | ----------------------- |
+| Train | 0.022184 | 0.022668 | 0.950855 | -0.022183               |
+| Val   | 0.030050 | 0.039355 | 0.847319 | -0.000000               |
+| Test  | 0.036139 | 0.046745 | 0.750212 | -0.003312               |
+
+**Stacked (XGB + RF → Ridge) TEST metrics**
+
+| Metric | Value      |
+| ------ | ---------- |
+| R²     | 0.75377602 |
+| MAE    | 0.03556066 |
+| RMSE   | 0.04641019 |
+| Bias   | -0.00464616 |
+
+Weights: `[0.45864664, 0.50093636]` with intercept `0.03028375`
+
+**Comments:**
+
+- Calibration helped a lot on val, modest lift on test
+- Stacking beat calibrated XGB by a hair, but not a huge jump
+- Val split is missing Touchet data, so keep that in mind
+
+### v7.6.0: **IN PROGRESS**
+
+**Description:**
+OOF constrained blending (XGB + RF) using time-based folds per station. Same features, no data changes.
+
+#### Results
+
+TBD (run the v7.6 notebook end-to-end)
