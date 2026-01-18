@@ -327,7 +327,7 @@ $$\hat{y}_t = \hat{y}_t^{(A)} + \hat{r}_t^{(B)}$$
 
 **Comments:**
 
-- Didn't bump \[R^2\] like I expected...actually it made everything worse. I could tune the hyperparameters more, but I think this is most likely a dead end
+- Didn't bump $$R^2$$ like I expected...actually it made everything worse. I could tune the hyperparameters more, but I think this is most likely a dead end
 
 ---
 
