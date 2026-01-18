@@ -47,7 +47,7 @@
 - Base learners: tuned `XGBRegressor` + `RandomForest`
 - Meta-learner: `Ridge`
 - Features: 40 temporally valid derived features
-- Trained under strict per-station temporal split
+- Trained under strict temporal split
 
 ### Final Performance
 
