@@ -480,7 +480,7 @@ Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridg
 
 **Baseline XGB**
 
-| Split | MAE      | RMSE     | R²       | Bias Mean (True - Pred) |
+| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
 | ----- | -------- | -------- | -------- | ----------------------- |
 | Train | 0.001786 | 0.002553 | 0.999377 | -0.000003               |
 | Val   | 0.034186 | 0.045249 | 0.798166 | 0.022045                |
@@ -488,7 +488,7 @@ Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridg
 
 **After post-hoc Ridge calibration (XGB)**
 
-| Split | MAE      | RMSE     | R²       | Bias Mean (True - Pred) |
+| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
 | ----- | -------- | -------- | -------- | ----------------------- |
 | Train | 0.022184 | 0.022668 | 0.950855 | -0.022183               |
 | Val   | 0.030050 | 0.039355 | 0.847319 | -0.000000               |
