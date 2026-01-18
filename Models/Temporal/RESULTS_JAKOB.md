@@ -27,57 +27,55 @@
 7. [v5.x Series: Linear Diagnostic Models](#v5x-series--linear-diagnostic-models)
    - [v5.1.0: Valid (ElasticNet, Diagnostic)](#v510--valid-elasticnet-diagnostic)
 8. [v7.x Series: New Features](#v7x-series-new-features)
-   - [v7.1.0: Valid](#v710-valid-baseline)
+   - [v7.1.0: Valid Baseline](#v710-valid-baseline)
+   - [v7.2.0: Valid](#v720-valid)
+   - [v7.3.0: Valid](#v730-valid)
+   - [v7.4.0: Valid](#v740-valid)
 
 ---
 
 ## Best Model
 
-**Section Last Updated on:** Fri Jan 9th, 2025
-**Selected Model:** **v3.3.1 — Robust XGBoost (Row 177)**
+**Section Last Updated on:** Fri Jan 10th, 2025
+**Selected Model:** **v7.4.0 — Stacked XGB + RF → Ridge**
 **Status:** **VALID**
 
 ### Configuration Summary
 
-- `max_depth = 3`
-- `min_child_weight = 100`
-- `lambda = 5`
-- `subsample = 1.0`
-- `colsample_bytree = 0.6`
-- 39 temporally valid derived features
+- Base learners: tuned `XGBRegressor` + `RandomForest`
+- Meta-learner: `Ridge`
+- Features: 40 temporally valid derived features
 - Trained under strict per-station temporal split
 
 ### Final Performance
 
-| Split | MAE      | RMSE     | R²       |
-| ----- | -------- | -------- | -------- |
-| Train | 0.023669 | 0.032485 | 0.898234 |
-| Val   | 0.023175 | 0.030704 | 0.918315 |
-| Test  | 0.038198 | 0.049690 | 0.714397 |
+| Split | MAE      | RMSE     | R²           |
+| ----- | -------- | -------- | ------------ |
+| Test  | 0.033130 | 0.044186 | **0.776814** |
 
 ### Rationale for Selection
 
-This model was selected as the **final best model** due to its superior balance between performance and robustness:
+This model is the current **best overall** because it improves test performance without sacrificing stability.
 
 **Pros**
 
 - Highest test-set R^2 among all temporally valid models
-- Extremely robust under temporal drift
-- Clean inductive bias via shallow trees and high `min_child_weight`
-- Low risk of station-level memorization
-- Stable performance across train, validation, and test splits
+- Stacking reduces over-reliance on any single model's bias
+- Still robust under temporal drift
+- Stable performance on the held-out period
 
 **Cons**
 
-- Sacrifices approximately **0.001–0.0015 R²** compared to more aggressive configurations
+- More moving parts than a single model, so it is a little harder to interpret
+- Needs periodic re-checks when feature distributions drift
 
 This trade-off is intentional. Under real-world temporal generalization, robustness and stability were prioritized over marginal validation gains.
 
 ### Notes
 
-- More aggressive configurations (v3.3.2, v3.3.3) achieved comparable validation performance but showed slightly worse generalization to the held-out test period.
-- Architectural experiments (v4.x) and linear models (v5.x) did not improve test performance.
-- This model serves as the **final reference point** for all future analysis, visualization, and reporting.
+- v7.3.0 (post-hoc calibrated XGB) was strong, but v7.4.0 improved test R^2 and RMSE.
+- v3.3.x remains the best single-model XGB baseline.
+- This model is the **current reference point** for downstream analysis and reporting.
 
 ---
 
@@ -310,7 +308,7 @@ Tuned the Hyperparameters further and removed one feature (`I_ts_spike_s1_vv`) d
 **Description:**
 Upgrade of v3.2 where I replaced the single XGB regressor with a two-stage modeling strategy
 
-- **Model A**learns the dominant soil-moisture drivers (rainfall, API, seasonality, static context)
+- **Model A** learns the dominant soil-moisture drivers (rainfall, API, seasonality, static context)
 - **Model B** learns the residual signal left behind by **Model A** (radar, optical, LST dynamics)
 
 - Final prediction is the sum of both models:
@@ -357,7 +355,7 @@ Using a new type of model (ElasticNet) instead of XGB.
 ### v7.1.0: **VALID BASELINE**
 
 **Description:**
-Used the 40 features obtained from the pipeline to train an new regressor + fully tuned
+Used the 40 features obtained from the pipeline to train a new regressor, fully tuned.
 
 #### Results
 
@@ -369,15 +367,74 @@ Used the 40 features obtained from the pipeline to train an new regressor + full
 
 **Comments:**
 
-- Switched to ElasticNet for better interpretability and feature selection
-- Still using the same 40 features from v3.2.0
-- Preliminary results look promising, but further tuning and validation needed
+- Very stable and robust model
 
----
+### v7.2.0: **VALID**
 
-## Best Params for Stacking
+**Description:**
+Iterative pruning of features based on importance (remove bottom 10% after every iteration).
 
-### Best XGB params:
+#### Results
+
+| Split | R²     |
+| ----- | ------ |
+| Train | 0.7269 |
+| Val   | 0.7265 |
+| Test  | 0.7051 |
+
+### v7.3.0: **VALID**
+
+**Description:**
+Fully tuned `XGBRegressor` with post-hoc processing and calibration
+
+#### Results
+
+**Before calibration**
+
+| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
+| ----- | -------- | -------- | -------- | ------------------------- |
+| Train | 0.034470 | 0.043565 | 0.818483 | 0.000045                  |
+| Val   | 0.036769 | 0.047804 | 0.774720 | 0.023734                  |
+| Test  | 0.036493 | 0.046039 | 0.757695 | 0.012184                  |
+
+**After calibration**
+
+| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
+| ----- | -------- | -------- | -------- | ------------------------- |
+| Train | 0.038399 | 0.048168 | 0.778098 | -2.348640e-02             |
+| Val   | 0.031648 | 0.040660 | 0.837026 | -1.138516e-08             |
+| Test  | 0.034252 | 0.045696 | 0.761296 | -1.228967e-02             |
+
+**Comments:**
+
+- Strong single-model baseline
+- Test R^2 around 0.76 after calibration
+
+### v7.4.0: **VALID**
+
+**Description:**
+Used `Ridge` to stack a `RandomForest` and an `XGBRegressor`
+
+#### Results
+
+**Stacked (XGB + RF → Ridge) TEST metrics**
+
+| Metric | Value      |
+| ------ | ---------- |
+| R²     | 0.77681427 |
+| MAE    | 0.03312991 |
+| RMSE   | 0.04418567 |
+| Bias   | 0.00535984 |
+
+Weights: `[0.10768029, 0.88591085]` with intercept `0.00514084`
+
+**Comments:**
+
+- Very stable and robust model
+
+**Best Params for Stacking**
+
+**Best XGB params**:
 
 ```JSON
 {
@@ -393,7 +450,7 @@ Used the 40 features obtained from the pipeline to train an new regressor + full
 }
 ```
 
-### Best RF params:
+**Best RF params**:
 
 ```JSON
 {
@@ -404,3 +461,5 @@ Used the 40 features obtained from the pipeline to train an new regressor + full
   "model__max_depth": 16,
 }
 ```
+
+---
