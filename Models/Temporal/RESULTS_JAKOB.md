@@ -38,7 +38,7 @@
 
 ## Best Model
 
-**Section Last Updated on:** Fri Jan 10th, 2025
+**Section Last Updated on:** Sun Jan 18th, 2025
 **Selected Model:** **v7.4.0 — Stacked XGB + RF → Ridge**
 **Status:** **VALID**
 
