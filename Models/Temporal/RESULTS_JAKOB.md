@@ -521,24 +521,3 @@ OOF constrained blending (XGB + RF) using time-based folds per station. Same fea
 TBD
 
 ---
-
-Best Weights:
-
-```
-Best R² (val): 0.7980631529827458
-Best params:
-  n_estimators: 2402
-  learning_rate: 0.01614829718528553
-  max_depth: 9
-  min_child_weight: 2
-  gamma: 0.0016589783905386069
-  subsample: 0.8505143997819952
-  colsample_bytree: 0.6459565804898884
-  reg_alpha: 6.425850991617457e-06
-  reg_lambda: 0.5744951179694593
-
-R² scores:
-  train: 0.9859510983536447
-  val:   0.7980631529827458
-  test:  0.688771855206164
-```
