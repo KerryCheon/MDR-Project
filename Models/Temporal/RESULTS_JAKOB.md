@@ -496,11 +496,11 @@ Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridg
 
 **Stacked (XGB + RF → Ridge) TEST metrics**
 
-| Metric | Value      |
-| ------ | ---------- |
-| R²     | 0.75377602 |
-| MAE    | 0.03556066 |
-| RMSE   | 0.04641019 |
+| Metric | Value       |
+| ------ | ----------- |
+| R²     | 0.75377602  |
+| MAE    | 0.03556066  |
+| RMSE   | 0.04641019  |
 | Bias   | -0.00464616 |
 
 Weights: `[0.45864664, 0.50093636]` with intercept `0.03028375`
