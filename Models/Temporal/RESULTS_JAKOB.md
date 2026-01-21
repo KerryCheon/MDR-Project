@@ -38,7 +38,7 @@
 
 ## Best Model
 
-**Section Last Updated on:** Fri Jan 10th, 2025
+**Section Last Updated on:** Sun Jan 18th, 2025
 **Selected Model:** **v7.4.0 — Stacked XGB + RF → Ridge**
 **Status:** **VALID**
 
@@ -47,7 +47,7 @@
 - Base learners: tuned `XGBRegressor` + `RandomForest`
 - Meta-learner: `Ridge`
 - Features: 40 temporally valid derived features
-- Trained under strict per-station temporal split
+- Trained under strict temporal split
 
 ### Final Performance
 
@@ -327,7 +327,7 @@ $$\hat{y}_t = \hat{y}_t^{(A)} + \hat{r}_t^{(B)}$$
 
 **Comments:**
 
-- Didn't bump \[R^2\] like I expected...actually it made everything worse. I could tune the hyperparameters more, but I think this is most likely a dead end
+- Didn't bump $$R^2$$ like I expected...actually it made everything worse. I could tune the hyperparameters more, but I think this is most likely a dead end
 
 ---
 
@@ -480,7 +480,7 @@ Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridg
 
 **Baseline XGB**
 
-| Split | MAE      | RMSE     | R²       | Bias Mean (True - Pred) |
+| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
 | ----- | -------- | -------- | -------- | ----------------------- |
 | Train | 0.001786 | 0.002553 | 0.999377 | -0.000003               |
 | Val   | 0.034186 | 0.045249 | 0.798166 | 0.022045                |
@@ -488,7 +488,7 @@ Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridg
 
 **After post-hoc Ridge calibration (XGB)**
 
-| Split | MAE      | RMSE     | R²       | Bias Mean (True - Pred) |
+| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
 | ----- | -------- | -------- | -------- | ----------------------- |
 | Train | 0.022184 | 0.022668 | 0.950855 | -0.022183               |
 | Val   | 0.030050 | 0.039355 | 0.847319 | -0.000000               |
@@ -518,4 +518,4 @@ OOF constrained blending (XGB + RF) using time-based folds per station. Same fea
 
 #### Results
 
-TBD (run the v7.6 notebook end-to-end)
+TBD
