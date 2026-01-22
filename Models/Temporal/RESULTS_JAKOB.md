@@ -33,6 +33,9 @@
    - [v7.4.0: Valid](#v740-valid)
    - [v7.5.0: Valid](#v750-valid)
    - [v7.6.0: In Progress](#v760-in-progress)
+9. [v8.x Series: Rain Features](#v8x-series-rain-features)
+   - [v8.1.0: Valid (Rain Feature Additions)](#v810-valid-rain-feature-additions)
+   - [v8.2.0: Valid (Rain Variance Study)](#v820-valid-rain-variance-study)
 
 ---
 
@@ -51,7 +54,7 @@
 
 ### Final Performance
 
-| Split | MAE      | RMSE     | R²           |
+| Split | MAE      | RMSE     | $R^2$        |
 | ----- | -------- | -------- | ------------ |
 | Test  | 0.033130 | 0.044186 | **0.776814** |
 
@@ -92,7 +95,7 @@ Metrics reported:
 
 - **MAE**: Mean Absolute Error
 - **RMSE**: Root Mean Squared Error
-- **R²**: Coefficient of Determination
+- **$R^2$**: Coefficient of Determination
 
 ---
 
@@ -105,7 +108,7 @@ Initial baseline model using only base satellite bands and metadata. No derived 
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.024815 | 0.035413 | 0.879066 |
 | Val   | 0.050936 | 0.066775 | 0.613661 |
@@ -123,7 +126,7 @@ Initial baseline model using only base satellite bands and metadata. No derived 
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.029109 | 0.040223 | 0.874408 |
 | Val   | 0.045965 | 0.059679 | 0.679553 |
@@ -141,7 +144,7 @@ Initial baseline model using only base satellite bands and metadata. No derived 
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.031976 | 0.044604 | 0.845555 |
 | Val   | 0.046963 | 0.060642 | 0.669136 |
@@ -161,7 +164,7 @@ Initial baseline model using only base satellite bands and metadata. No derived 
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.019661 | 0.026586 | 0.930787 |
 | Val   | 0.042565 | 0.057601 | 0.702951 |
@@ -182,7 +185,7 @@ First corrected model with derived features properly constructed and leakage rem
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.017946 | 0.028135 | 0.923666 |
 | Val   | 0.052999 | 0.067946 | 0.599990 |
@@ -203,7 +206,7 @@ Derived feature set expanded using a small, curated subset informed by earlier f
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.014148 | 0.019481 | 0.963402 |
 | Val   | 0.039717 | 0.052083 | 0.764966 |
@@ -227,7 +230,7 @@ Added all derived features except the unstable ones identified in prior analyses
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.011984 | 0.016691 | 0.973135 |
 | Val   | 0.039207 | 0.050659 | 0.777642 |
@@ -248,7 +251,7 @@ Picked 40 features out of 89 by pruning the families with lowest importance from
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.012754 | 0.017935 | 0.968981 |
 | Val   | 0.039758 | 0.051282 | 0.772138 |
@@ -277,7 +280,7 @@ Tuned the Hyperparameters further and removed one feature (`I_ts_spike_s1_vv`) d
 
 ##### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.023669 | 0.032485 | 0.898234 |
 | Val   | 0.023175 | 0.030704 | 0.918315 |
@@ -287,7 +290,7 @@ Tuned the Hyperparameters further and removed one feature (`I_ts_spike_s1_vv`) d
 
 ##### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.023638 | 0.032479 | 0.898272 |
 | Val   | 0.023065 | 0.030626 | 0.918733 |
@@ -297,7 +300,7 @@ Tuned the Hyperparameters further and removed one feature (`I_ts_spike_s1_vv`) d
 
 ##### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.023898 | 0.032851 | 0.895931 |
 | Val   | 0.023388 | 0.031064 | 0.916390 |
@@ -319,7 +322,7 @@ $$\hat{y}_t = \hat{y}_t^{(A)} + \hat{r}_t^{(B)}$$
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.013086 | 0.018172 | 0.968154 |
 | Val   | 0.038476 | 0.048866 | 0.793100 |
@@ -338,7 +341,7 @@ Using a new type of model (ElasticNet) instead of XGB.
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.048441 | 0.060676 | 0.644965 |
 | Val   | 0.052522 | 0.065754 | 0.625384 |
@@ -361,7 +364,7 @@ Used the 40 features obtained from the pipeline to train a new regressor, fully 
 
 #### Results
 
-| Split | MAE      | RMSE     | R²       |
+| Split | MAE      | RMSE     | $R^2$    |
 | ----- | -------- | -------- | -------- |
 | Train | 0.034470 | 0.043565 | 0.818483 |
 | Val   | 0.036769 | 0.047804 | 0.774720 |
@@ -378,7 +381,7 @@ Iterative pruning of features based on importance (remove bottom 10% after every
 
 #### Results
 
-| Split | R²     |
+| Split | $R^2$  |
 | ----- | ------ |
 | Train | 0.7269 |
 | Val   | 0.7265 |
@@ -398,7 +401,7 @@ Fully tuned `XGBRegressor` with post-hoc processing and calibration
 
 **Before calibration**
 
-| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
+| Split | MAE      | RMSE     | $R^2$    | Bias Mean (True vs. Pred) |
 | ----- | -------- | -------- | -------- | ------------------------- |
 | Train | 0.034470 | 0.043565 | 0.818483 | 0.000045                  |
 | Val   | 0.036769 | 0.047804 | 0.774720 | 0.023734                  |
@@ -406,7 +409,7 @@ Fully tuned `XGBRegressor` with post-hoc processing and calibration
 
 **After calibration**
 
-| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
+| Split | MAE      | RMSE     | $R^2$    | Bias Mean (True vs. Pred) |
 | ----- | -------- | -------- | -------- | ------------------------- |
 | Train | 0.038399 | 0.048168 | 0.778098 | -2.348640e-02             |
 | Val   | 0.031648 | 0.040660 | 0.837026 | -1.138516e-08             |
@@ -428,7 +431,7 @@ Used `Ridge` to stack a `RandomForest` and an `XGBRegressor`
 
 | Metric | Value      |
 | ------ | ---------- |
-| R²     | 0.77681427 |
+| $R^2$  | 0.77681427 |
 | MAE    | 0.03312991 |
 | RMSE   | 0.04418567 |
 | Bias   | 0.00535984 |
@@ -480,7 +483,7 @@ Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridg
 
 **Baseline XGB**
 
-| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
+| Split | MAE      | RMSE     | $R^2$    | Bias Mean (True vs. Pred) |
 | ----- | -------- | -------- | -------- | ------------------------- |
 | Train | 0.001786 | 0.002553 | 0.999377 | -0.000003                 |
 | Val   | 0.034186 | 0.045249 | 0.798166 | 0.022045                  |
@@ -488,7 +491,7 @@ Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridg
 
 **After post-hoc Ridge calibration (XGB)**
 
-| Split | MAE      | RMSE     | R²       | Bias Mean (True vs. Pred) |
+| Split | MAE      | RMSE     | $R^2$    | Bias Mean (True vs. Pred) |
 | ----- | -------- | -------- | -------- | ------------------------- |
 | Train | 0.022184 | 0.022668 | 0.950855 | -0.022183                 |
 | Val   | 0.030050 | 0.039355 | 0.847319 | -0.000000                 |
@@ -498,7 +501,7 @@ Re-ran the v7.4 stack idea with a cleaner eval flow: baseline XGB, post-hoc Ridg
 
 | Metric | Value       |
 | ------ | ----------- |
-| R²     | 0.75377602  |
+| $R^2$  | 0.75377602  |
 | MAE    | 0.03556066  |
 | RMSE   | 0.04641019  |
 | Bias   | -0.00464616 |
@@ -518,6 +521,64 @@ OOF constrained blending (XGB + RF) using time-based folds per station. Same fea
 
 #### Results
 
-TBD
+---
+
+## v8.x Series: Rain Features
+
+### v8.1.0: **VALID (Rain Feature Additions)**
+
+**Description:**
+Added rain features from domain analysis to quantify rainfall effects while keeping the standard temporal split.
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.012255 | 0.017278 | 0.971450 |
+| Val   | 0.036803 | 0.047996 | 0.772912 |
+| Test  | 0.041720 | 0.053383 | 0.674228 |
+
+**Comments:**
+
+- Rain-derived features integrated into the main feature set
+- Performance remains in line with prior valid baselines
+
+---
+
+### v8.2.0: **VALID (Rain Variance Study)**
+
+**Description:**
+Focused experiment to estimate how much soil moisture variance can be explained by rain signals alone and with a rain-backed feature.
+
+#### Results
+
+**Main model (baseline for this run)**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.011103 | 0.015629 | 0.976813 |
+| Val   | 0.035866 | 0.046442 | 0.787377 |
+| Test  | 0.042880 | 0.055056 | 0.671544 |
+
+**Rain-only ShallowXGB**
+
+| Split | MAE      | RMSE     | $R^2$    | Bias     |
+| ----- | -------- | -------- | -------- | -------- |
+| Train | 0.037474 | 0.048972 | 0.772345 | 0.000028 |
+| Val   | 0.037166 | 0.048253 | 0.770475 | 0.017825 |
+| Test  | 0.035145 | 0.047089 | 0.759728 | 0.008382 |
+
+**Main model with rain backbone feature**
+
+| Split | MAE      | RMSE     | $R^2$    | Bias      |
+| ----- | -------- | -------- | -------- | --------- |
+| Train | 0.003077 | 0.004533 | 0.998050 | -0.000002 |
+| Val   | 0.036036 | 0.047154 | 0.780810 | 0.020987  |
+| Test  | 0.041493 | 0.053943 | 0.684687 | 0.018086  |
+
+**Comments:**
+
+- Rain-only model captures a sizable share of variance, especially on the held-out station
+- Rain-backbone feature slightly lifts test $R^2$ vs the baseline for this run
 
 ---
