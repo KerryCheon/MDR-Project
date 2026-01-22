@@ -36,6 +36,9 @@
 9. [v8.x Series: Rain Features](#v8x-series-rain-features)
    - [v8.1.0: Valid (Rain Feature Additions)](#v810-valid-rain-feature-additions)
    - [v8.2.0: Valid (Rain Variance Study)](#v820-valid-rain-variance-study)
+10. [v9.x Series: Gated Models](#v9x-series-gated-models)
+
+- [v9.1.0: Valid (Gated Mixture of Experts)](#v910-valid-gated-mixture-of-experts)
 
 ---
 
@@ -582,3 +585,37 @@ Focused experiment to estimate how much soil moisture variance can be explained 
 - Rain-backbone feature slightly lifts test $R^2$ vs the baseline for this run
 
 ---
+
+## v9.x Series: Gated Models
+
+### v9.1.0: **VALID (Gated Mixture of Experts)**
+
+**Description:**
+Mixture-of-experts setup to separate winter vs non-winter regimes with a simple gate. Expert A targets the learnable (dry/shoulder/summer) regime, Expert B targets winter/wet behavior.
+
+#### Results
+
+**Overall (full splits)**
+
+| Model         | Split | MAE      | RMSE     | $R^2$    |
+| ------------- | ----- | -------- | -------- | -------- |
+| Expert A only | Val   | 0.035421 | 0.045815 | 0.793084 |
+| Expert B only | Val   | 0.060447 | 0.078256 | 0.396304 |
+| Soft Mix      | Val   | 0.033962 | 0.044036 | 0.808841 |
+| Expert A only | Test  | 0.041679 | 0.053824 | 0.686077 |
+| Expert B only | Test  | 0.065581 | 0.085960 | 0.199311 |
+| Soft Mix      | Test  | 0.039376 | 0.051813 | 0.709101 |
+
+**Slice checks (soft mix)**
+
+| Slice | Split | MAE      | RMSE     | $R^2$     |
+| ----- | ----- | -------- | -------- | --------- |
+| Wet   | Val   | 0.033928 | 0.042908 | 0.051728  |
+| Wet   | Test  | 0.043370 | 0.052990 | -0.971714 |
+| Dry   | Val   | 0.033973 | 0.044422 | 0.814365  |
+| Dry   | Test  | 0.037998 | 0.051400 | 0.723531  |
+
+**Comments:**
+
+- Soft mix marginally improves overall test $R^2$ vs Expert A alone
+- Wet-only performance remains weak, indicating winter regime is still hard to model
