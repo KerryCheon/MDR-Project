@@ -39,6 +39,9 @@
 10. [v9.x Series: Gated Models](#v9x-series-gated-models)
 
 - [v9.1.0: Valid (Gated Mixture of Experts)](#v910-valid-gated-mixture-of-experts)
+- [v9.2.0: Valid (Wet Expert Rain Impulses)](#v920-valid-wet-expert-rain-impulses)
+- [v9.3.0: Valid (Winter/Non-Winter Gate)](#v930-valid-winternon-winter-gate)
+- [v9.4.0: Valid (Improved Winter Expert)](#v940-valid-improved-winter-expert)
 
 ---
 
@@ -619,3 +622,105 @@ Mixture-of-experts setup to separate winter vs non-winter regimes with a simple 
 
 - Soft mix marginally improves overall test $R^2$ vs Expert A alone
 - Wet-only performance remains weak, indicating winter regime is still hard to model
+
+---
+
+### v9.2.0: **VALID (Wet Expert Rain Impulses)**
+
+**Description:**
+Builds on v9.1 with rain impulse features added only to the wet expert to boost wet-regime skill while keeping the dry expert fixed.
+
+#### Results
+
+**Overall (full splits)**
+
+| Model         | Split | MAE      | RMSE     | $R^2$    |
+| ------------- | ----- | -------- | -------- | -------- |
+| Expert A only | Val   | 0.042298 | 0.054899 | 0.702896 |
+| Expert B only | Val   | 0.034365 | 0.043735 | 0.811442 |
+| Soft Mix      | Val   | 0.033442 | 0.043639 | 0.812268 |
+| Expert A only | Test  | 0.047030 | 0.059615 | 0.614892 |
+| Expert B only | Test  | 0.043379 | 0.055267 | 0.669013 |
+| Soft Mix      | Test  | 0.038446 | 0.050425 | 0.724468 |
+
+**Slice checks (soft mix)**
+
+| Slice | Split | MAE      | RMSE     | $R^2$    |
+| ----- | ----- | -------- | -------- | -------- |
+| Wet   | Val   | 0.034302 | 0.044611 | 0.370624 |
+| Wet   | Test  | 0.042409 | 0.053164 | 0.161911 |
+| Dry   | Val   | 0.032737 | 0.042826 | 0.820266 |
+| Dry   | Test  | 0.035167 | 0.048041 | 0.771591 |
+
+**Comments:**
+
+- Soft mix improves overall test $R^2$ vs v9.1 and Expert A alone
+- Wet-slice $R^2$ remains low, but improves substantially relative to v9.1
+
+---
+
+### v9.3.0: **VALID (Winter/Non-Winter Gate)**
+
+**Description:**
+Hard/soft gating between a non-winter expert and a winter expert using season-based splits (winter vs non-winter).
+
+#### Results
+
+**Overall (full splits)**
+
+| Model         | Split | MAE      | RMSE     | $R^2$     |
+| ------------- | ----- | -------- | -------- | --------- |
+| Expert A only | Val   | 0.033750 | 0.045402 | 0.796798  |
+| Expert B only | Val   | 0.075901 | 0.104020 | -0.066633 |
+| Soft Mix      | Val   | 0.033246 | 0.043457 | 0.813832  |
+| Expert A only | Test  | 0.036568 | 0.049098 | 0.738779  |
+| Expert B only | Test  | 0.082181 | 0.110853 | -0.331585 |
+| Soft Mix      | Test  | 0.038327 | 0.049736 | 0.731950  |
+
+**Slice checks (soft mix)**
+
+| Slice      | Split | MAE      | RMSE     | $R^2$     |
+| ---------- | ----- | -------- | -------- | --------- |
+| Winter     | Val   | 0.027886 | 0.036437 | 0.094157  |
+| Winter     | Test  | 0.039873 | 0.052290 | -0.311979 |
+| Non-winter | Val   | 0.035256 | 0.045813 | 0.797342  |
+| Non-winter | Test  | 0.037591 | 0.048472 | 0.725748  |
+
+**Comments:**
+
+- Soft mix slightly improves overall val but dips on test vs v9.2
+- Winter-slice performance remains unstable, especially on test
+
+---
+
+### v9.4.0: **VALID (Improved Winter Expert)**
+
+**Description:**
+Focused on improving the winter expert while keeping the non-winter expert fixed; evaluates gating on winter/non-winter splits.
+
+#### Results
+
+**Overall (full splits)**
+
+| Model         | Split | MAE      | RMSE     | $R^2$    |
+| ------------- | ----- | -------- | -------- | -------- |
+| Expert A only | Val   | 0.033750 | 0.045402 | 0.796798 |
+| Expert B only | Val   | 0.046793 | 0.058678 | 0.660583 |
+| Soft Mix      | Val   | 0.033274 | 0.044243 | 0.807040 |
+| Expert A only | Test  | 0.036568 | 0.049098 | 0.738779 |
+| Expert B only | Test  | 0.048082 | 0.060434 | 0.604231 |
+| Soft Mix      | Test  | 0.036480 | 0.048690 | 0.743106 |
+
+**Slice checks (soft mix)**
+
+| Slice      | Split | MAE      | RMSE     | $R^2$     |
+| ---------- | ----- | -------- | -------- | --------- |
+| Winter     | Val   | 0.031671 | 0.043478 | -0.289769 |
+| Winter     | Test  | 0.038878 | 0.054469 | -0.423605 |
+| Non-winter | Val   | 0.033876 | 0.044526 | 0.808566  |
+| Non-winter | Test  | 0.035337 | 0.045680 | 0.756427  |
+
+**Comments:**
+
+- Soft mix improves overall test $R^2$ vs v9.3 and v9.2
+- Winter-slice performance is still negative on test despite expert changes
