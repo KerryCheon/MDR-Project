@@ -14,6 +14,8 @@ This is a simple reference for which feature sets were used by each model run. S
 
 These sets essentially form a timeline of our modeling decisions. The early ones are raw baselines. From there, we layer in derived features once leakage is addressed, and finally we prune or expand based on what actually moves the needle.
 
+Family importance charts sum `feature_importance.csv` by family and normalize to 1.0. Unless noted otherwise, the run used is the first listed in each feature set.
+
 We’d be happy to share additional details, data, or reports if helpful. Correlation and contribution analysis is not included in this notebook, but it is documented elsewhere. Our analysis shows that the features are very stable and provide a fairly strong signal. We validated this by removing features one by one and tracking changes in both error and $R^2$. That process made it clear that we are past the “add a clever feature to boost performance” phase. At this point, gains are coming less from new features and more from how specific parts of the data are modeled.
 
 Most of our recent focus has been on understanding and stabilizing these harder regimes. Early on, rain appeared to be a major source of noise. Rain features fluctuate heavily and are difficult to model, which led us to experiment with modeling rain separately, potentially using a dedicated model to predict rain impact on soil moisture and then feeding that signal back in as a feature. That experiment did not improve performance, but it was still informative. It showed us that rain itself was not the core issue.
@@ -47,6 +49,8 @@ The next major direction is time series modeling. This is where we deliberately 
 - ElasticNet diagnostic: v5.1 runs on the same 40-feature core as v3.2, mainly for interpretability and feature selection signals.
 - Feature pipeline: the derived families (A/B/C/D/E/F/G/H/I) powering v2.3 onward come straight from the temporal feature pipeline, and the v7.x feature bundle is pipeline-generated and then tuned.
 
+> Note: If the importance says `0.0` for a feature, it means it was included in the model but had negligible importance (below rounding threshold). It does not equal 0.
+
 ## Feature set 01 (9 features)
 
 Context: Baseline feature set built mostly from raw satellite bands and basic metadata.
@@ -61,18 +65,24 @@ Features used:
 
 ```yaml
 features:
-  - rain_mm
-  - precip_mm
-  - NDVI
-  - NDMI
-  - MSI
-  - s1_vv
-  - s1_vh
-  - SAR_ratio
-  - DOY
+  DOY: 0.3890
+  s1_vv: 0.1315
+  precip_mm: 0.1250
+  SAR_ratio: 0.0883
+  NDMI: 0.0759
+  s1_vh: 0.0645
+  MSI: 0.0589
+  NDVI: 0.0450
+  rain_mm: 0.0219
 ```
 
 ![Feature set 01 family breakdown](piecharts/feature_set_01.svg)
+
+**Family importance (from `Models/Temporal/v1/v1.0/mdr_ts_v2_3_20260108_115420/feature_importance.csv`)**
+
+![Feature set 01 family importance](piecharts/feature_set_01_importance.svg)
+
+![Feature set 01 heatmap](figures/feature_set_01_corr.png)
 
 ## Feature set 02 (12 features)
 
@@ -87,21 +97,27 @@ Features used:
 
 ```yaml
 features:
-  - rain_mm
-  - precip_mm
-  - air_temp_mean
-  - solar_radiation
-  - NDVI
-  - NDMI
-  - MSI
-  - s1_vv
-  - s1_vh
-  - SAR_ratio
-  - elev
-  - slope
+  air_temp_mean: 0.4226
+  NDMI: 0.1138
+  MSI: 0.0860
+  precip_mm: 0.0730
+  SAR_ratio: 0.0583
+  s1_vv: 0.0543
+  solar_radiation: 0.0532
+  s1_vh: 0.0496
+  rain_mm: 0.0468
+  NDVI: 0.0425
+  elev: 0.0000
+  slope: 0.0000
 ```
 
 ![Feature set 02 family breakdown](piecharts/feature_set_02.svg)
+
+**Family importance (from `Models/Temporal/v1/v1.2/mdr_ts_v1_2_20251223_113808/feature_importance.csv`)**
+
+![Feature set 02 family importance](piecharts/feature_set_02_importance.svg)
+
+![Feature set 02 heatmap](figures/feature_set_02_corr.png)
 
 ## Feature set 03 (12 features)
 
@@ -117,21 +133,27 @@ Features used:
 
 ```yaml
 features:
-  - rain_mm
-  - precip_mm
-  - air_temp_mean
-  - rh_mean
-  - solar_radiation
-  - NDVI
-  - NDMI
-  - MSI
-  - s1_vv
-  - s1_vh
-  - SAR_ratio
-  - DOY
+  air_temp_mean: 0.3956
+  DOY: 0.1349
+  s1_vh: 0.0906
+  rh_mean: 0.0592
+  MSI: 0.0591
+  s1_vv: 0.0435
+  SAR_ratio: 0.0429
+  precip_mm: 0.0424
+  NDMI: 0.0408
+  NDVI: 0.0343
+  solar_radiation: 0.0337
+  rain_mm: 0.0230
 ```
 
 ![Feature set 03 family breakdown](piecharts/feature_set_03.svg)
+
+**Family importance (from `Models/Temporal/v2/v2.1/mdr_ts_v2_1_20260106_211015/feature_importance.csv`)**
+
+![Feature set 03 family importance](piecharts/feature_set_03_importance.svg)
+
+![Feature set 03 heatmap](figures/feature_set_03_corr.png)
 
 ## Feature set 04 (13 features)
 
@@ -146,22 +168,28 @@ Features used:
 
 ```yaml
 features:
-  - rain_mm
-  - precip_mm
-  - air_temp_mean
-  - rh_mean
-  - solar_radiation
-  - NDVI
-  - NDMI
-  - MSI
-  - s1_vv
-  - s1_vh
-  - SAR_ratio
-  - elev
-  - slope
+  air_temp_mean: 0.3680
+  rh_mean: 0.1144
+  MSI: 0.1132
+  NDMI: 0.0750
+  s1_vv: 0.0633
+  precip_mm: 0.0574
+  SAR_ratio: 0.0494
+  s1_vh: 0.0466
+  solar_radiation: 0.0465
+  NDVI: 0.0382
+  rain_mm: 0.0280
+  elev: 0.0000
+  slope: 0.0000
 ```
 
 ![Feature set 04 family breakdown](piecharts/feature_set_04.svg)
+
+**Family importance (from `Models/Temporal/v1/v1.1/mdr_ts_v1_1_20251223_113030/feature_importance.csv`)**
+
+![Feature set 04 family importance](piecharts/feature_set_04_importance.svg)
+
+![Feature set 04 heatmap](figures/feature_set_04_corr.png)
 
 ## Feature set 05 (14 features)
 
@@ -176,23 +204,29 @@ Features used:
 
 ```yaml
 features:
-  - rain_mm
-  - precip_mm
-  - air_temp_mean
-  - rh_mean
-  - solar_radiation
-  - NDVI
-  - NDMI
-  - MSI
-  - s1_vv
-  - s1_vh
-  - SAR_ratio
-  - elev
-  - slope
-  - DOY
+  air_temp_mean: 0.2793
+  elev: 0.1922
+  DOY: 0.1869
+  NDMI: 0.0714
+  rh_mean: 0.0656
+  MSI: 0.0478
+  solar_radiation: 0.0270
+  s1_vv: 0.0227
+  SAR_ratio: 0.0225
+  precip_mm: 0.0224
+  NDVI: 0.0222
+  s1_vh: 0.0219
+  rain_mm: 0.0116
+  slope: 0.0064
 ```
 
 ![Feature set 05 family breakdown](piecharts/feature_set_05.svg)
+
+**Family importance (from `Models/Temporal/v1/v1.0/mdr_ts_v1_0_20251223_105722/feature_importance.csv`)**
+
+![Feature set 05 family importance](piecharts/feature_set_05_importance.svg)
+
+![Feature set 05 heatmap](figures/feature_set_05_corr.png)
 
 ## Feature set 06 (22 features)
 
@@ -207,31 +241,37 @@ Features used:
 
 ```yaml
 features:
-  - precip_mm
-  - s1_vv
-  - s1_vh
-  - s2_b8
-  - s2_b11
-  - LST_modis
-  - DOY
-  - NDMI
-  - SAR_ratio
-  - API
-  - DSLR
-  - grad_API_7
-  - rollstd_API_7
-  - grad_NDMI_7
-  - rollstd_NDMI_7
-  - grad_SAR_ratio_7
-  - rollstd_SAR_ratio_7
-  - grad_LST_modis_7
-  - rollstd_LST_modis_7
-  - NDMI_sa
-  - SAR_ratio_sa
-  - LST_modis_sa
+  API: 0.3082
+  DOY: 0.1272
+  LST_modis: 0.0929
+  s2_b8: 0.0686
+  NDMI_sa: 0.0480
+  SAR_ratio_sa: 0.0442
+  rollstd_API_7: 0.0395
+  s1_vh: 0.0387
+  NDMI: 0.0370
+  SAR_ratio: 0.0311
+  s1_vv: 0.0276
+  DSLR: 0.0194
+  s2_b11: 0.0189
+  grad_API_7: 0.0175
+  grad_LST_modis_7: 0.0156
+  precip_mm: 0.0142
+  rollstd_SAR_ratio_7: 0.0121
+  grad_SAR_ratio_7: 0.0112
+  LST_modis_sa: 0.0091
+  grad_NDMI_7: 0.0089
+  rollstd_NDMI_7: 0.0056
+  rollstd_LST_modis_7: 0.0046
 ```
 
 ![Feature set 06 family breakdown](piecharts/feature_set_06.svg)
+
+**Family importance (from `Models/Temporal/v2/v2.3/mdr_ts_v2_2_20260107_170214/feature_importance.csv`)**
+
+![Feature set 06 family importance](piecharts/feature_set_06_importance.svg)
+
+![Feature set 06 heatmap](figures/feature_set_06_corr.png)
 
 ## Feature set 07 (39 features)
 
@@ -247,48 +287,54 @@ Features used:
 
 ```yaml
 features:
-  - A_d_E_SAR_ratio_kobs1
-  - A_d_F_NDMI_kobs1
-  - A_d_G_API_kobs1
-  - A_d_LST_modis_kobs1
-  - C_smm_E_SAR_ratio_alpha0.85_n5
-  - C_smm_F_NDMI_alpha0.85_n5
-  - C_smm_G_API_alpha0.85_n5
-  - C_smm_LST_modis_alpha0.85_n5
-  - DOY
-  - D_sa_E_SAR_ratio
-  - D_sa_F_NDMI
-  - D_sa_LST_modis
-  - D_z_E_SAR_ratio
-  - D_z_F_NDMI
-  - D_z_LST_modis
-  - E_SAR_diff
-  - E_SAR_ratio
-  - F_MSI
-  - F_NDMI
-  - F_NDVI
-  - G_API
-  - G_DSLR
-  - G_DSLR_isnan
-  - G_rain_sum_30d
-  - G_rain_sum_3d
-  - G_rain_sum_7d
-  - LST_modis
-  - V_rollstd_E_SAR_ratio_kobs7
-  - V_rollstd_F_NDMI_kobs7
-  - V_rollstd_G_API_kobs7
-  - V_rollstd_LST_modis_kobs7
-  - aspect
-  - precip_mm
-  - s1_vh
-  - s1_vv
-  - s2_b11
-  - s2_b12
-  - s2_b4
-  - s2_b8
+  C_smm_G_API_alpha0.85_n5: 0.2024
+  G_API: 0.1519
+  DOY: 0.1314
+  C_smm_LST_modis_alpha0.85_n5: 0.1164
+  G_rain_sum_30d: 0.0569
+  aspect: 0.0428
+  LST_modis: 0.0415
+  s2_b8: 0.0326
+  D_z_F_NDMI: 0.0189
+  D_sa_F_NDMI: 0.0166
+  C_smm_F_NDMI_alpha0.85_n5: 0.0143
+  G_rain_sum_7d: 0.0136
+  C_smm_E_SAR_ratio_alpha0.85_n5: 0.0128
+  D_z_E_SAR_ratio: 0.0105
+  F_MSI: 0.0099
+  D_sa_E_SAR_ratio: 0.0098
+  F_NDMI: 0.0097
+  E_SAR_ratio: 0.0094
+  V_rollstd_G_API_kobs7: 0.0094
+  G_rain_sum_3d: 0.0092
+  s1_vh: 0.0089
+  E_SAR_diff: 0.0081
+  s1_vv: 0.0077
+  s2_b11: 0.0069
+  F_NDVI: 0.0068
+  s2_b12: 0.0068
+  s2_b4: 0.0060
+  D_sa_LST_modis: 0.0051
+  D_z_LST_modis: 0.0050
+  precip_mm: 0.0047
+  A_d_G_API_kobs1: 0.0035
+  V_rollstd_LST_modis_kobs7: 0.0029
+  V_rollstd_E_SAR_ratio_kobs7: 0.0022
+  V_rollstd_F_NDMI_kobs7: 0.0022
+  G_DSLR: 0.0020
+  A_d_F_NDMI_kobs1: 0.0005
+  A_d_E_SAR_ratio_kobs1: 0.0004
+  A_d_LST_modis_kobs1: 0.0002
+  G_DSLR_isnan: 0.0000
 ```
 
 ![Feature set 07 family breakdown](piecharts/feature_set_07.svg)
+
+**Family importance (from `Models/Temporal/v6/v6.1/mdr_ts_rf_v6_1_20260111_012146/feature_importance.csv`)**
+
+![Feature set 07 family importance](piecharts/feature_set_07_importance.svg)
+
+![Feature set 07 heatmap](figures/feature_set_07_corr.png)
 
 ## Feature set 08 (40 features)
 
@@ -304,49 +350,55 @@ Features used:
 
 ```yaml
 features:
-  - A_d_E_SAR_ratio_kobs1
-  - A_d_F_NDMI_kobs1
-  - A_d_G_API_kobs1
-  - A_d_LST_modis_kobs1
-  - C_smm_E_SAR_ratio_alpha0.85_n5
-  - C_smm_F_NDMI_alpha0.85_n5
-  - C_smm_G_API_alpha0.85_n5
-  - C_smm_LST_modis_alpha0.85_n5
-  - DOY
-  - D_sa_E_SAR_ratio
-  - D_sa_F_NDMI
-  - D_sa_LST_modis
-  - D_z_E_SAR_ratio
-  - D_z_F_NDMI
-  - D_z_LST_modis
-  - E_SAR_diff
-  - E_SAR_ratio
-  - F_MSI
-  - F_NDMI
-  - F_NDVI
-  - G_API
-  - G_DSLR
-  - G_DSLR_isnan
-  - G_rain_sum_30d
-  - G_rain_sum_3d
-  - G_rain_sum_7d
-  - I_ts_spike_s1_vv
-  - LST_modis
-  - V_rollstd_E_SAR_ratio_kobs7
-  - V_rollstd_F_NDMI_kobs7
-  - V_rollstd_G_API_kobs7
-  - V_rollstd_LST_modis_kobs7
-  - aspect
-  - precip_mm
-  - s1_vh
-  - s1_vv
-  - s2_b11
-  - s2_b12
-  - s2_b4
-  - s2_b8
+  C_smm_G_API_alpha0.85_n5: 0.2366
+  G_API: 0.0942
+  aspect: 0.0788
+  DOY: 0.0735
+  s2_b8: 0.0671
+  C_smm_LST_modis_alpha0.85_n5: 0.0642
+  F_NDMI: 0.0420
+  D_z_F_NDMI: 0.0324
+  F_MSI: 0.0269
+  C_smm_F_NDMI_alpha0.85_n5: 0.0206
+  s1_vv: 0.0205
+  s1_vh: 0.0193
+  E_SAR_ratio: 0.0177
+  G_rain_sum_30d: 0.0170
+  G_rain_sum_3d: 0.0164
+  E_SAR_diff: 0.0160
+  D_sa_E_SAR_ratio: 0.0145
+  D_z_E_SAR_ratio: 0.0144
+  precip_mm: 0.0139
+  D_sa_F_NDMI: 0.0103
+  LST_modis: 0.0099
+  s2_b11: 0.0091
+  F_NDVI: 0.0090
+  s2_b12: 0.0085
+  G_rain_sum_7d: 0.0085
+  s2_b4: 0.0084
+  I_ts_spike_s1_vv: 0.0076
+  C_smm_E_SAR_ratio_alpha0.85_n5: 0.0070
+  G_DSLR: 0.0068
+  V_rollstd_F_NDMI_kobs7: 0.0055
+  D_z_LST_modis: 0.0039
+  D_sa_LST_modis: 0.0039
+  V_rollstd_E_SAR_ratio_kobs7: 0.0036
+  V_rollstd_G_API_kobs7: 0.0031
+  V_rollstd_LST_modis_kobs7: 0.0030
+  A_d_G_API_kobs1: 0.0023
+  A_d_LST_modis_kobs1: 0.0012
+  A_d_F_NDMI_kobs1: 0.0012
+  A_d_E_SAR_ratio_kobs1: 0.0010
+  G_DSLR_isnan: 0.0000
 ```
 
 ![Feature set 08 family breakdown](piecharts/feature_set_08.svg)
+
+**Family importance (from `Models/Temporal/v3/v3.1/mdr_ts_v3_1_20260108_151234/feature_importance.csv`)**
+
+![Feature set 08 family importance](piecharts/feature_set_08_importance.svg)
+
+![Feature set 08 heatmap](figures/feature_set_08_corr.png)
 
 ## Feature set 09 (41 features)
 
@@ -361,50 +413,56 @@ Features used:
 
 ```yaml
 features:
-  - precip_mm
-  - G_rain_sum_30d
-  - C_lag_E_SAR_diff_kobs12
-  - C_lag_E_SAR_diff_kobs30
-  - C_lag_E_SAR_ratio_kobs30
-  - C_lag_F_NDVI_kobs30
-  - C_lag_LST_modis_kobs12
-  - C_lag_LST_modis_kobs30
-  - DOY
-  - D_sa_E_SAR_ratio
-  - D_sa_F_NDMI
-  - D_z_E_SAR_ratio
-  - D_z_F_NDMI
-  - E_SAR_diff
-  - E_SAR_ratio
-  - F_MSI
-  - F_NDMI
-  - V_ema_LST_modis_kobs30
-  - V_rollmax_E_SAR_diff_kobs14
-  - V_rollmax_E_SAR_diff_kobs30
-  - V_rollmax_F_NDVI_kobs30
-  - V_rollmax_LST_modis_kobs7
-  - V_rollmax_s2_b11_kobs30
-  - V_rollmin_E_SAR_diff_kobs30
-  - V_rollmin_E_SAR_ratio_kobs30
-  - V_rollmin_F_NDMI_kobs30
-  - V_rollmin_s2_b11_kobs30
-  - V_rollmin_s2_b12_kobs30
-  - s1_vh
-  - s2_b8
-  - A_d_LST_modis_kobs7
-  - A_grad_LST_modis_kobs14
-  - C_lag_E_SAR_diff_kobs6
-  - V_rollmax_E_SAR_diff_kobs7
-  - V_rollmax_E_SAR_ratio_kobs14
-  - V_rollmax_F_NDVI_kobs14
-  - s2_b12
-  - D_sa_LST_modis
-  - rain_event_impulse_0_7
-  - rain_mm_impulse_0_7
-  - days_since_rain_event
+  V_ema_LST_modis_kobs30: 0.2119
+  G_rain_sum_30d: 0.0607
+  V_rollmin_F_NDMI_kobs30: 0.0593
+  s2_b8: 0.0591
+  days_since_rain_event: 0.0551
+  C_lag_LST_modis_kobs30: 0.0442
+  V_rollmin_E_SAR_diff_kobs30: 0.0399
+  C_lag_LST_modis_kobs12: 0.0362
+  D_z_F_NDMI: 0.0339
+  DOY: 0.0322
+  V_rollmax_E_SAR_diff_kobs14: 0.0236
+  E_SAR_ratio: 0.0207
+  V_rollmax_F_NDVI_kobs30: 0.0198
+  V_rollmin_E_SAR_ratio_kobs30: 0.0197
+  D_sa_F_NDMI: 0.0197
+  rain_mm_impulse_0_7: 0.0186
+  D_sa_E_SAR_ratio: 0.0164
+  s1_vh: 0.0164
+  V_rollmin_s2_b12_kobs30: 0.0162
+  D_z_E_SAR_ratio: 0.0153
+  V_rollmin_s2_b11_kobs30: 0.0148
+  V_rollmax_s2_b11_kobs30: 0.0144
+  rain_event_impulse_0_7: 0.0144
+  F_MSI: 0.0139
+  V_rollmax_E_SAR_diff_kobs30: 0.0134
+  E_SAR_diff: 0.0116
+  V_rollmax_E_SAR_ratio_kobs14: 0.0110
+  F_NDMI: 0.0110
+  V_rollmax_E_SAR_diff_kobs7: 0.0106
+  C_lag_E_SAR_diff_kobs6: 0.0095
+  V_rollmax_LST_modis_kobs7: 0.0088
+  s2_b12: 0.0066
+  V_rollmax_F_NDVI_kobs14: 0.0061
+  C_lag_E_SAR_diff_kobs30: 0.0061
+  C_lag_E_SAR_ratio_kobs30: 0.0058
+  C_lag_F_NDVI_kobs30: 0.0054
+  A_grad_LST_modis_kobs14: 0.0044
+  D_sa_LST_modis: 0.0040
+  A_d_LST_modis_kobs7: 0.0034
+  C_lag_E_SAR_diff_kobs12: 0.0031
+  precip_mm: 0.0028
 ```
 
 ![Feature set 09 family breakdown](piecharts/feature_set_09.svg)
+
+**Family importance (from `Models/Temporal/v8/v8.1/mdr_ts_v8_1_20260121_105425/feature_importance.csv`)**
+
+![Feature set 09 family importance](piecharts/feature_set_09_importance.svg)
+
+![Feature set 09 heatmap](figures/feature_set_09_corr.png)
 
 ## Feature set 10 (46 features)
 
@@ -422,55 +480,61 @@ Features used:
 
 ```yaml
 features:
-  - precip_mm
-  - G_rain_sum_3d
-  - G_rain_sum_7d
-  - G_rain_sum_30d
-  - G_API
-  - G_DSLR
-  - C_lag_E_SAR_diff_kobs12
-  - C_lag_E_SAR_diff_kobs30
-  - C_lag_E_SAR_ratio_kobs30
-  - C_lag_F_NDVI_kobs30
-  - C_lag_LST_modis_kobs12
-  - C_lag_LST_modis_kobs30
-  - DOY
-  - D_sa_E_SAR_ratio
-  - D_sa_F_NDMI
-  - D_z_E_SAR_ratio
-  - D_z_F_NDMI
-  - E_SAR_diff
-  - E_SAR_ratio
-  - F_MSI
-  - F_NDMI
-  - V_ema_LST_modis_kobs30
-  - V_rollmax_E_SAR_diff_kobs14
-  - V_rollmax_E_SAR_diff_kobs30
-  - V_rollmax_F_NDVI_kobs30
-  - V_rollmax_G_API_kobs30
-  - V_rollmax_G_API_kobs7
-  - V_rollmax_LST_modis_kobs7
-  - V_rollmax_s2_b11_kobs30
-  - V_rollmean_G_API_kobs30
-  - V_rollmin_E_SAR_diff_kobs30
-  - V_rollmin_E_SAR_ratio_kobs30
-  - V_rollmin_F_NDMI_kobs30
-  - V_rollmin_G_API_kobs7
-  - V_rollmin_s2_b11_kobs30
-  - V_rollmin_s2_b12_kobs30
-  - s1_vh
-  - s2_b8
-  - A_d_LST_modis_kobs7
-  - A_grad_LST_modis_kobs14
-  - C_lag_E_SAR_diff_kobs6
-  - V_rollmax_E_SAR_diff_kobs7
-  - V_rollmax_E_SAR_ratio_kobs14
-  - V_rollmax_F_NDVI_kobs14
-  - s2_b12
-  - D_sa_LST_modis
+  V_ema_LST_modis_kobs30: 0.1914
+  V_rollmin_G_API_kobs7: 0.1498
+  G_rain_sum_30d: 0.0686
+  V_rollmean_G_API_kobs30: 0.0402
+  V_rollmax_G_API_kobs7: 0.0346
+  V_rollmax_LST_modis_kobs7: 0.0318
+  D_z_F_NDMI: 0.0314
+  G_API: 0.0310
+  C_lag_LST_modis_kobs30: 0.0287
+  V_rollmax_E_SAR_diff_kobs14: 0.0284
+  s2_b8: 0.0274
+  E_SAR_ratio: 0.0239
+  DOY: 0.0208
+  D_sa_F_NDMI: 0.0203
+  C_lag_E_SAR_diff_kobs6: 0.0192
+  G_rain_sum_7d: 0.0169
+  V_rollmin_F_NDMI_kobs30: 0.0141
+  V_rollmin_E_SAR_diff_kobs30: 0.0140
+  G_DSLR: 0.0121
+  C_lag_LST_modis_kobs12: 0.0116
+  V_rollmin_s2_b11_kobs30: 0.0113
+  V_rollmax_G_API_kobs30: 0.0103
+  G_rain_sum_3d: 0.0103
+  C_lag_E_SAR_diff_kobs12: 0.0102
+  V_rollmin_E_SAR_ratio_kobs30: 0.0102
+  s1_vh: 0.0101
+  V_rollmax_E_SAR_diff_kobs30: 0.0099
+  C_lag_F_NDVI_kobs30: 0.0097
+  V_rollmax_s2_b11_kobs30: 0.0094
+  C_lag_E_SAR_diff_kobs30: 0.0091
+  V_rollmin_s2_b12_kobs30: 0.0089
+  V_rollmax_E_SAR_diff_kobs7: 0.0089
+  V_rollmax_F_NDVI_kobs30: 0.0088
+  D_sa_E_SAR_ratio: 0.0087
+  C_lag_E_SAR_ratio_kobs30: 0.0086
+  D_z_E_SAR_ratio: 0.0085
+  F_MSI: 0.0083
+  E_SAR_diff: 0.0077
+  V_rollmax_E_SAR_ratio_kobs14: 0.0077
+  precip_mm: 0.0072
+  F_NDMI: 0.0000
+  A_d_LST_modis_kobs7: 0.0000
+  A_grad_LST_modis_kobs14: 0.0000
+  V_rollmax_F_NDVI_kobs14: 0.0000
+  s2_b12: 0.0000
+  D_sa_LST_modis: 0.0000
 ```
 
 ![Feature set 10 family breakdown](piecharts/feature_set_10.svg)
+
+**Family importance (from `Models/Temporal/v7/v7.1/mdr_ts_v7_1_20260117_161048/feature_importance.csv`)**
+
+![Feature set 10 family importance](piecharts/feature_set_10_importance.svg)
+
+![Feature set 10 heatmap](figures/feature_set_10_corr.png)
 
 ## Feature set 11 (89 features)
 
@@ -486,99 +550,101 @@ Features used:
 
 ```yaml
 features:
-  - precip_mm
-  - s1_vv
-  - s1_vh
-  - s2_b4
-  - s2_b8
-  - s2_b11
-  - s2_b12
-  - LST_modis
-  - aspect
-  - DOY
-  - F_NDVI
-  - F_NDMI
-  - F_MSI
-  - E_SAR_ratio
-  - E_SAR_diff
-  - E_dVV_1
-  - G_API
-  - G_DSLR
-  - G_DSLR_isnan
-  - G_rain_sum_3d
-  - G_rain_sum_7d
-  - G_rain_sum_30d
-  - A_d_G_API_kobs1
-  - A_d_G_API_kobs2
-  - A_grad_G_API_kobs7
-  - A_pct_G_API
-  - V_rollstd_G_API_kobs7
-  - V_rollrng_G_API_kobs7
-  - V_rollcv_G_API_kobs7
-  - V_rollmean_G_API_kobs7
-  - V_rollmin_G_API_kobs7
-  - V_rollmax_G_API_kobs7
-  - V_ema_G_API_kobs7
-  - C_lag_G_API_kobs1
-  - C_lag_G_API_kobs2
-  - C_lag_G_API_kobs5
-  - C_smm_G_API_alpha0.85_n5
-  - A_d_F_NDMI_kobs1
-  - A_d_F_NDMI_kobs2
-  - A_grad_F_NDMI_kobs7
-  - A_pct_F_NDMI
-  - V_rollstd_F_NDMI_kobs7
-  - V_rollrng_F_NDMI_kobs7
-  - V_rollcv_F_NDMI_kobs7
-  - V_rollmean_F_NDMI_kobs7
-  - V_rollmin_F_NDMI_kobs7
-  - V_rollmax_F_NDMI_kobs7
-  - V_ema_F_NDMI_kobs7
-  - C_lag_F_NDMI_kobs1
-  - C_lag_F_NDMI_kobs2
-  - C_lag_F_NDMI_kobs5
-  - C_smm_F_NDMI_alpha0.85_n5
-  - A_d_E_SAR_ratio_kobs1
-  - A_d_E_SAR_ratio_kobs2
-  - A_grad_E_SAR_ratio_kobs7
-  - A_pct_E_SAR_ratio
-  - V_rollstd_E_SAR_ratio_kobs7
-  - V_rollrng_E_SAR_ratio_kobs7
-  - V_rollcv_E_SAR_ratio_kobs7
-  - V_rollmean_E_SAR_ratio_kobs7
-  - V_rollmin_E_SAR_ratio_kobs7
-  - V_rollmax_E_SAR_ratio_kobs7
-  - V_ema_E_SAR_ratio_kobs7
-  - C_lag_E_SAR_ratio_kobs1
-  - C_lag_E_SAR_ratio_kobs2
-  - C_lag_E_SAR_ratio_kobs5
-  - C_smm_E_SAR_ratio_alpha0.85_n5
-  - A_d_LST_modis_kobs1
-  - A_d_LST_modis_kobs2
-  - A_grad_LST_modis_kobs7
-  - A_pct_LST_modis
-  - V_rollstd_LST_modis_kobs7
-  - V_rollrng_LST_modis_kobs7
-  - V_rollcv_LST_modis_kobs7
-  - V_rollmean_LST_modis_kobs7
-  - V_rollmin_LST_modis_kobs7
-  - V_rollmax_LST_modis_kobs7
-  - V_ema_LST_modis_kobs7
-  - C_lag_LST_modis_kobs1
-  - C_lag_LST_modis_kobs2
-  - C_lag_LST_modis_kobs5
-  - C_smm_LST_modis_alpha0.85_n5
-  - I_ts_spike_s1_vv
-  - D_sa_F_NDMI
-  - D_z_F_NDMI
-  - D_sa_E_SAR_ratio
-  - D_z_E_SAR_ratio
-  - D_sa_LST_modis
-  - D_z_LST_modis
+  V_ema_G_API_kobs7: 0.2992
+  V_rollmin_G_API_kobs7: 0.0988
+  V_rollmean_G_API_kobs7: 0.0685
+  C_lag_G_API_kobs1: 0.0391
+  C_lag_LST_modis_kobs5: 0.0386
+  DOY: 0.0354
+  aspect: 0.0306
+  s2_b8: 0.0298
+  V_ema_F_NDMI_kobs7: 0.0282
+  V_ema_LST_modis_kobs7: 0.0198
+  V_rollmin_F_NDMI_kobs7: 0.0172
+  V_rollmin_LST_modis_kobs7: 0.0164
+  D_z_F_NDMI: 0.0149
+  G_API: 0.0126
+  G_rain_sum_3d: 0.0112
+  E_SAR_diff: 0.0110
+  C_lag_LST_modis_kobs1: 0.0107
+  V_rollmax_E_SAR_ratio_kobs7: 0.0097
+  s1_vh: 0.0091
+  V_rollmax_F_NDMI_kobs7: 0.0077
+  G_rain_sum_30d: 0.0075
+  D_sa_E_SAR_ratio: 0.0073
+  D_z_E_SAR_ratio: 0.0072
+  F_MSI: 0.0067
+  V_rollmax_LST_modis_kobs7: 0.0066
+  C_lag_F_NDMI_kobs5: 0.0065
+  D_sa_F_NDMI: 0.0064
+  G_rain_sum_7d: 0.0063
+  s1_vv: 0.0061
+  C_lag_E_SAR_ratio_kobs1: 0.0058
+  C_lag_E_SAR_ratio_kobs5: 0.0058
+  F_NDVI: 0.0048
+  V_rollmax_G_API_kobs7: 0.0047
+  s2_b11: 0.0047
+  V_ema_E_SAR_ratio_kobs7: 0.0046
+  E_SAR_ratio: 0.0043
+  s2_b12: 0.0040
+  V_rollmin_E_SAR_ratio_kobs7: 0.0039
+  s2_b4: 0.0039
+  F_NDMI: 0.0038
+  C_lag_F_NDMI_kobs1: 0.0038
+  C_lag_F_NDMI_kobs2: 0.0036
+  C_lag_LST_modis_kobs2: 0.0034
+  precip_mm: 0.0033
+  I_ts_spike_s1_vv: 0.0032
+  V_rollrng_E_SAR_ratio_kobs7: 0.0032
+  G_DSLR: 0.0031
+  C_lag_E_SAR_ratio_kobs2: 0.0031
+  V_rollmean_LST_modis_kobs7: 0.0027
+  LST_modis: 0.0026
+  V_rollmean_E_SAR_ratio_kobs7: 0.0025
+  V_rollmean_F_NDMI_kobs7: 0.0024
+  A_grad_LST_modis_kobs7: 0.0023
+  A_d_G_API_kobs2: 0.0023
+  C_smm_G_API_alpha0.85_n5: 0.0021
+  A_grad_F_NDMI_kobs7: 0.0020
+  D_z_LST_modis: 0.0019
+  D_sa_LST_modis: 0.0019
+  A_pct_F_NDMI: 0.0018
+  V_rollcv_F_NDMI_kobs7: 0.0017
+  C_lag_G_API_kobs2: 0.0016
+  C_smm_E_SAR_ratio_alpha0.85_n5: 0.0016
+  C_smm_LST_modis_alpha0.85_n5: 0.0015
+  A_grad_E_SAR_ratio_kobs7: 0.0014
+  V_rollcv_G_API_kobs7: 0.0014
+  A_pct_G_API: 0.0013
+  A_grad_G_API_kobs7: 0.0013
+  V_rollrng_F_NDMI_kobs7: 0.0013
+  V_rollrng_LST_modis_kobs7: 0.0013
+  V_rollstd_F_NDMI_kobs7: 0.0012
+  V_rollcv_E_SAR_ratio_kobs7: 0.0011
+  A_d_G_API_kobs1: 0.0011
+  A_pct_E_SAR_ratio: 0.0010
+  A_d_E_SAR_ratio_kobs1: 0.0010
+  V_rollrng_G_API_kobs7: 0.0010
+  C_smm_F_NDMI_alpha0.85_n5: 0.0010
+  V_rollstd_G_API_kobs7: 0.0009
+  V_rollstd_E_SAR_ratio_kobs7: 0.0009
+  C_lag_G_API_kobs5: 0.0008
+  V_rollcv_LST_modis_kobs7: 0.0008
+  E_dVV_1: 0.0008
+  A_d_LST_modis_kobs2: 0.0006
+  A_d_F_NDMI_kobs1: 0.0005
+  V_rollstd_LST_modis_kobs7: 0.0005
+  A_d_E_SAR_ratio_kobs2: 0.0005
+  A_d_F_NDMI_kobs2: 0.0005
+  A_pct_LST_modis: 0.0004
+  A_d_LST_modis_kobs1: 0.0004
+  G_DSLR_isnan: 0.0000
 ```
 
 ![Feature set 11 family breakdown](piecharts/feature_set_11.svg)
 
----
+**Family importance (from `Models/Temporal/v3/v3.1/mdr_ts_v3_1_20260108_144926/feature_importance.csv`)**
 
-_Jakob Balkovec & Kerry Cheon_
+![Feature set 11 family importance](piecharts/feature_set_11_importance.svg)
+
+![Feature set 11 heatmap](figures/feature_set_11_corr.png)
