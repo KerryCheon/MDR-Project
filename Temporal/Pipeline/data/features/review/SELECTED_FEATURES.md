@@ -648,3 +648,28 @@ features:
 ![Feature set 11 family importance](piecharts/feature_set_11_importance.svg)
 
 ![Feature set 11 heatmap](figures/feature_set_11_corr.png)
+
+## Appendix: Rain Features
+
+These rain features were added when we still had the mindset of “a clever new feature will boost performance.” It didn’t. The experiment was still useful, though.
+
+```yaml
+rain_features: rain_event_impulse_0_7
+  rain_mm_impulse_0_7
+  days_since_rain_event
+```
+
+**What each feature means**
+
+1. `rain_event_impulse_0_7`: Weighted rain _event_ spikes over the last 0–7 days (uses a 0/1 event mask, then applies weights).
+2. `rain_mm_impulse_0_7`: Weighted rain _amount_ (mm) over the last 0–7 days (same weights as above).
+3. `days_since_rain_event`: Days since the last rain event (clipped at 30).
+
+**Implementation details (from v8.2/v9.2 notebooks)**
+
+- **Event threshold:** `RAIN_THR = 4.0` mm on `precip_mm`.
+- **Horizon:** 0–7 days.
+- **Weights:** `[1.0, 0.6, 0.2, 0.1, 0.05, 0.02, 0.01, 0.0]` (applied to each lag).
+- **Per‑station logic:** sort by `station_id` + `date`, compute lags per station.
+- **days_since_rain_event:** computed per station and clipped to 30.
+- **v9.2 note:** impulse features were added to the wet‑expert feature set only (`FEATURE_COLS_B`), and were computed on concatenated train/val/test before splitting to avoid edge effects.
