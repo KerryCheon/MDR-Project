@@ -37,11 +37,10 @@
    - [v8.1.0: Valid (Rain Feature Additions)](#v810-valid-rain-feature-additions)
    - [v8.2.0: Valid (Rain Variance Study)](#v820-valid-rain-variance-study)
 10. [v9.x Series: Gated Models](#v9x-series-gated-models)
-
-- [v9.1.0: Valid (Gated Mixture of Experts)](#v910-valid-gated-mixture-of-experts)
-- [v9.2.0: Valid (Wet Expert Rain Impulses)](#v920-valid-wet-expert-rain-impulses)
-- [v9.3.0: Valid (Winter/Non-Winter Gate)](#v930-valid-winternon-winter-gate)
-- [v9.4.0: Valid (Improved Winter Expert)](#v940-valid-improved-winter-expert)
+    - [v9.1.0: Valid (Gated Mixture of Experts)](#v910-valid-gated-mixture-of-experts)
+    - [v9.2.0: Valid (Wet Expert Rain Impulses)](#v920-valid-wet-expert-rain-impulses)
+    - [v9.3.0: Valid (Winter/Non-Winter Gate)](#v930-valid-winternon-winter-gate)
+    - [v9.4.0: Valid (Improved Winter Expert)](#v940-valid-improved-winter-expert)
 
 ---
 
