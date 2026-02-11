@@ -723,3 +723,37 @@ Focused on improving the winter expert while keeping the non-winter expert fixed
 
 - Soft mix improves overall test $R^2$ vs v9.3 and v9.2
 - Winter-slice performance is still negative on test despite expert changes
+
+---
+
+Dump from v10
+
+```
+Best validation R2: 0.8237884024403164
+Best params:
+  learning_rate: 0.031802897015642956
+  max_depth: 8
+  min_child_weight: 14.153263657924109
+  subsample: 0.9720330017585932
+  colsample_bytree: 0.8303197403379534
+  gamma: 2.3861026002162537e-08
+  reg_alpha: 0.02411624638533363
+  reg_lambda: 18.137253935049337
+```
+
+Results
+
+```
+FINAL RESULTS
+Test -> R2: 0.77014 | MAE: 0.03470 | RMSE: 0.04606
+
+Best params (final):
+  learning_rate: 0.031802897015642956
+  max_depth: 8
+  min_child_weight: 14.153263657924109
+  subsample: 0.9720330017585932
+  colsample_bytree: 0.8303197403379534
+  gamma: 2.3861026002162537e-08
+  reg_alpha: 0.02411624638533363
+  reg_lambda: 18.137253935049337
+```
