@@ -649,27 +649,214 @@ features:
 
 ![Feature set 11 heatmap](figures/feature_set_11_corr.png)
 
-## Appendix: Rain Features
+## Appendix: Rain Model | Winter Model
 
-These rain features were added when we still had the mindset of “a clever new feature will boost performance.” It didn’t. The experiment was still useful, though.
+This appendix summarizes the **v9 (v9.\*) mixture-of-experts experiments** (v9.1–v9.4).
+All gates are calibrated using **train-only statistics** and then applied unchanged to validation and test splits.
 
-```yaml
-rain_features: rain_event_impulse_0_7
-  rain_mm_impulse_0_7
-  days_since_rain_event
-```
+---
 
-**What each feature means**
+## Rain-Gated Model (v9.1–v9.2)
 
-1. `rain_event_impulse_0_7`: Weighted rain _event_ spikes over the last 0–7 days (uses a 0/1 event mask, then applies weights).
-2. `rain_mm_impulse_0_7`: Weighted rain _amount_ (mm) over the last 0–7 days (same weights as above).
-3. `days_since_rain_event`: Days since the last rain event (clipped at 30).
+### Gate Definition (Wet vs Dry)
 
-**Implementation details (from v8.2/v9.2 notebooks)**
+- **Gate column**:
+  `GATE_COL = G_rain_sum_7d`
 
-- **Event threshold:** `RAIN_THR = 4.0` mm on `precip_mm`.
-- **Horizon:** 0–7 days.
-- **Weights:** `[1.0, 0.6, 0.2, 0.1, 0.05, 0.02, 0.01, 0.0]` (applied to each lag).
-- **Per‑station logic:** sort by `station_id` + `date`, compute lags per station.
-- **days_since_rain_event:** computed per station and clipped to 30.
-- **v9.2 note:** impulse features were added to the wet‑expert feature set only (`FEATURE_COLS_B`), and were computed on concatenated train/val/test before splitting to avoid edge effects.
+- **Gate mode**:
+  Quantile-based thresholding using train-only data
+
+- **Threshold**:
+
+  $$
+  \text{thr} = Q\_{\text{train}}(\text{WET\_Q})
+  $$
+
+- **Quantile settings**:
+  - **v9.1**: $\text{WET\_Q} = 0.75$
+  - **v9.2**: $\text{WET\_Q} = 0.55$
+
+- **Binary gate**:
+  $$
+  \text{is\_wet} = \mathbb{1}(\text{G\_rain\_sum\_7d} \ge \text{thr})
+  $$
+
+---
+
+### Expert A (Dry Regime)
+
+- **Training data**:
+  Train split rows where `is_wet == 0`
+
+- **Model**:
+  Stacked ensemble with:
+  - Base learners: `XGBoost` + `Random Forest (RF)`
+  - Meta-learner: `Ridge` regression
+
+- **Features**:
+  `FEATURE_COLS_A` (baseline temporal feature set)
+
+---
+
+### Expert B (Wet Regime)
+
+- **Training data**:
+  Train split rows where `is_wet == 1`
+
+- **Model**:
+  Same stacked architecture as Expert A (`XGB` + `RF` into `Ridge`)
+
+---
+
+### Feature Variants
+
+- **v9.1**:
+  Uses `FEATURE_COLS_A`
+
+- **v9.2**:
+  $$\text{FEATURE\_COLS\_B} = \text{FEATURE\_COLS\_A} \cup \{\text{rain impulse features}\}$$
+
+---
+
+### Rain Impulse Features (v9.2)
+
+All impulse features are computed **before data splitting** to avoid edge effects.
+
+- **Event impulse mask**:
+  - `rain_event_impulse_0_7`: weighted binary mask where `precip_mm ≥ 4.0`
+
+- **Rain amount impulse**:
+  - `rain_mm_impulse_0_7`: weighted rain amount over lags 0–7
+
+- **Dryness memory**:
+  - `days_since_rain_event`: per-station days since last event, clipped to 30
+
+- **Lag weights**:
+  \[
+  [1.0,\ 0.6,\ 0.2,\ 0.1,\ 0.05,\ 0.02,\ 0.01,\ 0.0]
+  \]
+
+- **Per-station logic**:
+  Data are sorted by `station_id` and `date`, with lag features computed independently per station.
+
+---
+
+### Combination with Base Model
+
+- **Hard gate**:
+
+  $$\hat{y} = \text{is\_wet} \cdot \hat{y}\_B + (1 - \text{is\_wet}) \cdot \hat{y}\_A$$
+
+- **Soft gate**:
+  $$w\_B = \sigma\bigl(K (\text{G\_rain\_sum\_7d} - \text{thr})\bigr), \quad K = 1.0$$
+  $$\hat{y} = w_B \cdot \hat{y}\_B + (1 - w_B) \cdot \hat{y}\_A$$
+
+---
+
+## Winter-Gated Model (v9.3–v9.4)
+
+### Season Binning
+
+- **Day-of-year**:
+
+  $$\text{DOY} = \text{day-of-year}(\text{date})$$
+
+- **Season definitions**:
+  - Winter: \( \text{DOY} \le 90 \) or \( \text{DOY} \ge 335 \)
+  - Shoulder: \( 90 < \text{DOY} \le 150 \) or \( 275 \le \text{DOY} < 335 \)
+  - Summer: otherwise
+
+- **Season codes**:
+  - winter = 0
+  - shoulder = 1
+  - summer = 2
+
+---
+
+### Expert A (Non-Winter)
+
+- **Training data**:
+  Train split rows where `season_bin != 0`
+
+- **Model**:
+  Stacked `XGB` + `RF` with `Ridge` meta-learner
+
+- **Features**:
+  `FEATURE_COLS_A` (baseline temporal features)
+
+---
+
+### Expert B (Winter-Focused)
+
+- **v9.3**:
+  - Training data: `season_bin == 0`
+  - Model: stacked XGB + RF + Ridge
+
+- **v9.4**:
+  - Training data: `season_bin ∈ {0, 1}` (winter + shoulder)
+  - Model: XGB only
+  - Features:
+
+    $$\text{FEATURE\_COLS\_B} = \text{FEATURE\_COLS\_A} \cup \{\text{rain impulse features}\}$$
+
+---
+
+### Combination with Base Model
+
+- **Hard season gate**:
+
+  $$\text{gate} = \mathbb{1}(\text{season\_bin} = 0)$$
+  $$\hat{y} = \text{gate} \cdot \hat{y}\_B + (1 - \text{gate}) \cdot \hat{y}\_A$$
+
+- **Soft season gate (v9.3)**:
+
+  $$\theta = \frac{2\pi \cdot \text{DOY}}{365.25}, \quad s = \cos(\theta)$$
+  $$\text{thr} = Q*{\text{train}}(1 - r*{\text{winter}})$$
+  $$w\_B = \sigma\bigl(K (s - \text{thr})\bigr), \quad K = 3.5$$
+
+- **Soft season gate (v9.4)**:
+
+  $$\theta = \frac{2\pi (\text{DOY} - 355)}{365.25}$$
+
+  $$s = \cos(\theta)\,(1 - |\sin(\theta)|)$$
+
+  $$w\_B = \text{CAP} \cdot \sigma\bigl(K (s - \text{thr})\bigr)$$
+
+  with:
+  - $K = 3.8$
+  - $\text{CAP} = 0.35$
+  - $w\_B \le 0.30$
+
+---
+
+### Winter Residual Add-On (v9.2 / v9.4)
+
+- **Baseline winter model** (winter slices only):
+  - Ridge regression
+  - Features:
+
+    $$\text{BASE\_FEATURES} = [\text{DOY},\ \text{G\_API},\ \text{G\_rain\_sum\_30d},\ \text{C\_lag\_LST\_modis\_kobs30}]$$
+
+- **Residual model**:
+  - XGBoost
+  - Features:
+    $$
+    \begin{aligned}
+    \text{RESIDUAL\_FEATURES} = [&\text{rain\_event\_impulse\_0\_7},\ \text{rain\_mm\_impulse\_0\_7},\ \text{days\_since\_rain\_event}, \\
+                                &\text{E\_SAR\_diff},\ \text{C\_lag\_E\_SAR\_diff\_kobs6},\ \text{A\_d\_LST\_modis\_kobs7}]
+    \end{aligned}
+    $$
+
+- **Residual handling**:
+  - Mean-centered
+  - Clipped at $$\pm 0.12$$
+
+- **Final winter prediction**:
+
+  $$\hat{y}_B = \hat{y}_{\text{base}} + \hat{r}$$
+
+- Combined with Expert A using the same hard or soft winter gate.
+
+---
+
+_Jakob Balkovec_, _Kerry Cheon_

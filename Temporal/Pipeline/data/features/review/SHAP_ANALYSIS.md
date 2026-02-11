@@ -1,526 +1,238 @@
-# SHAP Analysis (Feature Sets)
+# Global SHAP Feature Importance + Correlation Report
 
-_Author: Jakob Balkovec_
+**Author**: Jakob Balkovec
+**Date:** Feb 10th 2026
 
-I retrained the best-performing run (by test $R^2$ in `SELECTED_FEATURES.md`) for each feature set and ran SHAP on the full test split. This is meant to be readable, not overly academic.
+## Quick Summary
 
-> Note: The performance won't match exactly what was in `SELECTED_FEATURES.md` since I retrained the models from scratch (same hyperparameters, data splits, etc.) to ensure consistency, but did not apply any post processing (e.g., calibration, bootstrapping) techniques.
+- **Dataset**: `MDR/Temporal/Pipeline/data/splits/derived_new_updated/test_derived_updated.csv`
+  - I had to make another split since some of the features were dropped in the original `test_derived.csv`. This new split is based on the same original data but retains all features for the test set.
+- Selected features (after mapping): 15
+- Missing after mapping: `None`
+- Feature set 10 handling: `xgb`
+- MI estimator: `scikit-learn` (symmetrized)
+- Dataset selection: `max_coverage`
 
-> Note: Each feature set includes a SHAP summary plot (overall impact distribution), a SHAP bar plot (ranked average impact), and SHAP dependence plots (feature relationship) of the top 3 performing features (these use a random sample of the test set for speed, still temporal)
+### Method
 
-**Overview of What you’re looking at:**
+For each feature, I defined the following quantities:
 
-- Metrics are from the retrained models (same splits as the original runs)
-- SHAP is computed on the full test set
-- Relationship plots are SHAP dependence plots using a random sample of test rows (just for speed)
-- For v7.1 I include both XGBoost and RandomForest, since both were used in the notebook
-- Plots live in `Temporal/Pipeline/data/features/review/shap_plots/`
+- **Frequency**
 
-## Feature set 01
+  $$
+  f = \frac{\#\{\text{feature sets where the feature appears in the top-10}\}}{11}
+  $$
 
-Best run (by test $R^2$): `Models/Temporal/v1/v1.0/mdr_ts_v2_3_20260108_115420`
+- **Average SHAP magnitude**
 
-### Model: XGB
+  $$
+  \overline{|\mathrm{SHAP}|} = \frac{1}{n_f} \sum_{i=1}^{n_f} |\mathrm{SHAP}_i|
+  $$
 
-**Retrained metrics:**
+> Note: Where $n_f$ is the number of feature sets in which the feature appears in the top-10
 
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.8791 | 0.0354 | 0.0248 |
-| Val   | 0.6137 | 0.0668 | 0.0509 |
-| Test  | 0.5208 | 0.0644 | 0.0498 |
+- **Global feature importance**
 
-**Top features by mean |SHAP| (normalized):**
+  $$
+  G = f \times \overline{|\mathrm{SHAP}|}
+  $$
 
-| Rank | Feature   | Mean (SHAP) |
-| ---- | --------- | ----------- |
-| 1    | DOY       | 0.059176    |
-| 2    | s1_vv     | 0.014511    |
-| 3    | SAR_ratio | 0.010819    |
-| 4    | s1_vh     | 0.008814    |
-| 5    | precip_mm | 0.006762    |
-| 6    | NDMI      | 0.006368    |
-| 7    | NDVI      | 0.004806    |
-| 8    | MSI       | 0.002917    |
-| 9    | rain_mm   | 0.001936    |
+> Note: This metric prioritizes features that are both consistently important across feature sets and strongly influential within each set
 
-![Feature set 01 XGB SHAP summary](shap_plots/feature_set_01_xgb_summary.png)
+Feature selection for correlation uses `top 15 by global_importance`. Correlations are computed on `MDR/Temporal/Pipeline/data/splits/derived_new_updated/test_derived_updated.csv`
 
-![Feature set 01 XGB SHAP bar](shap_plots/feature_set_01_xgb_bar.png)
+**Stats:**
 
-**Relationships (SHAP dependence plots):**
+```
+(rows: 1967, dropped NaNs: 862)
+```
 
-![Feature set 01 XGB dependence](shap_plots/feature_set_01_xgb_DOY_dependence.png)
+> Comment: `NaNs` arise primarily from rolling and EMA-based features near sequence boundaries
 
-![Feature set 01 XGB dependence](shap_plots/feature_set_01_xgb_s1_vv_dependence.png)
+## Top Features by Global Importance
 
-![Feature set 01 XGB dependence](shap_plots/feature_set_01_xgb_SAR_ratio_dependence.png)
+| Feature                      | Freq Count | Frequency | Avg SHAP | Global Importance |
+| ---------------------------- | ---------- | --------- | -------- | ----------------- |
+| DOY                          | 9          | 0.818     | 0.030560 | 0.025003          |
+| air_temp_mean                | 4          | 0.364     | 0.038941 | 0.014160          |
+| s1_vv                        | 7          | 0.636     | 0.007951 | 0.005060          |
+| V_ema_LST_modis_kobs30       | 2          | 0.182     | 0.024560 | 0.004465          |
+| rh_mean                      | 3          | 0.273     | 0.015523 | 0.004234          |
+| C_smm_G_API_alpha0.85_n5     | 2          | 0.182     | 0.020411 | 0.003711          |
+| precip_mm                    | 5          | 0.455     | 0.008061 | 0.003664          |
+| s2_b8                        | 5          | 0.455     | 0.007492 | 0.003406          |
+| s1_vh                        | 6          | 0.545     | 0.006226 | 0.003396          |
+| API                          | 1          | 0.091     | 0.036759 | 0.003342          |
+| slope                        | 3          | 0.273     | 0.011967 | 0.003264          |
+| SAR_ratio                    | 5          | 0.455     | 0.006948 | 0.003158          |
+| C_smm_LST_modis_alpha0.85_n5 | 2          | 0.182     | 0.017209 | 0.003129          |
+| aspect                       | 3          | 0.273     | 0.010882 | 0.002968          |
+| NDVI                         | 5          | 0.455     | 0.006030 | 0.002741          |
 
----
+![](global_importance_top15.png)
 
-## Feature set 02
+## Consistent Features
 
-Best run (by test $R^2$): `Models/Temporal/v1/v1.2/mdr_ts_v1_2_20251223_113808`
+> Note: The following features appear in the top-10 for at least 6 out of the 11 feature sets. This indicates they are consistently important across different model configurations and data subsets
 
-### Model: XGB
+| Feature | Freq Count | Frequency | Avg SHAP | Global Importance |
+| ------- | ---------- | --------- | -------- | ----------------- |
+| DOY     | 9          | 0.818     | 0.030560 | 0.025003          |
+| s1_vv   | 7          | 0.636     | 0.007951 | 0.005060          |
+| s1_vh   | 6          | 0.545     | 0.006226 | 0.003396          |
 
-**Retrained metrics:**
+**Condensed:**
 
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.8486 | 0.0393 | 0.0269 |
-| Val   | 0.5350 | 0.0721 | 0.0549 |
-| Test  | 0.4270 | 0.0736 | 0.0591 |
+| Feature (>=6/11) |
+| ---------------- |
+| DOY              |
+| s1_vv            |
+| s1_vh            |
 
-**Top features by mean |SHAP| (normalized):**
+## Correlation Analysis and Thresholding
 
-| Rank | Feature         | Mean (SHAP) |
-| ---- | --------------- | ----------- |
-| 1    | air_temp_mean   | 0.050853    |
-| 2    | slope           | 0.010582    |
-| 3    | precip_mm       | 0.010575    |
-| 4    | s1_vv           | 0.008115    |
-| 5    | NDVI            | 0.008001    |
-| 6    | SAR_ratio       | 0.007145    |
-| 7    | elev            | 0.006451    |
-| 8    | solar_radiation | 0.006024    |
-| 9    | s1_vh           | 0.005473    |
-| 10   | MSI             | 0.004705    |
+After identifying features with high global importance, I moved onto examining pairwise relationships between these features using three complementary correlation measures
 
-![Feature set 02 XGB SHAP summary](shap_plots/feature_set_02_xgb_summary.png)
+> Note: The formulas have been truncated for readability + the fact that these are standard definitions that can be easily looked up. The key point is that I used a combination of linear, monotonic, and nonlinear metrics to capture a wide range of potential dependencies between features.
 
-![Feature set 02 XGB SHAP bar](shap_plots/feature_set_02_xgb_bar.png)
+For any feature pair \( (x, y) \), I computed:
 
-**Relationships (SHAP dependence plots):**
-
-![Feature set 02 XGB dependence](shap_plots/feature_set_02_xgb_air_temp_mean_dependence.png)
-
-![Feature set 02 XGB dependence](shap_plots/feature_set_02_xgb_slope_dependence.png)
-
-![Feature set 02 XGB dependence](shap_plots/feature_set_02_xgb_precip_mm_dependence.png)
-
----
-
-## Feature set 03
-
-Best run (by test $R^2$): `Models/Temporal/v2/v2.1/mdr_ts_v2_1_20260106_211015`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.9408 | 0.0246 | 0.0178 |
-| Val   | 0.6806 | 0.0597 | 0.0444 |
-| Test  | 0.6540 | 0.0572 | 0.0435 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature         | Mean (SHAP) |
-| ---- | --------------- | ----------- |
-| 1    | DOY             | 0.042773    |
-| 2    | air_temp_mean   | 0.029362    |
-| 3    | rh_mean         | 0.017001    |
-| 4    | precip_mm       | 0.008263    |
-| 5    | s1_vv           | 0.007499    |
-| 6    | s1_vh           | 0.007445    |
-| 7    | solar_radiation | 0.007054    |
-| 8    | SAR_ratio       | 0.006265    |
-| 9    | NDVI            | 0.005113    |
-| 10   | NDMI            | 0.003214    |
-
-![Feature set 03 XGB SHAP summary](shap_plots/feature_set_03_xgb_summary.png)
-
-![Feature set 03 XGB SHAP bar](shap_plots/feature_set_03_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 03 XGB dependence](shap_plots/feature_set_03_xgb_DOY_dependence.png)
-
-![Feature set 03 XGB dependence](shap_plots/feature_set_03_xgb_air_temp_mean_dependence.png)
-
-![Feature set 03 XGB dependence](shap_plots/feature_set_03_xgb_rh_mean_dependence.png)
-
----
-
-## Feature set 04
-
-Best run (by test $R^2$): `Models/Temporal/v1/v1.1/mdr_ts_v1_1_20251223_113030`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.8747 | 0.0358 | 0.0250 |
-| Val   | 0.5445 | 0.0713 | 0.0542 |
-| Test  | 0.4316 | 0.0733 | 0.0586 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature         | Mean (SHAP) |
-| ---- | --------------- | ----------- |
-| 1    | air_temp_mean   | 0.047036    |
-| 2    | rh_mean         | 0.011767    |
-| 3    | slope           | 0.011720    |
-| 4    | solar_radiation | 0.009039    |
-| 5    | elev            | 0.008560    |
-| 6    | precip_mm       | 0.008556    |
-| 7    | s1_vv           | 0.008389    |
-| 8    | NDVI            | 0.007410    |
-| 9    | s1_vh           | 0.006823    |
-| 10   | SAR_ratio       | 0.005562    |
-
-![Feature set 04 XGB SHAP summary](shap_plots/feature_set_04_xgb_summary.png)
-
-![Feature set 04 XGB SHAP bar](shap_plots/feature_set_04_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 04 XGB dependence](shap_plots/feature_set_04_xgb_air_temp_mean_dependence.png)
-
-![Feature set 04 XGB dependence](shap_plots/feature_set_04_xgb_rh_mean_dependence.png)
-
-![Feature set 04 XGB dependence](shap_plots/feature_set_04_xgb_slope_dependence.png)
-
----
-
-## Feature set 05
-
-Best run (by test $R^2$): `Models/Temporal/v1/v1.0/mdr_ts_v1_0_20251223_105722`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.9444 | 0.0238 | 0.0171 |
-| Val   | 0.6907 | 0.0588 | 0.0431 |
-| Test  | 0.6125 | 0.0605 | 0.0459 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature         | Mean (SHAP) |
-| ---- | --------------- | ----------- |
-| 1    | DOY             | 0.042119    |
-| 2    | air_temp_mean   | 0.028511    |
-| 3    | rh_mean         | 0.017802    |
-| 4    | slope           | 0.013600    |
-| 5    | elev            | 0.008621    |
-| 6    | solar_radiation | 0.007526    |
-| 7    | precip_mm       | 0.006148    |
-| 8    | s1_vv           | 0.005418    |
-| 9    | NDVI            | 0.004821    |
-| 10   | s1_vh           | 0.003933    |
-
-![Feature set 05 XGB SHAP summary](shap_plots/feature_set_05_xgb_summary.png)
-
-![Feature set 05 XGB SHAP bar](shap_plots/feature_set_05_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 05 XGB dependence](shap_plots/feature_set_05_xgb_DOY_dependence.png)
-
-![Feature set 05 XGB dependence](shap_plots/feature_set_05_xgb_air_temp_mean_dependence.png)
-
-![Feature set 05 XGB dependence](shap_plots/feature_set_05_xgb_rh_mean_dependence.png)
-
----
-
-## Feature set 06
-
-Best run (by test $R^2$): `Models/Temporal/v2/v2.3/mdr_ts_v2_2_20260107_170214`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.9634 | 0.0195 | 0.0141 |
-| Val   | 0.7650 | 0.0521 | 0.0397 |
-| Test  | 0.6715 | 0.0533 | 0.0411 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature      | Mean (SHAP) |
-| ---- | ------------ | ----------- |
-| 1    | API          | 0.036759    |
-| 2    | DOY          | 0.027018    |
-| 3    | LST_modis    | 0.016951    |
-| 4    | s2_b8        | 0.009027    |
-| 5    | s1_vv        | 0.007170    |
-| 6    | SAR_ratio_sa | 0.007100    |
-| 7    | NDMI_sa      | 0.006819    |
-| 8    | SAR_ratio    | 0.004949    |
-| 9    | s1_vh        | 0.004866    |
-| 10   | NDMI         | 0.004663    |
-
-![Feature set 06 XGB SHAP summary](shap_plots/feature_set_06_xgb_summary.png)
-
-![Feature set 06 XGB SHAP bar](shap_plots/feature_set_06_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 06 XGB dependence](shap_plots/feature_set_06_xgb_API_dependence.png)
-
-![Feature set 06 XGB dependence](shap_plots/feature_set_06_xgb_DOY_dependence.png)
-
-![Feature set 06 XGB dependence](shap_plots/feature_set_06_xgb_LST_modis_dependence.png)
-
----
-
-## Feature set 07
-
-Best run (by test $R^2$): `Models/Temporal/v3/v3.3/mdr_ts_v3_3_20260109_113817`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.8479 | 0.0397 | 0.0303 |
-| Val   | 0.7771 | 0.0507 | 0.0391 |
-| Test  | 0.7216 | 0.0491 | 0.0386 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature                      | Mean (SHAP) |
-| ---- | ---------------------------- | ----------- |
-| 1    | DOY                          | 0.024469    |
-| 2    | C_smm_G_API_alpha0.85_n5     | 0.017969    |
-| 3    | C_smm_LST_modis_alpha0.85_n5 | 0.016021    |
-| 4    | G_API                        | 0.011978    |
-| 5    | aspect                       | 0.009650    |
-| 6    | s2_b8                        | 0.008646    |
-| 7    | G_rain_sum_30d               | 0.005383    |
-| 8    | s1_vv                        | 0.004558    |
-| 9    | D_z_F_NDMI                   | 0.003882    |
-| 10   | D_sa_F_NDMI                  | 0.003780    |
-
-![Feature set 07 XGB SHAP summary](shap_plots/feature_set_07_xgb_summary.png)
-
-![Feature set 07 XGB SHAP bar](shap_plots/feature_set_07_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 07 XGB dependence](shap_plots/feature_set_07_xgb_DOY_dependence.png)
-
-![Feature set 07 XGB dependence](shap_plots/feature_set_07_xgb_C_smm_G_API_alpha0.85_n5_dependence.png)
-
-![Feature set 07 XGB dependence](shap_plots/feature_set_07_xgb_C_smm_LST_modis_alpha0.85_n5_dependence.png)
-
----
-
-## Feature set 08
-
-Best run (by test $R^2$): `Models/Temporal/v3/v3.1/mdr_ts_v3_1_20260108_151234`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.9686 | 0.0180 | 0.0129 |
-| Val   | 0.7755 | 0.0509 | 0.0395 |
-| Test  | 0.6226 | 0.0571 | 0.0441 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature                      | Mean (SHAP) |
-| ---- | ---------------------------- | ----------- |
-| 1    | DOY                          | 0.026218    |
-| 2    | C_smm_G_API_alpha0.85_n5     | 0.022854    |
-| 3    | C_smm_LST_modis_alpha0.85_n5 | 0.018396    |
-| 4    | aspect                       | 0.011868    |
-| 5    | G_API                        | 0.008791    |
-| 6    | s2_b8                        | 0.007421    |
-| 7    | G_rain_sum_3d                | 0.006371    |
-| 8    | E_SAR_diff                   | 0.003914    |
-| 9    | G_rain_sum_30d               | 0.003726    |
-| 10   | D_z_F_NDMI                   | 0.003659    |
-
-![Feature set 08 XGB SHAP summary](shap_plots/feature_set_08_xgb_summary.png)
-
-![Feature set 08 XGB SHAP bar](shap_plots/feature_set_08_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 08 XGB dependence](shap_plots/feature_set_08_xgb_DOY_dependence.png)
-
-![Feature set 08 XGB dependence](shap_plots/feature_set_08_xgb_C_smm_G_API_alpha0.85_n5_dependence.png)
-
-![Feature set 08 XGB dependence](shap_plots/feature_set_08_xgb_C_smm_LST_modis_alpha0.85_n5_dependence.png)
-
----
-
-## Feature set 09
-
-Best run (by test $R^2$): `Models/Temporal/v8/v8.1/mdr_ts_v8_1_20260121_105425`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.9714 | 0.0173 | 0.0123 |
-| Val   | 0.7729 | 0.0480 | 0.0368 |
-| Test  | 0.6742 | 0.0534 | 0.0417 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature                     | Mean (SHAP) |
-| ---- | --------------------------- | ----------- |
-| 1    | V_ema_LST_modis_kobs30      | 0.026414    |
-| 2    | G_rain_sum_30d              | 0.018342    |
-| 3    | DOY                         | 0.014421    |
-| 4    | C_lag_LST_modis_kobs30      | 0.010545    |
-| 5    | V_rollmin_E_SAR_diff_kobs30 | 0.009308    |
-| 6    | V_rollmin_F_NDMI_kobs30     | 0.008718    |
-| 7    | days_since_rain_event       | 0.007274    |
-| 8    | rain_mm_impulse_0_7         | 0.006466    |
-| 9    | s2_b8                       | 0.005532    |
-| 10   | rain_event_impulse_0_7      | 0.004410    |
-
-![Feature set 09 XGB SHAP summary](shap_plots/feature_set_09_xgb_summary.png)
-
-![Feature set 09 XGB SHAP bar](shap_plots/feature_set_09_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 09 XGB dependence](shap_plots/feature_set_09_xgb_V_ema_LST_modis_kobs30_dependence.png)
-
-![Feature set 09 XGB dependence](shap_plots/feature_set_09_xgb_G_rain_sum_30d_dependence.png)
-
-![Feature set 09 XGB dependence](shap_plots/feature_set_09_xgb_DOY_dependence.png)
-
----
-
-## Feature set 10
-
-Best run (by test $R^2$): `Models/Temporal/v7/v7.1/mdr_ts_v7_1_20260117_161048`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.9760 | 0.0159 | 0.0113 |
-| Val   | 0.7820 | 0.0470 | 0.0363 |
-| Test  | 0.6992 | 0.0513 | 0.0397 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature                     | Mean (SHAP) |
-| ---- | --------------------------- | ----------- |
-| 1    | V_ema_LST_modis_kobs30      | 0.022706    |
-| 2    | DOY                         | 0.015162    |
-| 3    | V_rollmin_G_API_kobs7       | 0.011473    |
-| 4    | V_rollmin_E_SAR_diff_kobs30 | 0.009893    |
-| 5    | C_lag_LST_modis_kobs30      | 0.008203    |
-| 6    | D_z_F_NDMI                  | 0.007831    |
-| 7    | V_rollmax_G_API_kobs7       | 0.007680    |
-| 8    | G_API                       | 0.007600    |
-| 9    | V_rollmin_F_NDMI_kobs30     | 0.007489    |
-| 10   | G_rain_sum_3d               | 0.006516    |
-
-![Feature set 10 XGB SHAP summary](shap_plots/feature_set_10_xgb_summary.png)
-
-![Feature set 10 XGB SHAP bar](shap_plots/feature_set_10_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 10 XGB dependence](shap_plots/feature_set_10_xgb_V_ema_LST_modis_kobs30_dependence.png)
-
-![Feature set 10 XGB dependence](shap_plots/feature_set_10_xgb_DOY_dependence.png)
-
-![Feature set 10 XGB dependence](shap_plots/feature_set_10_xgb_V_rollmin_G_API_kobs7_dependence.png)
-
-### Model: RF
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.9742 | 0.0164 | 0.0106 |
-| Val   | 0.7985 | 0.0452 | 0.0340 |
-| Test  | 0.7225 | 0.0493 | 0.0376 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature                 | Mean (SHAP) |
-| ---- | ----------------------- | ----------- |
-| 1    | V_ema_LST_modis_kobs30  | 0.025015    |
-| 2    | DOY                     | 0.011724    |
-| 3    | V_rollmin_G_API_kobs7   | 0.009650    |
-| 4    | C_lag_LST_modis_kobs30  | 0.007423    |
-| 5    | V_rollmin_F_NDMI_kobs30 | 0.007173    |
-| 6    | G_API                   | 0.006611    |
-| 7    | V_rollmax_G_API_kobs7   | 0.006600    |
-| 8    | G_rain_sum_30d          | 0.006358    |
-| 9    | D_z_F_NDMI              | 0.005801    |
-| 10   | C_lag_LST_modis_kobs12  | 0.005517    |
-
-![Feature set 10 RF SHAP summary](shap_plots/feature_set_10_rf_summary.png)
-
-![Feature set 10 RF SHAP bar](shap_plots/feature_set_10_rf_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 10 RF dependence](shap_plots/feature_set_10_rf_V_ema_LST_modis_kobs30_dependence.png)
-
-![Feature set 10 RF dependence](shap_plots/feature_set_10_rf_DOY_dependence.png)
-
-![Feature set 10 RF dependence](shap_plots/feature_set_10_rf_V_rollmin_G_API_kobs7_dependence.png)
-
----
-
-## Feature set 11
-
-Best run (by test $R^2$): `Models/Temporal/v3/v3.1/mdr_ts_v3_1_20260108_144926`
-
-### Model: XGB
-
-**Retrained metrics:**
-
-| Split | $R^2$  | RMSE   | MAE    |
-| ----- | ------ | ------ | ------ |
-| Train | 0.9736 | 0.0166 | 0.0119 |
-| Val   | 0.7782 | 0.0506 | 0.0390 |
-| Test  | 0.6289 | 0.0566 | 0.0443 |
-
-**Top features by mean |SHAP| (normalized):**
-
-| Rank | Feature                   | Mean (SHAP) |
-| ---- | ------------------------- | ----------- |
-| 1    | DOY                       | 0.023681    |
-| 2    | V_ema_G_API_kobs7         | 0.016551    |
-| 3    | aspect                    | 0.011128    |
-| 4    | C_lag_LST_modis_kobs5     | 0.009491    |
-| 5    | V_rollmin_G_API_kobs7     | 0.007961    |
-| 6    | s2_b8                     | 0.006835    |
-| 7    | V_rollmin_LST_modis_kobs7 | 0.005539    |
-| 8    | C_lag_G_API_kobs1         | 0.005048    |
-| 9    | G_rain_sum_3d             | 0.004153    |
-| 10   | D_z_F_NDMI                | 0.003691    |
-
-![Feature set 11 XGB SHAP summary](shap_plots/feature_set_11_xgb_summary.png)
-
-![Feature set 11 XGB SHAP bar](shap_plots/feature_set_11_xgb_bar.png)
-
-**Relationships (SHAP dependence plots):**
-
-![Feature set 11 XGB dependence](shap_plots/feature_set_11_xgb_DOY_dependence.png)
-
-![Feature set 11 XGB dependence](shap_plots/feature_set_11_xgb_V_ema_G_API_kobs7_dependence.png)
-
-![Feature set 11 XGB dependence](shap_plots/feature_set_11_xgb_aspect_dependence.png)
-
----
+- **Pearson correlation**
+  \[
+  r(x, y) = \frac{\mathrm{cov}(x, y)}{\sigma_x \sigma_y}
+  \]
+
+  > Note: This measures the strength of **linear** relationships
+
+- **Spearman rank correlation**
+  \[
+  \rho(x, y) = r(\mathrm{rank}(x), \mathrm{rank}(y))
+  \]
+
+  > Note: This captures **monotonic** relationships, including nonlinear but consistently increasing or decreasing trends
+
+- **Mutual information**
+  \[
+  \mathrm{MI}(x, y)
+  \]
+  > Note: This measures which **general nonlinear dependence** and can detect relationships missed by correlation coefficients
+
+**Yoinked from**:
+
+- [Pearson correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient)
+- [Spearman’s rank correlation coefficient](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient)
+- [Mutual information](https://en.wikipedia.org/wiki/Mutual_information)
+
+Feature pairs were flagged as **highly correlated** if **any** of the following criteria were satisfied:
+
+- **Pearson correlation**:
+  \( |r| \ge 0.8 \), indicating a strong linear relationship
+
+- **Spearman correlation**:
+  \( |\rho| \ge 0.8 \), indicating a strong monotonic relationship
+
+- **Mutual information**:
+  \( \mathrm{MI} \ge 0.1 \), indicating a meaningful nonlinear dependency
+
+Using all three metrics together helps avoid missing important interactions that may not be strictly linear, while still keeping the set of candidate feature pairs focused and interpretable
+
+## Heatmaps
+
+These are for the selected features (after mapping)
+![](correlation_pearson.png)
+![](correlation_spearman.png)
+![](correlation_mutual_info.png)
+
+## Top Correlated Pairs
+
+> Note: I broke down the table into three sections based on the type of relationship (linear, monotonic, nonlinear) and the strength of the correlation. See below
+
+> Note: Mutual information values are unnormalized and should be interpreted comparatively within this dataset rather than as absolute magnitudes
+
+| Feature A                    | Feature B                    | Pearson | Spearman | Mutual Info | Relationship Type         |
+| ---------------------------- | ---------------------------- | ------- | -------- | ----------- | ------------------------- |
+| s1_vv                        | s1_vh                        | 0.976   | 0.899    | 5.554       | Strong positive linear    |
+| s1_vh                        | SAR_ratio                    | -0.857  | -0.773   | 5.550       | Strong negative linear    |
+| s1_vv                        | SAR_ratio                    | -0.757  | -0.518   | 5.549       | Nonlinear dependency      |
+| s2_b8                        | NDVI                         | 0.293   | 0.431    | 4.285       | Nonlinear dependency      |
+| NDVI                         | SAR_ratio                    | -0.410  | -0.330   | 4.260       | Nonlinear dependency      |
+| s2_b8                        | SAR_ratio                    | -0.109  | 0.107    | 4.241       | Nonlinear dependency      |
+| s1_vh                        | NDVI                         | 0.583   | 0.458    | 4.207       | Nonlinear dependency      |
+| s1_vv                        | NDVI                         | 0.641   | 0.570    | 4.173       | Nonlinear dependency      |
+| s1_vv                        | s2_b8                        | 0.398   | 0.366    | 4.145       | Nonlinear dependency      |
+| s1_vh                        | s2_b8                        | 0.291   | 0.144    | 4.139       | Nonlinear dependency      |
+| G_API                        | C_smm_G_API_alpha0.85_n5     | 0.955   | 0.975    | 2.029       | Strong positive monotonic |
+| s2_b8                        | DOY                          | -0.033  | 0.050    | 2.004       | Nonlinear dependency      |
+| DOY                          | V_ema_LST_modis_kobs30       | 0.168   | 0.170    | 1.959       | Nonlinear dependency      |
+| DOY                          | SAR_ratio                    | 0.075   | 0.118    | 1.931       | Nonlinear dependency      |
+| DOY                          | NDVI                         | -0.006  | -0.039   | 1.885       | Nonlinear dependency      |
+| DOY                          | C_smm_LST_modis_alpha0.85_n5 | 0.009   | 0.007    | 1.772       | Nonlinear dependency      |
+| V_ema_LST_modis_kobs30       | C_smm_LST_modis_alpha0.85_n5 | 0.959   | 0.960    | 1.758       | Strong positive linear    |
+| s1_vv                        | DOY                          | -0.026  | 0.055    | 1.727       | Nonlinear dependency      |
+| s1_vh                        | DOY                          | -0.049  | -0.009   | 1.667       | Nonlinear dependency      |
+| V_ema_LST_modis_kobs30       | SAR_ratio                    | 0.461   | 0.584    | 1.619       | Strong positive monotonic |
+| s2_b8                        | V_ema_LST_modis_kobs30       | 0.394   | 0.518    | 1.509       | Strong positive monotonic |
+| V_ema_LST_modis_kobs30       | NDVI                         | 0.016   | 0.047    | 1.480       | Nonlinear dependency      |
+| C_smm_LST_modis_alpha0.85_n5 | SAR_ratio                    | 0.442   | 0.574    | 1.344       | Strong positive monotonic |
+| s1_vv                        | V_ema_LST_modis_kobs30       | -0.260  | -0.134   | 1.280       | Nonlinear dependency      |
+| s1_vh                        | V_ema_LST_modis_kobs30       | -0.370  | -0.355   | 1.276       | Nonlinear dependency      |
+| s2_b8                        | C_smm_LST_modis_alpha0.85_n5 | 0.385   | 0.497    | 1.270       | Strong positive monotonic |
+| C_smm_LST_modis_alpha0.85_n5 | NDVI                         | 0.068   | 0.091    | 1.260       | Nonlinear dependency      |
+| C_smm_G_API_alpha0.85_n5     | SAR_ratio                    | -0.634  | -0.827   | 1.137       | Strong negative monotonic |
+| slope                        | aspect                       | -0.875  | -0.541   | 1.099       | Strong negative linear    |
+| slope                        | SAR_ratio                    | -0.416  | -0.494   | 1.096       | Strong negative monotonic |
+
+### Strong Linear Relationships
+
+**Positive**:
+| Feature A | Feature B | Pearson | Spearman | Mutual Info |
+|----------|-----------|---------|----------|-------------|
+| s1_vv | s1_vh | 0.976 | 0.899 | 5.554 |
+| V_ema_LST_modis_kobs30 | C_smm_LST_modis_alpha0.85_n5 | 0.959 | 0.960 | 1.758 |
+
+**Negative**:
+| Feature A | Feature B | Pearson | Spearman | Mutual Info |
+|----------|-----------|---------|----------|-------------|
+| s1_vh | SAR_ratio | -0.857 | -0.773 | 5.550 |
+| slope | aspect | -0.875 | -0.541 | 1.099 |
+
+### Strong Monotonic Relationships
+
+**Positive**:
+| Feature A | Feature B | Pearson | Spearman | Mutual Info |
+|----------|-----------|---------|----------|-------------|
+| G_API | C_smm_G_API_alpha0.85_n5 | 0.955 | 0.975 | 2.029 |
+| V_ema_LST_modis_kobs30 | SAR_ratio | 0.461 | 0.584 | 1.619 |
+| s2_b8 | V_ema_LST_modis_kobs30 | 0.394 | 0.518 | 1.509 |
+| C_smm_LST_modis_alpha0.85_n5 | SAR_ratio | 0.442 | 0.574 | 1.344 |
+| s2_b8 | C_smm_LST_modis_alpha0.85_n5 | 0.385 | 0.497 | 1.270 |
+
+**Negative**:
+| Feature A | Feature B | Pearson | Spearman | Mutual Info |
+|----------|-----------|---------|----------|-------------|
+| C_smm_G_API_alpha0.85_n5 | SAR_ratio | -0.634 | -0.827 | 1.137 |
+| slope | SAR_ratio | -0.416 | -0.494 | 1.096 |
+
+### Nonlinear Dependencies
+
+| Feature A                    | Feature B                    | Pearson | Spearman | Mutual Info |
+| ---------------------------- | ---------------------------- | ------- | -------- | ----------- |
+| s1_vv                        | SAR_ratio                    | -0.757  | -0.518   | 5.549       |
+| s2_b8                        | NDVI                         | 0.293   | 0.431    | 4.285       |
+| NDVI                         | SAR_ratio                    | -0.410  | -0.330   | 4.260       |
+| s2_b8                        | SAR_ratio                    | -0.109  | 0.107    | 4.241       |
+| s1_vh                        | NDVI                         | 0.583   | 0.458    | 4.207       |
+| s1_vv                        | NDVI                         | 0.641   | 0.570    | 4.173       |
+| s1_vv                        | s2_b8                        | 0.398   | 0.366    | 4.145       |
+| s1_vh                        | s2_b8                        | 0.291   | 0.144    | 4.139       |
+| s2_b8                        | DOY                          | -0.033  | 0.050    | 2.004       |
+| DOY                          | V_ema_LST_modis_kobs30       | 0.168   | 0.170    | 1.959       |
+| DOY                          | SAR_ratio                    | 0.075   | 0.118    | 1.931       |
+| DOY                          | NDVI                         | -0.006  | -0.039   | 1.885       |
+| DOY                          | C_smm_LST_modis_alpha0.85_n5 | 0.009   | 0.007    | 1.772       |
+| s1_vv                        | DOY                          | -0.026  | 0.055    | 1.727       |
+| s1_vh                        | DOY                          | -0.049  | -0.009   | 1.667       |
+| V_ema_LST_modis_kobs30       | NDVI                         | 0.016   | 0.047    | 1.480       |
+| s1_vv                        | V_ema_LST_modis_kobs30       | -0.260  | -0.134   | 1.280       |
+| s1_vh                        | V_ema_LST_modis_kobs30       | -0.370  | -0.355   | 1.276       |
+| C_smm_LST_modis_alpha0.85_n5 | NDVI                         | 0.068   | 0.091    | 1.260       |
