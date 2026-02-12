@@ -224,6 +224,12 @@ def _add_derived_features(train_df, val_df, test_df):
     # ----------------------------
     # 0) Core single-shot features
     # ----------------------------
+    if "DOY" in full.columns:
+        full[f"{PFX['SEA']}_sin_DOY"] = np.sin(2 * np.pi * full["DOY"] / 365.0)
+        full[f"{PFX['SEA']}_cos_DOY"] = np.cos(2 * np.pi * full["DOY"] / 365.0)
+    else:
+        raise ValueError("DOY column required for seasonal encoding but not found.")
+
     full[f"{PFX['OPT']}_NDVI"] = compute_ndvi(full, nir_col="s2_b8", red_col="s2_b4", eps=EPS)
     full[f"{PFX['OPT']}_NDMI"] = compute_ndmi(full, nir_col="s2_b8", swir_col="s2_b11", eps=EPS)
     full[f"{PFX['OPT']}_MSI"]  = compute_msi(full, swir_col="s2_b11", nir_col="s2_b8", eps=EPS)
