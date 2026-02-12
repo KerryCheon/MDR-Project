@@ -1,7 +1,7 @@
 # Global SHAP Feature Importance + Correlation Report
 
 **Author**: Jakob Balkovec
-**Date:** Feb 10th 2026
+**Date:** Feb 11th 2026
 
 ## Quick Summary
 
@@ -44,49 +44,59 @@ Feature selection for correlation uses `top 15 by global_importance`. Correlatio
 **Stats:**
 
 ```
-(rows: 1967, dropped NaNs: 862)
+(rows: 2829, dropped NaNs: 0).
 ```
 
-> Comment: `NaNs` arise primarily from rolling and EMA-based features near sequence boundaries
+> Note: Output column names retain `avg_shap`/`shap_values` for backwards compatibility.
 
 ## Top Features by Global Importance
 
-| Feature                      | Freq Count | Frequency | Avg SHAP | Global Importance |
-| ---------------------------- | ---------- | --------- | -------- | ----------------- |
-| DOY                          | 9          | 0.818     | 0.030560 | 0.025003          |
-| air_temp_mean                | 4          | 0.364     | 0.038941 | 0.014160          |
-| s1_vv                        | 7          | 0.636     | 0.007951 | 0.005060          |
-| V_ema_LST_modis_kobs30       | 2          | 0.182     | 0.024560 | 0.004465          |
-| rh_mean                      | 3          | 0.273     | 0.015523 | 0.004234          |
-| C_smm_G_API_alpha0.85_n5     | 2          | 0.182     | 0.020411 | 0.003711          |
-| precip_mm                    | 5          | 0.455     | 0.008061 | 0.003664          |
-| s2_b8                        | 5          | 0.455     | 0.007492 | 0.003406          |
-| s1_vh                        | 6          | 0.545     | 0.006226 | 0.003396          |
-| API                          | 1          | 0.091     | 0.036759 | 0.003342          |
-| slope                        | 3          | 0.273     | 0.011967 | 0.003264          |
-| SAR_ratio                    | 5          | 0.455     | 0.006948 | 0.003158          |
-| C_smm_LST_modis_alpha0.85_n5 | 2          | 0.182     | 0.017209 | 0.003129          |
-| aspect                       | 3          | 0.273     | 0.010882 | 0.002968          |
-| NDVI                         | 5          | 0.455     | 0.006030 | 0.002741          |
+| Feature                  | Freq Count | Frequency | Avg Importance | Global Importance |
+| ------------------------ | ---------- | --------- | -------------- | ----------------- |
+| DOY                      | 8          | 0.727     | 0.141017       | 0.102558          |
+| V_ema_LST_modis_kobs30   | 2          | 0.182     | 0.201660       | 0.036665          |
+| NDMI                     | 5          | 0.455     | 0.074629       | 0.033922          |
+| C_smm_G_API_alpha0.85_n5 | 2          | 0.182     | 0.181003       | 0.032910          |
+| MSI                      | 5          | 0.455     | 0.071109       | 0.032322          |
+| s1_vv                    | 5          | 0.455     | 0.065524       | 0.029784          |
+| precip_mm                | 5          | 0.455     | 0.065421       | 0.029737          |
+| SAR_ratio                | 6          | 0.545     | 0.051482       | 0.028081          |
+| API                      | 1          | 0.091     | 0.308204       | 0.028019          |
+| V_ema_G_API_kobs7        | 1          | 0.091     | 0.299229       | 0.027203          |
+| s1_vh                    | 5          | 0.455     | 0.055946       | 0.025430          |
+| V_rollmin_G_API_kobs7    | 2          | 0.182     | 0.124321       | 0.022604          |
+| G_API                    | 3          | 0.273     | 0.079060       | 0.021562          |
+| s2_b8                    | 4          | 0.364     | 0.056122       | 0.020408          |
+| G_rain_sum_30d           | 3          | 0.273     | 0.068193       | 0.018598          |
 
-![](global_importance_top15.png)
+![Top 15](figures/global_importance_top15.png)
 
 ## Consistent Features
 
 > Note: The following features appear in the top-10 for at least 6 out of the 11 feature sets. This indicates they are consistently important across different model configurations and data subsets
 
-| Feature | Freq Count | Frequency | Avg SHAP | Global Importance |
-| ------- | ---------- | --------- | -------- | ----------------- |
-| DOY     | 9          | 0.818     | 0.030560 | 0.025003          |
-| s1_vv   | 7          | 0.636     | 0.007951 | 0.005060          |
-| s1_vh   | 6          | 0.545     | 0.006226 | 0.003396          |
+| Feature   | Freq Count | Frequency | Avg Importance | Global Importance |
+| --------- | ---------- | --------- | -------------- | ----------------- |
+| DOY       | 8          | 0.727     | 0.141017       | 0.102558          |
+| SAR_ratio | 6          | 0.545     | 0.051482       | 0.028081          |
+| NDMI      | 5          | 0.455     | 0.074629       | 0.033922          |
+| MSI       | 5          | 0.455     | 0.071109       | 0.032322          |
+| s1_vv     | 5          | 0.455     | 0.065524       | 0.029784          |
+| precip_mm | 5          | 0.455     | 0.065421       | 0.029737          |
+| s1_vh     | 5          | 0.455     | 0.055946       | 0.025430          |
 
 **Condensed:**
 
-| Feature (>=6/11) |
+> Note: The threshold was dropped from 6 to 5 to include `precip_mm` and `SAR_ratio`
+
+| Feature (>=5/11) |
 | ---------------- |
 | DOY              |
+| NDMI             |
+| MSI              |
 | s1_vv            |
+| precip_mm        |
+| SAR_ratio        |
 | s1_vh            |
 
 ## Correlation Analysis and Thresholding
@@ -126,22 +136,24 @@ For any feature pair \( (x, y) \), I computed:
 Feature pairs were flagged as **highly correlated** if **any** of the following criteria were satisfied:
 
 - **Pearson correlation**:
-  \( |r| \ge 0.8 \), indicating a strong linear relationship
+  \( |r| \ge 0.6 \), indicating a strong linear relationship
 
 - **Spearman correlation**:
-  \( |\rho| \ge 0.8 \), indicating a strong monotonic relationship
+  \( |\rho| \ge 0.6 \), indicating a strong monotonic relationship
 
 - **Mutual information**:
-  \( \mathrm{MI} \ge 0.1 \), indicating a meaningful nonlinear dependency
+  \( \mathrm{MI} \ge 0.3 \), indicating a meaningful nonlinear dependency
 
 Using all three metrics together helps avoid missing important interactions that may not be strictly linear, while still keeping the set of candidate feature pairs focused and interpretable
+
+> Note: Pearson measures linear relationships, Spearman measures monotonic (rank-based) relationships, and Mutual Information measures general statistical dependence (including nonlinear relationships)
 
 ## Heatmaps
 
 These are for the selected features (after mapping)
-![](correlation_pearson.png)
-![](correlation_spearman.png)
-![](correlation_mutual_info.png)
+![](figures/correlation_pearson.png)
+![](figures/correlation_spearman.png)
+![](figures/correlation_mutual_info.png)
 
 ## Top Correlated Pairs
 
@@ -149,90 +161,95 @@ These are for the selected features (after mapping)
 
 > Note: Mutual information values are unnormalized and should be interpreted comparatively within this dataset rather than as absolute magnitudes
 
-| Feature A                    | Feature B                    | Pearson | Spearman | Mutual Info | Relationship Type         |
-| ---------------------------- | ---------------------------- | ------- | -------- | ----------- | ------------------------- |
-| s1_vv                        | s1_vh                        | 0.976   | 0.899    | 5.554       | Strong positive linear    |
-| s1_vh                        | SAR_ratio                    | -0.857  | -0.773   | 5.550       | Strong negative linear    |
-| s1_vv                        | SAR_ratio                    | -0.757  | -0.518   | 5.549       | Nonlinear dependency      |
-| s2_b8                        | NDVI                         | 0.293   | 0.431    | 4.285       | Nonlinear dependency      |
-| NDVI                         | SAR_ratio                    | -0.410  | -0.330   | 4.260       | Nonlinear dependency      |
-| s2_b8                        | SAR_ratio                    | -0.109  | 0.107    | 4.241       | Nonlinear dependency      |
-| s1_vh                        | NDVI                         | 0.583   | 0.458    | 4.207       | Nonlinear dependency      |
-| s1_vv                        | NDVI                         | 0.641   | 0.570    | 4.173       | Nonlinear dependency      |
-| s1_vv                        | s2_b8                        | 0.398   | 0.366    | 4.145       | Nonlinear dependency      |
-| s1_vh                        | s2_b8                        | 0.291   | 0.144    | 4.139       | Nonlinear dependency      |
-| G_API                        | C_smm_G_API_alpha0.85_n5     | 0.955   | 0.975    | 2.029       | Strong positive monotonic |
-| s2_b8                        | DOY                          | -0.033  | 0.050    | 2.004       | Nonlinear dependency      |
-| DOY                          | V_ema_LST_modis_kobs30       | 0.168   | 0.170    | 1.959       | Nonlinear dependency      |
-| DOY                          | SAR_ratio                    | 0.075   | 0.118    | 1.931       | Nonlinear dependency      |
-| DOY                          | NDVI                         | -0.006  | -0.039   | 1.885       | Nonlinear dependency      |
-| DOY                          | C_smm_LST_modis_alpha0.85_n5 | 0.009   | 0.007    | 1.772       | Nonlinear dependency      |
-| V_ema_LST_modis_kobs30       | C_smm_LST_modis_alpha0.85_n5 | 0.959   | 0.960    | 1.758       | Strong positive linear    |
-| s1_vv                        | DOY                          | -0.026  | 0.055    | 1.727       | Nonlinear dependency      |
-| s1_vh                        | DOY                          | -0.049  | -0.009   | 1.667       | Nonlinear dependency      |
-| V_ema_LST_modis_kobs30       | SAR_ratio                    | 0.461   | 0.584    | 1.619       | Strong positive monotonic |
-| s2_b8                        | V_ema_LST_modis_kobs30       | 0.394   | 0.518    | 1.509       | Strong positive monotonic |
-| V_ema_LST_modis_kobs30       | NDVI                         | 0.016   | 0.047    | 1.480       | Nonlinear dependency      |
-| C_smm_LST_modis_alpha0.85_n5 | SAR_ratio                    | 0.442   | 0.574    | 1.344       | Strong positive monotonic |
-| s1_vv                        | V_ema_LST_modis_kobs30       | -0.260  | -0.134   | 1.280       | Nonlinear dependency      |
-| s1_vh                        | V_ema_LST_modis_kobs30       | -0.370  | -0.355   | 1.276       | Nonlinear dependency      |
-| s2_b8                        | C_smm_LST_modis_alpha0.85_n5 | 0.385   | 0.497    | 1.270       | Strong positive monotonic |
-| C_smm_LST_modis_alpha0.85_n5 | NDVI                         | 0.068   | 0.091    | 1.260       | Nonlinear dependency      |
-| C_smm_G_API_alpha0.85_n5     | SAR_ratio                    | -0.634  | -0.827   | 1.137       | Strong negative monotonic |
-| slope                        | aspect                       | -0.875  | -0.541   | 1.099       | Strong negative linear    |
-| slope                        | SAR_ratio                    | -0.416  | -0.494   | 1.096       | Strong negative monotonic |
+| Feature A             | Feature B                | Pearson | Spearman | Mutual Info | Relationship Type         |
+| --------------------- | ------------------------ | ------- | -------- | ----------- | ------------------------- |
+| F_NDMI                | F_MSI                    | -0.969  | -1.000   | 1.000       | Strong negative linear    |
+| V_ema_G_API_kobs7     | C_smm_G_API_alpha0.85_n5 | 0.996   | 0.996    | 0.449       | Strong positive linear    |
+| s1_vv                 | s1_vh                    | 0.945   | 0.901    | 0.984       | Strong positive linear    |
+| s1_vv                 | E_SAR_ratio              | -0.586  | -0.588   | 0.984       | Nonlinear dependency      |
+| s1_vh                 | E_SAR_ratio              | -0.788  | -0.835   | 0.983       | Strong negative linear    |
+| G_API                 | V_ema_G_API_kobs7        | 0.972   | 0.980    | 0.307       | Strong positive linear    |
+| V_rollmin_G_API_kobs7 | C_smm_G_API_alpha0.85_n5 | 0.979   | 0.979    | 0.405       | Strong positive linear    |
+| V_rollmin_G_API_kobs7 | V_ema_G_API_kobs7        | 0.978   | 0.978    | 0.368       | Strong positive linear    |
+| G_API                 | C_smm_G_API_alpha0.85_n5 | 0.958   | 0.968    | 0.335       | Strong positive linear    |
+| G_API                 | V_rollmin_G_API_kobs7    | 0.926   | 0.940    | 0.454       | Strong positive linear    |
+| G_rain_sum_30d        | V_ema_G_API_kobs7        | 0.922   | 0.931    | 0.230       | Strong positive linear    |
+| G_rain_sum_30d        | C_smm_G_API_alpha0.85_n5 | 0.907   | 0.918    | 0.202       | Strong positive linear    |
+| G_rain_sum_30d        | V_rollmin_G_API_kobs7    | 0.896   | 0.918    | 0.243       | Strong positive linear    |
+| G_API                 | G_rain_sum_30d           | 0.882   | 0.902    | 0.161       | Strong positive linear    |
+| F_MSI                 | E_SAR_ratio              | 0.424   | 0.440    | 0.783       | Nonlinear dependency      |
+| F_NDMI                | E_SAR_ratio              | -0.310  | -0.440   | 0.782       | Nonlinear dependency      |
+| s1_vh                 | F_MSI                    | -0.658  | -0.603   | 0.781       | Strong negative linear    |
+| s1_vh                 | F_NDMI                   | 0.551   | 0.603    | 0.780       | Strong positive monotonic |
+| s2_b8                 | F_NDMI                   | 0.571   | 0.629    | 0.780       | Strong positive monotonic |
+| s2_b8                 | F_MSI                    | -0.598  | -0.629   | 0.778       | Strong negative monotonic |
+| s1_vv                 | F_MSI                    | -0.720  | -0.709   | 0.775       | Strong negative linear    |
+| s1_vv                 | F_NDMI                   | 0.649   | 0.709    | 0.774       | Strong positive linear    |
+| s2_b8                 | E_SAR_ratio              | -0.364  | -0.282   | 0.766       | Nonlinear dependency      |
+| s1_vv                 | s2_b8                    | 0.386   | 0.409    | 0.758       | Nonlinear dependency      |
+| s1_vh                 | s2_b8                    | 0.373   | 0.350    | 0.755       | Nonlinear dependency      |
+| s1_vh                 | V_ema_G_API_kobs7        | 0.623   | 0.690    | 0.172       | Strong positive linear    |
+| s1_vh                 | C_smm_G_API_alpha0.85_n5 | 0.610   | 0.680    | 0.144       | Strong positive linear    |
+| s1_vh                 | G_rain_sum_30d           | 0.623   | 0.680    | 0.320       | Strong positive linear    |
+| s1_vh                 | G_API                    | 0.606   | 0.676    | 0.123       | Strong positive linear    |
+| E_SAR_ratio           | V_ema_G_API_kobs7        | -0.497  | -0.664   | 0.203       | Strong negative monotonic |
 
 ### Strong Linear Relationships
 
 **Positive**:
-| Feature A | Feature B | Pearson | Spearman | Mutual Info |
-|----------|-----------|---------|----------|-------------|
-| s1_vv | s1_vh | 0.976 | 0.899 | 5.554 |
-| V_ema_LST_modis_kobs30 | C_smm_LST_modis_alpha0.85_n5 | 0.959 | 0.960 | 1.758 |
+
+| Feature A             | Feature B                | Pearson | Spearman | Mutual Info |
+| --------------------- | ------------------------ | ------- | -------- | ----------- |
+| V_ema_G_API_kobs7     | C_smm_G_API_alpha0.85_n5 | 0.996   | 0.996    | 0.449       |
+| s1_vv                 | s1_vh                    | 0.945   | 0.901    | 0.984       |
+| G_API                 | V_ema_G_API_kobs7        | 0.972   | 0.980    | 0.307       |
+| V_rollmin_G_API_kobs7 | C_smm_G_API_alpha0.85_n5 | 0.979   | 0.979    | 0.405       |
+| V_rollmin_G_API_kobs7 | V_ema_G_API_kobs7        | 0.978   | 0.978    | 0.368       |
+| G_API                 | C_smm_G_API_alpha0.85_n5 | 0.958   | 0.968    | 0.335       |
+| G_API                 | V_rollmin_G_API_kobs7    | 0.926   | 0.940    | 0.454       |
+| G_rain_sum_30d        | V_ema_G_API_kobs7        | 0.922   | 0.931    | 0.230       |
+| G_rain_sum_30d        | C_smm_G_API_alpha0.85_n5 | 0.907   | 0.918    | 0.202       |
+| G_rain_sum_30d        | V_rollmin_G_API_kobs7    | 0.896   | 0.918    | 0.243       |
+| G_API                 | G_rain_sum_30d           | 0.882   | 0.902    | 0.161       |
+| s1_vh                 | V_ema_G_API_kobs7        | 0.623   | 0.690    | 0.172       |
+| s1_vh                 | C_smm_G_API_alpha0.85_n5 | 0.610   | 0.680    | 0.144       |
+| s1_vh                 | G_rain_sum_30d           | 0.623   | 0.680    | 0.320       |
+| s1_vh                 | G_API                    | 0.606   | 0.676    | 0.123       |
+| s1_vv                 | F_NDMI                   | 0.649   | 0.709    | 0.774       |
 
 **Negative**:
 | Feature A | Feature B | Pearson | Spearman | Mutual Info |
-|----------|-----------|---------|----------|-------------|
-| s1_vh | SAR_ratio | -0.857 | -0.773 | 5.550 |
-| slope | aspect | -0.875 | -0.541 | 1.099 |
+|-------------|--------------|---------|----------|-------------|
+| F_NDMI | F_MSI | -0.969 | -1.000 | 1.000 |
+| s1_vh | E_SAR_ratio | -0.788 | -0.835 | 0.983 |
+| s1_vh | F_MSI | -0.658 | -0.603 | 0.781 |
+| s1_vv | F_MSI | -0.720 | -0.709 | 0.775 |
 
 ### Strong Monotonic Relationships
 
 **Positive**:
 | Feature A | Feature B | Pearson | Spearman | Mutual Info |
-|----------|-----------|---------|----------|-------------|
-| G_API | C_smm_G_API_alpha0.85_n5 | 0.955 | 0.975 | 2.029 |
-| V_ema_LST_modis_kobs30 | SAR_ratio | 0.461 | 0.584 | 1.619 |
-| s2_b8 | V_ema_LST_modis_kobs30 | 0.394 | 0.518 | 1.509 |
-| C_smm_LST_modis_alpha0.85_n5 | SAR_ratio | 0.442 | 0.574 | 1.344 |
-| s2_b8 | C_smm_LST_modis_alpha0.85_n5 | 0.385 | 0.497 | 1.270 |
+|-----------|-----------|---------|----------|-------------|
+| s1_vh | F_NDMI | 0.551 | 0.603 | 0.780 |
+| s2_b8 | F_NDMI | 0.571 | 0.629 | 0.780 |
 
 **Negative**:
 | Feature A | Feature B | Pearson | Spearman | Mutual Info |
-|----------|-----------|---------|----------|-------------|
-| C_smm_G_API_alpha0.85_n5 | SAR_ratio | -0.634 | -0.827 | 1.137 |
-| slope | SAR_ratio | -0.416 | -0.494 | 1.096 |
+|-------------|-------------------|---------|----------|-------------|
+| E_SAR_ratio | V_ema_G_API_kobs7 | -0.497 | -0.664 | 0.203 |
+| s2_b8 | F_MSI | -0.598 | -0.629 | 0.778 |s
 
 ### Nonlinear Dependencies
 
-| Feature A                    | Feature B                    | Pearson | Spearman | Mutual Info |
-| ---------------------------- | ---------------------------- | ------- | -------- | ----------- |
-| s1_vv                        | SAR_ratio                    | -0.757  | -0.518   | 5.549       |
-| s2_b8                        | NDVI                         | 0.293   | 0.431    | 4.285       |
-| NDVI                         | SAR_ratio                    | -0.410  | -0.330   | 4.260       |
-| s2_b8                        | SAR_ratio                    | -0.109  | 0.107    | 4.241       |
-| s1_vh                        | NDVI                         | 0.583   | 0.458    | 4.207       |
-| s1_vv                        | NDVI                         | 0.641   | 0.570    | 4.173       |
-| s1_vv                        | s2_b8                        | 0.398   | 0.366    | 4.145       |
-| s1_vh                        | s2_b8                        | 0.291   | 0.144    | 4.139       |
-| s2_b8                        | DOY                          | -0.033  | 0.050    | 2.004       |
-| DOY                          | V_ema_LST_modis_kobs30       | 0.168   | 0.170    | 1.959       |
-| DOY                          | SAR_ratio                    | 0.075   | 0.118    | 1.931       |
-| DOY                          | NDVI                         | -0.006  | -0.039   | 1.885       |
-| DOY                          | C_smm_LST_modis_alpha0.85_n5 | 0.009   | 0.007    | 1.772       |
-| s1_vv                        | DOY                          | -0.026  | 0.055    | 1.727       |
-| s1_vh                        | DOY                          | -0.049  | -0.009   | 1.667       |
-| V_ema_LST_modis_kobs30       | NDVI                         | 0.016   | 0.047    | 1.480       |
-| s1_vv                        | V_ema_LST_modis_kobs30       | -0.260  | -0.134   | 1.280       |
-| s1_vh                        | V_ema_LST_modis_kobs30       | -0.370  | -0.355   | 1.276       |
-| C_smm_LST_modis_alpha0.85_n5 | NDVI                         | 0.068   | 0.091    | 1.260       |
+| Feature A | Feature B   | Pearson | Spearman | Mutual Info |
+| --------- | ----------- | ------- | -------- | ----------- |
+| s1_vv     | E_SAR_ratio | -0.586  | -0.588   | 0.984       |
+| F_MSI     | E_SAR_ratio | 0.424   | 0.440    | 0.783       |
+| F_NDMI    | E_SAR_ratio | -0.310  | -0.440   | 0.782       |
+| s2_b8     | E_SAR_ratio | -0.364  | -0.282   | 0.766       |
+| s1_vv     | s2_b8       | 0.386   | 0.409    | 0.758       |
+| s1_vh     | s2_b8       | 0.373   | 0.350    | 0.755       |
+
+---
+
+_Jakob Balkovec_

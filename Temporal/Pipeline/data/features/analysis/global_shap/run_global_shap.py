@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import json
 import os
 import sys
-import re
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -16,9 +17,10 @@ GLOBAL_IMPORTANCE_PERCENTILE = None  # used when SELECTION_MODE == "threshold"
 
 USE_MODEL_FOR_SET10 = "xgb"          # "xgb" | "rf" | "avg"
 
-PEARSON_ABS_THR = 0.80
-SPEARMAN_ABS_THR = 0.80
-MUTUAL_INFO_THR = 0.10
+PEARSON_ABS_THR  = 0.6  # per request (dropped from 0.8)
+SPEARMAN_ABS_THR = 0.6  # per request (dropped from 0.8)
+MUTUAL_INFO_THR  = 0.3  # per request (dropped from 0.1)
+MI_NORMALIZE = True     # normalize MI by max off-diagonal
 
 DATASET_PATH_OVERRIDE = None         # e.g., "MDR/Temporal/Pipeline/data/splits/derived_new/test_derived_new.csv"
 MI_BINS = 20
@@ -36,6 +38,7 @@ FEATURE_ALIASES = {
 }
 
 PREFIX_CANDIDATES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "V"]
+EXCLUDE_FEATURES = {"air_temp_mean", "rh_mean"}
 
 def find_repo_root() -> Path:
     here = Path(__file__).resolve()
@@ -46,7 +49,9 @@ def find_repo_root() -> Path:
 
 REPO_ROOT = find_repo_root()
 OUTPUT_DIR = Path(__file__).resolve().parent
-SHAP_MD_PATH = REPO_ROOT / "MDR/Temporal/Pipeline/data/features/review/SHAP_ANALYSIS.md"
+RUNS_ROOT = REPO_ROOT / "MDR/Models/Temporal"
+FEATURE_IMPORTANCE_FILENAME = "feature_importance.csv"
+TOP_K_PER_SET = 10
 
 DEFAULT_DATASET_CANDIDATES = [
     REPO_ROOT / "MDR/Temporal/Pipeline/data/splits/derived_new_updated/test_derived_updated.csv",
@@ -66,67 +71,155 @@ try:
 except Exception:
     SKLEARN_AVAILABLE = False
 
-def parse_shap_tables(md_path: Path) -> Dict[int, Dict[str, List[Tuple[str, float]]]]:
-    if not md_path.exists():
-        raise FileNotFoundError(f"SHAP analysis file not found: {md_path}")
+def parse_timestamp(ts: str | None) -> datetime | None:
+    if not ts:
+        return None
+    try:
+        return datetime.strptime(ts, "%Y%m%d_%H%M%S")
+    except Exception:
+        return None
 
-    lines = md_path.read_text().splitlines()
-    tables: Dict[int, Dict[str, List[Tuple[str, float]]]] = {}
-    current_set = None
-    current_model = None
 
-    i = 0
-    while i < len(lines):
-        line = lines[i].strip()
-        m = re.match(r"^## Feature set (\d{2})$", line)
-        if m:
-            current_set = int(m.group(1))
-            current_model = None
-            tables.setdefault(current_set, {})
-            i += 1
+def extract_test_r2(meta: dict) -> float | None:
+    perf = meta.get("performance") or {}
+    for key in ("test_R2", "test_r2", "r2", "R2", "test_r2_score"):
+        val = perf.get(key)
+        if val is None:
             continue
-
-        m = re.match(r"^### Model: (.+)$", line)
-        if m:
-            model = m.group(1).strip().lower()
-            if "xgb" in model:
-                current_model = "xgb"
-            elif model in {"rf", "randomforest", "random_forest", "random forest"}:
-                current_model = "rf"
-            else:
-                current_model = model.replace(" ", "_")
-            i += 1
+        try:
+            return float(val)
+        except (TypeError, ValueError):
             continue
+    return None
 
-        if line.startswith("**Top features by mean |SHAP| (normalized):**"):
-            if current_set is None:
-                raise ValueError("Found SHAP table before any feature set header.")
-            if current_model is None:
-                current_model = "xgb"
 
-            j = i + 1
-            while j < len(lines) and not lines[j].strip().startswith("|"):
-                j += 1
+def infer_model_type(meta: dict, run_dir: Path) -> str:
+    alg = (meta.get("algorithm") or "").lower()
+    model_name = (meta.get("model_name") or "").lower()
+    run_name = (meta.get("run_name") or run_dir.name).lower()
 
-            rows: List[Tuple[str, float]] = []
-            while j < len(lines) and lines[j].strip().startswith("|"):
-                parts = [p.strip() for p in lines[j].strip().strip("|").split("|")]
-                if len(parts) >= 3 and parts[0].isdigit():
-                    feature = parts[1]
-                    try:
-                        shap = float(parts[2])
-                    except ValueError:
-                        shap = float(parts[2].replace(",", ""))
-                    rows.append((feature, shap))
-                j += 1
+    if "randomforest" in alg or "random forest" in alg or alg == "rf":
+        return "rf"
+    if "rf" in run_name or "randomforest" in model_name or "random forest" in model_name:
+        return "rf"
+    if "xgb" in alg or "xgboost" in alg:
+        return "xgb"
+    if "xgb" in run_name or "xgboost" in model_name:
+        return "xgb"
+    if "model_config" in meta:
+        return "xgb"
+    return "unknown"
 
-            tables[current_set][current_model] = rows
-            i = j
+
+def load_run_info(meta_path: Path) -> dict:
+    meta = json.loads(meta_path.read_text())
+    run_dir = meta_path.parent
+    features = meta.get("features") or []
+    timestamp = meta.get("timestamp")
+    return {
+        "run_dir": run_dir,
+        "meta_path": meta_path,
+        "meta": meta,
+        "features": features,
+        "features_key": tuple(sorted(features)),
+        "n_features": len(features),
+        "timestamp": timestamp,
+        "timestamp_dt": parse_timestamp(timestamp),
+        "test_r2": extract_test_r2(meta),
+        "model_type": infer_model_type(meta, run_dir),
+        "importance_path": run_dir / FEATURE_IMPORTANCE_FILENAME,
+    }
+
+
+def collect_runs(runs_root: Path) -> List[dict]:
+    if not runs_root.exists():
+        raise FileNotFoundError(f"Runs root not found: {runs_root}")
+    meta_paths = sorted(runs_root.rglob("run_metadata.json"))
+    if not meta_paths:
+        raise FileNotFoundError(f"No run_metadata.json found under: {runs_root}")
+
+    runs = []
+    for meta_path in meta_paths:
+        info = load_run_info(meta_path)
+        if not info["features"]:
             continue
+        runs.append(info)
+    if not runs:
+        raise ValueError("No runs with feature lists found under runs root.")
+    return runs
 
-        i += 1
 
-    return tables
+def group_runs_by_feature_set(runs: List[dict]) -> List[dict]:
+    groups: Dict[Tuple[str, ...], List[dict]] = {}
+    for run in runs:
+        groups.setdefault(run["features_key"], []).append(run)
+
+    result = []
+    for features_key, group_runs in groups.items():
+        timestamps = [r["timestamp_dt"] for r in group_runs if r["timestamp_dt"] is not None]
+        min_timestamp = min(timestamps) if timestamps else None
+        result.append(
+            {
+                "features_key": features_key,
+                "features": list(features_key),
+                "n_features": len(features_key),
+                "runs": group_runs,
+                "min_timestamp": min_timestamp,
+                "signature": "|".join(features_key),
+            }
+        )
+    return result
+
+
+def assign_feature_set_ids(groups: List[dict]) -> Dict[int, dict]:
+    groups_sorted = sorted(
+        groups,
+        key=lambda g: (g["n_features"], g["min_timestamp"] or datetime.min, g["signature"]),
+    )
+    return {idx + 1: group for idx, group in enumerate(groups_sorted)}
+
+
+def select_best_run(runs: List[dict], model_type: str | None = None) -> dict | None:
+    candidates = [r for r in runs if r["importance_path"].exists()]
+    if model_type:
+        candidates = [r for r in candidates if r["model_type"] == model_type]
+    if not candidates:
+        return None
+
+    with_r2 = [r for r in candidates if r["test_r2"] is not None]
+    if with_r2:
+        return max(
+            with_r2,
+            key=lambda r: (r["test_r2"], r["timestamp_dt"] or datetime.min),
+        )
+    return max(candidates, key=lambda r: (r["timestamp_dt"] or datetime.min))
+
+
+def load_importance_rows(path: Path, top_k: int) -> List[Tuple[str, float]]:
+    df = pd.read_csv(path)
+    feature_col = "feature"
+    if feature_col not in df.columns:
+        if "Unnamed: 0" in df.columns:
+            feature_col = "Unnamed: 0"
+        else:
+            feature_col = df.columns[0]
+
+    value_col = None
+    for candidate in ("importance", "mean_abs_shap_norm", "mean_abs_shap", "mean_shap"):
+        if candidate in df.columns:
+            value_col = candidate
+            break
+    if value_col is None:
+        raise ValueError(f"Missing importance column in {path}")
+
+    df = df[[feature_col, value_col]].copy()
+    df = df.rename(columns={feature_col: "feature", value_col: "importance"})
+    df["importance"] = pd.to_numeric(df["importance"], errors="coerce")
+    df = df.dropna(subset=["feature", "importance"])
+    df = df.sort_values("importance", ascending=False)
+    if top_k is not None:
+        df = df.head(top_k)
+    return [(row["feature"], float(row["importance"])) for _, row in df.iterrows()]
 
 
 def average_tables(
@@ -342,6 +435,18 @@ def compute_mi_matrix(df: pd.DataFrame) -> Tuple[pd.DataFrame, str]:
         return compute_mi_matrix_sklearn(df, RANDOM_STATE), "sklearn"
     return compute_mi_matrix_binned(df, MI_BINS), "binned"
 
+
+def normalize_mi_matrix(mi: pd.DataFrame) -> Tuple[pd.DataFrame, str]:
+    if mi.empty:
+        return mi, "none"
+    values = mi.values.copy()
+    mask = ~np.eye(values.shape[0], dtype=bool)
+    off_diag = values[mask]
+    max_val = float(np.nanmax(off_diag)) if off_diag.size else 0.0
+    if not np.isfinite(max_val) or max_val <= 0:
+        return mi, "none"
+    return mi / max_val, "max"
+
 def format_markdown_table(headers: List[str], rows: List[List[str]]) -> str:
     lines = ["| " + " | ".join(headers) + " |", "| " + " | ".join(["---"] * len(headers)) + " |"]
     for row in rows:
@@ -393,44 +498,111 @@ def save_bar_chart(df: pd.DataFrame, path: Path, title: str) -> bool:
     plt.close(fig)
     return True
 
+
+def classify_relationship(pearson: float, spearman: float, mutual_info: float) -> str:
+    if abs(pearson) >= PEARSON_ABS_THR:
+        return f"Strong {'positive' if pearson > 0 else 'negative'} linear"
+    if abs(spearman) >= SPEARMAN_ABS_THR:
+        return f"Strong {'positive' if spearman > 0 else 'negative'} monotonic"
+    if mutual_info >= MUTUAL_INFO_THR:
+        return "Nonlinear dependency"
+    return "None"
+
+
 def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Parse SHAP tables
-    tables = parse_shap_tables(SHAP_MD_PATH)
+    # Load run feature-importance CSVs
+    runs = collect_runs(RUNS_ROOT)
+    feature_groups = group_runs_by_feature_set(runs)
+    feature_sets = assign_feature_set_ids(feature_groups)
+
     expected_sets = list(range(1, 12))
-    found_sets = sorted(tables.keys())
+    found_sets = sorted(feature_sets.keys())
     if found_sets != expected_sets:
         missing = [s for s in expected_sets if s not in found_sets]
+        group_sizes = ", ".join(str(g["n_features"]) for g in feature_groups)
         raise ValueError(
-            f"Expected 11 feature sets (01..11). Found: {found_sets}. Missing: {missing}"
+            "Expected 11 feature sets (01..11). "
+            f"Found: {found_sets}. Missing: {missing}. "
+            f"Group sizes (n_features): [{group_sizes}]"
         )
 
-    # Select table per feature set
     selected_tables: Dict[int, List[Tuple[str, float]]] = {}
+    selected_runs: List[dict] = []
     for set_id in expected_sets:
-        set_tables = tables.get(set_id, {})
+        group = feature_sets[set_id]
+        runs_in_group = group["runs"]
+        xgb_run = select_best_run(runs_in_group, "xgb")
+        rf_run = select_best_run(runs_in_group, "rf")
+        fallback_run = select_best_run(runs_in_group, None)
+
         if set_id == 10:
             if USE_MODEL_FOR_SET10 == "xgb":
-                if "xgb" not in set_tables:
-                    raise ValueError("Feature set 10 XGB table not found.")
-                selected_tables[set_id] = set_tables["xgb"]
+                run = xgb_run or fallback_run
+                if run is None:
+                    raise ValueError("Feature set 10 XGB run not found.")
+                selected_tables[set_id] = load_importance_rows(run["importance_path"], TOP_K_PER_SET)
+                used_fallback = xgb_run is None or run is not xgb_run
+                model_label = run["model_type"] if used_fallback else "xgb"
+                note_label = "selected (fallback)" if used_fallback else "selected"
+                selected_runs.append(
+                    {
+                        "set_id": set_id,
+                        "n_features": group["n_features"],
+                        "model": model_label,
+                        "run": run,
+                        "note": note_label,
+                    }
+                )
             elif USE_MODEL_FOR_SET10 == "rf":
-                if "rf" not in set_tables:
-                    raise ValueError("Feature set 10 RF table not found.")
-                selected_tables[set_id] = set_tables["rf"]
+                run = rf_run or fallback_run
+                if run is None:
+                    raise ValueError("Feature set 10 RF run not found.")
+                selected_tables[set_id] = load_importance_rows(run["importance_path"], TOP_K_PER_SET)
+                used_fallback = rf_run is None or run is not rf_run
+                model_label = run["model_type"] if used_fallback else "rf"
+                note_label = "selected (fallback)" if used_fallback else "selected"
+                selected_runs.append(
+                    {
+                        "set_id": set_id,
+                        "n_features": group["n_features"],
+                        "model": model_label,
+                        "run": run,
+                        "note": note_label,
+                    }
+                )
             elif USE_MODEL_FOR_SET10 == "avg":
-                if "xgb" not in set_tables or "rf" not in set_tables:
-                    raise ValueError("Feature set 10 requires both XGB and RF tables for avg.")
-                selected_tables[set_id] = average_tables(set_tables["xgb"], set_tables["rf"], top_n=10)
+                if xgb_run is None or rf_run is None:
+                    raise ValueError("Feature set 10 requires both XGB and RF runs for avg.")
+                xgb_rows = load_importance_rows(xgb_run["importance_path"], TOP_K_PER_SET)
+                rf_rows = load_importance_rows(rf_run["importance_path"], TOP_K_PER_SET)
+                selected_tables[set_id] = average_tables(xgb_rows, rf_rows, top_n=TOP_K_PER_SET)
+                selected_runs.append(
+                    {"set_id": set_id, "n_features": group["n_features"], "model": "xgb", "run": xgb_run, "note": "avg"}
+                )
+                selected_runs.append(
+                    {"set_id": set_id, "n_features": group["n_features"], "model": "rf", "run": rf_run, "note": "avg"}
+                )
             else:
                 raise ValueError(f"Unknown USE_MODEL_FOR_SET10 option: {USE_MODEL_FOR_SET10}")
         else:
-            if "xgb" not in set_tables:
-                raise ValueError(f"Feature set {set_id:02d} XGB table not found.")
-            selected_tables[set_id] = set_tables["xgb"]
+            run = xgb_run or fallback_run
+            if run is None:
+                raise ValueError(f"Feature set {set_id:02d} run not found.")
+            selected_tables[set_id] = load_importance_rows(run["importance_path"], TOP_K_PER_SET)
+            used_fallback = xgb_run is None or run is not xgb_run
+            note_label = "selected (fallback)" if used_fallback else "selected"
+            selected_runs.append(
+                {
+                    "set_id": set_id,
+                    "n_features": group["n_features"],
+                    "model": run["model_type"] or "unknown",
+                    "run": run,
+                    "note": note_label,
+                }
+            )
 
-    # Global importance
     shap_values: Dict[str, List[float]] = {}
     presence: Dict[str, set] = {}
 
@@ -444,6 +616,8 @@ def main() -> None:
 
     data_rows = []
     for feature, values in shap_values.items():
+        if feature in EXCLUDE_FEATURES:
+            continue
         freq_count = len(presence.get(feature, []))
         frequency = freq_count / 11.0
         avg_shap = float(np.mean(values)) if values else 0.0
@@ -487,9 +661,7 @@ def main() -> None:
 
     selected_features = selected["feature"].tolist()
 
-    consistent_features = df_global[df_global["freq_count"] >= 6]["feature"].tolist()
-
-    # Dataset
+    consistent_features = df_global[df_global["freq_count"] >= 5]["feature"].tolist()
     dataset_path, searched, present_features, mapping_rows, missing_features, dataset_select_mode = select_dataset(selected_features)
 
     if not present_features:
@@ -510,10 +682,12 @@ def main() -> None:
     if df.shape[0] < 2:
         raise ValueError("Not enough rows after dropping NaNs to compute correlations.")
 
-    # Correlations
     pearson = df.corr(method="pearson")
     spearman = df.corr(method="spearman")
     mi, mi_method = compute_mi_matrix(df)
+    mi_norm_method = "none"
+    if MI_NORMALIZE:
+        mi, mi_norm_method = normalize_mi_matrix(mi)
 
     pearson_path = OUTPUT_DIR / "correlation_pearson.csv"
     spearman_path = OUTPUT_DIR / "correlation_spearman.csv"
@@ -527,9 +701,9 @@ def main() -> None:
     mi_png = OUTPUT_DIR / "correlation_mutual_info.png"
     pearson_fig = save_heatmap(pearson, pearson_png, "Pearson Correlation", vmin=-1, vmax=1, cmap="coolwarm")
     spearman_fig = save_heatmap(spearman, spearman_png, "Spearman Correlation", vmin=-1, vmax=1, cmap="coolwarm")
-    mi_fig = save_heatmap(mi, mi_png, "Mutual Information", vmin=0, vmax=None, cmap="viridis")
+    mi_vmax = 1 if MI_NORMALIZE and mi_norm_method != "none" else None
+    mi_fig = save_heatmap(mi, mi_png, "Mutual Information", vmin=0, vmax=mi_vmax, cmap="viridis")
 
-    # High-correlation pairs
     pairs = []
     features = pearson.columns.tolist()
     for i in range(len(features)):
@@ -546,13 +720,19 @@ def main() -> None:
     pairs.sort(key=lambda x: x[0], reverse=True)
 
     pair_rows = [
-        {"feature_a": a, "feature_b": b, "pearson": p, "spearman": s, "mutual_info": m}
+        {
+            "feature_a": a,
+            "feature_b": b,
+            "pearson": p,
+            "spearman": s,
+            "mutual_info": m,
+            "relationship_type": classify_relationship(p, s, m),
+        }
         for _, a, b, p, s, m in pairs
     ]
     df_pairs = pd.DataFrame(pair_rows)
     df_pairs.to_csv(OUTPUT_DIR / "high_corr_pairs.csv", index=False)
 
-    # Report
     top_table_rows = []
     for _, row in df_top.iterrows():
         top_table_rows.append(
@@ -566,7 +746,7 @@ def main() -> None:
         )
 
     top_table_md = format_markdown_table(
-        ["Feature", "Freq Count", "Frequency", "Avg SHAP", "Global Importance"], top_table_rows
+        ["Feature", "Freq Count", "Frequency", "Avg Importance", "Global Importance"], top_table_rows
     )
 
     report_pairs = pair_rows[:30]
@@ -578,11 +758,13 @@ def main() -> None:
                 f"{r['pearson']:.3f}",
                 f"{r['spearman']:.3f}",
                 f"{r['mutual_info']:.3f}",
+                r["relationship_type"],
             ]
             for r in report_pairs
         ]
         pair_table_md = format_markdown_table(
-            ["Feature A", "Feature B", "Pearson", "Spearman", "Mutual Info"], pair_table_rows
+            ["Feature A", "Feature B", "Pearson", "Spearman", "Mutual Info", "Relationship Type"],
+            pair_table_rows,
         )
     else:
         pair_table_md = "No pairs exceeded thresholds."
@@ -591,6 +773,11 @@ def main() -> None:
         dataset_rel = dataset_path.relative_to(REPO_ROOT)
     except ValueError:
         dataset_rel = dataset_path
+
+    try:
+        runs_rel = RUNS_ROOT.relative_to(REPO_ROOT)
+    except ValueError:
+        runs_rel = RUNS_ROOT
 
     mapping_table_rows = [
         [
@@ -606,12 +793,39 @@ def main() -> None:
     )
 
     consistent_rows = [[feat] for feat in consistent_features] or [["None"]]
-    consistent_table_md = format_markdown_table(["Feature (>=6/11)"], consistent_rows)
+    consistent_table_md = format_markdown_table(["Feature (>=5/11)"], consistent_rows)
 
     mi_method_label = "scikit-learn (symmetrized)" if mi_method == "sklearn" else f"binned histogram (bins={MI_BINS})"
+    if MI_NORMALIZE and mi_norm_method != "none":
+        mi_method_label += f", normalized by {mi_norm_method}"
+
+    selection_table_rows = []
+    for entry in selected_runs:
+        run = entry["run"]
+        try:
+            run_rel = run["run_dir"].relative_to(REPO_ROOT)
+        except ValueError:
+            run_rel = run["run_dir"]
+        r2_val = run.get("test_r2")
+        r2_str = f"{r2_val:.4f}" if r2_val is not None else "—"
+        selection_table_rows.append(
+            [
+                f"{entry['set_id']:02d}",
+                str(entry["n_features"]),
+                entry["model"],
+                str(run_rel),
+                r2_str,
+                run.get("timestamp") or "—",
+                entry["note"],
+            ]
+        )
+    selection_table_md = format_markdown_table(
+        ["Set", "n_features", "Model", "Run", "test_R2", "Timestamp", "Note"],
+        selection_table_rows,
+    )
 
     report_lines = [
-        "# Global SHAP Feature Importance + Correlation Report",
+        "# Global Feature Importance + Correlation Report",
         "",
         "## Quick Summary",
         f"- Dataset: `{dataset_rel}`",
@@ -620,22 +834,29 @@ def main() -> None:
         f"- Feature set 10 handling: `{USE_MODEL_FOR_SET10}`",
         f"- MI estimator: {mi_method_label}",
         f"- Dataset selection: `{dataset_select_mode}`",
+        f"- Runs root: `{runs_rel}`",
+        "",
+        "## Feature Set Sources",
+        "Runs are grouped by identical feature lists, ordered by feature count (ties by timestamp/signature).",
+        "Per set, we pick the best test_R2 run per model type when available (fallback to most recent).",
+        selection_table_md,
         "",
         "## Method (casual)",
-        "We grab the top-10 mean |SHAP| table for each of the 11 feature sets, then compute:",
+        f"We grab the top-{TOP_K_PER_SET} `feature_importance.csv` rows for each of the 11 feature sets, then compute:",
         "",
-        r"- Frequency: \( f = \frac{\#\text{sets with feature in top-10}}{11} \)",
-        r"- Avg SHAP: \( \overline{\lvert SHAP \rvert} \) over the sets where the feature appears",
-        r"- Global importance: \( G = f \times \overline{\lvert SHAP \rvert} \)",
+        rf"- Frequency: \( f = \frac{{\#\text{{sets with feature in top-{TOP_K_PER_SET}}}}}{11} \)",
+        r"- Avg importance: \( \overline{I} \) over the sets where the feature appears",
+        r"- Global importance: \( G = f \times \overline{I} \)",
         "",
         f"Feature selection for correlation uses `{selection_desc}`.",
         f"Correlations are computed on `{dataset_rel}` (rows: {after_rows}, dropped NaNs: {dropped_rows}).",
+        "Note: Output column names retain `avg_shap`/`shap_values` for backwards compatibility.",
         "",
         "## Top Features by Global Importance",
         top_table_md,
         f"![](global_importance_top{TOP_N}.png)" if top_fig else "- Top-importance chart not generated (matplotlib missing).",
         "",
-        "## Consistent Features (>=6 of 11)",
+        "## Consistent Features (>=5 of 11)",
         consistent_table_md,
         "",
         "## Feature Column Mapping",
@@ -646,6 +867,7 @@ def main() -> None:
         f"- Pearson |r| >= {PEARSON_ABS_THR}",
         f"- Spearman |rho| >= {SPEARMAN_ABS_THR}",
         f"- Mutual information >= {MUTUAL_INFO_THR}",
+        "- MI normalized by max off-diagonal value (range ~[0, 1])" if MI_NORMALIZE and mi_norm_method != "none" else "",
         "",
         "## Correlation Heatmaps",
         "These are for the selected features (after mapping).",
