@@ -41,12 +41,23 @@
     - [v9.2.0: Valid (Wet Expert Rain Impulses)](#v920-valid-wet-expert-rain-impulses)
     - [v9.3.0: Valid (Winter/Non-Winter Gate)](#v930-valid-winternon-winter-gate)
     - [v9.4.0: Valid (Improved Winter Expert)](#v940-valid-improved-winter-expert)
+11. [v11.x Series: Rain Modeling and Residual Correction](#v11x-series-rain-modeling-and-residual-correction)
+    - [v11.1.0: Valid (Rain-Only XGB Diagnostic)](#v1110-valid-rain-only-xgb-diagnostic)
+    - [v11.2.0: Valid (Residual-Correction Prototype)](#v1120-valid-residual-correction-prototype)
+12. [v12.x Series: Shallow NN Baselines](#v12x-series-shallow-nn-baselines)
+    - [v12.1.0: Valid (Shallow NN Baseline)](#v1210-valid-shallow-nn-baseline)
+    - [v12.2.0: Valid (Shallow NN Retune)](#v1220-valid-shallow-nn-retune)
+    - [v12.3.0: Valid (Shallow NN Variant)](#v1230-valid-shallow-nn-variant)
+    - [v12.4.0: Valid (Stacked v12.1 + v12.3)](#v1240-valid-stacked-v121--v123)
+    - [v12.5.0: Valid (Shallow NN Variant)](#v1250-valid-shallow-nn-variant)
+    - [v12.6.0: In Progress (High-Val / Mid-Test Regime)](#v1260-in-progress-high-val--mid-test-regime)
+    - [v12.7.0: In Progress (Metric Inconsistency)](#v1270-in-progress-metric-inconsistency)
 
 ---
 
 ## Best Model
 
-**Section Last Updated on:** Sun Jan 18th, 2025
+**Section Last Updated on:** Sat Feb 14th, 2026
 **Selected Model:** **v7.4.0 — Stacked XGB + RF → Ridge**
 **Status:** **VALID**
 
@@ -65,25 +76,24 @@
 
 ### Rationale for Selection
 
-This model is the current **best overall** because it improves test performance without sacrificing stability.
+This model is the current **best valid reference** after excluding v12.7.0.
 
 **Pros**
 
-- Highest test-set R^2 among all temporally valid models
+- Highest test-set $R^2$ among stable, historically validated models
 - Stacking reduces over-reliance on any single model's bias
-- Still robust under temporal drift
-- Stable performance on the held-out period
+- Remains robust under temporal drift
 
 **Cons**
 
-- More moving parts than a single model, so it is a little harder to interpret
+- More moving parts than a single model, so it is harder to interpret
 - Needs periodic re-checks when feature distributions drift
 
-This trade-off is intentional. Under real-world temporal generalization, robustness and stability were prioritized over marginal validation gains.
+This trade-off is intentional: robustness and consistency are prioritized for the reference baseline.
 
 ### Notes
 
-- v7.3.0 (post-hoc calibrated XGB) was strong, but v7.4.0 improved test R^2 and RMSE.
+- v12.7.0 is marked **INVALID** and is excluded from model selection.
 - v3.3.x remains the best single-model XGB baseline.
 - This model is the **current reference point** for downstream analysis and reporting.
 
@@ -757,3 +767,192 @@ Best params (final):
   reg_alpha: 0.02411624638533363
   reg_lambda: 18.137253935049337
 ```
+
+---
+
+## v11.x Series: Rain Modeling and Residual Correction
+
+### v11.1.0: **VALID (Rain-Only XGB Diagnostic)**
+
+**Description:**
+Rain-only XGBoost study targeting precipitation dynamics (`log1p(precip_mm)`) to quantify how much signal is captured without the full soil feature stack.
+
+#### Results
+
+| Variant    | Val MAE (mm) | Val RMSE (mm) | Val $R^2$ (mm) | Val $R^2$ (log) |
+| ---------- | ------------ | ------------- | -------------- | --------------- |
+| Baseline   | 1.481858     | 4.466299      | 0.846668       | 0.902927        |
+| Aggressive | 1.150342     | 3.844999      | 0.886360       | 0.935285        |
+
+**Comments:**
+
+- Aggressive configuration improves all reported validation metrics vs baseline.
+- This notebook reports validation metrics only (no full train/val/test table).
+
+---
+
+### v11.2.0: **VALID (Residual-Correction Prototype)**
+
+**Description:**
+Two-stage soil-moisture prototype with a base model and planned rain-based residual correction. Note: notebook title is `v11.3`, but the file path/version folder is `v11.2`.
+
+#### Results
+
+**Base soil model (train loop output)**
+
+| Split | MAE    | RMSE   | $R^2$  |
+| ----- | ------ | ------ | ------ |
+| Train | 0.0296 | 0.0381 | 0.8619 |
+| Val   | 0.0350 | 0.0464 | 0.7880 |
+| Test  | 0.0390 | 0.0506 | 0.7231 |
+
+**Final corrected test metrics (Section 8.1 output)**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Test  | 0.036493 | 0.046039 | 0.757695 |
+
+**Comments:**
+
+- Temporal split checks in-notebook report no date overlap leakage.
+- Final test metrics improve over the base test metrics shown earlier in the run.
+
+---
+
+## v12.x Series: Shallow NN Baselines
+
+### v12.1.0: **VALID (Shallow NN Baseline)**
+
+**Description:**
+Initial shallow MLP baseline on `derived_new` features with early stopping and full split evaluation.
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.022029 | 0.028785 | 0.920755 |
+| Val   | 0.038880 | 0.053101 | 0.722038 |
+| Test  | 0.044309 | 0.057026 | 0.628253 |
+
+**Comments:**
+
+- Best validation checkpoint reported: `val_r2 = 0.722038`.
+- Test wet-slice remains weak (`R^2 = -3.772777`) while dry-slice is positive (`R^2 = 0.643049`).
+
+---
+
+### v12.2.0: **VALID (Shallow NN Retune)**
+
+**Description:**
+Re-tuned shallow MLP baseline with improved validation fit over v12.1
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.018255 | 0.025646 | 0.937094 |
+| Val   | 0.038508 | 0.051509 | 0.738449 |
+| Test  | 0.043314 | 0.057329 | 0.624292 |
+
+**Comments:**
+
+- Best validation checkpoint reported: `val_r2 = 0.738449`.
+- Overall val improves vs v12.1, but test remains similar and wet-slice is still strongly negative (`R^2 = -4.342402`).
+
+---
+
+### v12.3.0: **VALID (Shallow NN Variant)**
+
+**Description:**
+Shallow MLP variant with the strongest validation score in the early v12 sequence.
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$     |
+| ----- | -------- | -------- | --------- |
+| Train | 0.025014 | 0.107761 | -0.110605 |
+| Val   | 0.034431 | 0.044782 | 0.802305  |
+| Test  | 0.041470 | 0.052819 | 0.681080  |
+
+**Comments:**
+
+- Best validation checkpoint reported: `val_r2 = 0.802305`.
+- Train metrics are anomalous (negative train `R^2`) despite stronger val/test performance, keep as experimental
+
+---
+
+### v12.4.0: **VALID (Stacked v12.1 + v12.3)**
+
+**Description:**
+Simple ridge stacking of prediction outputs from v12.1 and v12.3 (`preds_mlp_v12_1.csv` + `preds_mlp_v12_3.csv`).
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Val   | 0.032268 | 0.042294 | 0.823660 |
+| Test  | 0.041064 | 0.052111 | 0.689568 |
+
+**Comments:**
+
+- Improves overall validation and modestly improves test vs individual v12.1/v12.3 runs.
+- Test wet-slice remains unstable (`R^2 = -1.693497`) while dry-slice is positive (`R^2 = 0.684708`).
+
+---
+
+### v12.5.0: **VALID (Shallow NN Variant)**
+
+**Description:**
+Follow-up shallow MLP variant with moderate overall performance and persistent wet-regime difficulty
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.030277 | 0.073856 | 0.478320 |
+| Val   | 0.035017 | 0.046540 | 0.786477 |
+| Test  | 0.042050 | 0.053456 | 0.673340 |
+
+**Comments:**
+
+- Best validation checkpoint reported: `val_r2 = 0.786477`.
+- Wet-slice test performance is still negative (`R^2 = -2.710989`).
+
+---
+
+### v12.6.0: **Valid (High-Val / Mid-Test Regime)**
+
+**Description:**
+Shallow MLP run with very high validation scores but only moderate overall test transfer
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.013614 | 0.069401 | 0.539350 |
+| Val   | 0.011720 | 0.016609 | 0.972805 |
+| Test  | 0.013437 | 0.055973 | 0.641860 |
+
+**Comments:**
+
+- Best validation checkpoint reported: `val_r2 = 0.972805`.
+- Large validation-to-test gap means ... instability and requires additional verification
+
+---
+
+### v12.7.0: **INVALID (Shallow NN + Lag-1 Update)**
+
+**Description:**
+Latest shallow MLP run with lag-1 row handling updates.
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.009564 | 0.018075 | 0.968748 |
+| Val   | 0.009161 | 0.016096 | 0.974460 |
+| Test  | 0.008695 | 0.015670 | 0.971928 |
+
+**Comments:**
+
+- Test slice check from artifacts: wet `R^2 = 0.572281`, dry `R^2 = 0.973953`.
