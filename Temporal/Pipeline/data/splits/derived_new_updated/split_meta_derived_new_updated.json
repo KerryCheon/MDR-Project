@@ -1,0 +1,89 @@
+{
+  "source_split": "derived_new",
+  "updated_split": "derived_new_updated",
+  "update_rule": "overwrite elev/slope from base split using (station_id,date), then station_id fallback",
+  "keys_used": [
+    "station_id",
+    "date"
+  ],
+  "updated_columns": [
+    "elev",
+    "slope"
+  ],
+  "base_files": [
+    "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/base/train_base.csv",
+    "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/base/val_base.csv",
+    "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/base/test_base.csv"
+  ],
+  "derived_files": {
+    "train": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/train_derived_new.csv",
+    "val": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/val_derived_new.csv",
+    "test": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/test_derived_new.csv"
+  },
+  "output_files": {
+    "train": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new_updated/train_derived_new_updated.csv",
+    "val": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new_updated/val_derived_new_updated.csv",
+    "test": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new_updated/test_derived_new_updated.csv"
+  },
+  "rows": {
+    "train": 16972,
+    "val": 2919,
+    "test": 2829
+  },
+  "source_counts": {
+    "train": {
+      "elev": {
+        "base_date": 9725,
+        "base_station": 296,
+        "original": 6951
+      },
+      "slope": {
+        "base_date": 9725,
+        "base_station": 296,
+        "original": 6951
+      }
+    },
+    "val": {
+      "elev": {
+        "base_date": 2138,
+        "base_station": 2,
+        "original": 779
+      },
+      "slope": {
+        "base_date": 2138,
+        "base_station": 2,
+        "original": 779
+      }
+    },
+    "test": {
+      "elev": {
+        "base_date": 2006,
+        "base_station": 63,
+        "original": 760
+      },
+      "slope": {
+        "base_date": 2006,
+        "base_station": 63,
+        "original": 760
+      }
+    }
+  },
+  "source_seed": 42,
+  "source_split_by": "time (global)",
+  "source_policy": "global_temporal_only: global date cutoffs into train/val/test, then derive features",
+  "source_variant": "derived_all_new_no_ground",
+  "source_target": "soil_moisture_5cm",
+  "source_meta_cols_kept": [
+    "station_id",
+    "date",
+    "longitude",
+    "latitude"
+  ],
+  "source_stations": [
+    "Darrington",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane",
+    "Touchet_WA_824"
+  ]
+}
