@@ -5,6 +5,8 @@
 
 ---
 
+**IMPORTANT**: Update the document with the new satellite features (spatial, families J and K)
+
 ## README
 
 This document compiles the temporal features we believe have the strongest potential impact on soil-moisture modeling performance. Each feature is presented with two short explanations to help interpret its role:
@@ -20,7 +22,6 @@ This document compiles the temporal features we believe have the strongest poten
 ## Table of Contents
 
 - [Family A: Short-term change dynamics](#family-a-short-term-change-dynamics)
-
   - [1. First Difference](#1-first-difference)
   - [2. Second Difference](#2-second-difference)
   - [3. n-Step Difference](#3-n-step-difference)
@@ -28,7 +29,6 @@ This document compiles the temporal features we believe have the strongest poten
   - [5. Percent Change](#5-percent-change)
 
 - [Family B: Smoothing and volatility](#family-b-smoothing-and-volatility)
-
   - [6. Moving Average](#6-moving-average)
   - [7. Exponential Moving Average](#7-exponential-moving-average)
   - [8. Rolling Standard Deviation](#8-rolling-standard-deviation)
@@ -38,14 +38,12 @@ This document compiles the temporal features we believe have the strongest poten
   - [12. Rolling Range](#12-rolling-range)
 
 - [Family C: Memory and lag](#family-c-memory-and-lag)
-
   - [14. Lag-6 Feature](#13-lag-6-feature)
   - [15. Lag-12 Feature](#14-lag-12-feature)
   - [16. Lag-30 Feature](#15-lag-30-feature)
   - [17. Soil Moisture Memory Index](#16-soil-moisture-memory-index)
 
 - [Family D: Seasonality and anomalies](#family-d-seasonality-and-anomalies)
-
   - [12. Z-Score Anomaly](#17-z-score-anomaly)
   - [13. Seasonal Anomaly](#18-seasonal-anomaly)
   - [18. Dominant Fourier Frequency](#19-dominant-fourier-frequency)
@@ -53,27 +51,23 @@ This document compiles the temporal features we believe have the strongest poten
   - [29. Temperature Anomaly (LST)](#21-temperature-anomaly-lst)
 
 - [Family E: Radar physics](#family-e-radar-physics)
-
   - [20. VV/VH Ratio (Sentinel-1)](#22-vv-vh-ratio-sentinel-1)
   - [21. Backscatter Difference (VV – VH)](#23-backscatter-difference-vv--vh)
   - [22. Radar Coherence (Sentinel-1)](#24-radar-coherence-sentinel-1)
   - [33. Radar Temporal Roughness Index](#25-radar-temporal-roughness-index)
 
 - [Family F: Optical vegetation and moisture](#family-f-optical-vegetation-and-moisture)
-
   - [23. NDVI Time Series](#26-ndvi-time-series)
   - [24. NDMI (Moisture Index)](#27-ndmi-moisture-index)
   - [25. MSI (Moisture Stress Index)](#28-msi-moisture-stress-index)
   - [26. SWIR Reflectance Temporal Curve](#29-swir-reflectance-temporal-curve)
 
 - [Family G: Meteorological forcing](#family-g-meteorological-forcing)
-
   - [27. Rainfall Accumulation (3, 7, 30 days)](#30-rainfall-accumulation-3-7-30-days)
   - [28. Days Since Last Rain](#31-days-since-last-rain)
   - [35. Antecedent Precipitation Index (API)](#32-antecedent-precipitation-index-api)
 
 - [Family H: Cross-signal coupling](#family-h-cross-signal-coupling-relationships-between-modalities)
-
   - [30. Radar–Optical Lag Correlation](#33-radar–optical-lag-correlation)
   - [34. Temperature–Moisture Temporal Coupling](#34-temperaturemoisture-temporal-coupling)
 

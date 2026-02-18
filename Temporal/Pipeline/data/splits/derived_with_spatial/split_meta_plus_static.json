@@ -1,0 +1,47 @@
+{
+  "policy": "append_station_static_features_by_station_id_only (no resplit)",
+  "date_col": "date",
+  "group_col": "station_id",
+  "inputs": {
+    "train_in": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new_updated/train_derived_new_updated.csv",
+    "val_in": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new_updated/val_derived_new_updated.csv",
+    "test_in": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new_updated/test_derived_new_updated.csv",
+    "station_static_in": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/spatial/station_static_features.csv"
+  },
+  "outputs": {
+    "train_out": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/train_plus_static.csv",
+    "val_out": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/val_plus_static.csv",
+    "test_out": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/test_plus_static.csv"
+  },
+  "rows": {
+    "train": 16972,
+    "val": 2919,
+    "test": 2829
+  },
+  "stations_temporal": [
+    "Darrington",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane",
+    "Touchet_WA_824"
+  ],
+  "stations_static": [
+    "Darrington",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane",
+    "Touchet_WA_824"
+  ],
+  "dropped_duplicate_cols_from_static": [
+    "latitude",
+    "longitude"
+  ],
+  "canon_ids": {
+    "Darrington": "Darrington",
+    "Quinault": "Quinault",
+    "Spokane": "Spokane",
+    "SourdoughGulch": "SourdoughGulch_WA_985",
+    "Sourdough": "SourdoughGulch_WA_985",
+    "Touchet": "Touchet_WA_824"
+  }
+}
