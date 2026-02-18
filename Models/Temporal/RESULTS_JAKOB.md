@@ -864,7 +864,7 @@ Re-tuned shallow MLP baseline with improved validation fit over v12.1
 ### v12.3.0: **VALID (Shallow NN Variant)**
 
 **Description:**
-Shallow MLP variant with the strongest validation score in the early v12 sequence.
+Shallow MLP variant with the strongest validation score in the early v12 sequence. Used Gaussian NLL loss function...hence the low train $R^2$
 
 #### Results
 
@@ -956,3 +956,4 @@ Latest shallow MLP run with lag-1 row handling updates.
 **Comments:**
 
 - Test slice check from artifacts: wet `R^2 = 0.572281`, dry `R^2 = 0.973953`.
+- INVALID because the new lagged features we're constructed from the ground truth (leak)
