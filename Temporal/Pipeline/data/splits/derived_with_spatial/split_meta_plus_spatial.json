@@ -1,0 +1,39 @@
+{
+  "seed": 42,
+  "policy": "concat(train,val,test)->clip_to_spatial_window->merge_spatial_on(station_id,date)->global_temporal_resplit",
+  "val_time_frac": 0.15,
+  "test_time_frac": 0.15,
+  "date_col": "date",
+  "group_col": "station_id",
+  "inputs": {
+    "train_in": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/train_derived_new.csv",
+    "val_in": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/val_derived_new.csv",
+    "test_in": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new/test_derived_new.csv",
+    "spatial_in": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/spatial_features_extracted.csv"
+  },
+  "outputs": {
+    "train_out": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/train_plus_spatial.csv",
+    "val_out": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/val_plus_spatial.csv",
+    "test_out": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/test_plus_spatial.csv"
+  },
+  "rows": {
+    "combined": 18837,
+    "train": 14009,
+    "val": 2328,
+    "test": 2500
+  },
+  "stations": [
+    "Darrington",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane",
+    "Touchet_WA_824"
+  ],
+  "spatial_window": {
+    "min": "2014-01-14 00:00:00",
+    "max": "2026-01-13 00:00:00"
+  },
+  "dropped_duplicate_spatial_cols": [
+    "slope"
+  ]
+}
