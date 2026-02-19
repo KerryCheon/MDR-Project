@@ -126,7 +126,7 @@ def iter_lines(path: str, tail: Optional[int] = None) -> Iterator[str]:
         return
 
     # tail last N lines efficiently
-    # for giga/largo files: seek from end and read blocks.
+    # for giga/largo files: seek from end and read blocks
     n = int(tail)
     if n <= 0:
         return
