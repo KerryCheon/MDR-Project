@@ -33,7 +33,9 @@ class TemporalFillPipe:
             "s2_b4",
             "s2_b8",
             "s2_b11",
-            "s2_b12"
+            "s2_b12",
+            "SMAP_sm_am",
+            "SMAP_sm_pm",
         ])
 
         # Features that are STATIC (no interpolation, no change)
@@ -46,6 +48,8 @@ class TemporalFillPipe:
         # Features that SHOULD NOT be interpolated
         self.no_interpolate_cols = [
             "Rain_sat"   # fast-changing weather variable -> use masking, no guessing
+            "rain_mm",
+            "precip_mm",
         ]
 
         self.min_known_required = self.config.get("min_known_required", 20)

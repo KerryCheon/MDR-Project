@@ -36,9 +36,9 @@ class FeaturePipe:
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
         df["DOY"] = df["date"].dt.dayofyear
 
-        if "Rain_sat" in df.columns:
-            df["Rain_3d"] = (
-                pd.to_numeric(df["Rain_sat"], errors="coerce")
+        if "rain_mm" in df.columns:
+            df["rain_3d"] = (
+                pd.to_numeric(df["rain_mm"], errors="coerce")
                 .fillna(0)
                 .rolling(window=3, min_periods=1)
                 .sum()
@@ -63,7 +63,10 @@ class FeaturePipe:
         if "slope" in df.columns:
             df["slope_norm"] = df["slope"] / 90.0
 
-        for col in ["NDVI", "NDMI", "MSI", "SAR_ratio", "SAR_diff"]:
+        if "SMAP_sm_am" in df.columns:
+            df["SMAP_prev"] = df["SMAP_sm_am"].shift(1)
+
+        for col in ["NDVI", "NDMI", "MSI", "SAR_ratio", "SAR_diff", "SMAP_sm_am", "SMAP_prev"]:
             if col in df.columns:
                 df[f"{col}_mask"] = df[col].notna().astype(int)
 

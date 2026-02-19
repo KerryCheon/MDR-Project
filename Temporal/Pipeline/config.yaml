@@ -287,6 +287,8 @@ temporal_fill:
     - s2_b8
     - s2_b11
     - s2_b12
+    - SMAP_sm_am
+    - SMAP_sm_pm
 
   min_known_required: 15
 
@@ -296,8 +298,8 @@ temporal_fill:
   regression_window: 7 # unused (kept for safety)
 
 whittaker:
-  lambda: 5000 # tuned for NDVI smoothness
-  target_columns: ["NDVI_modis"]
+  lambda: 5000
+  target_columns: ["NDVI_modis", "SMAP_sm_am"]
 
 weather:
   cache_path: "Temporal/Pipeline/data/cache/{station}_weather_cache.json"
