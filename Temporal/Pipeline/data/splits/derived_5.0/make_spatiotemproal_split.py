@@ -15,13 +15,13 @@ TEST_IN  = os.path.join(SPLIT_DIR_IN, "test_derived_new_updated.csv")
 
 STATION_STATIC_IN = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial/spatial/station_static_features.csv"
 
-SPLIT_DIR_OUT = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_with_spatial"
+SPLIT_DIR_OUT = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_5.0"
 os.makedirs(SPLIT_DIR_OUT, exist_ok=True)
 
-TRAIN_OUT = os.path.join(SPLIT_DIR_OUT, "train_plus_static.csv")
-VAL_OUT   = os.path.join(SPLIT_DIR_OUT, "val_plus_static.csv")
-TEST_OUT  = os.path.join(SPLIT_DIR_OUT, "test_plus_static.csv")
-META_OUT  = os.path.join(SPLIT_DIR_OUT, "split_meta_plus_static.json")
+TRAIN_OUT = os.path.join(SPLIT_DIR_OUT, "train.csv")
+VAL_OUT   = os.path.join(SPLIT_DIR_OUT, "val.csv")
+TEST_OUT  = os.path.join(SPLIT_DIR_OUT, "test.csv")
+META_OUT  = os.path.join(SPLIT_DIR_OUT, "split_meta.json")
 
 DATE_COL = "date"
 GROUP_COL = "station_id"

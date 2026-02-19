@@ -39,13 +39,13 @@ from utils.derived_features_all_math import (
     train_only_monthly_zscore_global)
 
 MASTER_CLEANED = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/master_cleaned/final_master_cleaned.csv"
-SPLIT_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_all/"
+SPLIT_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_2.0"
 os.makedirs(SPLIT_DIR, exist_ok=True)
 
-TRAIN_PATH = os.path.join(SPLIT_DIR, "train_derived_all.csv")
-VAL_PATH   = os.path.join(SPLIT_DIR, "val_derived_all.csv")
-TEST_PATH  = os.path.join(SPLIT_DIR, "test_derived_all.csv")
-META_PATH  = os.path.join(SPLIT_DIR, "split_meta_derived_all.json")
+TRAIN_PATH = os.path.join(SPLIT_DIR, "train.csv")
+VAL_PATH   = os.path.join(SPLIT_DIR, "val.csv")
+TEST_PATH  = os.path.join(SPLIT_DIR, "test.csv")
+META_PATH  = os.path.join(SPLIT_DIR, "split_meta.json")
 
 SEED = 42
 SPLIT_BY = "station_id + time"

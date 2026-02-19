@@ -1,0 +1,54 @@
+{
+  "seed": 42,
+  "split_by": "station_id + time",
+  "policy": "global_temporal_only: global date cutoffs into train/val/test, then derive features",
+  "variant": "derived_all_new_no_ground_plus_static",
+  "target": "soil_moisture_5cm",
+  "meta_cols_kept": [
+    "station_id",
+    "date",
+    "longitude",
+    "latitude"
+  ],
+  "base_cols": [
+    "precip_mm",
+    "s1_vv",
+    "s1_vh",
+    "s2_b4",
+    "s2_b8",
+    "s2_b11",
+    "s2_b12",
+    "LST_modis",
+    "elev",
+    "slope",
+    "aspect",
+    "DOY",
+    "SMAP_sm_am_interp",
+    "SMAP_sm_pm_interp"
+  ],
+  "static_path": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_6.0/station_static_features.csv",
+  "prefixes": {
+    "META": "M",
+    "BASE": "B",
+    "MET": "G",
+    "RAD": "E",
+    "OPT": "F",
+    "DYN": "A",
+    "VOL": "V",
+    "MEM": "C",
+    "SEA": "D",
+    "EVT": "I"
+  },
+  "stations": [
+    "Darrington",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane",
+    "Touchet_WA_824"
+  ],
+  "rows": {
+    "train": 16972,
+    "val": 2919,
+    "test": 2829
+  }
+}

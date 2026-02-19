@@ -4,25 +4,25 @@ import os
 import pandas as pd
 
 BASE_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/base"
-DERIVED_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new"
-OUT_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_new_updated"
+DERIVED_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_3.0"
+OUT_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_4.0"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 BASE_FILES = ("train_base.csv", "val_base.csv", "test_base.csv")
 DERIVED_FILES = {
-    "train": "train_derived_new.csv",
-    "val": "val_derived_new.csv",
-    "test": "test_derived_new.csv",
+    "train": "train.csv",
+    "val": "val.csv",
+    "test": "test.csv",
 }
 
 OUT_FILES = {
-    "train": "train_derived_new_updated.csv",
-    "val": "val_derived_new_updated.csv",
-    "test": "test_derived_new_updated.csv",
+    "train": "train.csv",
+    "val": "val.csv",
+    "test": "test.csv",
 }
 
-SOURCE_META_PATH = os.path.join(DERIVED_DIR, "split_meta_derived_new.json")
-OUT_META_PATH = os.path.join(OUT_DIR, "split_meta_derived_new_updated.json")
+SOURCE_META_PATH = os.path.join(DERIVED_DIR, "split_meta.json")
+OUT_META_PATH = os.path.join(OUT_DIR, "split_meta.json")
 
 KEY_COLS = ["station_id", "date"]
 UPDATE_COLS = ["elev", "slope"]

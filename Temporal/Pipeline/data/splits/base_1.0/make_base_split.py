@@ -15,12 +15,12 @@ import numpy as np
 import pandas as pd
 
 MASTER_CLEANED = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/master_cleaned/final_master_cleaned.csv"
-SPLIT_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/base/"
+SPLIT_DIR = "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/base_1.0"
 os.makedirs(SPLIT_DIR, exist_ok=True)
 
-TRAIN_PATH = os.path.join(SPLIT_DIR, "train_base.csv")
-VAL_PATH   = os.path.join(SPLIT_DIR, "val_base.csv")
-TEST_PATH  = os.path.join(SPLIT_DIR, "test_base.csv")
+TRAIN_PATH = os.path.join(SPLIT_DIR, "train.csv")
+VAL_PATH   = os.path.join(SPLIT_DIR, "val.csv")
+TEST_PATH  = os.path.join(SPLIT_DIR, "test.csv")
 META_PATH  = os.path.join(SPLIT_DIR, "split_meta.json")
 
 SEED = 42
