@@ -15,34 +15,21 @@ QUINAULT_CSV = Path("processed/quinault/final.csv")
 TOUCHNET_CSV = Path("processed/touchnet/final.csv")
 SOURDOUGH_CSV = Path("processed/sourdough/final.csv")
 
-SPOKANE_XLSX = Path("processed/spokane/final.xlsx")
-DARRINGTON_XLSX = Path("processed/darrington/final.xlsx")
-QUINAULT_XLSX = Path("processed/quinault/final.xlsx")
-TOUCHNET_XLSX = Path("processed/touchnet/final.xlsx")
-SOURDOUGH_XLSX = Path("processed/sourdough/final.xlsx")
-
 MASTER_CSV = Path("master/final_master.csv")
 MASTER_PKL = Path("master/final_master.pkl")
-MASTER_XLSX = Path("master/final_master.xlsx")
 
-spokane_df = pd.read_csv(SPOKANE_CSV, parse_dates=["date"])
-darrington_df = pd.read_csv(DARRINGTON_CSV, parse_dates=["date"])
-quinault_df = pd.read_csv(QUINAULT_CSV, parse_dates=["date"])
-touchnet_df = pd.read_csv(TOUCHNET_CSV, parse_dates=["date"])
-sourdough_df = pd.read_csv(SOURDOUGH_CSV, parse_dates=["date"])
+csv_paths = [SPOKANE_CSV, DARRINGTON_CSV, QUINAULT_CSV, TOUCHNET_CSV, SOURDOUGH_CSV]
 
-spokane_df.to_excel(SPOKANE_XLSX, index=False)
-darrington_df.to_excel(DARRINGTON_XLSX, index=False)
-quinault_df.to_excel(QUINAULT_XLSX, index=False)
-touchnet_df.to_excel(TOUCHNET_XLSX, index=False)
-sourdough_df.to_excel(SOURDOUGH_XLSX, index=False)
+dfs = []
+for p in csv_paths:
+    if not p.exists():
+        raise FileNotFoundError(f"Missing input CSV: {p.resolve()}")
+    dfs.append(pd.read_csv(p, parse_dates=["date"]))
 
-dfs = [spokane_df, darrington_df, quinault_df, touchnet_df, sourdough_df]
 master_df = pd.concat(tqdm(dfs, desc="Concatenating DataFrames"), ignore_index=True)
 
 MASTER_CSV.parent.mkdir(parents=True, exist_ok=True)
 master_df.to_csv(MASTER_CSV, index=False)
 master_df.to_pickle(MASTER_PKL)
-master_df.to_excel(MASTER_XLSX, index=False)
 
-print(f"Master dataset created:\n - {MASTER_CSV}\n - {MASTER_PKL}\n - {MASTER_XLSX}")
+print(f"Master dataset created:\n - {MASTER_CSV.resolve()}\n - {MASTER_PKL.resolve()}")
