@@ -5,7 +5,7 @@
 
 ---
 
-**IMPORTANT**: Update the document with the new satellite features (spatial, families J and K)
+**IMPORTANT**: Updated with new SMAP + static spatial features in `derived_6.0` (including `J_*`/`K_*` station-static columns)
 
 ## README
 
@@ -17,7 +17,7 @@ This document compiles the temporal features we believe have the strongest poten
 
 > **Why Useful:** A plain-language explanation of why the feature matters and how it contributes to understanding or predicting soil moisture.
 
-## Table of Contents
+> \*Note:** The final feature count as of `Fri Feb 20th` is **489\*\*, this document represent all of them, but combines lags into on feature.
 
 ## Table of Contents
 
@@ -73,6 +73,24 @@ This document compiles the temporal features we believe have the strongest poten
 
 - [Family I: Event timing (radar-derived)](#family-i-event-timing-radar-derived)
   - [31. Time Since Last Wetness Spike (Radar)](#35-time-since-last-wetness-spike-radar)
+
+- [Family J: SMAP core signal engineering](#family-j-smap-core-signal-engineering)
+  - [36. SMAP Combined Surface Moisture (AM/PM)](#36-smap-combined-surface-moisture-ampm)
+  - [37. SMAP AM-PM Difference](#37-smap-am-pm-difference)
+  - [38. SMAP Observability Mask](#38-smap-observability-mask)
+  - [39. SMAP Basic Temporal Transforms](#39-smap-basic-temporal-transforms)
+
+- [Family K: SMAP multi-scale dynamics](#family-k-smap-multi-scale-dynamics)
+  - [40. SMAP Multi-Scale Delta + Gradient Block](#40-smap-multi-scale-delta--gradient-block)
+  - [41. SMAP Volatility Block (7/14/30)](#41-smap-volatility-block-71430)
+  - [42. SMAP Memory Block (Lag + SMM)](#42-smap-memory-block-lag--smm)
+
+- [Family L: Static spatial context (station-level)](#family-l-static-spatial-context-station-level)
+  - [43. Terrain Geometry (Elevation, Slope, Aspect)](#43-terrain-geometry-elevation-slope-aspect)
+  - [44. Soil Fractions and Texture by Depth](#44-soil-fractions-and-texture-by-depth)
+  - [45. Landcover Class (WorldCover)](#45-landcover-class-worldcover)
+  - [46. Climate Normals (WorldClim BIO1-BIO19)](#46-climate-normals-worldclim-bio1-bio19)
+  - [47. Static Derived Transforms (K Family)](#47-static-derived-transforms-k-family)
 
 # Features
 
@@ -434,7 +452,7 @@ $$
 
 ---
 
-## Family I: Other
+## Family I: Event timing (radar-derived)
 
 ### 35. Time Since Last Wetness Spike (Radar)
 
@@ -447,6 +465,166 @@ $$
 > **Description**: Measures how long it has been since the last major increase in radar backscatter caused by a wetting event.
 
 > **Why useful**: After a big wetting event, the soil goes through a pretty predictable “cooling-off” period as it dries. Knowing how long it's been since the last spike tells you exactly where you are in that cycle. It’s basically a timer that tracks whether the ground is still freshly wet or well into its drying phase.
+
+---
+
+## Family J: SMAP core signal engineering
+
+### 36. SMAP Combined Surface Moisture (AM/PM)
+
+**Formula**:
+
+$$
+\text{SMAP}_{t}^{\text{interp}} =
+\begin{cases}
+\text{SMAP}_{t}^{AM}, & \text{if AM is available}\\
+\text{SMAP}_{t}^{PM}, & \text{otherwise}
+\end{cases}
+$$
+
+> **Description**: Builds a single SMAP time series using AM first, then PM as fallback (`combine_first` behavior in code).
+
+> **Why useful**: This gives cleaner temporal coverage with fewer gaps, which makes all downstream lag/rolling features way more stable.
+
+### 37. SMAP AM-PM Difference
+
+**Formula**:
+
+$$
+\Delta_{\text{AMPM},t} = \text{SMAP}_{t}^{AM} - \text{SMAP}_{t}^{PM}
+$$
+
+> **Description**: Captures the same-day AM vs PM spread (`SMAP_ampm_diff_interp`).
+
+> **Why useful**: The AM-PM gap gives a quick read on intraday dry-down/wetness behavior that a single daily value can miss.
+
+### 38. SMAP Observability Mask
+
+**Formula**:
+
+$$
+m_t = \mathbb{1}\{x_t \text{ is observed}\}
+$$
+
+> **Description**: Binary availability flag for each SMAP base series (`*_mask`).
+
+> **Why useful**: Missingness itself carries signal and helps models interpret whether a sharp transition comes from hydrology or sparse observations.
+
+### 39. SMAP Basic Temporal Transforms
+
+**Formula**:
+
+$$
+x_{t-k},\quad x_t - x_{t-1},\quad \frac{x_t-x_{t-7}}{7},\quad \frac{x_t-x_{t-1}}{x_{t-1}+\epsilon}
+$$
+
+> **Description**: Base transforms applied to `SMAP_sm_am_interp`, `SMAP_sm_pm_interp`, and `SMAP_sm_interp`: lag(1,7,30), diff1, grad7, pct change, rolling mean/std/range (7,30), and EMA (`alpha=0.2`).
+
+> **Why useful**: This gives a compact but complete history of level, trend, and local variability for each SMAP channel.
+
+---
+
+## Family K: SMAP multi-scale dynamics
+
+### 40. SMAP Multi-Scale Delta + Gradient Block
+
+**Formula**:
+
+$$
+\Delta_k x_t = x_t - x_{t-k}, \quad \nabla_k x_t = \frac{x_t-x_{t-k}}{k}
+$$
+
+> **Description**: Additional dynamic block on `SMAP_sm_interp`: `A_d_*` for `k=\{1,2,5,7,14,30\}`, `A_grad_*` for `k=\{7,14,30\}`, plus `A_pct_*`.
+
+> **Why useful**: Multi-scale deltas separate quick wetting jumps from slower seasonal drifts in one consistent feature family.
+
+### 41. SMAP Volatility Block (7/14/30)
+
+**Formula**:
+
+$$
+\{\mu_w,\sigma_w,\min_w,\max_w,\text{range}_w,\text{CV}_w,\text{EMA}_w\}, \quad w\in\{7,14,30\}
+$$
+
+> **Description**: Rolling stability set on `SMAP_sm_interp`: `V_rollmean`, `V_rollstd`, `V_rollmin`, `V_rollmax`, `V_rollrng`, `V_rollcv`, and `V_ema`.
+
+> **Why useful**: These features summarize whether SMAP moisture is stable, noisy, or rapidly shifting at weekly to monthly scales.
+
+### 42. SMAP Memory Block (Lag + SMM)
+
+**Formula**:
+
+$$
+x_{t-k},\ k\in\{1,2,5,6,12,30\}, \qquad \text{SMM}_t=\sum_{j=1}^{5}(0.85)^j x_{t-j}
+$$
+
+> **Description**: Extended memory terms on `SMAP_sm_interp`: `C_lag_*` + `C_smm_SMAP_sm_interp_alpha0.85_n5`.
+
+> **Why useful**: This keeps both short-memory and long-memory behavior explicit, which is especially helpful when wetting effects persist across multiple overpasses.
+
+---
+
+## Family L: Static spatial context (station-level)
+
+### 43. Terrain Geometry (Elevation, Slope, Aspect)
+
+**Formula**:
+
+$$
+\text{elev},\ \text{slope},\ \text{aspect} = f(\text{DEM})
+$$
+
+> **Description**: Station-level terrain attributes from DEM sampling: `J_elev_m`, `J_slope_deg`, `J_aspect_deg`.
+
+> **Why useful**: Terrain controls runoff, infiltration, and radiation exposure, so it sets the baseline for how quickly each station wets up or dries down.
+
+### 44. Soil Fractions and Texture by Depth
+
+**Formula**:
+
+$$
+\text{sand}_{d},\ \text{clay}_{d},\ \text{texture}_{d},\quad d\in\{0,10,30,60,100,200\}\text{ cm}
+$$
+
+> **Description**: Multi-depth static soil properties: `J_sand_wfrac_b*`, `J_clay_wfrac_b*`, `J_soil_texture_usda_b*`, plus `J_sand_clay_ratio_b0` and `J_clay_plus_sand_b0`.
+
+> **Why useful**: These features encode water-holding and drainage behavior, which strongly shape the same rainfall event producing different moisture responses at different stations.
+
+### 45. Landcover Class (WorldCover)
+
+**Formula**:
+
+$$
+\text{lc\_code} \in \{10,20,\dots,100\}
+$$
+
+> **Description**: Categorical landcover code from WorldCover (`J_lc_code`).
+
+> **Why useful**: Vegetation and surface type change interception, shading, and evapotranspiration, so this gives the model important context for local hydrologic behavior.
+
+### 46. Climate Normals (WorldClim BIO1-BIO19)
+
+**Formula**:
+
+$$
+\text{BIO}_k,\quad k=1,\dots,19
+$$
+
+> **Description**: Station-level climatology normals (`J_bio_bio01` ... `J_bio_bio19`).
+
+> **Why useful**: Long-term climate context stabilizes learning across regions by telling the model whether a station is naturally cool/wet, hot/dry, or strongly seasonal.
+
+### 47. Static Derived Transforms (K Family)
+
+**Formula**:
+
+$$
+\frac{\text{sand}_{0}}{\text{clay}_{0}+\epsilon},\ \text{sand}_{0}+\text{clay}_{0},\ \sin(\theta),\ \cos(\theta)
+$$
+
+> **Description**: Extra static transforms in `K_*`: `K_sand_clay_ratio_b0`, `K_clay_plus_sand_b0`, `K_slope_sin`, `K_slope_cos`, `K_aspect_sin`, `K_aspect_cos`.
+
+> **Why useful**: These make nonlinear spatial effects easier for tree models to pick up, especially circular geometry (`sin/cos`) and soil-composition interactions.
 
 ---
 

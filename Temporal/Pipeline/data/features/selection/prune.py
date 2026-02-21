@@ -262,6 +262,8 @@ def run_stage(df_train, df_val, df_test, target_col, params,
     prev_metrics = None
     bad = 0
     curr_features = list(start_features)
+    last_rejected_transition = None
+    rejected_transition_repeats = 0
 
     ensure_dir(out_dir)
     log_info(
@@ -313,6 +315,7 @@ def run_stage(df_train, df_val, df_test, target_col, params,
 
         n_drop = int(max(1, math.floor(len(curr_features) * drop_frac)))
         n_keep = max(target_n, len(curr_features) - n_drop)
+        transition = (len(curr_features), n_keep)
         top_feature = ranked["feature"].iloc[0] if len(ranked) else "N/A"
         top_importance = float(ranked["importance"].iloc[0]) if len(ranked) else float("nan")
         log_info(
@@ -358,17 +361,45 @@ def run_stage(df_train, df_val, df_test, target_col, params,
             )
             curr_features = list(keep)
             bad = 0
+            last_rejected_transition = None
+            rejected_transition_repeats = 0
         else:
             bad += 1
             log_info(
                 f"[{stage_name}] round={round_idx} rejected: val_r2={m['r2']:.6f}, "
                 f"threshold={best_r2 - allow_r2_drop:.6f}, bad={bad}/{patience}"
             )
+            drop_frac_changed = False
             if bad >= patience:
-                drop_frac = max(min_drop_frac, drop_frac * 0.7)
+                new_drop_frac = max(min_drop_frac, drop_frac * 0.7)
+                drop_frac_changed = new_drop_frac < drop_frac
+                drop_frac = new_drop_frac
                 bad = 0
                 print(c_yellow(f"  drop_frac adjusted to {drop_frac:.3f}"))
                 log_info(f"[{stage_name}] round={round_idx} drop_frac updated to {drop_frac:.3f}")
+
+            # Guard against repeatedly trying the same rejected transition (e.g., 108 -> 98 -> 108 -> 98).
+            if drop_frac_changed:
+                last_rejected_transition = None
+                rejected_transition_repeats = 0
+            else:
+                if transition == last_rejected_transition:
+                    rejected_transition_repeats += 1
+                else:
+                    last_rejected_transition = transition
+                    rejected_transition_repeats = 1
+
+                if rejected_transition_repeats >= 2:
+                    print(c_yellow(
+                        f"  oscillation guard hit ({transition[0]} -> {transition[1]}) with no R2 gain; "
+                        "stopping stage and keeping best features"
+                    ))
+                    log_info(
+                        f"[{stage_name}] round={round_idx} oscillation guard: repeated rejected transition "
+                        f"{transition[0]} -> {transition[1]}; ending stage at best_n={len(best_features)}"
+                    )
+                    curr_features = list(best_features)
+                    break
 
             curr_features = list(best_features)
 
