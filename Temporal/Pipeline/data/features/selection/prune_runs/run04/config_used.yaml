@@ -1,0 +1,73 @@
+paths:
+  train: /Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_6.0/train.csv
+  val: /Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_6.0/val.csv
+  test: /Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_6.0/test.csv
+  out_dir: ./prune_runs/run04
+data:
+  target_col: soil_moisture_5cm
+  id_cols:
+  - station_id
+  - date
+  drop_cols: []
+  date_col: date
+  parse_dates: true
+families:
+  include:
+  - C
+  - B
+  - A
+  - D
+  - G
+  - S
+  rules:
+    A: ^A_
+    B: ^V_
+    C: ^C_
+    D: ^D_
+    E: ^E_
+    F: ^F_
+    G: ^G_
+    I: ^I_
+    S: ^SMAP_
+model:
+  kind: xgb
+  params:
+    n_estimators: 1200
+    learning_rate: 0.03
+    max_depth: 6
+    subsample: 0.9
+    colsample_bytree: 0.8
+    reg_lambda: 2.0
+    reg_alpha: 0.0
+    min_child_weight: 1.0
+    gamma: 0.0
+    tree_method: hist
+    n_jobs: -1
+    random_state: 42
+prune:
+  method: stable_perm
+  start:
+    coarse_target: 220
+    coarse_drop_frac: 0.18
+    coarse_allow_r2_drop: 0.002
+  fine:
+    target_n: 80
+    drop_frac: 0.08
+    allow_r2_drop: 0.0015
+    patience: 3
+  perm:
+    seeds:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    repeats: 5
+    scoring: r2
+  stop:
+    min_drop_frac: 0.04
+output:
+  save_model: false
+  save_rankings: true
+  save_round_features: true
+  print_top_features_each_round: 20

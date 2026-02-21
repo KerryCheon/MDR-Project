@@ -5,7 +5,8 @@
 # pretty console output with green/red deltas, tqdm progress, and checkpoints
 #
 # to run:
-# python prune_features.py --config config.yaml
+# python prune.py --config config.yaml
+# python prune.py --config configs/base_config.yaml
 
 import os
 import re
@@ -218,11 +219,13 @@ def stable_perm_rank(df_train, df_val, feature_cols, target_col, params, seeds, 
     return out
 
 
-def format_delta(curr, prev, fmt="{:+.6f}"):
+def format_delta(curr, prev, higher_is_better=True, fmt="{:+.6f}"):
     d = curr - prev
     s = fmt.format(d)
-    return c_green(s) if d < 0 else c_red(s) if d > 0 else s
-
+    if d == 0:
+        return s
+    good = d > 0 if higher_is_better else d < 0
+    return c_green(s) if good else c_red(s)
 
 def pretty_row(round_idx, nfeat, m, prev_m):
     r2 = m["r2"]
@@ -235,10 +238,10 @@ def pretty_row(round_idx, nfeat, m, prev_m):
 
     return (
         f"{c_bold(str(round_idx).rjust(2))}  n={c_cyan(str(nfeat).rjust(4))}  "
-        f"r2={r2:.6f}({format_delta(r2, prev_m['r2'])})  "
-        f"rmse={rmse:.6f}({format_delta(prev_m['rmse'], rmse)})  "
-        f"mae={mae:.6f}({format_delta(prev_m['mae'], mae)})  "
-        f"p90={p90:.6f}({format_delta(prev_m['p90_abs_err'], p90)})"
+        f"r2={r2:.6f}({format_delta(r2, prev_m['r2'], higher_is_better=True)})  "
+        f"rmse={rmse:.6f}({format_delta(rmse, prev_m['rmse'], higher_is_better=False)})  "
+        f"mae={mae:.6f}({format_delta(mae, prev_m['mae'], higher_is_better=False)})  "
+        f"p90={p90:.6f}({format_delta(p90, prev_m['p90_abs_err'], higher_is_better=False)})"
     )
 
 
@@ -259,9 +262,14 @@ def run_stage(df_train, df_val, df_test, target_col, params,
     best_features = list(start_features)
     best_round = 0
 
+    reject_from_n = None
+    reject_streak = 0
+    MAX_REJECT_STREAK_SAME_N = 2
+
     prev_metrics = None
     bad = 0
     curr_features = list(start_features)
+
     last_rejected_transition = None
     rejected_transition_repeats = 0
 
@@ -290,22 +298,18 @@ def run_stage(df_train, df_val, df_test, target_col, params,
     round_idx = 0
 
     est_steps = max(
-    1,
-    int(
-        math.ceil(
-            math.log(
-                max(len(curr_features), 2) / max(target_n, 1),
-                1.0 / max(1e-6, (1.0 - drop_frac))
-                    )
-                  )
+        1,
+        int(
+            math.ceil(
+                math.log(
+                    max(len(curr_features), 2) / max(target_n, 1),
+                    1.0 / max(1e-6, (1.0 - drop_frac))
+                )
+            )
         )
     )
 
-    pbar = tqdm(
-        total=est_steps,
-        desc=f"{stage_name} pruning",
-        leave=True
-    )
+    pbar = tqdm(total=est_steps, desc=f"{stage_name} pruning", leave=True)
 
     while len(curr_features) > target_n:
         round_idx += 1
@@ -316,6 +320,7 @@ def run_stage(df_train, df_val, df_test, target_col, params,
         n_drop = int(max(1, math.floor(len(curr_features) * drop_frac)))
         n_keep = max(target_n, len(curr_features) - n_drop)
         transition = (len(curr_features), n_keep)
+
         top_feature = ranked["feature"].iloc[0] if len(ranked) else "N/A"
         top_importance = float(ranked["importance"].iloc[0]) if len(ranked) else float("nan")
         log_info(
@@ -349,9 +354,7 @@ def run_stage(df_train, df_val, df_test, target_col, params,
             best_r2 = m["r2"]
             best_features = list(keep)
             best_round = round_idx
-            log_info(
-                f"[{stage_name}] round={round_idx} new best: r2={best_r2:.6f}, n={len(best_features)}"
-            )
+            log_info(f"[{stage_name}] round={round_idx} new best: r2={best_r2:.6f}, n={len(best_features)}")
             save_feature_list(out_dir, f"{stage_name}_best_features.csv", best_features)
 
         if m["r2"] >= best_r2 - allow_r2_drop:
@@ -361,14 +364,39 @@ def run_stage(df_train, df_val, df_test, target_col, params,
             )
             curr_features = list(keep)
             bad = 0
+
             last_rejected_transition = None
             rejected_transition_repeats = 0
+            reject_from_n = None
+            reject_streak = 0
+
         else:
             bad += 1
             log_info(
                 f"[{stage_name}] round={round_idx} rejected: val_r2={m['r2']:.6f}, "
                 f"threshold={best_r2 - allow_r2_drop:.6f}, bad={bad}/{patience}"
             )
+
+            from_n, to_n = transition
+
+            if reject_from_n == from_n:
+                reject_streak += 1
+            else:
+                reject_from_n = from_n
+                reject_streak = 1
+
+            if reject_streak >= MAX_REJECT_STREAK_SAME_N:
+                print(c_yellow(
+                    f"  oscillation guard hit (rejected {reject_streak} times from n={from_n}); "
+                    "stopping stage and keeping best features"
+                ))
+                log_info(
+                    f"[{stage_name}] round={round_idx} oscillation guard: rejected {reject_streak} times from n={from_n}; "
+                    f"ending stage at best_n={len(best_features)}"
+                )
+                curr_features = list(best_features)
+                break
+
             drop_frac_changed = False
             if bad >= patience:
                 new_drop_frac = max(min_drop_frac, drop_frac * 0.7)
@@ -378,11 +406,12 @@ def run_stage(df_train, df_val, df_test, target_col, params,
                 print(c_yellow(f"  drop_frac adjusted to {drop_frac:.3f}"))
                 log_info(f"[{stage_name}] round={round_idx} drop_frac updated to {drop_frac:.3f}")
 
-            # Guard against repeatedly trying the same rejected transition (e.g., 108 -> 98 -> 108 -> 98).
-            if drop_frac_changed:
                 last_rejected_transition = None
                 rejected_transition_repeats = 0
-            else:
+                reject_from_n = None
+                reject_streak = 0
+
+            if not drop_frac_changed:
                 if transition == last_rejected_transition:
                     rejected_transition_repeats += 1
                 else:
