@@ -52,6 +52,31 @@
     - [v12.5.0: Valid (Shallow NN Variant)](#v1250-valid-shallow-nn-variant)
     - [v12.6.0: In Progress (High-Val / Mid-Test Regime)](#v1260-in-progress-high-val--mid-test-regime)
     - [v12.7.0: In Progress (Metric Inconsistency)](#v1270-in-progress-metric-inconsistency)
+13. [v13.x Series: Temporal Backbone and AR Rollout](#v13x-series-temporal-backbone-and-ar-rollout)
+    - [v13.1.0: Valid (Temporal Backbone + HMM State Features)](#v1310-valid-temporal-backbone--hmm-state-features)
+    - [v13.2.0: Invalid (AR Rollout Feature Mismatch)](#v1320-invalid-ar-rollout-feature-mismatch)
+    - [v13.2.1: Valid (AR Rollout Fixed)](#v1321-valid-ar-rollout-fixed)
+14. [v14.x Series: Spatial Feature Integration](#v14x-series-spatial-feature-integration)
+    - [v14.1.0: Valid (Temporal + Static Spatial Features)](#v1410-valid-temporal--static-spatial-features)
+15. [v15.x Series: derived_6.0 Feature Set](#v15x-series-derived_60-feature-set)
+    - [v15.1.0: Valid (108-Feature Stack Baseline)](#v1510-valid-108-feature-stack-baseline)
+    - [v15.2.0: Valid (Config Re-run)](#v1520-valid-config-re-run)
+    - [v15.3.0: Valid (Early-Stopped XGB + Ridge Stack)](#v1530-valid-early-stopped-xgb--ridge-stack)
+
+> **Note**: Splits have been re-named
+
+```yaml
+split_renaming:
+  base_1.0: base
+  base_2.0: base_no_met
+
+  derived_1.0: derived
+  derived_2.0: derived_all
+  derived_3.0: derived_new
+  derived_4.0: derived_updated
+  derived_5.0: derived_new_updated
+  derived_6.0: null
+```
 
 ---
 
@@ -955,5 +980,169 @@ Latest shallow MLP run with lag-1 row handling updates.
 
 **Comments:**
 
-- Test slice check from artifacts: wet `R^2 = 0.572281`, dry `R^2 = 0.973953`.
+- Test slice check from artifacts: wet `R^2 = 0.572281`, dry `R^2 = 0.973953`
 - INVALID because the new lagged features we're constructed from the ground truth (leak)
+
+---
+
+## v13.x Series: Temporal Backbone and AR Rollout
+
+### v13.1.0: **VALID (Temporal Backbone + HMM State Features)**
+
+**Description:**
+Adds a sequential wetness bucket and train-only HMM state features on top of the temporal baseline, then uses quantile-style XGB experts with ridge stacking.
+
+#### Results
+
+**Final stacked model (`ridge_stack`)**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.029755 | 0.036814 | 0.870384 |
+| Val   | 0.029957 | 0.039034 | 0.849801 |
+| Test  | 0.034997 | 0.046343 | 0.754492 |
+
+**Comments:**
+
+- This was the strongest run in the v13 folder
+- Temporal checks still show one station warning in notebook logs (`Touchet_WA_824` missing val rows)
+
+---
+
+### v13.2.0: **INVALID (AR Rollout Feature Mismatch)**
+
+**Description:**
+First recursive autoregressive rollout attempt with `P_lag1` and `P_lag1_missing`
+
+**Comments:**
+
+- Notebook fails during rollout predict with an XGBoost feature name mismatch
+- Error shows train model missing fields `P_lag1` and `P_lag1_missing` at inference
+- Marked INVALID since the run does not complete with a consistent feature schema
+
+---
+
+### v13.2.1: **VALID (AR Rollout Fixed)**
+
+**Description:**
+Fixed version of the v13.2 AR experiment (`MDR-v13.2-ar-rollout-fixed.ipynb`) with aligned feature columns
+
+#### Results
+
+| Model      | Split | MAE      | RMSE     | $R^2$    |
+| ---------- | ----- | -------- | -------- | -------- |
+| Baseline   | Val   | 0.034737 | 0.045313 | 0.797590 |
+| Baseline   | Test  | 0.039489 | 0.050993 | 0.702751 |
+| AR Rollout | Val   | 0.034149 | 0.044088 | 0.808391 |
+| AR Rollout | Test  | 0.039898 | 0.051268 | 0.699530 |
+
+**Comments:**
+
+- AR rollout gives a small lift on validation
+- Test performance is slightly lower than baseline in this setup
+
+---
+
+## v14.x Series: Spatial Feature Integration
+
+### v14.1.0: **VALID (Temporal + Static Spatial Features)**
+
+**Description:**
+Adds static spatial columns to the split (`derived_with_spatial`) and trains a full XGB model
+
+#### Results
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.000980 | 0.001418 | 0.999799 |
+| Val   | 0.036482 | 0.046329 | 0.790106 |
+| Test  | 0.045071 | 0.056951 | 0.637054 |
+
+**Comments:**
+
+- Train fit is near perfect while val and test lag hard, so this run looks heavily overfit
+- Notebook logs include the same split warning for `Touchet_WA_824` with missing validation rows
+
+---
+
+## v15.x Series: derived_6.0 Feature Set
+
+### v15.1.0: **VALID (108-Feature Stack Baseline)**
+
+**Description:**
+First v15 run on `derived_6.0` with a 108-feature set, XGB + RF base learners, and ridge stack
+
+#### Results
+
+**Base XGB**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.001182 | 0.001727 | 0.999715 |
+| Val   | 0.030309 | 0.040403 | 0.839083 |
+| Test  | 0.037712 | 0.048471 | 0.731428 |
+
+**Final stacked model**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.018155 | 0.018412 | 0.967579 |
+| Val   | 0.027748 | 0.036115 | 0.871422 |
+| Test  | 0.036667 | 0.045751 | 0.760723 |
+
+**Comments:**
+
+- Big val lift from stacking
+- Test improves vs base XGB and lands in the same range as stronger v13 results
+
+---
+
+### v15.2.0: **VALID (Config Re-run)**
+
+**Description:**
+Re-run of v15.1 style config with the same 108-feature setup.
+
+#### Results
+
+**Final stacked model**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.018155 | 0.018412 | 0.967579 |
+| Val   | 0.027748 | 0.036115 | 0.871422 |
+| Test  | 0.036667 | 0.045751 | 0.760723 |
+
+**Comments:**
+
+- Metrics match v15.1 in notebook outputs
+- Useful mostly as a reproducibility check
+
+---
+
+### v15.3.0: **VALID (Early-Stopped XGB + Ridge Stack)**
+
+**Description:**
+v15 follow-up with early-stopped native XGBoost training before RF + ridge stacking.
+
+#### Results
+
+**Base XGB**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.026787 | 0.035228 | 0.881312 |
+| Val   | 0.024126 | 0.031645 | 0.901284 |
+| Test  | 0.036420 | 0.046557 | 0.752211 |
+
+**Final stacked model**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.027858 | 0.036491 | 0.872646 |
+| Val   | 0.023081 | 0.029901 | 0.911862 |
+| Test  | 0.035724 | 0.045650 | 0.761775 |
+
+**Comments:**
+
+- Best validation score in v15 so far
+- Best v15 test score too, but still below the historical v7.4 reference
