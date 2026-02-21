@@ -1,3 +1,11 @@
+# Jakob Balkovec
+# output parser
+
+# parses the output of prune.py and compiles it into a readable format
+
+# to run: python prune_output_parser.py –run-dir ./prune_runs/run_* –top-k * –show-rounds *
+# *: integer
+
 import argparse
 import json
 import os
