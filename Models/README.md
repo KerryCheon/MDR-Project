@@ -1,4 +1,4 @@
-# Test \(R^2\) Log (condensed)
+# Results (Test $R^2$)
 
 > Only reporting **TEST \(R^2\)**. If a run didn’t report test, I mark it as `—`.
 
