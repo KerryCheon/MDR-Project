@@ -62,6 +62,12 @@
     - [v15.1.0: Valid (108-Feature Stack Baseline)](#v1510-valid-108-feature-stack-baseline)
     - [v15.2.0: Valid (Config Re-run)](#v1520-valid-config-re-run)
     - [v15.3.0: Valid (Early-Stopped XGB + Ridge Stack)](#v1530-valid-early-stopped-xgb--ridge-stack)
+16. [v16.x Series: Drift-Aware Tuning on derived_6.0](#v16x-series-drift-aware-tuning-on-derived_60)
+    - [v16.1.0: Valid (Year-Weighted Stack Baseline)](#v1610-valid-year-weighted-stack-baseline)
+    - [v16.2.0: Valid (Drift Features + Calibration)](#v1620-valid-drift-features--calibration)
+    - [v16.3.0: Valid (Drift Expansion + Weighting Study)](#v1630-valid-drift-expansion--weighting-study)
+    - [v16.4.0: Valid (Aggressive Drift Tuning)](#v1640-valid-aggressive-drift-tuning)
+    - [v16.5.0: Valid (Add `J_` Feature Family)](#v1650-valid-add-j_-feature-family)
 
 > **Note**: Splits have been re-named
 
@@ -82,45 +88,53 @@ split_renaming:
 
 ## Best Model
 
-**Section Last Updated on:** Sat Feb 14th, 2026
-**Selected Model:** **v7.4.0 — Stacked XGB + RF → Ridge**
+**Section Last Updated on:** Sat Feb 21st, 2026
+**Selected Model:** **v16.4.0 — Drift XGB (No Year Weights)**
 **Status:** **VALID**
 
 ### Configuration Summary
 
-- Base learners: tuned `XGBRegressor` + `RandomForest`
-- Meta-learner: `Ridge`
-- Features: 40 temporally valid derived features
-- Trained under strict temporal split
+- Model family: drift-aware `XGBRegressor`
+- Feature set: `derived_6.0` + drift/interaction additions (118 total in v16.4)
+- Variant selected: **no year-weighting** branch in v16.4
+- Trained/evaluated under the same temporal split framework as prior valid runs
 
 ### Final Performance
 
-| Split | MAE      | RMSE     | $R^2$        |
-| ----- | -------- | -------- | ------------ |
-| Test  | 0.033130 | 0.044186 | **0.776814** |
+| Split | $R^2$        |
+| ----- | ------------ |
+| Test  | **0.811571** |
+
+### Additional Diagnostics
+
+| Metric                  | Value    |
+| ----------------------- | -------- |
+| Test bias (true - pred) | 0.002041 |
+| 2023-only $R^2$         | 0.002914 |
+| 2023 slope              | 0.861997 |
 
 ### Rationale for Selection
 
-This model is the current **best valid reference** after excluding v12.7.0.
+This model is the current **best valid reference by overall test $R^2$** through v16.5.
 
 **Pros**
 
-- Highest test-set $R^2$ among stable, historically validated models
-- Stacking reduces over-reliance on any single model's bias
-- Remains robust under temporal drift
+- Highest observed test-set $R^2$ in the logged valid history
+- Drift-aware feature formulation substantially improved over older baselines
+- Very low test bias relative to prior generations
 
 **Cons**
 
-- More moving parts than a single model, so it is harder to interpret
-- Needs periodic re-checks when feature distributions drift
+- MAE/RMSE were not printed in v16.4 notebook stdout and need explicit re-export for full metric parity
+- 2023-only slice remains weak despite strong aggregate test performance
 
-This trade-off is intentional: robustness and consistency are prioritized for the reference baseline.
+This trade-off is intentional: primary leaderboard ranking is by full test-set $R^2$.
 
 ### Notes
 
-- v12.7.0 is marked **INVALID** and is excluded from model selection.
-- v3.3.x remains the best single-model XGB baseline.
-- This model is the **current reference point** for downstream analysis and reporting.
+- v16.5 has slightly lower full-test $R^2$ (0.810545) but stronger 2023 behavior ($R^2 = 0.037897$).
+- v12.7.0 remains **INVALID** and excluded from model selection.
+- This model is the **current reference point** for downstream analysis/reporting.
 
 ---
 
@@ -1146,3 +1160,111 @@ v15 follow-up with early-stopped native XGBoost training before RF + ridge stack
 
 - Best validation score in v15 so far
 - Best v15 test score too, but still below the historical v7.4 reference
+
+---
+
+## v16.x Series: Drift-Aware Tuning on derived_6.0
+
+### v16.1.0: **VALID (Year-Weighted Stack Baseline)**
+
+**Description:**
+Introduced year-weighting on `derived_6.0` and compared base XGB, RF, and stacked ridge combinations
+
+#### Results
+
+**Base XGB (train+val fit)**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Train | 0.001208 | 0.001781 | 0.999697 |
+| Val   | 0.001032 | 0.001484 | 0.999783 |
+| Test  | 0.037152 | 0.047758 | 0.739264 |
+
+**Final stacked model (`XGB + RF -> Ridge`)**
+
+| Split | MAE      | RMSE     | $R^2$    |
+| ----- | -------- | -------- | -------- |
+| Test  | 0.036008 | 0.046100 | 0.757054 |
+
+**Comments:**
+
+- Stacking improved over base XGB in `v16.1`, but remained below the later drift-aware variants
+- A calibrated-XGB stacking variant was effectively identical on test (`R^2 = 0.757042`)
+
+---
+
+### v16.2.0: **VALID (Drift Features + Calibration)**
+
+**Description:**
+Added drift-aware temporal interaction features and tested both train+val fits and post-hoc ridge calibration flows.
+
+#### Results
+
+| Model                                  | Test MAE     | Test RMSE    | Test $R^2$ | Test bias (true - pred) |
+| -------------------------------------- | ------------ | ------------ | ---------- | ----------------------- |
+| Baseline XGB (train+val)               | 0.037150     | 0.047756     | 0.739264   | 0.013023                |
+| Drift XGB (train+val)                  | _not logged_ | _not logged_ | 0.790900   | 0.003315                |
+| Baseline train-only + ridge calibrator | 0.039309     | 0.048865     | 0.727043   | -0.000641               |
+| Drift train-only + ridge calibrator    | _not logged_ | _not logged_ | 0.761099   | -0.000861               |
+
+**Comments:**
+
+- Drift-aware features produced a major test $R^2$ gain vs the baseline branch.
+- 2023 slice was still unstable/negative (`R^2 = -0.101033`) in this version
+
+---
+
+### v16.3.0: **VALID (Drift Expansion + Weighting Study)**
+
+**Description:**
+Expanded drift feature set and explicitly compared weighted vs unweighted drift-XGB variants.
+
+#### Results
+
+| Model                        | Test MAE | Test RMSE | Test $R^2$ | Test bias (true - pred) |
+| ---------------------------- | -------- | --------- | ---------- | ----------------------- |
+| Drift (no weights)           | 0.032218 | 0.041547  | 0.802674   | 0.002829                |
+| Drift (`beta = 0.2` weights) | 0.031798 | 0.041061  | 0.807260   | 0.002716                |
+
+**Comments:**
+
+- Weighted branch was the winner inside v16.3 (`R^2 = 0.807260`).
+- 2023 metrics improved vs v16.2 but remained negative (`R^2 = -0.060867`).
+
+---
+
+### v16.4.0: **VALID (Aggressive Drift Tuning)**
+
+**Description:**
+More aggressive drift-model tuning on the expanded feature stack.
+
+#### Results
+
+| Model              | Test $R^2$   | Test bias (true - pred) |
+| ------------------ | ------------ | ----------------------- |
+| Drift (no weights) | **0.811571** | 0.002041                |
+| Drift (weighted)   | 0.799298     | 0.001932                |
+
+**Comments:**
+
+- Highest full-test $R^2$ among all logged valid runs to date!
+- 2023 slice crossed into slightly positive territory (`R^2 = 0.002914`, slope `0.861997`).
+
+---
+
+### v16.5.0: **VALID (Add `J_` Feature Family)**
+
+**Description:**
+Added `J_` family features and reran drift weighted/unweighted variants.
+
+#### Results
+
+| Model              | Test $R^2$ | Test bias (true - pred) |
+| ------------------ | ---------- | ----------------------- |
+| Drift (no weights) | 0.804560   | 0.001712                |
+| Drift (weighted)   | 0.810545   | 0.002032                |
+
+**Comments:**
+
+- Slightly below v16.4 on full-test $R^2$, but stronger 2023 behavior.
+- Best 2023 diagnostic in v16 series (`R^2 = 0.037897`, slope `1.010004`).
