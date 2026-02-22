@@ -1,7 +1,5 @@
 # Results (Test $R^2$)
 
-> Only reporting **TEST \(R^2\)**. If a run didn’t report test, I mark it as `—`.
-
 | Version     | Status    |                        Model / Variant | Test \(R^2\) |
 | ----------- | --------- | -------------------------------------: | -----------: |
 | v1.0.0      | VALID     |                  Baseline (no derived) |     0.520847 |
