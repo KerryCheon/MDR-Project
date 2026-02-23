@@ -1,6 +1,6 @@
 # TABLE_SAT: Final Feature Set (Feb 19)
 
-**Last updated:** Fri Feb 20, 2026
+**Last updated:** Fri Feb 19, 2026
 **File:** `Models/Temporal/final_set_feb_19.json`
 
 This doc is now final-set-first and tied to the Feb 19 selection artifacts. It replaces the old conceptual keep/bench tables with the actual selected feature list used in modeling.
