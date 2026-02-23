@@ -1,0 +1,44 @@
+{
+  "source_split": "derived_6.0",
+  "derived_features": "reused (no recompute), plus drift features added",
+  "year_split": {
+    "train_years": [
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "val_years": [
+      2020,
+      2021,
+      2022
+    ],
+    "test_years": [
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "drift_cols_added": [
+    "year_frac",
+    "sin_year",
+    "cos_year",
+    "API_x_year",
+    "SMAP_x_year"
+  ],
+  "drift_year_scaling_train_minmax": [
+    2014.0,
+    2019.0
+  ],
+  "required_for_drift": {
+    "api_col": "G_API",
+    "smap_col": "SMAP_sm_pm_interp_ema02"
+  },
+  "rows": {
+    "train": 10424,
+    "val": 4449,
+    "test": 4016
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "source_split": "derived_7.0",
+  "note": "Post-2016 stable SMAP-era split",
+  "train_years": [
+    2017,
+    2018,
+    2019,
+    2020
+  ],
+  "val_years": [
+    2021,
+    2022
+  ],
+  "test_years": [
+    2023,
+    2024,
+    2025
+  ],
+  "rows": {
+    "train": 6868,
+    "val": 2720,
+    "test": 4016
+  }
+}
