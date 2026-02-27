@@ -1,6 +1,6 @@
 {
   "source_split": "derived_7.0",
-  "note": "Post-2016 stable SMAP-era split",
+  "note": "Post-2016 stable SMAP-era split + station-level pass-specific LIA features",
   "train_years": [
     2017,
     2018,
@@ -15,6 +15,13 @@
     2023,
     2024,
     2025
+  ],
+  "lia_csv": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_8.0/LIA/stations_lia.csv",
+  "lia_cols": [
+    "lia_mean_asc_deg",
+    "lia_std_asc_deg",
+    "lia_mean_desc_deg",
+    "lia_std_desc_deg"
   ],
   "rows": {
     "train": 6868,
