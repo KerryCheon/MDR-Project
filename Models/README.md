@@ -1,4 +1,4 @@
-# Results (Test R^2)
+# Results (Test $R^2$)
 
 | Version     | Status    |                        Model / Variant | Test $R^2$ |
 | ----------- | --------- | -------------------------------------: | -----------: |
