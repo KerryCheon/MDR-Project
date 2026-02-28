@@ -1,6 +1,6 @@
-# Results (Test $R^2$)
+# Results (Test R^2)
 
-| Version     | Status    |                        Model / Variant | Test \(R^2\) |
+| Version     | Status    |                        Model / Variant | Test $R^2$ |
 | ----------- | --------- | -------------------------------------: | -----------: |
 | v1.0.0      | VALID     |                  Baseline (no derived) |     0.520847 |
 | v1.1.0      | INVALID   |                            Leakage run |     0.017134 |
@@ -60,7 +60,16 @@
 | v16.2.0     | VALID     |    Drift train-only + ridge calibrator |     0.761099 |
 | v16.3.0     | VALID     |                     Drift (no weights) |     0.802674 |
 | v16.3.0     | VALID     |               Drift (beta=0.2 weights) |     0.807260 |
-| **v16.4.0** | **VALID** |                 **Drift (no weights)** | **0.811571** |
+| v16.4.0     | VALID     |                     Drift (no weights) |     0.811571 |
 | v16.4.0     | VALID     |                       Drift (weighted) |     0.799298 |
 | v16.5.0     | VALID     |                     Drift (no weights) |     0.804560 |
 | v16.5.0     | VALID     |                       Drift (weighted) |     0.810545 |
+| v17.1.0     | VALID     |                     Drift (no weights) |      0.81424 |
+| v17.1.0     | VALID     |                       Drift (weighted) |      0.81910 |
+| v18.3.0     | VALID     |                     Drift (no weights) |      0.82186 |
+| v18.3.0     | VALID     |                       Drift (weighted) |      0.82503 |
+| v19.2.0     | VALID     |                     Drift (no weights) |      0.81418 |
+| v19.2.0     | VALID     |                       Drift (weighted) |      0.82239 |
+| v20.1.0     | VALID     |                     Drift (no weights) |      0.81418 |
+| v20.1.0     | VALID     |                       Drift (weighted) |      0.82239 |
+| **v20.3.0** | **VALID** |                    **Dry regime model** |   **0.85860** |
