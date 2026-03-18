@@ -82,6 +82,7 @@ Notes:
 - `config.yaml` controls pipeline execution. Top-level keys include `stations`, `temporal_fill`, `whittaker`, `satellite`, `logging`, and `imputer`.
 - Each station block provides `request`, `parse`, `clean`, `merge`, and `save` values.
 - The `temporal_fill` section configures which bands/features are interpolated. The `imputer` section configures which algorithms are enabled and their hyperparameters.
+- For non-network/custom sensors, set `parse.manual_mode: true` with `parse.latitude`, `parse.longitude`, `parse.start_date`, and `parse.end_date`. In this mode, the pipeline creates a date/coordinate scaffold and skips `RequestPipe`.
 
 ## Pipeline structure
 
@@ -89,7 +90,7 @@ Notes:
 - `pipes/` — folder containing pipeline steps (each named `*Pipe`). Major pipes:
 
   - `request_pipe.py` — download data (USCRN) by year or read local SNOTEL files.
-  - `parse_pipe.py` — parse raw station text files to unified DataFrame.
+  - `parse_pipe.py` — parse raw station text files or build a manual scaffold DataFrame for custom stations.
   - `clean_pipe.py` — remove or convert invalid values and perform column selection.
   - `merge_pipe.py` — combine DataFrames from multiple inputs.
   - `satellite_pipe.py` — fetch/cache satellite data per station and add satellite features.

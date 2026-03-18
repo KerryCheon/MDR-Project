@@ -33,14 +33,18 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
     logger.info(f"=== Starting pipeline for {station_name} ===")
 
     is_snotel = station_cfg.get("parse", {}).get("snotel_mode", False)
+    is_manual = station_cfg.get("parse", {}).get("manual_mode", False)
 
     try:
-        # Only skip the HTTP download step for SNOTEL
-        if not is_snotel:
+        # Skip HTTP download for SNOTEL and manual/scaffold stations.
+        if not (is_snotel or is_manual):
             request_pipe = RequestPipe(config=station_cfg["request"])
             request_pipe.run()
         else:
-            logger.info(f"[{station_name}] SNOTEL mode: skipping RequestPipe (using local .stm files).")
+            if is_snotel:
+                logger.info(f"[{station_name}] SNOTEL mode: skipping RequestPipe (using local .stm files).")
+            if is_manual:
+                logger.info(f"[{station_name}] Manual mode: skipping RequestPipe (using synthetic date/coord scaffold).")
 
         parsed = ParsePipe(config=station_cfg["parse"]).run()
         cleaned = CleanPipe(config=station_cfg["clean"]).run(parsed)

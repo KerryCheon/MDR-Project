@@ -11,6 +11,44 @@
 
 stations:
   # -----------------------------------------------------------
+  # TEMPLATE: Custom Backyard Sensor (manual scaffold mode)
+  # -----------------------------------------------------------
+  # backyard_sensor:
+  #   request:
+  #     base_url: null
+  #     station: "BACKYARD_SENSOR"
+  #     start_year: 2025
+  #     end_year: 2026
+  #     timeout: 20
+  #     min_bytes: 500
+  #     out_dir: "Temporal/Pipeline/data/raw/backyard_sensor/"
+  #
+  #   parse:
+  #     manual_mode: true
+  #     station: "BACKYARD_SENSOR"
+  #     latitude: 47.12345
+  #     longitude: -117.12345
+  #     elevation: 650
+  #     start_date: "2025-03-18"
+  #     end_date: "2026-03-18"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "Temporal/Pipeline/data/processed/backyard_sensor/final.csv"
+  #     format: "csv"
+  #     index: false
+
+  # -----------------------------------------------------------
   # STATION 1: Spokane 17 SSW
   # -----------------------------------------------------------
   spokane_17_ssw:
@@ -268,6 +306,34 @@ stations:
 
     save:
       out_path: "Temporal/Pipeline/data/processed/touchet/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 6: Backyard Sensor
+  # -----------------------------------------------------------
+  backyard_sensor:
+    parse:
+      manual_mode: true
+      station: "BACKYARD_SENSOR"
+      latitude: 47.488677
+      longitude: -122.144624
+      start_date: "2025-03-18"
+      end_date: "2026-03-18"
+      freq: "D"
+      include_soil_moisture_placeholder: true
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "Temporal/Pipeline/data/processed/backyard_sensor/final.csv"
       format: "csv"
       index: false
 

@@ -55,11 +55,67 @@ class ParsePipe:
         # desc: Reads all downloaded USCRN files OR pre-generated SNOTEL master.csv,
         #       maps columns, replaces missing values, and returns clean DataFrame.
 
-        # Check if this is a SNOTEL station (has snotel_mode flag)
+        # Manual scaffold mode: synthesize a station dataframe from config only.
+        if self.config.get("manual_mode", False):
+            return self._build_manual_scaffold()
+        # SNOTEL mode: parse local .stm files.
         if self.config.get("snotel_mode", False):
             return self._parse_snotel()
         else:
             return self._parse_uscrn()
+
+    def _build_manual_scaffold(self):
+        # pre:  manual_mode is enabled with lat/lon and date bounds in parse config
+        # post: returns daily dataframe ready for satellite/weather enrichment
+        # desc: builds a synthetic station frame when no raw station files exist
+
+        lat = self.config.get("latitude")
+        lon = self.config.get("longitude")
+        station_id = self.config.get("station", self.station_name)
+        start_date = self.config.get("start_date")
+        end_date = self.config.get("end_date")
+        freq = self.config.get("freq", "D")
+        elevation = self.config.get("elevation")
+        include_soil_moisture = self.config.get("include_soil_moisture_placeholder", True)
+
+        if lat is None or lon is None:
+            raise ValueError(
+                "manual_mode requires parse.latitude and parse.longitude"
+            )
+
+        if start_date is None or end_date is None:
+            raise ValueError(
+                "manual_mode requires parse.start_date and parse.end_date (YYYY-MM-DD)"
+            )
+
+        date_index = pd.date_range(
+            start=pd.to_datetime(start_date),
+            end=pd.to_datetime(end_date),
+            freq=freq
+        )
+
+        if len(date_index) == 0:
+            raise ValueError("manual_mode produced an empty date range")
+
+        df = pd.DataFrame({
+            "date": date_index,
+            "station_id": station_id,
+            "latitude": float(lat),
+            "longitude": float(lon),
+        })
+
+        if elevation is not None:
+            df["elevation"] = float(elevation)
+
+        if include_soil_moisture:
+            # Placeholder target column; user can merge real measurements later.
+            df["soil_moisture_5cm"] = pd.NA
+
+        self.logger.info(
+            f"[{self.station_name}] Built manual scaffold with {len(df)} rows "
+            f"from {date_index.min().date()} to {date_index.max().date()}"
+        )
+        return df
 
     def _parse_snotel(self):
         # pre:  .stm files exist in in_dir OR master.csv exists
