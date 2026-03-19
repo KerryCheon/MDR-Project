@@ -1,0 +1,64 @@
+\subsubsection*{Preprocessing Pipeline}
+
+The preprocessing pipeline transforms heterogeneous, multi-source data into a temporally aligned dataset suitable for supervised learning. It integrates satellite-derived features, weather variables, and in-situ measurements, while addressing differences in temporal resolution, missing data, and noise.
+
+\subsubsection*{Pipeline Overview}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Step} & \textbf{Description} \\
+\midrule
+Temporal alignment & Aggregate irregular observations to daily resolution \\
+Spatial processing & Extract features using station-centered spatial buffers \\
+Weather aggregation & Convert hourly weather data to daily totals \\
+Imputation & Fill missing values using ensemble methods \\
+Smoothing & Reduce noise in time series signals \\
+Caching & Store intermediate results for efficiency \\
+\bottomrule
+\end{tabular}
+\caption{Overview of the preprocessing pipeline.}
+\end{table}
+
+\subsubsection*{Temporal Alignment}
+The final dataset is constructed at a daily resolution. However, satellite observations are often sparse and irregular in time. To address this, satellite data were retrieved in short temporal windows around each target date and aggregated into a single representative value.
+
+For computational efficiency, data retrieval was performed at a weekly level, with aggregated values subsequently assigned to each day within the corresponding window. As a result, some features represent temporally aggregated estimates rather than exact daily measurements.
+
+\subsubsection*{Spatial Processing}
+Satellite features were extracted using a spatial buffer around each station location, allowing each observation to represent an area rather than a single point. This improves robustness to noise and spatial misalignment between datasets.
+
+\textbf{TODO (Daniel): confirm buffer size, spatial aggregation details,...}
+
+\subsubsection*{Weather Aggregation}
+Weather data were obtained at an hourly resolution and aggregated into daily values prior to merging with station data. Rainfall and total precipitation were summed to produce daily totals (in millimeters), ensuring consistency with the temporal resolution of the dataset.
+
+\subsubsection*{Imputation of Missing Values}
+Missing values arise due to differences in temporal resolution and data availability across sources. To address this, a temporal imputation system was applied after data merging and before feature engineering.
+
+Each feature was processed independently. Time series were sorted, deduplicated, and validated before imputation. Missing values were reconstructed using an ensemble of interpolation-based, statistical, and machine learning methods.
+
+Each imputer produces a prediction $\hat{x}_t^{(i)}$ and an associated confidence $c_t^{(i)}$. The final estimate is computed as a weighted combination:
+
+\begin{equation}
+\hat{x}_t = \frac{\sum_i w_t^{(i)} \hat{x}_t^{(i)}}{\sum_i w_t^{(i)}},
+\quad w_t^{(i)} = b_i c_t^{(i)}
+\end{equation}
+
+where $b_i$ are predefined base weights. Outlier predictions are downweighted using a median absolute deviation (MAD) criterion \cite{hampel1974}, and confidence is adjusted based on the temporal distance to the nearest observed value.
+
+The ensemble includes linear interpolation, forward/backward filling, rolling averages, seasonal climatology, regression models, Gaussian processes \cite{rasmussen2006}, and gradient boosted trees \cite{chen2016xgboost}. This combination enables robust reconstruction across both short gaps and long-term seasonal patterns.
+
+Observed values are preserved, and only missing entries are filled. A binary mask is created for each feature to indicate whether a value was observed or imputed. Static terrain features are excluded from the ensemble and filled using forward and backward propagation.
+
+Imputation uses only past and surrounding observations; future values are not used. Consequently, some missing values remain near dataset boundaries.
+
+\subsubsection*{Smoothing and Feature Preparation}
+Following imputation, a smoothing step is applied to reduce noise in the time series. The resulting signals serve as inputs to the feature engineering stage.
+
+\subsubsection*{Caching and Efficiency}
+Intermediate results from satellite and weather retrieval were cached to improve computational efficiency. Since the underlying data are static, caching avoids redundant data access without affecting feature values.
+
+\subsubsection*{Temporal Coverage}
+The usable time window is determined by the intersection of all data sources. The inclusion of SMAP requires restricting the study period to January 1, 2017 through December 31, 2025, ensuring consistent feature availability.

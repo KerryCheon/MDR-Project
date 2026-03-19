@@ -1,0 +1,84 @@
+\subsubsection*{Model Training}
+
+\subsubsection*{Model Choice}
+The base model was implemented using a gradient boosted decision tree framework (XGBoost) for regression. This choice was motivated by its ability to capture nonlinear relationships, handle heterogeneous feature types, and remain robust to feature scaling and moderate redundancy in the input space.
+
+Alternative models, including Random Forest, LightGBM, and CatBoost, were evaluated during preliminary experiments but did not achieve comparable validation performance. As a result, XGBoost was selected as the final modeling framework.
+
+The model predicts surface soil moisture at 5 cm depth, denoted as \texttt{soil\_moisture\_5cm}.
+
+\subsubsection*{Data Splitting Strategy}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Split} & \textbf{Time Range} \\
+\midrule
+Training & Jan 2017 -- Dec 2020 \\
+Validation & Jan 2021 -- Dec 2022 \\
+Test & Jan 2023 -- Dec 2025 \\
+\bottomrule
+\end{tabular}
+\caption{Temporal data split used for model development and evaluation.}
+\end{table}
+
+The dataset was partitioned using a strict time-based split to preserve temporal structure and avoid information leakage. No shuffling was applied, and all features were constructed using only past and contemporaneous observations.
+
+\subsubsection*{Training Configuration}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Objective & \texttt{reg:pseudohubererror} \\
+Number of estimators & 5500 \\
+Learning rate & 0.04 \\
+Maximum depth & 8 \\
+Subsample ratio & 0.9 \\
+Column sampling & 0.8 \\
+Minimum child weight & 2 \\
+L2 regularization ($\lambda$) & 1.5 \\
+L1 regularization ($\alpha$) & 0.03 \\
+\bottomrule
+\end{tabular}
+\caption{XGBoost training hyperparameters.}
+\end{table}
+
+The pseudo-Huber objective was selected to improve robustness to outliers and heavy-tailed residuals, which are common in environmental time series.
+
+\subsubsection*{Temporal Weighting}
+To account for temporal drift and emphasize more recent observations, a weighting scheme was introduced during training:
+
+\begin{equation}
+w_i = \exp\big(\beta \cdot (year_i - year_{\max})\big)
+\label{eq:temporal_weight}
+\end{equation}
+
+where $\beta = 0.2$ and $year_{\max}$ corresponds to the most recent year in the training data. The weights were normalized to have unit mean.
+
+This formulation increases the influence of recent observations while preserving information from earlier periods. The weights were applied through the \texttt{sample\_weight} parameter in XGBoost.
+
+\subsubsection*{Unweighted vs Weighted Training}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Model Variant} & \textbf{Description} \\
+\midrule
+Unweighted & Absolute error loss, no temporal weighting \\
+Weighted & Pseudo-Huber loss with temporal weights \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of training configurations.}
+\end{table}
+
+The weighted model consistently improved predictive performance on the held-out test set, achieving higher $R^2$ and lower error metrics. Consequently, the weighted configuration was selected as the final base model.
+
+\subsubsection*{Training Objective and Evaluation}
+Model optimization was driven by minimizing the specified regression loss function. Model selection and comparison were based on validation and test metrics, including $R^2$, MAE, RMSE, bias, and quantile-based error measures.
+
+The combination of a time-aware split, robust loss function, and temporal weighting enables the model to adapt to evolving environmental conditions while maintaining strong generalization performance.

@@ -1,0 +1,127 @@
+\subsubsection*{Training Procedure}
+
+\subsubsection*{Modeling Objective}
+
+The three-regime framework was developed to evaluate whether regime-specific modeling can improve predictive performance relative to a single global model. This design was motivated by residual diagnostics from the base model, which indicated non-uniform error structure across the target space.
+
+The target variable remains surface soil moisture at 5 cm depth, denoted as \texttt{soil\_moisture\_5cm}.
+
+\subsubsection*{Regime Definition}
+
+Regimes were defined using thresholds derived from the empirical distribution of the target variable.
+
+\begin{equation}
+t_1 = 0.20, \qquad t_2 = 0.313
+\end{equation}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Regime} & \textbf{Condition} & \textbf{Description} \\
+\midrule
+Dry & $y \le t_1$ & Low-moisture, stable dynamics \\
+Transition & $t_1 < y \le t_2$ & Mixed persistence and variability \\
+Wet & $y > t_2$ & High-moisture, rapid dynamics \\
+\bottomrule
+\end{tabular}
+\caption{Regime definitions based on empirical quantiles.}
+\end{table}
+
+These thresholds serve as the primary regime boundaries throughout the analysis.
+
+\subsubsection*{Model Architecture}
+
+The framework follows a hard-gated mixture-of-experts \cite{jacobs1991moe} architecture.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Role} \\
+\midrule
+Anchor model & Trained on full dataset; provides global prediction \\
+Transition specialist & Trained on transition-regime samples \\
+Wet specialist & Trained on wet-regime samples \\
+Dry regime & Handled directly by anchor model \\
+\bottomrule
+\end{tabular}
+\caption{Components of the three-regime architecture.}
+\end{table}
+
+A dedicated dry specialist was not retained in the final design. Empirically, the anchor model sufficiently captured dry-regime behavior, and introducing an additional model did not justify the added complexity.
+
+\subsubsection*{Feature Usage}
+
+The anchor model is trained on a shared base feature set. Transition and wet specialists use augmented inputs that include both regime-specific features and the anchor prediction:
+
+\begin{equation}
+x_{\text{specialist}} = \big[x_{\text{regime}}, \hat{y}_{\text{anchor}}\big]
+\end{equation}
+
+This formulation allows specialist models to learn corrections relative to a global estimate rather than reconstructing the full signal.
+
+\subsubsection*{Training Configurations}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{4cm} p{9cm}}
+\toprule
+\textbf{Configuration} & \textbf{Description} \\
+\midrule
+Oracle-gated & Uses ground-truth regimes for routing; provides upper-bound performance \\
+Self-gated (double-pass) & Uses anchor predictions for routing; deployable setting \\
+Residual double-pass & Specialists predict residual corrections instead of absolute values \\
+\bottomrule
+\end{tabular}
+\caption{Training configurations evaluated for the three-regime framework.}
+\end{table}
+
+\subsubsection*{Oracle-Gated Training}
+
+In the oracle-gated setting, regime membership is determined using ground-truth values. The anchor model is trained on the full dataset, while transition and wet specialists are trained on their respective regime subsets.
+
+During evaluation, samples are routed using true regime labels. Although not deployable, this configuration provides an estimate of the maximum achievable benefit under perfect gating.
+
+\subsubsection*{Self-Gated Training}
+
+In the self-gated setting, regime labels are derived from model predictions rather than ground truth. To reduce leakage, pseudo-labels are generated using out-of-fold predictions from a time-series cross-validation scheme.
+
+At inference time, the anchor model produces an initial prediction, which is used to assign regime membership. The corresponding specialist model is then applied.
+
+\subsubsection*{Residual Specialist Training}
+
+In the residual variant, specialist models predict corrections to the anchor prediction:
+
+\begin{equation}
+r = y - \hat{y}_{\text{anchor}}, \qquad
+\hat{y} = \hat{y}_{\text{anchor}} + \hat{r}
+\end{equation}
+
+This formulation simplifies the learning task by focusing each specialist on regime-specific residual patterns.
+
+\subsubsection*{Temporal Structure}
+
+All experiments use a time-based split to preserve temporal ordering:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Split} & \textbf{Time Range} \\
+\midrule
+Training & Jan 2017 -- Dec 2020 \\
+Validation & Jan 2021 -- Dec 2022 \\
+Test & Jan 2023 -- Dec 2025 \\
+\bottomrule
+\end{tabular}
+\caption{Temporal split used for three-regime experiments.}
+\end{table}
+
+All training and gating procedures respect this temporal structure to prevent leakage.
+
+\subsubsection*{Interpretation}
+
+The three-regime framework serves both as a predictive model and as an analytical tool. Its primary purpose is to test whether explicitly separating dry, transition, and wet dynamics can address the regime-dependent error structure observed in the base model.
+
+While this decomposition aligns with the underlying physical intuition, its effectiveness ultimately depends on reliable regime identification and sufficient data within each regime.

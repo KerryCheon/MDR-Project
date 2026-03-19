@@ -1,0 +1,51 @@
+\subsubsection*{Data Sources}
+
+The modeling pipeline integrates satellite-derived variables, weather data, terrain information, and in-situ soil moisture observations. The target variable throughout the study is soil moisture measured at a depth of 5 cm.
+
+\subsubsection*{Satellite Data}
+Satellite-based predictors were collected using Google Earth Engine \cite{gee}. The data sources include Sentinel-1, Sentinel-2, MODIS, SMAP, and a digital elevation model (DEM).
+
+Sentinel-1 synthetic aperture radar (SAR) data \cite{sentinel1} were used to extract VV and VH backscatter in both decibel and linear representations. Sentinel-2 Level-2A surface reflectance data \cite{sentinel2} provided spectral bands \(B2\), \(B3\), \(B4\), \(B8\), \(B11\), and \(B12\). MODIS products \cite{modis} were used to obtain land surface temperature (LST) and NDVI. Terrain-related variables were derived from the SRTM DEM \cite{srtm}, including elevation, slope, and aspect. SMAP data \cite{smap} provided AM and PM soil moisture estimates along with retrieval quality flags.
+
+To improve robustness and reduce noise, satellite values were aggregated over a spatial buffer around each station location. A buffer radius of 1000 m was used. The effective spatial resolution varies across datasets, with high-resolution products such as Sentinel-1 complementing coarser-scale inputs such as SMAP.
+
+\subsubsection*{Weather Data}
+Weather variables were obtained from the Open-Meteo historical archive API \cite{openmeteo}. This source was selected due to its availability of hourly observations without requiring extensive interpolation.
+
+The primary variables used were rain and total precipitation (in millimeters). Hourly values were aggregated into daily totals before merging with station-level observations.
+
+\subsubsection*{Ground Truth Soil Moisture Data}
+Ground-truth measurements were collected from in-situ monitoring stations. The temporal modeling experiments initially focused on five stations in Washington State.
+
+For spatial generalization experiments, the dataset was expanded to include additional stations in climatically similar regions, including Idaho and Oregon.
+
+\textbf{TODO (Daniel): add exact station list, total number of stations, final geographic coverage,...}
+
+The response variable for all supervised learning tasks is soil moisture measured at 5 cm depth.
+
+\subsubsection*{External Test Datasets}
+Two types of external datasets were considered for evaluating generalization to new locations.
+
+The first consists of unseen public stations outside Washington with similar geographic and climatic characteristics. These datasets are used to evaluate temporal-spatial transfer.
+
+The second consists of ECE sensor deployments within Washington, which provide an additional real-world evaluation setting outside the original training stations.
+
+\textbf{TODO (ECE): confirm number of sensors, locations, deployment details,...}
+
+\subsubsection*{Temporal Coverage}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Stage} & \textbf{Time Range} \\
+\midrule
+Initial target window & 2008 -- 2025 \\
+Aligned data window & 2011 -- 2025 \\
+Final study window (SMAP-constrained) & 2017 -- 2025 \\
+\bottomrule
+\end{tabular}
+\caption{Evolution of the temporal coverage as data sources were integrated.}
+\end{table}
+
+The final study period (2017-2025) ensures consistent availability of all features, particularly SMAP-derived variables.

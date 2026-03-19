@@ -1,0 +1,47 @@
+\subsubsection*{Limitations}
+
+\subsubsection*{Overview}
+
+The three-regime framework reveals meaningful structure in soil moisture dynamics, but several limitations affect its practical effectiveness. These limitations arise from data imbalance, model design choices, and evaluation constraints.
+
+\subsubsection*{Key Limitations}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{4cm} p{9cm}}
+\toprule
+\textbf{Category} & \textbf{Description} \\
+\midrule
+\textbf{Regime imbalance} & The wet regime contains significantly fewer samples, leading to unstable model estimates and higher variance. \\
+
+\textbf{Low variance in wet regime} & Small target variability causes $R^2$ to degrade even when absolute errors are small, complicating interpretation. \\
+
+\textbf{Gating error propagation} & In self-gated settings, incorrect regime assignment leads to compounding errors through misrouted predictions. \\
+
+\textbf{Temporal pseudo-label constraints} & Out-of-fold pseudo-labeling reduces effective training data, particularly in early time periods. \\
+
+\textbf{Model complexity vs performance} & Increased complexity from specialist models and gating does not yield improved performance over the anchor baseline. \\
+
+\textbf{Hard gating assumption} & Deterministic thresholds do not capture uncertainty near regime boundaries or mixed-behavior samples. \\
+
+\textbf{Threshold sensitivity} & Fixed percentile-based thresholds introduce sensitivity to small distributional changes. \\
+
+\textbf{Limited spatial generalization} & Overlap in station identities between splits limits conclusions about performance on unseen locations. \\
+\bottomrule
+\end{tabular}
+\caption{Summary of key limitations in the three-regime framework.}
+\end{table}
+
+\subsubsection*{Discussion}
+
+A primary challenge arises from imbalance and low variance in the wet regime. The combination of limited samples and narrow target range leads to unstable estimates and misleading evaluation metrics, such as negative $R^2$ despite low absolute error.
+
+The effectiveness of the framework is also constrained by the gating mechanism. In realistic settings, regime assignment is imperfect, and errors in this stage propagate through the model, reducing overall performance. While oracle-gated results suggest potential gains, these are difficult to realize without reliable routing.
+
+From a modeling perspective, the increased complexity of the mixture-of-experts framework does not translate into improved predictive performance. The anchor model already captures the dominant signal, particularly in the dry regime where most observations are concentrated.
+
+Finally, the use of hard threshold-based gating and fixed regime boundaries introduces sensitivity and limits flexibility. These design choices do not fully capture transitional behavior or uncertainty near regime boundaries.
+
+\subsubsection*{Implications}
+
+Overall, these results indicate that while soil moisture prediction exhibits clear regime-dependent structure, effectively leveraging this structure in a predictive model is nontrivial. Future work should focus on improved gating strategies, better handling of regime imbalance, and alternative formulations of regime-dependent learning.

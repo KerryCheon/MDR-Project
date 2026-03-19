@@ -1,0 +1,90 @@
+\subsubsection*{Feature Engineering and Regime-Specific Selection}
+
+The three-regime framework builds upon the feature engineering and selection pipeline used in the base model, while introducing regime-specific feature subsets tailored to different moisture conditions. The objective is to allow each specialist model to focus on the most relevant signals for its regime while retaining a shared global representation.
+
+\subsubsection*{Shared Feature Engineering}
+
+As in the base model, candidate features were generated through structured transformations of satellite, meteorological, and derived signals. These include temporal differences, rolling statistics, lag features, seasonal encodings, and meteorological accumulations.
+
+The initial feature space (approximately 400 features), along with the pruning and redundancy-reduction pipeline, is identical to the base model. This results in a compact set of informative features that serve as the foundation for the regime-based framework.
+
+\subsubsection*{Anchor Feature Set}
+
+The anchor model operates on a shared base feature set consisting of 28 features selected from the pruned pool.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Category} & \textbf{Description} \\
+\midrule
+SMAP-derived & Soil moisture signals and temporal derivatives \\
+Meteorological & Rainfall and API-based features \\
+Temporal dynamics & Temperature and SAR-based transformations \\
+Seasonality & Cyclical encodings and interaction terms \\
+Static features & Terrain and soil properties \\
+\bottomrule
+\end{tabular}
+\caption{Composition of the anchor feature set (28 features).}
+\end{table}
+
+These features provide a general-purpose representation of soil moisture dynamics and are used to produce the initial global prediction.
+
+\subsubsection*{Regime-Specific Feature Sets}
+
+Separate feature subsets were defined for different moisture regimes to enable specialization.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Regime} & \textbf{Focus} & \textbf{Feature Characteristics} \\
+\midrule
+Dry & Stable dynamics & Smoothed signals, temperature trends, static properties \\
+Transition & Mixed behavior & Combination of persistence and short-term dynamics \\
+Wet & Rapid dynamics & Variability, gradients, and higher-order temporal features \\
+\bottomrule
+\end{tabular}
+\caption{Design of regime-specific feature sets.}
+\end{table}
+
+The dry regime emphasizes stable and slowly evolving signals. In practice, a dedicated dry specialist model was not retained, as the anchor model sufficiently captured dry-regime behavior.
+
+The wet regime incorporates higher-order temporal features, including rolling variance, range, percent change, and short-term gradients derived from SMAP, SAR, and meteorological variables. These features are designed to capture rapid changes and nonlinear responses.
+
+The transition regime uses a similar feature space to the wet regime, reflecting the need to model intermediate dynamics where both persistence and rapid changes are present.
+
+\subsubsection*{Anchor Conditioning}
+
+For transition and wet specialists, the anchor model prediction is included as an additional input feature. This allows specialist models to learn corrections relative to a global baseline rather than reconstructing the full signal.
+
+\begin{equation}
+x_{\text{specialist}} = \big[x_{\text{regime}}, \hat{y}_{\text{anchor}}\big]
+\end{equation}
+
+This design provides contextual information about the global estimate and simplifies the learning task for regime-specific models.
+
+\subsubsection*{Feature Usage Across Models}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Model Component} & \textbf{Feature Set} \\
+\midrule
+Anchor model & Shared base feature set (28 features) \\
+Transition specialist & Regime-specific features + anchor prediction \\
+Wet specialist & Regime-specific features + anchor prediction \\
+Dry regime & Handled by anchor model (no dedicated specialist) \\
+\bottomrule
+\end{tabular}
+\caption{Feature usage across model components.}
+\end{table}
+
+This structure introduces specialization only where necessary, while avoiding additional complexity in regimes where the global model already performs well.
+
+\subsubsection*{Interpretation}
+
+The regime-specific feature design reflects the hypothesis that different physical processes dominate across moisture conditions. Dry regimes are characterized by slow dynamics and strong dependence on static properties, while wet regimes exhibit rapid and nonlinear behavior driven by short-term forcing.
+
+Although this structured representation aligns with the underlying system dynamics, the evaluation results show that improved feature specialization alone is insufficient to guarantee better predictive performance under realistic gating conditions.

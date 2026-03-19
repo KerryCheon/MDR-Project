@@ -1,0 +1,160 @@
+% created by Jakob Balkovec on Mar 19th 2026 at 7:32:16
+
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\captionsetup{
+    font=small,
+    labelfont=bf
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\setstretch{1.05}
+
+\titleformat{\section}
+  {\Large\bfseries}
+  {\thesection}
+  {0.75em}
+  {}
+
+\titleformat{\subsection}
+  {\large\bfseries}
+  {\thesubsection}
+  {0.75em}
+  {}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}
+  {}
+  {0pt}
+  {}
+
+\titlespacing*{\section}{0pt}{1.4em}{0.7em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.5em}
+\titlespacing*{\subsubsection}{0pt}{0.8em}{0.25em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{MDR Soil Moisture Modeling Report}
+\fancyhead[R]{Draft}
+\fancyfoot[C]{\thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+
+% front page
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\Huge \textbf{MDR Soil Moisture Modeling Report}\par}
+    \vspace{0.4cm}
+    {\Large Draft Research Summary\par}
+
+    \vspace{1.5cm}
+
+    {\large
+    Jakob Balkovec\\
+    Kerry Cheon\\
+    Daniel Kirov-Tomilov\par}
+
+    \vspace{1cm}
+
+    {\large \today\par}
+
+    \vfill
+
+    \begin{tabular}{rl}
+        Project: & Soil Moisture Modeling \\
+        Group: & MDR CS Group \\
+        Scope: & Base Model and Three-Regime Model \\
+        Status: & Internal Draft Report
+    \end{tabular}
+
+    \vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% shared methodology
+\section{Shared Methodology}
+
+\subsection{Data}
+\input{sections/shared/data}
+
+\subsection{Preprocessing}
+\input{sections/shared/preprocessing}
+
+\subsection{Features}
+\input{sections/shared/features}
+
+\newpage
+
+
+% base model
+\section{Base Model}
+
+\subsection{Training}
+\input{sections/base_model/training}
+
+\subsection{Evaluation: Temporal Prediction}
+\input{sections/base_model/evaluation_temporal}
+
+\subsection{Evaluation: Spatial Generalization}
+\input{sections/base_model/evaluation_spatial}
+
+\subsection{Evaluation: New Locations}
+\input{sections/base_model/evaluation_new_locations}
+
+\subsection{Observations}
+\input{sections/base_model/observations}
+
+\newpage
+
+
+% three-Regime Model
+\section{Three-Regime Model}
+
+\subsection{Training}
+\input{sections/three_regime/training}
+
+\subsection{Features}
+\input{sections/three_regime/features}
+
+\subsection{Evaluation: Temporal Prediction}
+\input{sections/three_regime/evaluation_temporal}
+
+\subsection{Limitations}
+\input{sections/three_regime/limitations}
+
+% bibliography
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}

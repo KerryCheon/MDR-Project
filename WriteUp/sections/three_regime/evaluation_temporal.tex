@@ -1,0 +1,122 @@
+\subsubsection*{Evaluation of the Three-Regime Framework}
+
+\paragraph{Evaluation Setup}
+The three-regime framework was evaluated on the same temporal test set used for the base model (January 2023 through December 2025). Performance was compared across multiple configurations, including oracle-gated, self-gated, and residual-based variants, as well as the single-model anchor baseline.
+
+Regime thresholds were defined using the 33rd and 66th percentiles of the target distribution:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Regime} & \textbf{Condition} & \textbf{Threshold} \\
+\midrule
+Dry & $y \leq t_1$ & $t_1 = 0.20$ \\
+Transition & $t_1 < y \leq t_2$ & $t_2 = 0.313$ \\
+Wet & $y > t_2$ & -- \\
+\bottomrule
+\end{tabular}
+\caption{Regime definitions based on empirical quantiles of soil moisture.}
+\end{table}
+
+\paragraph{Specialist Model Performance (No Gating)}
+To separate model capacity from routing effects, each model was first evaluated independently on the full test set without regime-based gating.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Model} & \textbf{$R^2$} \\
+\midrule
+Dry specialist & TODO \\
+Transition specialist & TODO \\
+Wet specialist & TODO \\
+Anchor (base) model & \textbf{0.802} \\
+\bottomrule
+\end{tabular}
+\caption{Global performance of individual models evaluated without gating.}
+\end{table}
+
+The anchor model achieved the strongest overall performance. In particular, the dry specialist did not provide a meaningful improvement over the anchor despite being trained specifically on dry-regime samples.
+
+Based on this observation, the anchor model was used in place of a dedicated dry specialist in all subsequent experiments. This simplifies the architecture while preserving performance in the dominant regime.
+
+\paragraph{Oracle-Gated Analysis}
+An oracle-gated configuration was evaluated in which regime membership was determined using ground-truth values. This provides a diagnostic upper bound on performance under perfect routing.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Regime} & \textbf{Samples} & \textbf{Model Used} & \textbf{$R^2$} \\
+\midrule
+Dry & 1509 & Anchor & 0.334 \\
+Transition & 2015 & Transition Specialist & 0.148 \\
+Wet & 492 & Wet Specialist & -0.319 \\
+\bottomrule
+\end{tabular}
+\caption{Oracle-gated performance across moisture regimes.}
+\end{table}
+
+Performance varies substantially across regimes. The dry regime, handled by the anchor model, shows moderate predictive power, while the transition regime is more difficult. The wet regime exhibits negative $R^2$ despite relatively small absolute errors, reflecting low variance and limited explainable signal.
+
+To quantify the full potential of perfect routing, a global oracle-gated configuration was also evaluated:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+$R^2$ & \textbf{0.859} \\
+MAE & 0.0255 \\
+RMSE & 0.0354 \\
+ubRMSE & 0.0342 \\
+Bias & -0.0090 \\
+Median AE & 0.0184 \\
+P90 $|$error$|$ & 0.0578 \\
+\bottomrule
+\end{tabular}
+\caption{Global oracle-gated performance using ground-truth regime assignment.}
+\end{table}
+
+This upper bound exceeds the anchor baseline ($R^2 \approx 0.802$) by a substantial margin, indicating that regime-specific modeling is beneficial when routing is accurate. The observed gap of approximately $0.06$ in $R^2$ quantifies the cost of imperfect regime assignment.
+
+\paragraph{Self-Gated Double-Pass}
+To approximate a deployable setting, regime assignment was based on model predictions rather than ground truth. Out-of-fold predictions from a time-series cross-validation scheme were used to construct pseudo-labels for specialist training, reducing leakage.
+
+At inference time, samples were routed using anchor model predictions. This configuration achieved $R^2 = 0.766$, reflecting the difficulty of accurate gating under uncertainty.
+
+\paragraph{Residual Double-Pass}
+A residual-based variant was also evaluated, in which specialist models predict corrections to the anchor model:
+
+\[
+\hat{y} = \hat{y}_{\text{anchor}} + \hat{r}
+\]
+
+This approach improved performance relative to the self-gated absolute model, achieving $R^2 = 0.801$, but did not surpass the anchor-only baseline. Regime-level analysis shows persistent instability in the wet regime, likely due to limited sample size and low variance.
+
+\paragraph{Comparison to Anchor Baseline}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Model} & \textbf{$R^2$} \\
+\midrule
+Self-gated (absolute) & 0.766 \\
+Residual double-pass & 0.801 \\
+Anchor-only baseline & \textbf{0.802} \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of three-regime variants with the anchor baseline.}
+\end{table}
+
+Despite the additional modeling complexity, none of the mixture-of-experts variants outperform the anchor model. The anchor baseline remains competitive due to its ability to capture the dominant signal in the dry regime, where most observations are concentrated.
+
+\paragraph{Discussion}
+The results confirm that soil moisture prediction exhibits strong regime-dependent behavior. However, they also demonstrate that hard-gated mixture-of-experts approaches do not automatically yield performance gains.
+
+While oracle-gated results indicate clear potential, performance degrades under realistic gating. This highlights the importance of accurate regime assignment and suggests that future improvements should focus on more robust routing strategies, such as soft gating or probabilistic assignment.
+
+Overall, while regime-aware modeling is well-motivated, effectively exploiting this structure in practice remains an open challenge.
