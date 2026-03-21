@@ -1,0 +1,22 @@
+{
+  "device": "d4",
+  "input_csv": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/unseen_data/sensors/d4/final.csv",
+  "output_dir": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/unseen_data/sensors/d4",
+  "rows": 11,
+  "columns": {
+    "derived_6": 489,
+    "derived_7": 495,
+    "derived_8": 499
+  },
+  "drift_ref_year_minmax": [
+    2014.0,
+    2019.0
+  ],
+  "lia_csv": "/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/splits/derived_8.0/LIA/stations_lia.csv",
+  "lia_missing_rate": {
+    "lia_mean_asc_deg": 1.0,
+    "lia_std_asc_deg": 1.0,
+    "lia_mean_desc_deg": 1.0,
+    "lia_std_desc_deg": 1.0
+  }
+}

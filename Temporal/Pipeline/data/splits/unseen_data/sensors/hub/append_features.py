@@ -12,15 +12,17 @@ import pandas as pd
 
 
 THIS_DIR = Path(__file__).resolve().parent
-SPLITS_DIR = THIS_DIR.parent
-DERIVED6_DIR = SPLITS_DIR / "derived_6.0"
+SENSORS_DIR = THIS_DIR.parent
+UNSEEN_DIR = SENSORS_DIR.parent
+SPLITS_DIR = UNSEEN_DIR.parent
+DERIVED6_UTILS_DIR = SPLITS_DIR / "derived_6.0" / "utils"
 DERIVED7_META = SPLITS_DIR / "derived_7.0" / "split_meta.json"
 DERIVED8_LIA = SPLITS_DIR / "derived_8.0" / "LIA" / "stations_lia.csv"
 
-if str(DERIVED6_DIR) not in sys.path:
-    sys.path.insert(0, str(DERIVED6_DIR))
+if str(DERIVED6_UTILS_DIR) not in sys.path:
+    sys.path.insert(0, str(DERIVED6_UTILS_DIR))
 
-from ..utils.derived_features_all_math import (
+from derived_features_all_math import (
     add_smap_features,
     compute_api,
     compute_days_since_last_rain,
@@ -101,13 +103,32 @@ PFX = {
 
 DRIFT_COLS = ["year", "year_frac", "sin_year", "cos_year", "API_x_year", "SMAP_x_year"]
 LIA_COLS = ["lia_mean_asc_deg", "lia_std_asc_deg", "lia_mean_desc_deg", "lia_std_desc_deg"]
+SUPPORTED_DEVICES = ("d3", "d4", "d7")
+DEVICE_DEFAULTS = {
+    "d3": {
+        "input": SENSORS_DIR / "d3" / "final.csv",
+        "out_dir": SENSORS_DIR / "d3",
+        "station_id": "DEV3",
+    },
+    "d4": {
+        "input": SENSORS_DIR / "d4" / "final.csv",
+        "out_dir": SENSORS_DIR / "d4",
+        "station_id": "DEV4",
+    },
+    "d7": {
+        "input": SENSORS_DIR / "d7" / "final.csv",
+        "out_dir": SENSORS_DIR / "d7",
+        "station_id": "DEV7",
+    },
+}
 
 
 def _default_input() -> Path:
-    local = THIS_DIR / "final.csv"
-    if local.exists():
-        return local
-    return Path("/Users/jbalkovec/Desktop/MDR/Temporal/Pipeline/data/processed/backyard_sensor/final.csv")
+    for device in SUPPORTED_DEVICES:
+        p = DEVICE_DEFAULTS[device]["input"]
+        if p.exists():
+            return p
+    return SENSORS_DIR / "d3" / "final.csv"
 
 
 def _read_header(path: Path) -> list[str]:
@@ -157,7 +178,6 @@ def _prepare_input(df: pd.DataFrame, station_override: str | None = None) -> pd.
     if "DOY" not in out.columns:
         out["DOY"] = out[DATE_COL].dt.dayofyear
 
-    # Fallbacks for SMAP *_interp columns expected by derived_6.0 logic.
     if "SMAP_sm_am_interp" not in out.columns and "SMAP_sm_am" in out.columns:
         out["SMAP_sm_am_interp"] = pd.to_numeric(out["SMAP_sm_am"], errors="coerce")
     if "SMAP_sm_pm_interp" not in out.columns and "SMAP_sm_pm" in out.columns:
@@ -318,7 +338,6 @@ def _build_derived6(df: pd.DataFrame) -> pd.DataFrame:
         )
     full = _attach_cols(full, corr_cols)
 
-    # For unseen inference, use the same dataset as both "train" and "full" baseline for seasonal features.
     for col in [f"{PFX['OPT']}_NDMI", f"{PFX['RAD']}_SAR_ratio", "LST_modis"]:
         full[f"{PFX['SEA']}_sa_{col}"] = train_only_monthly_anomaly_global(full, full, col=col, date_col=DATE_COL).values
         full[f"{PFX['SEA']}_z_{col}"] = train_only_monthly_zscore_global(
@@ -430,15 +449,16 @@ def _align_to_reference(df: pd.DataFrame, reference_csv: Path, keep_extra: bool)
     return out[ref_cols]
 
 
-def build(args: argparse.Namespace) -> None:
-    in_path = Path(args.input).resolve()
-    out_dir = Path(args.out_dir).resolve()
+def _build_one(args: argparse.Namespace, in_path: Path, out_dir: Path, station_id: str | None, device: str | None) -> None:
+    in_path = in_path.resolve()
+    out_dir = out_dir.resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
     df0 = pd.read_csv(in_path, low_memory=False)
-    df0 = _prepare_input(df0, station_override=args.station_id)
+    df0 = _prepare_input(df0, station_override=station_id)
 
-    print(f"Loaded input: {in_path}")
+    prefix = f"[{device}] " if device else ""
+    print(f"{prefix}Loaded input: {in_path}")
     print(f"Rows: {len(df0)} | Cols: {len(df0.columns)}")
 
     d6 = _build_derived6(df0)
@@ -462,6 +482,7 @@ def build(args: argparse.Namespace) -> None:
     d8.to_csv(d8_path, index=False)
 
     summary = {
+        "device": device,
         "input_csv": str(in_path),
         "output_dir": str(out_dir),
         "rows": int(len(d8)),
@@ -490,10 +511,70 @@ def build(args: argparse.Namespace) -> None:
     print(f"  derived_8: {len(d8.columns)}")
 
 
+def _resolve_targets(args: argparse.Namespace) -> list[dict[str, Path | str | None]]:
+    if args.device == "all":
+        if args.input or args.out_dir or args.station_id:
+            raise ValueError("--device all cannot be combined with --input, --out-dir, or --station-id")
+        targets: list[dict[str, Path | str | None]] = []
+        for device in SUPPORTED_DEVICES:
+            defaults = DEVICE_DEFAULTS[device]
+            targets.append(
+                {
+                    "device": device,
+                    "input": Path(defaults["input"]),
+                    "out_dir": Path(defaults["out_dir"]),
+                    "station_id": str(defaults["station_id"]),
+                }
+            )
+        return targets
+
+    if args.device in SUPPORTED_DEVICES:
+        defaults = DEVICE_DEFAULTS[args.device]
+        return [
+            {
+                "device": args.device,
+                "input": Path(args.input).resolve() if args.input else Path(defaults["input"]),
+                "out_dir": Path(args.out_dir).resolve() if args.out_dir else Path(defaults["out_dir"]),
+                "station_id": args.station_id if args.station_id is not None else str(defaults["station_id"]),
+            }
+        ]
+
+    input_path = Path(args.input).resolve() if args.input else _default_input().resolve()
+    out_dir = Path(args.out_dir).resolve() if args.out_dir else input_path.parent.resolve()
+    return [{"device": None, "input": input_path, "out_dir": out_dir, "station_id": args.station_id}]
+
+
+def build(args: argparse.Namespace) -> None:
+    targets = _resolve_targets(args)
+    for t in targets:
+        _build_one(
+            args=args,
+            in_path=Path(t["input"]),
+            out_dir=Path(t["out_dir"]),
+            station_id=t["station_id"] if isinstance(t["station_id"], str) else None,
+            device=t["device"] if isinstance(t["device"], str) else None,
+        )
+
+
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build derived split-style features for unseen data.")
-    parser.add_argument("--input", default=str(_default_input()), help="Input final.csv for unseen station")
-    parser.add_argument("--out-dir", default=str(THIS_DIR), help="Output folder for unseen derived files")
+    parser = argparse.ArgumentParser(
+        description="Build derived split-style features for unseen data.",
+        epilog=(
+            "Examples:\n"
+            "  python append_features.py --device d3\n"
+            "  python append_features.py --device all\n"
+            "  python append_features.py --input /path/to/final.csv --out-dir /path/to/out"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "--device",
+        choices=[*SUPPORTED_DEVICES, "all"],
+        default=None,
+        help="Use defaults for a device folder (d3, d4, d7) or run all three with 'all'",
+    )
+    parser.add_argument("--input", default=None, help="Input final.csv for unseen station")
+    parser.add_argument("--out-dir", default=None, help="Output folder for unseen derived files")
     parser.add_argument("--station-id", default=None, help="Optional override for station_id on all rows")
     parser.add_argument("--keep-extra", action="store_true", help="Keep columns not present in reference split schema")
 
