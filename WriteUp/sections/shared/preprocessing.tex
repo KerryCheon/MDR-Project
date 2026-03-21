@@ -30,6 +30,7 @@ For computational efficiency, data retrieval was performed at a weekly level, wi
 Satellite features were extracted using a spatial buffer around each station location, allowing each observation to represent an area rather than a single point. This improves robustness to noise and spatial misalignment between datasets.
 
 \textbf{TODO (Daniel): confirm buffer size, spatial aggregation details,...}
+A spatial buffer radius of 100 meters was applied for dynamic satellite products, aggregating pixel values within that footprint into a single representative mean. 
 
 \subsubsection*{Weather Aggregation}
 Weather data were obtained at an hourly resolution and aggregated into daily values prior to merging with station data. Rainfall and total precipitation were summed to produce daily totals (in millimeters), ensuring consistency with the temporal resolution of the dataset.
