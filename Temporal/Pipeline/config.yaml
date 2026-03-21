@@ -310,15 +310,43 @@ stations:
       index: false
 
   # -----------------------------------------------------------
-  # STATION 6: Backyard Sensor
+  # STATION 6: Sensor: Device 4
   # -----------------------------------------------------------
-  backyard_sensor:
+  device_4:
     parse:
       manual_mode: true
-      station: "BACKYARD_SENSOR"
-      latitude: 47.488677
-      longitude: -122.144624
-      start_date: "2025-03-18"
+      station: "DEV4"
+      latitude: REDACTED
+      longitude: REDACTED
+      start_date: "2026-03-06"
+      end_date: "2026-03-16"
+      freq: "D"
+      include_soil_moisture_placeholder: true
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "Temporal/Pipeline/data/processed/device4/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 7: Sensor: Device 7
+  # -----------------------------------------------------------
+  device_7:
+    parse:
+      manual_mode: true
+      station: "DEV7"
+      latitude: REDACTED
+      longitude: REDACTED
+      start_date: "2026-03-06"
       end_date: "2026-03-18"
       freq: "D"
       include_soil_moisture_placeholder: true
@@ -333,7 +361,35 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/backyard_sensor/final.csv"
+      out_path: "Temporal/Pipeline/data/processed/device7/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 8: Sensor: Device 3
+  # -----------------------------------------------------------
+  device_3:
+    parse:
+      manual_mode: true
+      station: "DEV3"
+      latitude: REDACTED
+      longitude: REDACTED
+      start_date: "2026-03-06"
+      end_date: "2026-03-16"
+      freq: "D"
+      include_soil_moisture_placeholder: true
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "Temporal/Pipeline/data/processed/device3/final.csv"
       format: "csv"
       index: false
 
