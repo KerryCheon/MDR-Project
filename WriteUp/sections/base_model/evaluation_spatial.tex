@@ -1,14 +1,77 @@
 \subsubsection*{Spatial Evaluation}
 
-\paragraph{Evaluation Setup}
-In addition to temporal generalization, model performance was evaluated across spatial locations to assess the ability of the model to generalize across different stations and geographic conditions.
+\subsubsection*{Evaluation Setup}
+In addition to temporal generalization, model performance was evaluated across spatial locations
+to assess the ability of the model to generalize to unseen stations. A leave-one-station-out
+(LOSO) cross-validation scheme was applied across the five Washington State stations used in
+this study: Darrington, Quinault, SourdoughGulch\_WA\_985, Spokane, and Touchet\_WA\_824.
 
-\textbf{[Kerry: spatial split strategy, number of stations in each split, whether any geographic stratification was applied,...]}
+For each fold, the model was trained on the combined training and validation data from the
+four remaining stations, and evaluated on all available rows from the held-out station. The
+same three-regime XGBoost ensemble architecture used in the temporal evaluation was applied
+without modification. No geographic stratification was applied; all five stations are located
+in Washington State with varying terrain, climate, and soil characteristics.
 
-\paragraph{Results}
-Spatial evaluation results indicate how well the model transfers across locations with potentially different environmental characteristics, including soil composition, terrain, and climate.
+\subsubsection*{Results}
+Spatial evaluation results indicate how well the model transfers across locations with
+potentially different environmental characteristics, including soil composition, terrain,
+and climate.
 
-\textbf{[Kerry: key metrics (e.g., $R^2$, MAE, RMSE) for spatial evaluation + comparison to temporal performance]}
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Station} & \textbf{$R^2$} & \textbf{MAE} & \textbf{RMSE} & \textbf{ubRMSE} & \textbf{Bias} \\
+\midrule
+Darrington              & 0.730 & 0.0446 & 0.0543 & 0.0539 & +0.0064 \\
+Quinault                & 0.498 & 0.0439 & 0.0529 & 0.0449 & -0.0279 \\
+SourdoughGulch\_WA\_985 & 0.545 & 0.0518 & 0.0646 & 0.0591 & +0.0262 \\
+Spokane                 & 0.728 & 0.0499 & 0.0577 & 0.0570 & -0.0092 \\
+Touchet\_WA\_824        & 0.403 & 0.0586 & 0.0677 & 0.0595 & -0.0322 \\
+\midrule
+\textbf{Mean}           & \textbf{0.581} & \textbf{0.0498} & \textbf{0.0594} & \textbf{0.0549} & -- \\
+\bottomrule
+\end{tabular}
+\caption{Per-station LOSO performance metrics for the base model.}
+\end{table}
 
-\paragraph{Discussion}
-\textbf{[Kerry: maybe comment on whether performance degrades relative to temporal evaluation + any other observed spatial biases or station-specific effects.]}
+Regime-level $R^2$ values are reported below for each held-out station.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Station} & \textbf{Dry $R^2$} & \textbf{Transition $R^2$} & \textbf{Wet $R^2$} \\
+\midrule
+Darrington              & -0.400 & -0.484  &   -9.992 \\
+Quinault                & -0.547 & -1.718  &   -1.833 \\
+SourdoughGulch\_WA\_985 & -1.719 & -2.217  &  -24.048 \\
+Spokane                 & -0.174 & -1.263  & -110.361 \\
+Touchet\_WA\_824        & +0.143 & -2.379  & -154.901 \\
+\bottomrule
+\end{tabular}
+\caption{Per-station regime-level $R^2$ under LOSO evaluation.}
+\end{table}
+
+\subsubsection*{Discussion}
+A key limitation of this evaluation is the small number of stations. With only five stations
+in total, the model is trained on four locations and tested on one — leaving it with very
+limited geographic diversity to learn from. As a result, the held-out station may have soil
+types, terrain, or climate conditions that are not well represented in the training data,
+making accurate generalization difficult regardless of model quality. Expanding the station
+network would be the most direct way to improve spatial performance.
+
+Within these constraints, performance varies across stations. Darrington and Spokane transfer
+best ($R^2 \approx 0.73$), while Touchet\_WA\_824 shows the weakest performance
+($R^2 = 0.40$). Biases differ in sign across stations, indicating that the model
+consistently over- or under-predicts at certain locations, likely because local soil or
+terrain conditions are not fully captured by the shared feature set.
+
+Regime-level $R^2$ values are negative across all stations and moisture conditions. This
+reflects the same pattern noted in the temporal evaluation (Section~2.2): once data are
+restricted to a single moisture regime, the range of target values becomes narrow, and even
+small prediction errors are enough to produce a negative $R^2$. The wet regime is most
+affected because it has both the narrowest target range and the fewest samples. Overall,
+these results suggest that the model's spatial skill comes primarily from tracking broad
+moisture levels across locations, rather than capturing fine-grained variation within each
+regime.
