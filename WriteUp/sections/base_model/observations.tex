@@ -1,13 +1,50 @@
-\subsubsection*{Observations}
+\subsubsection*{Temporal Characteristics}
 
-\paragraph{Temporal Characteristics}
-\textbf{[TODO: observed temporal patterns...seasonality, persistence, and variability in SM and related signals]}
+Soil moisture exhibits a clear seasonal pattern across stations, with higher values during winter months and lower values during late summer, as shown in Figure~\ref{fig:climatology}. While this general structure is consistent, the magnitude and shape of the seasonal cycle vary across locations, reflecting differences in local conditions and baseline moisture levels.
 
-\paragraph{Missingness Patterns}
-\textbf{[TODO: missing data is distributed over time and across features (satellite gaps due to revisit frequency, cloud cover,...)]}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/monthly_climatology.png}
+    \caption{Monthly soil moisture climatology across selected stations.}
+    \label{fig:climatology}
+\end{figure}
 
-\paragraph{Feature Behavior}
-\textbf{[TODO: notable behaviors in key variables (SMAP stability vs optical variability, rainfall-driven spikes, lag effects,...)]}
+At the daily scale, soil moisture exhibits strong temporal persistence, with relatively smooth evolution over time compared to the intermittency of precipitation. As shown in Figure~\ref{fig:darrington_time}, increases in soil moisture often follow rainfall events, while subsequent drying occurs more gradually over extended periods. This results in a characteristic pattern of relatively rapid increases followed by slower decay.
 
-\paragraph{Dataset Challenges}
-\textbf{[TODO: Maybe? describe challenges we observed in the dataset, such as nonstationarity, noise, inconsistencies across sources,...]}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/darrington_sm_vs_time.png}
+    \caption{Daily soil moisture time series at the Darrington station.}
+    \label{fig:darrington_time}
+\end{figure}
+
+These dynamics indicate that soil moisture is influenced by both short-term forcing (precipitation) and longer-term persistence, leading to lagged and smoothed responses. This behavior supports the use of temporal features such as lagged inputs and rolling statistics in the modeling pipeline.
+
+\subsubsection*{Missingness Patterns}
+
+Feature availability varies across both time and data sources. Satellite-derived variables, particularly optical features, exhibit structured gaps likely driven by revisit frequency and environmental conditions such as cloud cover. These gaps occur in contiguous temporal segments rather than randomly, introducing discontinuities in the feature space.
+
+In contrast, precipitation measurements and interpolated SMAP-derived soil moisture features are more consistently available over time. This results in uneven information density across features, requiring the model to rely more heavily on stable signals when optical data are unavailable.
+
+\subsubsection*{Feature Behavior}
+
+Different feature groups exhibit distinct temporal characteristics. SMAP-derived soil moisture signals are relatively smooth and stable, capturing broad temporal trends with limited short-term variability. In contrast, optical features such as NDVI and Sentinel-2 bands show higher variability and occasional abrupt changes, as illustrated in Figure~\ref{fig:smap_optical}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/smap_vs_optical.png}
+    \caption{Comparison of SMAP-derived soil moisture and optical features.}
+    \label{fig:smap_optical}
+\end{figure}
+
+Precipitation is highly intermittent, with sharp spikes corresponding to rainfall events. These events are associated with increases in soil moisture, followed by gradual declines over time. The resulting lagged relationship between precipitation and soil moisture is reflected in the engineered temporal features used in the model.
+
+\subsubsection*{Dataset Challenges}
+
+Several characteristics of the dataset introduce challenges for modeling. First, soil moisture dynamics are nonstationary, with behavior varying across time and moisture conditions. This is reflected in the presence of distinct regimes (dry, transition, wet) identified in the model evaluation.
+
+Second, residual analysis (Section~\ref{sec:temporal_eval}) shows clear heteroskedasticity, with error variance changing across the target range. This indicates that model performance is not uniform across moisture conditions and motivates regime-aware modeling approaches.
+
+In addition, variability across stations introduces spatial heterogeneity, with differences in baseline levels, dynamic range, and temporal patterns. Combined with structured missingness in key features, these factors make it difficult for a single global model to perform consistently across all conditions.
+
+These observations motivate the use of temporal features, lag-based inputs, and regime-aware modeling strategies explored in subsequent sections.

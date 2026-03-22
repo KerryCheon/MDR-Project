@@ -1,12 +1,43 @@
-\subsubsection*{Evaluation on New Locations}
+\subsubsection*{Evaluation Setup}
+To further assess generalization beyond the training and station-based evaluation settings, the model was evaluated on a set of entirely unseen sensor deployments (denoted as DEV3, DEV4, and DEV7). These devices represent independent measurement systems deployed at locations not included in any training, validation, or test splits.
 
-\paragraph{Evaluation Setup}
-This evaluation is intended to assess the ability of the model to generalize to entirely unseen stations, representing a stricter test of spatial transfer compared to the standard spatial evaluation.
+Unlike the in-situ station data used throughout the primary evaluation, these sensors do not provide calibrated volumetric water content (VWC). Instead, they report soil moisture on a device-specific relative scale (min-max normalized), which is not directly comparable to the model's predictions in physical units.
 
-\textbf{[Jakob: TODO]}
+To align with the daily temporal resolution of the modeling pipeline, hourly sensor readings were aggregated into daily values. This aggregation reduces noise but also results in a very limited number of usable observations per device.
 
-\paragraph{Results}
-\textbf{[Jakob: TODO]}
+As a result, absolute error metrics (e.g., RMSE, MAE, $R^2$) are not meaningful in this setting. To enable comparison, model predictions were normalized independently within each device to a relative scale. Evaluation was then performed using correlation-based metrics (Pearson and Spearman) and a directional consistency metric (trend agreement), with the goal of assessing whether the model captures coarse wet/dry temporal behavior rather than absolute magnitude.
 
-\paragraph{Discussion}
-\textbf{[Jakob: TODO]}
+Trend agreement is defined as the proportion of time steps for which the direction of change in the model prediction matches that of the observed signal:
+\[
+\text{Trend} = \frac{1}{N-1} \sum_{t=2}^{N} \mathds{1}\big(\text{sign}(\Delta \hat{y}_t) = \text{sign}(\Delta y_t)\big),
+\]
+where $\Delta \hat{y}_t = \hat{y}_t - \hat{y}_{t-1}$ and $\Delta y_t = y_t - y_{t-1}$, and $\mathds{1}(\cdot)$ denotes the indicator function.
+
+\subsubsection*{Results}
+Summary metrics for each device are reported in Table~\ref{tab:ece_results}.
+
+\begin{table}[H]
+\centering
+\caption{Relative evaluation metrics on unseen ECE devices}
+\label{tab:ece_results}
+\begin{tabular}{lcccc}
+\toprule
+Device & $n$ & Pearson & Spearman & Trend \\
+\midrule
+DEV3 & 7  & 0.81 & 0.82 & 0.50 \\
+DEV4 & 8  & 0.65 & 0.55 & 0.57 \\
+DEV7 & 11 & 0.24 & 0.23 & 0.70 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+DEV3 exhibits relatively strong correlation (Pearson $\approx 0.81$, Spearman $\approx 0.82$), but this result is based on only seven observations and a highly unstable signal with a large dynamic range. DEV4 provides a more stable signal, but correlation drops to a moderate level (Pearson $\approx 0.65$), and directional agreement remains weak. DEV7 shows very limited variability, leading to weak correlation (Pearson $\approx 0.24$), while the higher trend agreement is likely driven by the flatness of the signal rather than meaningful alignment.
+
+\subsubsection*{Discussion}
+The results indicate that the model exhibits some limited ability to track coarse wet and dry behavior at unseen locations. However, this conclusion is strongly constrained by the quality and quantity of the available data.
+
+Across all devices, the number of usable observations is extremely small (7-11 daily samples per device), which severely limits the statistical reliability of all reported metrics. At this sample size, even relatively high correlation values can be driven by a small number of points and should not be interpreted as strong evidence. In addition, the lack of calibration in the sensor measurements prevents any evaluation of absolute prediction accuracy, restricting the analysis to relative comparisons only.
+
+Device-specific characteristics further complicate interpretation. DEV3 shows high variability and produces seemingly strong correlation, but this is not defensible given the small sample size and unstable signal. DEV4 provides the most interpretable case, but the evidence remains limited to moderate correlation without consistent directional agreement. DEV7 exhibits minimal dynamic range, making it unsuitable for evaluating temporal behavior, as small fluctuations dominate the signal and can inflate directional agreement without reflecting meaningful alignment.
+
+Overall, this evaluation does not provide strong or conclusive evidence of model performance on unseen locations. Instead, it serves as a limited qualitative check, suggesting that the model may capture some coarse temporal structure, while highlighting that the current ECE dataset is insufficient for rigorous validation. The primary evaluation of model accuracy therefore remains based on calibrated station data.
