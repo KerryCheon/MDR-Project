@@ -1,5 +1,8 @@
 \subsubsection*{Temporal Characteristics}
 
+The following observations are based on the five Washington State training stations and reflect
+patterns identified during model development.
+
 Soil moisture exhibits a clear seasonal pattern across stations, with higher values during winter months and lower values during late summer, as shown in Figure~\ref{fig:climatology}. While this general structure is consistent, the magnitude and shape of the seasonal cycle vary across locations, reflecting differences in local conditions and baseline moisture levels.
 
 \begin{figure}[H]
@@ -28,7 +31,7 @@ In contrast, precipitation measurements and interpolated SMAP-derived soil moist
 
 \subsubsection*{Feature Behavior}
 
-Different feature groups exhibit distinct temporal characteristics. SMAP-derived soil moisture signals are relatively smooth and stable, capturing broad temporal trends with limited short-term variability. In contrast, optical features such as NDVI and Sentinel-2 bands show higher variability and occasional abrupt changes, as illustrated in Figure~\ref{fig:smap_optical}.
+Different feature groups exhibit distinct temporal characteristics. SMAP-derived soil moisture signals are relatively smooth and stable, capturing broad temporal trends with limited short-term variability. However, SMAP retrieval quality degrades in wet conditions, likely due to dense vegetation cover and standing water, which reduces its reliability precisely when moisture levels are highest. In contrast, optical features such as NDVI and Sentinel-2 bands show higher variability and occasional abrupt changes, as illustrated in Figure~\ref{fig:smap_optical}.
 
 \begin{figure}[H]
     \centering
@@ -43,8 +46,8 @@ Precipitation is highly intermittent, with sharp spikes corresponding to rainfal
 
 Several characteristics of the dataset introduce challenges for modeling. First, soil moisture dynamics are nonstationary, with behavior varying across time and moisture conditions. This is reflected in the presence of distinct regimes (dry, transition, wet) identified in the model evaluation.
 
-Second, residual analysis (Section~\ref{sec:temporal_eval}) shows clear heteroskedasticity, with error variance changing across the target range. This indicates that model performance is not uniform across moisture conditions and motivates regime-aware modeling approaches.
+Second, residual analysis (Section~\ref{sec:temporal_eval}) shows that prediction error is not uniform across moisture levels. Error variance is highest in the transition range (approximately 0.20--0.31~$\mathrm{m^3/m^3}$), where competing processes such as wetting, drainage, and capillary rise occur simultaneously and are difficult to separate. This indicates that a single global model cannot perform equally well across all moisture conditions and motivates regime-aware modeling approaches.
 
-In addition, variability across stations introduces spatial heterogeneity, with differences in baseline levels, dynamic range, and temporal patterns. Combined with structured missingness in key features, these factors make it difficult for a single global model to perform consistently across all conditions.
+In addition, the wet regime is underrepresented in the training data, comprising roughly 15\% of observations. This, combined with the degraded satellite signal quality at high moisture levels, limits how much the model can learn about wet-regime dynamics. Variability across stations further introduces differences in baseline levels, dynamic range, and temporal patterns, making it difficult for a single global model to perform consistently across all conditions.
 
 These observations motivate the use of temporal features, lag-based inputs, and regime-aware modeling strategies explored in subsequent sections.
