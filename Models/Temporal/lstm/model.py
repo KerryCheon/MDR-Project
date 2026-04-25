@@ -15,7 +15,7 @@ class LSTMRegressor(nn.Module):
         dropout: float = 0.3,
         proj_size: int = 64,
     ):
-        super().__init__()     
+        super().__init__()
         self.proj = nn.Sequential(
             nn.Linear(n_features, proj_size),
             nn.ReLU(),
