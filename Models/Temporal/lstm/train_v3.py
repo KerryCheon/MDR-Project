@@ -1,20 +1,17 @@
 """
-LSTM training pipeline — raw time-series approach.
+GRU training pipeline v3 — log-transformed G_ features.
 
-Instead of feeding all ~496 pre-computed lag/rolling features to the LSTM
-(which makes the sequence redundant), we use a small set of raw daily
-observations as the time-varying input and let the LSTM learn temporal
-patterns (lag effects, wetting/drying dynamics) from the sequence itself.
+Key innovation: apply np.log1p() to G_API, G_DSLR, G_rain_sum_3d,
+G_rain_sum_7d BEFORE the StandardScaler, to compress their extreme
+right-skew that previously caused catastrophic collapse (R^2=0.06).
 
-Static terrain/soil/location features are injected into the prediction head
-after temporal context has been extracted.
+Architecture: GRU (3 gates) instead of LSTM (4 gates) — fewer params,
+potentially better suited for small (~6500 sample) training set.
 
 Usage:
-    python -m Models.Temporal.lstm.train
-  or
-    python Models/Temporal/lstm/train.py
+    python -m Models.Temporal.lstm.train_v3
 
-Outputs (written to Models/Temporal/lstm/outputs/):
+Outputs (written to Models/Temporal/lstm/outputs_v3/):
     best_model.pt   — best checkpoint (lowest val RMSE)
     metrics.json    — final train / val / test metrics
     loss_curve.png  — training curve
@@ -38,18 +35,17 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
 
 from Models.Temporal.lstm.dataset import TARGET, build_datasets
-from Models.Temporal.lstm.model import LSTMRawSeries
+from Models.Temporal.lstm.model_v3 import GRURawSeries
 
 # ---------------------------------------------------------------------------
 # Data
 # ---------------------------------------------------------------------------
 DATA_DIR = REPO_ROOT / "Temporal/Pipeline/data/splits/derived_8.0"
-OUT_DIR  = Path(__file__).parent / "outputs"
+OUT_DIR  = Path(__file__).parent / "outputs_v3"
 OUT_DIR.mkdir(exist_ok=True)
 
-# Raw daily observations fed as the sequence to the LSTM.
-# The model must learn lag effects and temporal dynamics from these alone —
-# no pre-computed rolling/lag columns are included here.
+# Raw daily observations fed as the sequence to the GRU.
+# v3: adds G_API, G_DSLR, G_rain_sum_3d, G_rain_sum_7d (log-transformed).
 TIME_FEATURES = [
     # precipitation (no gaps — daily aggregation from Open-Meteo)
     "precip_mm",
@@ -65,17 +61,18 @@ TIME_FEATURES = [
     "E_SAR_ratio", "E_SAR_diff",
     # SMAP soil moisture estimates (AM + PM, imputed to daily)
     "SMAP_sm_am_interp", "SMAP_sm_pm_interp", "SMAP_ampm_diff_interp",
-    # SMAP observation masks — 1 = real satellite reading, 0 = imputed gap.
-    # SMAP is 20% missing even after pipeline imputation; the mask lets the
-    # LSTM discount median-filled timesteps and trust real observations.
+    # SMAP observation masks
     "SMAP_sm_am_interp_mask", "SMAP_sm_pm_interp_mask", "SMAP_sm_interp_mask",
     # Seasonality encoding (deterministic, no gaps)
     "sin_year", "cos_year",
+    # === NEW in v3: G_ features (log-transformed before scaling) ===
+    "G_API", "G_DSLR", "G_rain_sum_3d", "G_rain_sum_7d",
 ]
 
+# Columns to log-transform BEFORE imputing/scaling
+LOG_TRANSFORM_COLS = ["G_API", "G_DSLR", "G_rain_sum_3d", "G_rain_sum_7d"]
+
 # Fixed location/terrain/soil features — constant for a given station.
-# These are NOT repeated across the sequence; they are concatenated to the
-# LSTM context vector in the prediction head.
 STATIC_FEATURES = [
     "latitude", "longitude",
     "elev", "slope", "aspect",
@@ -87,12 +84,10 @@ STATIC_FEATURES = [
 # ---------------------------------------------------------------------------
 # Hyperparameters
 # ---------------------------------------------------------------------------
-SEQ_LEN          = 60     # look-back window (days) — longer context helps
-                           # the LSTM learn lag effects from raw observations
-TRAIN_STRIDE     = 1      # stride=1 maximises training samples; with only 5
-                           # stations stride=3 gives <2200 samples, too few
-TIME_PROJ_SIZE   = 32     # time feature projection size
-STATIC_PROJ_SIZE = 32     # static feature projection size
+SEQ_LEN          = 60
+TRAIN_STRIDE     = 1
+TIME_PROJ_SIZE   = 32
+STATIC_PROJ_SIZE = 32
 HIDDEN_SIZE      = 128
 NUM_LAYERS       = 2
 DROPOUT          = 0.3
@@ -103,7 +98,7 @@ HUBER_DELTA      = 0.05
 MAX_EPOCHS       = 300
 PATIENCE         = 60
 GRAD_CLIP        = 1.0
-TEMPORAL_BETA    = 0.2    # year-weighting decay (mirrors XGBoost scheme)
+TEMPORAL_BETA    = 0.2
 SEED             = 42
 
 
@@ -131,9 +126,20 @@ def _clean_inf(X: np.ndarray) -> np.ndarray:
     return X
 
 
+def _apply_log_transform(X: np.ndarray, all_feature_cols: list) -> np.ndarray:
+    """Apply log1p to LOG_TRANSFORM_COLS in-place (before imputing/scaling)."""
+    for col in LOG_TRANSFORM_COLS:
+        if col in all_feature_cols:
+            idx = all_feature_cols.index(col)
+            # Clamp negatives to 0 before log1p (these cols should be >= 0)
+            X[:, idx] = np.log1p(np.maximum(X[:, idx], 0))
+    return X
+
+
 def fit_preprocessors(train_df: pd.DataFrame, all_feature_cols: list):
-    """Fit imputer + scaler on train features only."""
+    """Fit imputer + scaler on train features only (with log transform)."""
     X = _clean_inf(train_df[all_feature_cols].to_numpy(dtype=np.float32))
+    X = _apply_log_transform(X, all_feature_cols)
     imputer = SimpleImputer(strategy="median")
     X = imputer.fit_transform(X)
     scaler = StandardScaler()
@@ -144,9 +150,10 @@ def fit_preprocessors(train_df: pd.DataFrame, all_feature_cols: list):
 def apply_preprocessors(df: pd.DataFrame, all_feature_cols: list, imputer, scaler) -> pd.DataFrame:
     out = df.copy()
     X = _clean_inf(out[all_feature_cols].to_numpy(dtype=np.float32))
+    X = _apply_log_transform(X, all_feature_cols)
     X = imputer.transform(X)
     X = scaler.transform(X)
-    X = np.clip(X, -5, 5)   # prevent outlier z-scores (G_API, rain sums reach 8-10σ)
+    X = np.clip(X, -5, 5)
     out[all_feature_cols] = X
     return out
 
@@ -194,7 +201,7 @@ def save_loss_curve(train_losses: list, val_losses: list):
         ax.plot(val_losses,   label="val loss")
         ax.set_xlabel("Epoch")
         ax.set_ylabel("Weighted Huber Loss")
-        ax.set_title("LSTM Raw-Series Training Curve")
+        ax.set_title("GRU v3 (log-transformed G_ features) Training Curve")
         ax.legend()
         fig.tight_layout()
         fig.savefig(OUT_DIR / "loss_curve.png", dpi=120)
@@ -220,9 +227,23 @@ def main():
     if missing:
         raise ValueError(f"Features missing from dataset: {missing}")
     print(f"[features] {len(TIME_FEATURES)} time  +  {len(STATIC_FEATURES)} static")
+    print(f"[log1p]    transforming: {LOG_TRANSFORM_COLS}")
 
     # Fit preprocessors on train split only
     imputer, scaler = fit_preprocessors(train_df, all_cols)
+
+    # Print post-transform stats for G_ features to verify log1p worked
+    X_check = _clean_inf(train_df[all_cols].to_numpy(dtype=np.float32))
+    for col in LOG_TRANSFORM_COLS:
+        idx = all_cols.index(col)
+        raw = X_check[:, idx]
+        raw_finite = raw[np.isfinite(raw)]
+        log_vals = np.log1p(np.maximum(raw_finite, 0))
+        print(f"  {col:20s}  raw max={np.nanmax(raw_finite):8.1f}  "
+              f"log1p max={np.max(log_vals):6.2f}  "
+              f"raw std={np.nanstd(raw_finite):8.2f}  "
+              f"log1p std={np.std(log_vals):6.2f}")
+
     train_df = apply_preprocessors(train_df, all_cols, imputer, scaler)
     val_df   = apply_preprocessors(val_df,   all_cols, imputer, scaler)
     test_df  = apply_preprocessors(test_df,  all_cols, imputer, scaler)
@@ -243,8 +264,8 @@ def main():
     loader_val   = DataLoader(ds_val,   batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=device.type == "cuda")
     loader_test  = DataLoader(ds_test,  batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=device.type == "cuda")
 
-    # Model
-    model = LSTMRawSeries(
+    # Model — GRU instead of LSTM
+    model = GRURawSeries(
         n_time=len(TIME_FEATURES),
         n_static=len(STATIC_FEATURES),
         hidden_size=HIDDEN_SIZE,
@@ -253,7 +274,7 @@ def main():
         time_proj_size=TIME_PROJ_SIZE,
         static_proj_size=STATIC_PROJ_SIZE,
     ).to(device)
-    print(f"[model] params={sum(p.numel() for p in model.parameters()):,}")
+    print(f"[model] GRURawSeries  params={sum(p.numel() for p in model.parameters()):,}")
 
     optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -336,7 +357,7 @@ def main():
         y_true, y_pred = predict_loader(model, loader, device)
         m = compute_metrics(y_true, y_pred)
         results[name] = m
-        print(f"  {name:5s}  R²={m['r2']:.4f}  RMSE={m['rmse']:.5f}  MAE={m['mae']:.5f}  bias={m['bias']:+.5f}  n={m['n']}")
+        print(f"  {name:5s}  R2={m['r2']:.4f}  RMSE={m['rmse']:.5f}  MAE={m['mae']:.5f}  bias={m['bias']:+.5f}  n={m['n']}")
 
     results["config"] = dict(
         seq_len=SEQ_LEN, train_stride=TRAIN_STRIDE,
@@ -345,7 +366,9 @@ def main():
         batch_size=BATCH_SIZE, lr=LR, weight_decay=WEIGHT_DECAY,
         huber_delta=HUBER_DELTA, temporal_beta=TEMPORAL_BETA,
         time_features=TIME_FEATURES, static_features=STATIC_FEATURES,
+        log_transform_cols=LOG_TRANSFORM_COLS,
         best_epoch=best_epoch, best_val_rmse=best_val_rmse,
+        model_type="GRU",
     )
 
     metrics_path = OUT_DIR / "metrics.json"

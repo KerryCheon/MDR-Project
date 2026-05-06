@@ -1,15 +1,16 @@
 """
-Sequence dataset for raw-series LSTM soil moisture prediction.
+Sequence dataset for the GRU->Transformer hybrid soil moisture regressor.
 
-Each sample contains:
+Mirrors the LSTM raw-series dataset: each sample contains
+
   x_time  : (seq_len, n_time)   float32  — raw daily observations (the sequence)
   x_static: (n_static,)         float32  — fixed location/terrain features
-  year    : scalar int32                  — calendar year of target day (for temporal weighting)
+  year    : scalar int32                  — calendar year of target day
   y       : scalar float32               — soil moisture at the last timestep
 
-The model receives x_time as a sequence and x_static as a fixed context;
-it must learn temporal patterns (lag effects, wetting/drying cycles) from
-x_time without any pre-computed rolling or lag features.
+The model receives x_time as a sequence (short-term dynamics go through the
+GRU, long-range context through the Transformer encoder) and x_static as a
+fixed context concatenated into the prediction head.
 """
 
 import numpy as np
@@ -69,7 +70,7 @@ def _build_sequences(
 
 
 class SoilMoistureDataset(Dataset):
-    """PyTorch Dataset for raw-series LSTM."""
+    """PyTorch Dataset for the GRU->Transformer hybrid."""
 
     def __init__(
         self,

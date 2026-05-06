@@ -1,15 +1,18 @@
 """
-Sequence dataset for raw-series LSTM soil moisture prediction.
+Sequence dataset for Transformer-encoder soil moisture prediction.
 
-Each sample contains:
-  x_time  : (seq_len, n_time)   float32  — raw daily observations (the sequence)
+Mirrors the LSTM dataset: each sample is
+  x_time  : (seq_len, n_time)   float32  — daily observations (the sequence)
   x_static: (n_static,)         float32  — fixed location/terrain features
-  year    : scalar int32                  — calendar year of target day (for temporal weighting)
+  year    : scalar int32                  — calendar year of target day
   y       : scalar float32               — soil moisture at the last timestep
 
-The model receives x_time as a sequence and x_static as a fixed context;
-it must learn temporal patterns (lag effects, wetting/drying cycles) from
-x_time without any pre-computed rolling or lag features.
+The Transformer consumes x_time via multi-head self-attention across the
+seq_len axis and concatenates the pooled representation with the static
+branch in the prediction head.  The only difference vs. the LSTM variant
+is that the time-feature list here includes a handful of engineered
+memory-state signals (API, DSLR, rolling rain sums) — with only ~7k
+training rows the encoder benefits from having those statistics pre-baked.
 """
 
 import numpy as np
@@ -27,18 +30,7 @@ def _build_sequences(
     seq_len: int,
     stride: int = 1,
 ):
-    """Build sequence samples from a single split dataframe.
-
-    Static features are constant within a station; we take them from the
-    first row of each station group.
-
-    Returns
-    -------
-    x_time  : (N, seq_len, n_time)   float32
-    x_static: (N, n_static)          float32
-    years   : (N,)                   int32
-    y_vals  : (N,)                   float32
-    """
+    """Build (x_time, x_static, years, y) arrays by walking each station in time order."""
     x_time_list, x_static_list, year_list, y_list = [], [], [], []
 
     for _station, grp in df.groupby("station_id", sort=False):
@@ -48,12 +40,11 @@ def _build_sequences(
         y    = grp[TARGET].to_numpy(dtype=np.float32)      # (T,)
         yrs  = pd.to_datetime(grp["date"]).dt.year.to_numpy(dtype=np.int32)
 
-        # static features: constant for the station — take first valid row
         static_row = grp[static_cols].iloc[0].to_numpy(dtype=np.float32)  # (n_static,)
 
         for i in range(seq_len, len(grp), stride):
-            x_time_list.append(X_t[i - seq_len : i])  # (seq_len, n_time)
-            x_static_list.append(static_row)           # (n_static,)
+            x_time_list.append(X_t[i - seq_len : i])
+            x_static_list.append(static_row)
             year_list.append(yrs[i])
             y_list.append(y[i])
 
@@ -61,23 +52,17 @@ def _build_sequences(
         raise ValueError("No sequences built — check seq_len vs. data length.")
 
     return (
-        np.stack(x_time_list,   axis=0).astype(np.float32),   # (N, seq_len, n_time)
-        np.stack(x_static_list, axis=0).astype(np.float32),   # (N, n_static)
-        np.array(year_list,  dtype=np.int32),                  # (N,)
-        np.array(y_list,     dtype=np.float32),                # (N,)
+        np.stack(x_time_list,   axis=0).astype(np.float32),
+        np.stack(x_static_list, axis=0).astype(np.float32),
+        np.array(year_list,  dtype=np.int32),
+        np.array(y_list,     dtype=np.float32),
     )
 
 
 class SoilMoistureDataset(Dataset):
-    """PyTorch Dataset for raw-series LSTM."""
+    """PyTorch Dataset wrapping pre-built sequence tensors."""
 
-    def __init__(
-        self,
-        x_time:   np.ndarray,   # (N, seq_len, n_time)
-        x_static: np.ndarray,   # (N, n_static)
-        years:    np.ndarray,   # (N,)
-        y:        np.ndarray,   # (N,)
-    ):
+    def __init__(self, x_time, x_static, years, y):
         self.x_time   = x_time
         self.x_static = x_static
         self.years    = years
@@ -99,16 +84,7 @@ def build_datasets(
     seq_len: int,
     train_stride: int = 1,
 ):
-    """Build (train, val, test) SoilMoistureDataset objects.
-
-    train_stride controls step between training sequences (stride=1 maximises
-    samples; larger values give more independent training samples).
-    Val/test always use stride=1 for complete coverage.
-
-    Returns
-    -------
-    ds_train, ds_val, ds_test : SoilMoistureDataset
-    """
+    """Build (train, val, test) SoilMoistureDataset objects.  Val/test use stride=1."""
     Xt_tr, Xs_tr, yr_tr, y_tr = _build_sequences(train_df, time_cols, static_cols, seq_len, stride=train_stride)
     Xt_va, Xs_va, yr_va, y_va = _build_sequences(val_df,   time_cols, static_cols, seq_len, stride=1)
     Xt_te, Xs_te, yr_te, y_te = _build_sequences(test_df,  time_cols, static_cols, seq_len, stride=1)

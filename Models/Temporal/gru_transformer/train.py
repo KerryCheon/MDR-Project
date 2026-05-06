@@ -1,20 +1,18 @@
 """
-LSTM training pipeline — raw time-series approach.
+GRU -> Transformer hybrid training pipeline for soil moisture prediction.
 
-Instead of feeding all ~496 pre-computed lag/rolling features to the LSTM
-(which makes the sequence redundant), we use a small set of raw daily
-observations as the time-varying input and let the LSTM learn temporal
-patterns (lag effects, wetting/drying dynamics) from the sequence itself.
-
-Static terrain/soil/location features are injected into the prediction head
-after temporal context has been extracted.
+The hybrid stacks a BiGRU (short-term dynamics) under a Transformer encoder
+(long-range self-attention), with SMAP surface-moisture signals and
+engineered precipitation features (G_API, G_DSLR, rolling rain sums) as
+strong predictors for the SSM -> 5 cm soil moisture chain described in
+literature study #3.
 
 Usage:
-    python -m Models.Temporal.lstm.train
+    python -m Models.Temporal.gru_transformer.train
   or
-    python Models/Temporal/lstm/train.py
+    python Models/Temporal/gru_transformer/train.py
 
-Outputs (written to Models/Temporal/lstm/outputs/):
+Outputs (written to Models/Temporal/gru_transformer/outputs/):
     best_model.pt   — best checkpoint (lowest val RMSE)
     metrics.json    — final train / val / test metrics
     loss_curve.png  — training curve
@@ -37,8 +35,8 @@ from torch.utils.data import DataLoader
 REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
 
-from Models.Temporal.lstm.dataset import TARGET, build_datasets
-from Models.Temporal.lstm.model import LSTMRawSeries
+from Models.Temporal.gru_transformer.dataset import TARGET, build_datasets
+from Models.Temporal.gru_transformer.model import GRUTransformerHybrid
 
 # ---------------------------------------------------------------------------
 # Data
@@ -47,9 +45,11 @@ DATA_DIR = REPO_ROOT / "Temporal/Pipeline/data/splits/derived_8.0"
 OUT_DIR  = Path(__file__).parent / "outputs"
 OUT_DIR.mkdir(exist_ok=True)
 
-# Raw daily observations fed as the sequence to the LSTM.
-# The model must learn lag effects and temporal dynamics from these alone —
-# no pre-computed rolling/lag columns are included here.
+# Raw daily observations fed as the sequence to the hybrid.  The set extends
+# the LSTM baseline with engineered precipitation indices (G_API, G_DSLR,
+# rolling rain sums) — study #8 argues these give small-data models a cheap
+# shortcut to learn persistence, which complements the SMAP SSM signal the
+# GRU->Transformer paper relies on for the RZSM chain.
 TIME_FEATURES = [
     # precipitation (no gaps — daily aggregation from Open-Meteo)
     "precip_mm",
@@ -63,19 +63,23 @@ TIME_FEATURES = [
     "F_NDVI", "F_NDMI", "F_MSI",
     # SAR-derived cross-pol indices (computed per observation, not lagged)
     "E_SAR_ratio", "E_SAR_diff",
-    # SMAP soil moisture estimates (AM + PM, imputed to daily)
+    # SMAP soil moisture estimates (AM + PM, imputed to daily) — the SSM
+    # signal the paper pushes through to RZSM via attention.
     "SMAP_sm_am_interp", "SMAP_sm_pm_interp", "SMAP_ampm_diff_interp",
     # SMAP observation masks — 1 = real satellite reading, 0 = imputed gap.
-    # SMAP is 20% missing even after pipeline imputation; the mask lets the
-    # LSTM discount median-filled timesteps and trust real observations.
     "SMAP_sm_am_interp_mask", "SMAP_sm_pm_interp_mask", "SMAP_sm_interp_mask",
+    # Engineered precipitation / persistence indices (antecedent precip.,
+    # days-since-last-rain, rolling rain sums) — cheap persistence features
+    # that help small-data models per study #8.
+    "G_API", "G_DSLR",
+    "G_rain_sum_3d", "G_rain_sum_7d", "G_rain_sum_30d",
     # Seasonality encoding (deterministic, no gaps)
     "sin_year", "cos_year",
 ]
 
-# Fixed location/terrain/soil features — constant for a given station.
-# These are NOT repeated across the sequence; they are concatenated to the
-# LSTM context vector in the prediction head.
+# Fixed location/terrain/soil features — constant for a given station.  Same
+# set as the LSTM baseline; these bypass the sequence axis and are
+# concatenated to the pooled context in the prediction head.
 STATIC_FEATURES = [
     "latitude", "longitude",
     "elev", "slope", "aspect",
@@ -87,24 +91,27 @@ STATIC_FEATURES = [
 # ---------------------------------------------------------------------------
 # Hyperparameters
 # ---------------------------------------------------------------------------
-SEQ_LEN          = 60     # look-back window (days) — longer context helps
-                           # the LSTM learn lag effects from raw observations
-TRAIN_STRIDE     = 1      # stride=1 maximises training samples; with only 5
-                           # stations stride=3 gives <2200 samples, too few
-TIME_PROJ_SIZE   = 32     # time feature projection size
-STATIC_PROJ_SIZE = 32     # static feature projection size
-HIDDEN_SIZE      = 128
-NUM_LAYERS       = 2
-DROPOUT          = 0.3
-BATCH_SIZE       = 256
-LR               = 1e-4
-WEIGHT_DECAY     = 3e-3
-HUBER_DELTA      = 0.05
-MAX_EPOCHS       = 300
-PATIENCE         = 60
-GRAD_CLIP        = 1.0
-TEMPORAL_BETA    = 0.2    # year-weighting decay (mirrors XGBoost scheme)
-SEED             = 42
+SEQ_LEN            = 90       # Transformers benefit from longer context;
+                              # 90 days covers a full seasonal drydown/wetup
+TRAIN_STRIDE       = 1        # maximise training samples (only 5 stations)
+D_MODEL            = 96       # shared hidden size across GRU + Transformer
+GRU_LAYERS         = 2
+GRU_BIDIRECTIONAL  = True
+TRANSFORMER_LAYERS = 2
+NHEAD              = 4
+DIM_FEEDFORWARD    = 256
+STATIC_PROJ_SIZE   = 32
+HEAD_HIDDEN        = 64
+DROPOUT            = 0.25
+BATCH_SIZE         = 128
+LR                 = 2e-4
+WEIGHT_DECAY       = 5e-3
+HUBER_DELTA        = 0.05
+MAX_EPOCHS         = 200
+PATIENCE           = 40
+GRAD_CLIP          = 1.0
+TEMPORAL_BETA      = 0.2      # year-weighting decay (mirrors XGBoost scheme)
+SEED               = 42
 
 
 # ---------------------------------------------------------------------------
@@ -146,7 +153,7 @@ def apply_preprocessors(df: pd.DataFrame, all_feature_cols: list, imputer, scale
     X = _clean_inf(out[all_feature_cols].to_numpy(dtype=np.float32))
     X = imputer.transform(X)
     X = scaler.transform(X)
-    X = np.clip(X, -5, 5)   # prevent outlier z-scores (G_API, rain sums reach 8-10σ)
+    X = np.clip(X, -5, 5)   # prevent outlier z-scores (G_API, rain sums reach 8-10 sigma)
     out[all_feature_cols] = X
     return out
 
@@ -194,7 +201,7 @@ def save_loss_curve(train_losses: list, val_losses: list):
         ax.plot(val_losses,   label="val loss")
         ax.set_xlabel("Epoch")
         ax.set_ylabel("Weighted Huber Loss")
-        ax.set_title("LSTM Raw-Series Training Curve")
+        ax.set_title("GRU->Transformer Hybrid Training Curve")
         ax.legend()
         fig.tight_layout()
         fig.savefig(OUT_DIR / "loss_curve.png", dpi=120)
@@ -244,20 +251,25 @@ def main():
     loader_test  = DataLoader(ds_test,  batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=device.type == "cuda")
 
     # Model
-    model = LSTMRawSeries(
+    model = GRUTransformerHybrid(
         n_time=len(TIME_FEATURES),
         n_static=len(STATIC_FEATURES),
-        hidden_size=HIDDEN_SIZE,
-        num_layers=NUM_LAYERS,
+        seq_len=SEQ_LEN,
+        d_model=D_MODEL,
+        gru_layers=GRU_LAYERS,
+        gru_bidirectional=GRU_BIDIRECTIONAL,
+        transformer_layers=TRANSFORMER_LAYERS,
+        nhead=NHEAD,
+        dim_feedforward=DIM_FEEDFORWARD,
         dropout=DROPOUT,
-        time_proj_size=TIME_PROJ_SIZE,
         static_proj_size=STATIC_PROJ_SIZE,
+        head_hidden=HEAD_HIDDEN,
     ).to(device)
     print(f"[model] params={sum(p.numel() for p in model.parameters()):,}")
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode="min", factor=0.5, patience=25, min_lr=1e-6
+        optimizer, mode="min", factor=0.5, patience=15, min_lr=1e-6
     )
     criterion = nn.HuberLoss(delta=HUBER_DELTA, reduction="none")
 
@@ -268,9 +280,10 @@ def main():
     train_losses, val_losses = [], []
 
     print(
-        f"\n[train] seq_len={SEQ_LEN}  stride={TRAIN_STRIDE}  "
-        f"time_proj={TIME_PROJ_SIZE}  static_proj={STATIC_PROJ_SIZE}  "
-        f"hidden={HIDDEN_SIZE}  layers={NUM_LAYERS}  dropout={DROPOUT}"
+        f"\n[train] seq_len={SEQ_LEN}  stride={TRAIN_STRIDE}  d_model={D_MODEL}  "
+        f"gru_layers={GRU_LAYERS}  bidir={GRU_BIDIRECTIONAL}  "
+        f"tf_layers={TRANSFORMER_LAYERS}  nhead={NHEAD}  ff={DIM_FEEDFORWARD}  "
+        f"dropout={DROPOUT}"
     )
     print(f"        batch={BATCH_SIZE}  lr={LR}  wd={WEIGHT_DECAY}  "
           f"max_epochs={MAX_EPOCHS}  patience={PATIENCE}\n")
@@ -315,7 +328,7 @@ def main():
         else:
             patience_ctr += 1
 
-        if epoch % 10 == 0 or epoch == 1:
+        if epoch % 5 == 0 or epoch == 1:
             lr_now = optimizer.param_groups[0]["lr"]
             print(
                 f"  epoch {epoch:3d}/{MAX_EPOCHS}  "
@@ -336,12 +349,14 @@ def main():
         y_true, y_pred = predict_loader(model, loader, device)
         m = compute_metrics(y_true, y_pred)
         results[name] = m
-        print(f"  {name:5s}  R²={m['r2']:.4f}  RMSE={m['rmse']:.5f}  MAE={m['mae']:.5f}  bias={m['bias']:+.5f}  n={m['n']}")
+        print(f"  {name:5s}  R2={m['r2']:.4f}  RMSE={m['rmse']:.5f}  MAE={m['mae']:.5f}  bias={m['bias']:+.5f}  n={m['n']}")
 
     results["config"] = dict(
         seq_len=SEQ_LEN, train_stride=TRAIN_STRIDE,
-        time_proj_size=TIME_PROJ_SIZE, static_proj_size=STATIC_PROJ_SIZE,
-        hidden_size=HIDDEN_SIZE, num_layers=NUM_LAYERS, dropout=DROPOUT,
+        d_model=D_MODEL, gru_layers=GRU_LAYERS, gru_bidirectional=GRU_BIDIRECTIONAL,
+        transformer_layers=TRANSFORMER_LAYERS, nhead=NHEAD,
+        dim_feedforward=DIM_FEEDFORWARD, dropout=DROPOUT,
+        static_proj_size=STATIC_PROJ_SIZE, head_hidden=HEAD_HIDDEN,
         batch_size=BATCH_SIZE, lr=LR, weight_decay=WEIGHT_DECAY,
         huber_delta=HUBER_DELTA, temporal_beta=TEMPORAL_BETA,
         time_features=TIME_FEATURES, static_features=STATIC_FEATURES,
