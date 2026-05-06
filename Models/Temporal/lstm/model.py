@@ -39,12 +39,8 @@ class LSTMRawSeries(nn.Module):
         static_proj_size: int = 32,
     ):
         super().__init__()
-
-        # --- time feature projection ---
-        # small bottleneck so LSTM sees a compact, mixed representation
-        self.time_proj = nn.Sequential(
-            nn.Linear(n_time, time_proj_size),
-            nn.LayerNorm(time_proj_size),
+        self.proj = nn.Sequential(
+            nn.Linear(n_features, proj_size),
             nn.ReLU(),
             nn.Dropout(dropout),
         )

@@ -1271,6 +1271,51 @@ Moved forward with `derived_8.0` and tested a fresh feature set pass.
 - Nice run, but still a touch behind `v18.3`
 - 2023 slice stayed strong (`R^2 = 0.802718`, slope `0.919413`)
 
+### v19.3.0: **VALID (Base Model Benchmark)**
+
+**Description:**
+Forked `v19.2` into a benchmark notebook that compares `XGBoost`, `CatBoost`, `LightGBM`, and `Random Forest` as base models on the same `derived_8.0` weighted train+val to held-out test-station setup. All four models trained on year-weighted train+val, evaluated on the held-out test station (N = 4,016).
+
+#### Results
+
+**Full test set (N = 4,016)**
+
+| Model         | $R^2$   | MAE     | RMSE    | ubRMSE  | Bias     | MedAE   | P90 AE  |
+|---------------|---------|---------|---------|---------|----------|---------|---------|
+| Random Forest | **0.8309** | 0.02824 | **0.03873** | **0.03871** | **−0.00112** | 0.02138 | 0.05975 |
+| CatBoost      | 0.8242  | 0.02946 | 0.03948 | 0.03923 | −0.00442 | 0.02293 | 0.05975 |
+| XGBoost       | 0.8224  | **0.02832** | 0.03968 | 0.03956 | −0.00320 | **0.02032** | 0.06152 |
+| LightGBM      | 0.8067  | 0.03044 | 0.04140 | 0.04124 | −0.00370 | 0.02305 | 0.06301 |
+
+**2023 slice diagnostics (N = 1,266)**
+
+| Model         | $R^2_{2023}$ | Slope  | Intercept |
+|---------------|--------------|--------|-----------|
+| Random Forest | **0.8398**   | 0.9428 | 0.01376   |
+| CatBoost      | 0.8305       | **0.9567** | **0.00765** |
+| LightGBM      | 0.8031       | 0.9278 | 0.01287   |
+| XGBoost       | 0.8027       | 0.9194 | 0.01692   |
+
+**Top-5 consensus features (mean normalized importance across all four models)**
+
+| Feature                      | Consensus Importance |
+|------------------------------|----------------------|
+| `V_rollmin_LST_modis_kobs30` | 0.1270               |
+| `K_aspect_cos`               | 0.0714               |
+| `C_lag_LST_modis_kobs30`     | 0.0479               |
+| `D_sin_DOY`                  | 0.0422               |
+| `SMAP_sm_pm_interp_ema02`    | 0.0407               |
+
+**Comments:**
+
+- **Random Forest wins overall** on $R^2$, RMSE, ubRMSE, and bias; XGBoost edges it on MAE and MedAE.
+- All four models cluster tightly between $R^2 = 0.807$ and $R^2 = 0.831$ — no single model dominates by a large margin, which is a useful signal for ensembling.
+- LightGBM trails the other three on every metric at this configuration and is the weakest base learner in this setup.
+- The 2023 slice ranking mirrors the full-test ranking: RF leads, CatBoost second, XGB and LGB tied.
+- CatBoost shows the best calibration on the 2023 slice (slope closest to 1.0 at 0.957, smallest intercept).
+- Rolling-minimum LST (`V_rollmin_LST_modis_kobs30`) is the dominant signal by a wide margin; terrain aspect (`K_aspect_cos`) is unexpectedly strong as the second-ranked consensus feature.
+- Artifacts exported: `base_model_benchmark_metrics.csv`, `base_model_benchmark_predictions.csv`, `base_model_benchmark_2023_slice.csv`, `base_model_feature_importance_top30.csv`.
+
 ---
 
 ## v20.x Series: Variance Checks
