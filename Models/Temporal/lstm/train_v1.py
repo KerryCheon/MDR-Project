@@ -1,23 +1,23 @@
 """
-LSTM training pipeline — raw time-series approach.
+LSTM training pipeline — v1: CosineAnnealing + Wider Model.
 
-Instead of feeding all ~496 pre-computed lag/rolling features to the LSTM
-(which makes the sequence redundant), we use a small set of raw daily
-observations as the time-varying input and let the LSTM learn temporal
-patterns (lag effects, wetting/drying dynamics) from the sequence itself.
-
-Static terrain/soil/location features are injected into the prediction head
-after temporal context has been extracted.
+Changes from baseline train.py:
+  1. Replace ReduceLROnPlateau with CosineAnnealingWarmRestarts(T_0=50, T_mult=2, eta_min=1e-6)
+  2. Add linear warmup for first 10 epochs (scale LR from 0 to LR linearly)
+  3. Increase HIDDEN_SIZE to 256 (from 128)
+  4. Increase TIME_PROJ_SIZE to 48 (from 32)
+  5. Increase MAX_EPOCHS to 400, PATIENCE to 80
+  6. Outputs saved to Models/Temporal/lstm/outputs_v1/
 
 Usage:
-    python -m Models.Temporal.lstm.train
+    python -m Models.Temporal.lstm.train_v1
   or
-    python Models/Temporal/lstm/train.py
+    python Models/Temporal/lstm/train_v1.py
 
-Outputs (written to Models/Temporal/lstm/outputs/):
-    best_model.pt   — best checkpoint (lowest val RMSE)
-    metrics.json    — final train / val / test metrics
-    loss_curve.png  — training curve
+Outputs (written to Models/Temporal/lstm/outputs_v1/):
+    best_model.pt   -- best checkpoint (lowest val RMSE)
+    metrics.json    -- final train / val / test metrics
+    loss_curve.png  -- training curve
 """
 
 import json
@@ -44,14 +44,12 @@ from Models.Temporal.lstm.model import LSTMRawSeries
 # Data
 # ---------------------------------------------------------------------------
 DATA_DIR = REPO_ROOT / "Temporal/Pipeline/data/splits/derived_8.0"
-OUT_DIR  = Path(__file__).parent / "outputs"
+OUT_DIR  = Path(__file__).parent / "outputs_v1"
 OUT_DIR.mkdir(exist_ok=True)
 
 # Raw daily observations fed as the sequence to the LSTM.
-# The model must learn lag effects and temporal dynamics from these alone —
-# no pre-computed rolling/lag columns are included here.
 TIME_FEATURES = [
-    # precipitation (no gaps — daily aggregation from Open-Meteo)
+    # precipitation (no gaps -- daily aggregation from Open-Meteo)
     "precip_mm",
     # Sentinel-1 SAR backscatter (imputed to daily)
     "s1_vv", "s1_vh",
@@ -65,17 +63,13 @@ TIME_FEATURES = [
     "E_SAR_ratio", "E_SAR_diff",
     # SMAP soil moisture estimates (AM + PM, imputed to daily)
     "SMAP_sm_am_interp", "SMAP_sm_pm_interp", "SMAP_ampm_diff_interp",
-    # SMAP observation masks — 1 = real satellite reading, 0 = imputed gap.
-    # SMAP is 20% missing even after pipeline imputation; the mask lets the
-    # LSTM discount median-filled timesteps and trust real observations.
+    # SMAP observation masks
     "SMAP_sm_am_interp_mask", "SMAP_sm_pm_interp_mask", "SMAP_sm_interp_mask",
     # Seasonality encoding (deterministic, no gaps)
     "sin_year", "cos_year",
 ]
 
-# Fixed location/terrain/soil features — constant for a given station.
-# These are NOT repeated across the sequence; they are concatenated to the
-# LSTM context vector in the prediction head.
+# Fixed location/terrain/soil features
 STATIC_FEATURES = [
     "latitude", "longitude",
     "elev", "slope", "aspect",
@@ -87,24 +81,28 @@ STATIC_FEATURES = [
 # ---------------------------------------------------------------------------
 # Hyperparameters
 # ---------------------------------------------------------------------------
-SEQ_LEN          = 60     # look-back window (days) — longer context helps
-                           # the LSTM learn lag effects from raw observations
-TRAIN_STRIDE     = 1      # stride=1 maximises training samples; with only 5
-                           # stations stride=3 gives <2200 samples, too few
-TIME_PROJ_SIZE   = 32     # time feature projection size
-STATIC_PROJ_SIZE = 32     # static feature projection size
-HIDDEN_SIZE      = 128
-NUM_LAYERS       = 2
-DROPOUT          = 0.3
-BATCH_SIZE       = 256
-LR               = 1e-4
-WEIGHT_DECAY     = 3e-3
-HUBER_DELTA      = 0.05
-MAX_EPOCHS       = 300
-PATIENCE         = 60
-GRAD_CLIP        = 1.0
-TEMPORAL_BETA    = 0.2    # year-weighting decay (mirrors XGBoost scheme)
-SEED             = 42
+SEQ_LEN          = 60     # look-back window (days) -- unchanged
+TRAIN_STRIDE     = 1      # stride=1 maximises training samples
+TIME_PROJ_SIZE   = 48     # v1: increased from 32
+STATIC_PROJ_SIZE = 32     # unchanged
+HIDDEN_SIZE      = 256    # v1: increased from 128
+NUM_LAYERS       = 2      # unchanged
+DROPOUT          = 0.3    # unchanged
+BATCH_SIZE       = 256    # unchanged
+LR               = 1e-4   # unchanged
+WEIGHT_DECAY     = 3e-3   # unchanged
+HUBER_DELTA      = 0.05   # unchanged
+MAX_EPOCHS       = 400    # v1: increased from 300
+PATIENCE         = 80     # v1: increased from 60
+GRAD_CLIP        = 1.0    # unchanged
+TEMPORAL_BETA    = 0.2    # unchanged
+SEED             = 42     # unchanged
+
+# v1: Cosine annealing + warmup schedule params
+WARMUP_EPOCHS    = 10     # linear warmup from 0 to LR
+T_0              = 50     # initial cosine annealing period
+T_MULT           = 2      # period multiplier after each restart
+ETA_MIN          = 1e-6   # minimum LR for cosine annealing
 
 
 # ---------------------------------------------------------------------------
@@ -146,7 +144,7 @@ def apply_preprocessors(df: pd.DataFrame, all_feature_cols: list, imputer, scale
     X = _clean_inf(out[all_feature_cols].to_numpy(dtype=np.float32))
     X = imputer.transform(X)
     X = scaler.transform(X)
-    X = np.clip(X, -5, 5)   # prevent outlier z-scores (G_API, rain sums reach 8-10σ)
+    X = np.clip(X, -5, 5)   # prevent outlier z-scores
     out[all_feature_cols] = X
     return out
 
@@ -184,24 +182,50 @@ def predict_loader(model, loader, device) -> tuple:
     return np.concatenate(all_true), np.concatenate(all_pred)
 
 
-def save_loss_curve(train_losses: list, val_losses: list):
+def save_loss_curve(train_losses: list, val_losses: list, lr_history: list):
     try:
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(figsize=(8, 4))
-        ax.plot(train_losses, label="train loss")
-        ax.plot(val_losses,   label="val loss")
-        ax.set_xlabel("Epoch")
-        ax.set_ylabel("Weighted Huber Loss")
-        ax.set_title("LSTM Raw-Series Training Curve")
-        ax.legend()
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 7), gridspec_kw={"height_ratios": [3, 1]})
+
+        # Loss curve
+        ax1.plot(train_losses, label="train loss", alpha=0.8)
+        ax1.plot(val_losses,   label="val loss", alpha=0.8)
+        ax1.set_xlabel("Epoch")
+        ax1.set_ylabel("Weighted Huber Loss / Val MSE")
+        ax1.set_title("LSTM v1 — CosineAnnealing + Wider Model")
+        ax1.legend()
+        ax1.grid(True, alpha=0.3)
+
+        # LR schedule
+        ax2.plot(lr_history, color="tab:red", alpha=0.8)
+        ax2.set_xlabel("Epoch")
+        ax2.set_ylabel("Learning Rate")
+        ax2.set_yscale("log")
+        ax2.grid(True, alpha=0.3)
+
         fig.tight_layout()
         fig.savefig(OUT_DIR / "loss_curve.png", dpi=120)
         plt.close(fig)
         print(f"[plot] saved -> {OUT_DIR / 'loss_curve.png'}")
     except Exception as e:
         print(f"[plot] skipped ({e})")
+
+
+# ---------------------------------------------------------------------------
+# LR schedule: linear warmup then CosineAnnealingWarmRestarts
+# ---------------------------------------------------------------------------
+def get_lr_for_epoch(epoch: int, base_lr: float) -> float:
+    """Compute the target LR for a given epoch (1-indexed).
+
+    During warmup (epoch <= WARMUP_EPOCHS): linear ramp from 0 to base_lr.
+    After warmup: CosineAnnealingWarmRestarts handles it, but we need this
+    for the warmup override.
+    """
+    if epoch <= WARMUP_EPOCHS:
+        return base_lr * (epoch / WARMUP_EPOCHS)
+    return None  # let cosine scheduler handle it
 
 
 # ---------------------------------------------------------------------------
@@ -243,7 +267,7 @@ def main():
     loader_val   = DataLoader(ds_val,   batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=device.type == "cuda")
     loader_test  = DataLoader(ds_test,  batch_size=BATCH_SIZE, shuffle=False, num_workers=0, pin_memory=device.type == "cuda")
 
-    # Model
+    # Model — v1: wider (hidden=256, time_proj=48)
     model = LSTMRawSeries(
         n_time=len(TIME_FEATURES),
         n_static=len(STATIC_FEATURES),
@@ -256,16 +280,20 @@ def main():
     print(f"[model] params={sum(p.numel() for p in model.parameters()):,}")
 
     optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode="min", factor=0.5, patience=25, min_lr=1e-6
+
+    # v1: CosineAnnealingWarmRestarts instead of ReduceLROnPlateau
+    # T_0=50 means first cosine cycle is 50 epochs, then 100, then 200, ...
+    cosine_scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
+        optimizer, T_0=T_0, T_mult=T_MULT, eta_min=ETA_MIN
     )
+
     criterion = nn.HuberLoss(delta=HUBER_DELTA, reduction="none")
 
     # Training loop
     best_val_rmse = math.inf
     best_epoch    = -1
     patience_ctr  = 0
-    train_losses, val_losses = [], []
+    train_losses, val_losses, lr_history = [], [], []
 
     print(
         f"\n[train] seq_len={SEQ_LEN}  stride={TRAIN_STRIDE}  "
@@ -273,9 +301,24 @@ def main():
         f"hidden={HIDDEN_SIZE}  layers={NUM_LAYERS}  dropout={DROPOUT}"
     )
     print(f"        batch={BATCH_SIZE}  lr={LR}  wd={WEIGHT_DECAY}  "
-          f"max_epochs={MAX_EPOCHS}  patience={PATIENCE}\n")
+          f"max_epochs={MAX_EPOCHS}  patience={PATIENCE}")
+    print(f"        [v1] warmup={WARMUP_EPOCHS}ep  cosine T_0={T_0} T_mult={T_MULT} eta_min={ETA_MIN}\n")
 
     for epoch in range(1, MAX_EPOCHS + 1):
+        # --- LR schedule: warmup override ---
+        warmup_lr = get_lr_for_epoch(epoch, LR)
+        if warmup_lr is not None:
+            # During warmup: override LR directly
+            for pg in optimizer.param_groups:
+                pg["lr"] = warmup_lr
+        else:
+            # After warmup: step the cosine scheduler
+            # Adjust epoch offset so cosine starts counting from 0 after warmup
+            cosine_scheduler.step(epoch - WARMUP_EPOCHS - 1)
+
+        lr_now = optimizer.param_groups[0]["lr"]
+        lr_history.append(lr_now)
+
         model.train()
         running_loss = 0.0
 
@@ -303,7 +346,6 @@ def main():
         val_mse  = float(np.mean((y_true_val - y_pred_val) ** 2))
         val_rmse = math.sqrt(val_mse)
 
-        scheduler.step(val_mse)
         train_losses.append(train_loss)
         val_losses.append(val_mse)
 
@@ -316,11 +358,11 @@ def main():
             patience_ctr += 1
 
         if epoch % 10 == 0 or epoch == 1:
-            lr_now = optimizer.param_groups[0]["lr"]
             print(
                 f"  epoch {epoch:3d}/{MAX_EPOCHS}  "
                 f"train_loss={train_loss:.5f}  val_rmse={val_rmse:.5f}  "
-                f"best={best_val_rmse:.5f} (ep{best_epoch})  lr={lr_now:.2e}"
+                f"best={best_val_rmse:.5f} (ep{best_epoch})  lr={lr_now:.2e}  "
+                f"patience={patience_ctr}/{PATIENCE}"
             )
 
         if patience_ctr >= PATIENCE:
@@ -336,7 +378,7 @@ def main():
         y_true, y_pred = predict_loader(model, loader, device)
         m = compute_metrics(y_true, y_pred)
         results[name] = m
-        print(f"  {name:5s}  R²={m['r2']:.4f}  RMSE={m['rmse']:.5f}  MAE={m['mae']:.5f}  bias={m['bias']:+.5f}  n={m['n']}")
+        print(f"  {name:5s}  R2={m['r2']:.4f}  RMSE={m['rmse']:.5f}  MAE={m['mae']:.5f}  bias={m['bias']:+.5f}  n={m['n']}")
 
     results["config"] = dict(
         seq_len=SEQ_LEN, train_stride=TRAIN_STRIDE,
@@ -344,8 +386,10 @@ def main():
         hidden_size=HIDDEN_SIZE, num_layers=NUM_LAYERS, dropout=DROPOUT,
         batch_size=BATCH_SIZE, lr=LR, weight_decay=WEIGHT_DECAY,
         huber_delta=HUBER_DELTA, temporal_beta=TEMPORAL_BETA,
+        warmup_epochs=WARMUP_EPOCHS, T_0=T_0, T_mult=T_MULT, eta_min=ETA_MIN,
         time_features=TIME_FEATURES, static_features=STATIC_FEATURES,
         best_epoch=best_epoch, best_val_rmse=best_val_rmse,
+        variant="v1_cosine_annealing_wider",
     )
 
     metrics_path = OUT_DIR / "metrics.json"
@@ -354,7 +398,7 @@ def main():
     print(f"\n[saved] metrics -> {metrics_path}")
     print(f"[saved] model   -> {OUT_DIR / 'best_model.pt'}")
 
-    save_loss_curve(train_losses, val_losses)
+    save_loss_curve(train_losses, val_losses, lr_history)
 
 
 if __name__ == "__main__":
