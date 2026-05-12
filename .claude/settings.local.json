@@ -15,7 +15,8 @@
       "Bash(xargs grep -l \"uscrn_.*\\\\.txt\\\\|CRND0103\\\\|ISMN.*format\")",
       "Bash(xargs grep -l \"USCRN_Arco\\\\|SCAN_Conrad\\\\|derived_9\")",
       "Bash(xargs grep -l \"Data_separate\\\\|USCRN.*csv\\\\|separate_files\")",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(Get-ChildItem \"c:\\\\Users\\\\kerry\\\\MDR-Project\\\\Temporal\\\\Pipeline\\\\data\\\\processed\" -Recurse -Filter \"final.csv\")"
     ]
   }
 }
