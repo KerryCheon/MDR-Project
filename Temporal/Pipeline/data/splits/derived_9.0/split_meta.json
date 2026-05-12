@@ -1,0 +1,107 @@
+{
+  "source_split": "derived_8.0",
+  "note": "derived_9.0 appends downloaded Washington SNOTEL rows to derived_8.0. When available, the newer ISMN SNOTEL download is used for target soil moisture and static HWSD soil fields. New rows include station/date/location/target/precipitation-derived fields where available; satellite, SMAP, terrain slope/aspect, and LIA features still require upstream generation.",
+  "train_years": [
+    2017,
+    2018,
+    2019,
+    2020
+  ],
+  "val_years": [
+    2021,
+    2022
+  ],
+  "test_years": [
+    2023,
+    2024,
+    2025
+  ],
+  "schema_source": "/Users/kerrycheon/PycharmProjects/MDR-Project/Temporal/Pipeline/data/splits/derived_8.0/train.csv",
+  "new_station_rows_total": 49561,
+  "new_station_rows_by_split": {
+    "train": 22494,
+    "val": 10917,
+    "test": 16150
+  },
+  "new_station_rows_by_station": {
+    "CayusePass_WA": 1899,
+    "Paradise_WA": 1965,
+    "BurntMountain_WA": 1753,
+    "BeaverPass_WA_990": 1379,
+    "HartsPass_WA_515": 1103,
+    "MartenRidge_WA_999": 1617,
+    "MFNooksack_WA_1011": 142,
+    "RainyPass_WA_711": 1675,
+    "USCRN_Arco_17_SW": 2063,
+    "USCRN_Coos_Bay_8_SW": 585,
+    "USCRN_Corvallis_10_SSW": 2362,
+    "USCRN_Darrington_21_NNE": 2073,
+    "USCRN_Dillon_18_WSW": 1667,
+    "USCRN_John_Day_35_WNW": 2564,
+    "USCRN_Murphy_10_W": 2332,
+    "USCRN_Quinault_4_NE": 3006,
+    "USCRN_Riley_10_WSW": 2531,
+    "USCRN_Spokane_17_SSW": 2539,
+    "USCRN_St_Mary_1_SSW": 1554,
+    "SCAN_ConradAgRc": 1785,
+    "SCAN_CookFarmFieldD": 1792,
+    "SCAN_JordanValleyCwma": 1935,
+    "SCAN_Lind_1": 2848,
+    "SCAN_OrchardRangeSite": 2400,
+    "SCAN_TableMountain": 1983,
+    "SCAN_Violett": 2009
+  },
+  "extra_ismn_networks": {
+    "networks": [
+      "USCRN",
+      "SCAN"
+    ],
+    "station_count": 18,
+    "station_ids": [
+      "USCRN_Arco_17_SW",
+      "USCRN_Coos_Bay_8_SW",
+      "USCRN_Corvallis_10_SSW",
+      "USCRN_Darrington_21_NNE",
+      "USCRN_Dillon_18_WSW",
+      "USCRN_John_Day_35_WNW",
+      "USCRN_Murphy_10_W",
+      "USCRN_Quinault_4_NE",
+      "USCRN_Riley_10_WSW",
+      "USCRN_Spokane_17_SSW",
+      "USCRN_St_Mary_1_SSW",
+      "SCAN_ConradAgRc",
+      "SCAN_CookFarmFieldD",
+      "SCAN_JordanValleyCwma",
+      "SCAN_Lind_1",
+      "SCAN_OrchardRangeSite",
+      "SCAN_TableMountain",
+      "SCAN_Violett"
+    ],
+    "source": "/Users/kerrycheon/Downloads/Data_separate_files_header_20140520_20260506_12662_qCD7_20260508"
+  },
+  "new_station_feature_status": {
+    "available": [
+      "station_id",
+      "date",
+      "longitude",
+      "latitude",
+      "elev",
+      "DOY",
+      "D_sin_DOY",
+      "D_cos_DOY",
+      "soil_moisture_5cm",
+      "precip_mm when available",
+      "G_API/G_DSLR/G_rain_sum_* when precip_mm is available",
+      "year/year_frac/sin_year/cos_year/API_x_year",
+      "J_* HWSD soil fraction columns when static_variables.csv is available"
+    ],
+    "pending_upstream_generation": [
+      "satellite bands",
+      "SMAP",
+      "terrain slope/aspect features",
+      "LIA features",
+      "derived features that depend on missing remote-sensing inputs"
+    ]
+  },
+  "ismn_snotel_source": "/Users/kerrycheon/Downloads/Data_separate_files_header_20140520_20260506_12662_qCD7_20260508/SNOTEL"
+}

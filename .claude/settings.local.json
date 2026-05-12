@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\kerry\\\\MDR-Project\" -Recurse -Filter \"*README*\" -File)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(xargs grep -l \"derived_9\\\\|derived_8\\\\|SMAP\")",
+      "Bash(grep -E \"\\\\.py$\")",
+      "Bash(xargs grep -l \"derived_9\\\\|split_meta\")",
+      "Bash(xargs grep -l \"latitude\\\\|longitude\\\\|elevation\\\\|lat\\\\|lon\")",
+      "Bash(grep -E \"\\\\.\\(csv|json|txt\\)$\")",
+      "Bash(grep -n \"^  [a-z].*:$\" \"c:/Users/kerry/MDR-Project/Temporal/Pipeline/config.yaml\")",
+      "Bash(find \"/mnt/c/Users/kerry/MDR-Project/Temporal/Pipeline/data/raw\" -maxdepth 1 -type d 2>/dev/null | head -20)",
+      "Read(//mnt/c/Users/kerry/MDR-Project/Temporal/Pipeline/data/**)",
+      "Bash(xargs grep -l \"ISMN\\\\|\\\\.stm\\\\|Data_separate\")",
+      "Bash(xargs grep -l \"uscrn_.*\\\\.txt\\\\|CRND0103\\\\|ISMN.*format\")",
+      "Bash(xargs grep -l \"USCRN_Arco\\\\|SCAN_Conrad\\\\|derived_9\")",
+      "Bash(xargs grep -l \"Data_separate\\\\|USCRN.*csv\\\\|separate_files\")",
+      "Bash(python -c ' *)",
+      "Bash(Get-ChildItem \"c:\\\\Users\\\\kerry\\\\MDR-Project\\\\Temporal\\\\Pipeline\\\\data\\\\processed\" -Recurse -Filter \"final.csv\")"
+    ]
+  }
+}
