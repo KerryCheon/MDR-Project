@@ -41,8 +41,8 @@ from torch.utils.data import DataLoader
 REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT))
 
-from Models.Temporal.transformer.dataset import TARGET, build_datasets
-from Models.Temporal.transformer.model import TransformerSoilMoisture
+from Models.Temporal.v0.transformer.dataset import TARGET, build_datasets
+from Models.Temporal.v0.transformer.model import TransformerSoilMoisture
 
 # ---------------------------------------------------------------------------
 # Data
