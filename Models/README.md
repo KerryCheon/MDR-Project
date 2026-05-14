@@ -1,4 +1,21 @@
-# Results (Test $R^2$)
+# models/
+
+Model artifacts, training notebooks, and version history for the MDR soil moisture project.
+
+## Structure
+
+- `Temporal/v0–v24/` — iterative XGBoost model versions; each contains `model.json`, `run_metadata.json`, and evaluation metrics
+- `TemporalSpatial/` — temporal-spatial transfer experiments
+- `Spatial/` — standalone spatial analysis scripts and processed data
+- `Archive/` — pre-v20 best models and evaluation notebooks
+
+Training notebooks are in `notebooks/training/` (curated best versions) and `notebooks/training/archive/` (full history).
+Evaluation figures are in `results/figures/`.
+The feature selection framework lives in `Modeling/` (package: `soilmoist-feature-lab`).
+
+---
+
+## Version History — Results (Test $R^2$)
 
 | Version     | Status    |                        Model / Variant | Test $R^2$ |
 | ----------- | --------- | -------------------------------------: | -----------: |
@@ -69,7 +86,16 @@
 | v18.3.0     | VALID     |                     Drift (no weights) |      0.82186 |
 | v18.3.0     | VALID     |                       Drift (weighted) |      0.82503 |
 | v19.2.0     | VALID     |                     Drift (no weights) |      0.81418 |
-| v19.2.0     | VALID     |                       Drift (weighted) |      0.82239 |
+| **v19.2.0**    | **VALID**     |                       **Drift (weighted)** |      **0.82239** |
 | v20.1.0     | VALID     |                     Drift (no weights) |      0.81418 |
 | v20.1.0     | VALID     |                       Drift (weighted) |      0.82239 |
 | **v20.3.0** | **VALID** |                    **Dry regime model** |   **0.85860** |
+| v21.1.0     | VALID     |     Predicted Soft Gating (width=0.08) |      0.82222 |
+| v21.1.0     | VALID     |                      Classifier Gating |      0.78306 |
+| v21.2.0     | VALID     |       Predicted Soft Gating (re-tuned) |      0.80965 |
+| v21.3.0     | VALID     |  Soft Gating + Base Fallback (b1=0.05) |      0.82151 |
+| v21.4.0     | VALID     |    Base-Dominant Ensemble (soft blend) |      0.82563 |
+| v22.3.0     | INVALID   |      3-regime weight blend (impl. bug) |     -0.62114 |
+| v23.1.0     | VALID     |            XGB baseline (model survey) |      0.82563 |
+| v23.1.0     | VALID     |             Gradient Boosting (survey) |      0.80083 |
+| v24.0.0     | VALID     |   Spatial gen. (orig. 5-station split) |      0.83280 |

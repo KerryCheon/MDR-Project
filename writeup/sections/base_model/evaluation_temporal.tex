@@ -1,0 +1,78 @@
+\subsubsection*{Evaluation}
+\label{sec:temporal_eval}
+
+\subsubsection*{Evaluation Setup}
+Model performance was evaluated on a held-out test set covering the period January 2023 through December 2025. A strict temporal holdout was used, ensuring that all test observations occur after the training period.
+
+Performance was assessed using multiple complementary metrics, including coefficient of determination ($R^2$), mean absolute error (MAE), root mean squared error (RMSE), unbiased RMSE (ubRMSE), bias, and quantile-based error statistics such as the 90th percentile absolute error.
+
+\subsubsection*{Overall Performance}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+$R^2$ & 0.822 \\
+MAE & 0.0283 \\
+RMSE & 0.0397 \\
+ubRMSE & 0.0396 \\
+Bias & -0.0032 \\
+P90 $|$error$|$ & 0.0615 \\
+\bottomrule
+\end{tabular}
+\caption{Performance of the weighted base model on the test set (2023-2025).}
+\end{table}
+
+These results indicate that the model captures a substantial portion of the variability in soil moisture while maintaining low absolute and squared error.
+
+\subsubsection*{Effect of Temporal Weighting}
+To assess the impact of temporal weighting, the weighted model was compared to an unweighted baseline trained with identical hyperparameters.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../results/figures/writeup/w_vs_no_w_model.png}
+    \caption{Comparison of predictions from weighted and unweighted models on a representative station. The weighted model shows slightly improved alignment with observed dynamics, although the overall residual structure remains largely unchanged.}
+    \label{fig:weighted_vs_unweighted}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Unweighted} & \textbf{Weighted} \\
+\midrule
+$R^2$ & 0.814 & 0.822 \\
+MAE & 0.0304 & 0.0283 \\
+RMSE & 0.0406 & 0.0397 \\
+ubRMSE & 0.0405 & 0.0396 \\
+Bias & -0.0028 & -0.0032 \\
+P90 $|$error$|$ & 0.0634 & 0.0615 \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of unweighted and temporally weighted models.}
+\end{table}
+
+Temporal weighting leads to consistent improvements across most metrics, including higher $R^2$ and lower error values. This suggests that emphasizing more recent observations improves generalization to future data, likely due to nonstationarity in environmental conditions.
+
+\subsubsection*{Residual Analysis and Heteroskedasticity}
+Residual diagnostics revealed that model errors are not uniformly distributed across the target range. Both Breusch-Pagan and White tests indicate statistically significant heteroskedasticity (p-values $\ll 0.001$), confirming that error variance depends on soil moisture magnitude.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{../results/figures/writeup/res_vs_obs.png}
+    \caption{Residuals as a function of observed soil moisture. Error variance increases with moisture level, indicating heteroskedasticity.}
+    \label{fig:residuals_vs_obs}
+\end{figure}
+
+Visual inspection further shows structured residual behavior, with increased variance in specific regions of the target space. In particular, prediction errors become larger and more dispersed at higher moisture levels, indicating that the model struggles more in mid-to-wet regimes.
+
+This suggests that a single global model may not fully capture the variability of the underlying physical processes, particularly across different moisture conditions.
+
+\subsubsection*{Regime-Based Performance}
+To further investigate error structure, the test data were partitioned into quantile-based bins according to the true soil moisture values, and model performance was evaluated within each bin.
+
+The results show substantial variation across regimes. In particular, mid-range moisture conditions exhibit significantly worse fit compared to very dry conditions, with some bins producing strongly negative $R^2$ values.
+
+This pattern indicates that the modeling task is inherently regime-dependent, with different physical processes dominating across moisture ranges. These findings directly motivate the exploration of regime-specific modeling approaches in the subsequent section.

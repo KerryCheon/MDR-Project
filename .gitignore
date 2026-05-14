@@ -51,3 +51,9 @@ htmlcov/
 Models/**/model_*
 
 moe_sandbox/
+
+# raw and processed data (large, not versioned)
+data/raw/
+data/processed/
+Temporal/Pipeline/data/raw/
+Temporal/Pipeline/data/processed/

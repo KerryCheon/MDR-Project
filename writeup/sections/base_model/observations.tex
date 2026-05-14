@@ -1,0 +1,53 @@
+\subsubsection*{Temporal Characteristics}
+
+The following observations are based on the five Washington State training stations and reflect
+patterns identified during model development.
+
+Soil moisture exhibits a clear seasonal pattern across stations, with higher values during winter months and lower values during late summer, as shown in Figure~\ref{fig:climatology}. While this general structure is consistent, the magnitude and shape of the seasonal cycle vary across locations, reflecting differences in local conditions and baseline moisture levels.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../results/figures/writeup/monthly_climatology.png}
+    \caption{Monthly soil moisture climatology across selected stations.}
+    \label{fig:climatology}
+\end{figure}
+
+At the daily scale, soil moisture exhibits strong temporal persistence, with relatively smooth evolution over time compared to the intermittency of precipitation. As shown in Figure~\ref{fig:darrington_time}, increases in soil moisture often follow rainfall events, while subsequent drying occurs more gradually over extended periods. This results in a characteristic pattern of relatively rapid increases followed by slower decay.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../results/figures/writeup/darrington_sm_vs_time.png}
+    \caption{Daily soil moisture time series at the Darrington station.}
+    \label{fig:darrington_time}
+\end{figure}
+
+These dynamics indicate that soil moisture is influenced by both short-term forcing (precipitation) and longer-term persistence, leading to lagged and smoothed responses. This behavior supports the use of temporal features such as lagged inputs and rolling statistics in the modeling pipeline.
+
+\subsubsection*{Missingness Patterns}
+
+Feature availability varies across both time and data sources. Satellite-derived variables, particularly optical features, exhibit structured gaps likely driven by revisit frequency and environmental conditions such as cloud cover. These gaps occur in contiguous temporal segments rather than randomly, introducing discontinuities in the feature space.
+
+In contrast, precipitation measurements and interpolated SMAP-derived soil moisture features are more consistently available over time. This results in uneven information density across features, requiring the model to rely more heavily on stable signals when optical data are unavailable.
+
+\subsubsection*{Feature Behavior}
+
+Different feature groups exhibit distinct temporal characteristics. SMAP-derived soil moisture signals are relatively smooth and stable, capturing broad temporal trends with limited short-term variability. However, SMAP retrieval quality degrades in wet conditions, likely due to dense vegetation cover and standing water, which reduces its reliability precisely when moisture levels are highest. In contrast, optical features such as NDVI and Sentinel-2 bands show higher variability and occasional abrupt changes, as illustrated in Figure~\ref{fig:smap_optical}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../results/figures/writeup/smap_vs_optical.png}
+    \caption{Comparison of SMAP-derived soil moisture and optical features.}
+    \label{fig:smap_optical}
+\end{figure}
+
+Precipitation is highly intermittent, with sharp spikes corresponding to rainfall events. These events are associated with increases in soil moisture, followed by gradual declines over time. The resulting lagged relationship between precipitation and soil moisture is reflected in the engineered temporal features used in the model.
+
+\subsubsection*{Dataset Challenges}
+
+Several characteristics of the dataset introduce challenges for modeling. First, soil moisture dynamics are nonstationary, with behavior varying across time and moisture conditions. This is reflected in the presence of distinct regimes (dry, transition, wet) identified in the model evaluation.
+
+Second, residual analysis (Section~\ref{sec:temporal_eval}) shows that prediction error is not uniform across moisture levels. Error variance is highest in the transition range (approximately 0.20--0.31~$\mathrm{m^3/m^3}$), where competing processes such as wetting, drainage, and capillary rise occur simultaneously and are difficult to separate. This indicates that a single global model cannot perform equally well across all moisture conditions and motivates regime-aware modeling approaches.
+
+In addition, the wet regime is underrepresented in the training data, comprising roughly 15\% of observations. This, combined with the degraded satellite signal quality at high moisture levels, limits how much the model can learn about wet-regime dynamics. Variability across stations further introduces differences in baseline levels, dynamic range, and temporal patterns, making it difficult for a single global model to perform consistently across all conditions.
+
+These observations motivate the use of temporal features, lag-based inputs, and regime-aware modeling strategies explored in subsequent sections.

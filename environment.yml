@@ -1,0 +1,26 @@
+name: mdr
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - numpy
+  - pandas
+  - scikit-learn
+  - xgboost
+  - matplotlib
+  - seaborn
+  - jupyter
+  - notebook
+  - ipykernel
+  - pyyaml
+  - requests
+  - tqdm
+  - scipy
+  - pip:
+    - shap
+    - earthengine-api
+    - openmeteo-requests
+    - requests-cache
+    - retry-requests
