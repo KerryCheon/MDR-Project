@@ -1,0 +1,90 @@
+{
+  "train": {
+    "r2": 0.758293628692627,
+    "rmse": 0.04894047975540161,
+    "mae": 0.03733978047966957,
+    "bias": -0.003223147476091981,
+    "n": 6568
+  },
+  "val": {
+    "r2": 0.7341300249099731,
+    "rmse": 0.05456027016043663,
+    "mae": 0.043291401118040085,
+    "bias": -0.013504975475370884,
+    "n": 2480
+  },
+  "test": {
+    "r2": 0.6210393905639648,
+    "rmse": 0.058708690106868744,
+    "mae": 0.045494187623262405,
+    "bias": -0.019538886845111847,
+    "n": 3716
+  },
+  "config": {
+    "seq_len": 60,
+    "train_stride": 1,
+    "time_proj_size": 32,
+    "static_proj_size": 32,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.3,
+    "batch_size": 256,
+    "lr": 0.0001,
+    "weight_decay": 0.003,
+    "huber_delta": 0.05,
+    "temporal_beta": 0.2,
+    "time_features": [
+      "precip_mm",
+      "s1_vv",
+      "s1_vh",
+      "s2_b4",
+      "s2_b8",
+      "s2_b11",
+      "s2_b12",
+      "LST_modis",
+      "F_NDVI",
+      "F_NDMI",
+      "F_MSI",
+      "E_SAR_ratio",
+      "E_SAR_diff",
+      "SMAP_sm_am_interp",
+      "SMAP_sm_pm_interp",
+      "SMAP_ampm_diff_interp",
+      "SMAP_sm_am_interp_mask",
+      "SMAP_sm_pm_interp_mask",
+      "SMAP_sm_interp_mask",
+      "sin_year",
+      "cos_year",
+      "G_API",
+      "G_DSLR",
+      "G_rain_sum_3d",
+      "G_rain_sum_7d"
+    ],
+    "static_features": [
+      "latitude",
+      "longitude",
+      "elev",
+      "slope",
+      "aspect",
+      "K_sand_clay_ratio_b0",
+      "K_clay_plus_sand_b0",
+      "K_slope_sin",
+      "K_slope_cos",
+      "K_aspect_sin",
+      "K_aspect_cos",
+      "lia_mean_asc_deg",
+      "lia_std_asc_deg",
+      "lia_mean_desc_deg",
+      "lia_std_desc_deg"
+    ],
+    "log_transform_cols": [
+      "G_API",
+      "G_DSLR",
+      "G_rain_sum_3d",
+      "G_rain_sum_7d"
+    ],
+    "best_epoch": 90,
+    "best_val_rmse": 0.054560270641604694,
+    "model_type": "GRU"
+  }
+}
