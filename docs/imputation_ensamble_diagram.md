@@ -73,10 +73,13 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    %% Slide-optimized styling
-    classDef io fill:#2d3436,color:#fff,stroke:#000,stroke-width:1px
-    classDef step fill:#f8f9fa,color:#2d3436,stroke:#adb5bd,stroke-width:2px
-    classDef decision fill:#fff3cd,color:#856404,stroke:#ffe8a1,stroke-width:2px
+    %% Global Configuration
+    classDef default font-family:Arial,font-size:20px;
+
+    %% Slide-optimized styling with increased font sizes
+    classDef io fill:#2d3436,color:#fff,stroke:#000,stroke-width:1px,font-size:22px,font-weight:bold
+    classDef step fill:#f8f9fa,color:#2d3436,stroke:#adb5bd,stroke-width:2px,font-size:20px
+    classDef decision fill:#fff3cd,color:#856404,stroke:#ffe8a1,stroke-width:2px,font-size:20px
 
     IN(["Input: DataFrame"]):::io
 
