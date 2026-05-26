@@ -4,8 +4,7 @@
 			"path": "."
 		},
 		{
-			"name": "Temporal Models",
-			"path": "Models/Temporal"
+			"path": "Models"
 		}
 	],
 	"settings": {}

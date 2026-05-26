@@ -36,6 +36,8 @@ Output per station: `Temporal/Pipeline/data/processed/<station>/final.csv`
 
 ## Notebooks
 Experiment notebooks at `Models/Temporal/v*/` and `Models/TemporalSpatial/v*/`. If user mentions something like "v20" or "v22", check those directories for the relevant notebook.
+There're are many models and new models are being added, so please list all the versions in the `Models/Temporal/` directory to know what versions are available.
+There might be nested directories like `v20/v20.1/....ipynb`, or in `v24/....ipynb` directory, so check those as well.
 
 ## Important Notes
 - Do not modify existing versioned notebooks (e.g., `v9`, `v10`) — create new versions for new experiments to preserve history.
