@@ -10,6 +10,7 @@ Spatio-temporal soil moisture modeling research project.
 | `Modeling/` | Feature selection lab (`soilmoist-fl`): MI → ElasticNet → Stability → Model eval |
 | `Models/Temporal/` | Temporal model experiment notebooks (v20, v21, etc.) |
 | `Models/TemporalSpatial/` | Combined temporal-spatial experiment notebooks (v1.x) |
+| `Models/TemporalDelta/` | Temporal modeling notebooks focus on delta changes (v1.x) |
 | `Spatial/` | Spatial modeling work in progress (satellite retrieval, data prep scripts) |
 | `WriteUp/` | LaTeX paper draft |
 
@@ -38,6 +39,11 @@ Output per station: `Temporal/Pipeline/data/processed/<station>/final.csv`
 Experiment notebooks at `Models/Temporal/v*/` and `Models/TemporalSpatial/v*/`. If user mentions something like "v20" or "v22", check those directories for the relevant notebook.
 There're are many models and new models are being added, so please list all the versions in the `Models/Temporal/` directory to know what versions are available.
 There might be nested directories like `v20/v20.1/....ipynb`, or in `v24/....ipynb` directory, so check those as well.
+
+### Running Notebooks
+#### Local
+1. Install project dependencies `uv sync --extra cu128` from the project root. Remove `--extra cu128` if you don't have a compatible NVIDIA GPU.
+2. Start Jupyter Lab with `uv run --with jupyter jupyter lab` from `Models/` directory.
 
 ## Important Notes
 - Do not modify existing versioned notebooks (e.g., `v9`, `v10`) — create new versions for new experiments to preserve history.
