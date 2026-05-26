@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "jupyter-server-mcp>=0.2.1",
     "matplotlib>=3.10.9",
     "pandas>=3.0.3",
     "scikit-learn>=1.8.0",
@@ -17,6 +18,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ipykernel>=7.2.0",
+    "jupyter-ai-tools>=0.5.1",
+    "jupyterlab-commands-toolkit>=0.1.6",
 ]
 
 [project.optional-dependencies]

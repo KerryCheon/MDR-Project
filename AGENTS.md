@@ -43,7 +43,7 @@ There might be nested directories like `v20/v20.1/....ipynb`, or in `v24/....ipy
 ### Running Notebooks
 #### Local
 1. Install project dependencies `uv sync --extra cu128` from the project root. Remove `--extra cu128` if you don't have a compatible NVIDIA GPU.
-2. Start Jupyter Lab with `uv run --with jupyter jupyter lab` from `Models/` directory.
+2. Start Jupyter Lab with `JUPYTER_CONFIG_PATH="jupyter_config" uv run --with jupyter jupyter lab` from `Models/` directory.
 
 ## Important Notes
 - Do not modify existing versioned notebooks (e.g., `v9`, `v10`) — create new versions for new experiments to preserve history.
