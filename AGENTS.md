@@ -39,7 +39,9 @@ Output per station: `Temporal/Pipeline/data/processed/<station>/final.csv`
 Experiment notebooks at `Models/Temporal/v*/` and `Models/TemporalSpatial/v*/`. If user mentions something like "v20" or "v22", check those directories for the relevant notebook.
 There're are many models and new models are being added, so please list all the versions in the `Models/Temporal/` directory to know what versions are available.
 There might be nested directories like `v20/v20.1/....ipynb`, or in `v24/....ipynb` directory, so check those as well.
+### Interacting with Notebooks
+Use `jupyter-mcp` for reading, running and modifying notebooks rather than manipulating the string content directly, to ensure proper formatting and metadata handling. The Jupyter Kernel is started automatically with the MCP server, so you can connect to it using the `jupyter-mcp` tool then the kernel is up and running.
 
 ## Important Notes
 - Do not modify existing versioned notebooks (e.g., `v9`, `v10`) — create new versions for new experiments to preserve history.
-- Use `jupyter-mcp` for reading, running and modifying notebooks rather than manipulating the string content directly, to ensure proper formatting and metadata handling.
+- Must use the MCP interface for notebook interactions to maintain formatting and metadata integrity. Never read the notebook file directly. 
