@@ -3,25 +3,5 @@
     "jpserver_extensions": {
       "jupyter_server_mcp": true
     }
-  },
-  "MCPExtensionApp": {
-    "mcp_name": "My Jupyter MCP Server",
-    "mcp_port": 0,
-    "mcp_tools": [
-      "jupyter_ai_tools.toolkits.file_system:read",
-      "jupyter_ai_tools.toolkits.file_system:write",
-      "jupyter_ai_tools.toolkits.file_system:edit",
-      "jupyter_ai_tools.toolkits.file_system:ls",
-      "jupyter_ai_tools.toolkits.file_system:glob",
-      "jupyter_ai_tools.toolkits.notebook:read_notebook",
-      "jupyter_ai_tools.toolkits.notebook:edit_cell",
-      "jupyter_ai_tools.toolkits.notebook:add_cell",
-      "jupyter_ai_tools.toolkits.notebook:delete_cell",
-      "jupyter_ai_tools.toolkits.notebook:create_notebook",
-      "os:getcwd",
-      "json:dumps",
-      "time:time",
-      "platform:system"
-    ]
   }
 }

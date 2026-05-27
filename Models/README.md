@@ -73,3 +73,46 @@
 | v20.1.0     | VALID     |                     Drift (no weights) |      0.81418 |
 | v20.1.0     | VALID     |                       Drift (weighted) |      0.82239 |
 | **v20.3.0** | **VALID** |                    **Dry regime model** |   **0.85860** |
+
+## Running Notebooks
+### Local
+1. Install project dependencies `uv sync --extra cu128` from the project root. Remove `--extra cu128` if you don't have a compatible NVIDIA GPU.
+2. Start Jupyter Lab with from `Models/` directory
+    ```bash
+    JUPYTER_CONFIG_PATH="jupyter_config" \
+    uv run --with jupyter jupyter lab --ServerApp.token='' \
+      --MCPExtensionApp.mcp_port=3001 \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:read" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:write" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:edit" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:ls" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:glob" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:read_notebook" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:edit_cell" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:add_cell" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:delete_cell" \
+      --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:create_notebook" \
+      --MCPExtensionApp.mcp_tools="os:getcwd" \
+      --MCPExtensionApp.mcp_tools="json:dumps" \
+      --MCPExtensionApp.mcp_tools="time:time" \
+      --MCPExtensionApp.mcp_tools="platform:system"
+    ```
+    PowerShell
+    ```powershell
+    $env:JUPYTER_CONFIG_PATH="jupyter_config"; uv run --with jupyter jupyter lab --ServerApp.token='' `
+    --MCPExtensionApp.mcp_port=3001 `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:read" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:write" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:edit" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:ls" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.file_system:glob" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:read_notebook" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:edit_cell" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:add_cell" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:delete_cell" `
+    --MCPExtensionApp.mcp_tools="jupyter_ai_tools.toolkits.notebook:create_notebook" `
+    --MCPExtensionApp.mcp_tools="os:getcwd" `
+    --MCPExtensionApp.mcp_tools="json:dumps" `
+    --MCPExtensionApp.mcp_tools="time:time" `
+    --MCPExtensionApp.mcp_tools="platform:system"`
+    ```

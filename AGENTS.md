@@ -40,10 +40,6 @@ Experiment notebooks at `Models/Temporal/v*/` and `Models/TemporalSpatial/v*/`. 
 There're are many models and new models are being added, so please list all the versions in the `Models/Temporal/` directory to know what versions are available.
 There might be nested directories like `v20/v20.1/....ipynb`, or in `v24/....ipynb` directory, so check those as well.
 
-### Running Notebooks
-#### Local
-1. Install project dependencies `uv sync --extra cu128` from the project root. Remove `--extra cu128` if you don't have a compatible NVIDIA GPU.
-2. Start Jupyter Lab with `JUPYTER_CONFIG_PATH="jupyter_config" uv run --with jupyter jupyter lab` from `Models/` directory.
-
 ## Important Notes
 - Do not modify existing versioned notebooks (e.g., `v9`, `v10`) — create new versions for new experiments to preserve history.
+- Use `jupyter-mcp` for reading, running and modifying notebooks rather than manipulating the string content directly, to ensure proper formatting and metadata handling.
