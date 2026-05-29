@@ -40,8 +40,17 @@ Experiment notebooks at `Models/Temporal/v*/` and `Models/TemporalSpatial/v*/`. 
 There're are many models and new models are being added, so please list all the versions in the `Models/Temporal/` directory to know what versions are available.
 There might be nested directories like `v20/v20.1/....ipynb`, or in `v24/....ipynb` directory, so check those as well.
 ### Interacting with Notebooks
-Use `jupyter-mcp` for reading, running and modifying notebooks rather than manipulating the string content directly, to ensure proper formatting and metadata handling. The Jupyter Kernel is started automatically with the MCP server, so you can connect to it using the `jupyter-mcp` tool then the kernel is up and running.
+Use `jupyter-mcp-server` for reading, running and modifying notebooks rather than manipulating the string content directly, to ensure proper formatting and metadata handling.
+The MCP interface is automatically configured to connect to a local Jupyter Lab. Reuse existing kernel sessions if possible (use `list_kernels` command), avoid starting multiple Jupyter kernels to prevent date out of sync issues.
+#### Steps when use MCP to interact with notebooks:
+1. `list_kernels` to see if there's an existing kernel session, remember the `id` of the kernel you want to use.
+2. `use_notebook` with the notebook path and kernel id to connect to the notebook. This is essentially open the notebook you want to use.
+#### Notes on MCP Commands
+- `list_files`: it starts from the `Models/` directory, not the project root, so the path should be relative to `Models/` (e.g., `Temporal/v20/v20.1/model.ipynb`). Also since there are many notebooks, increase the `limit` parameter to 100 when listing from `/` to ensure you see all notebooks.
+- `read_notebook` only works for notebooks you have `use_notebook`d. If it doesn't works, remind user to check is jupyter-collaboration extension is enabled.
+- Never run `connect_to_jupyter` because it requires a token and can cause confusion.
 
 ## Important Notes
+- This is a team project with many contributors, so ensure configs are well-documented.
 - Do not modify existing versioned notebooks (e.g., `v9`, `v10`) — create new versions for new experiments to preserve history.
 - Must use the MCP interface for notebook interactions to maintain formatting and metadata integrity. Never read the notebook file directly. 
