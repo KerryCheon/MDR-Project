@@ -1,7 +1,7 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
-type: article
-title: "Enhancing Spatial and Temporal Coverage of Soil Moisture Estimation Using Satellite and Weather-Driven Machine Learning"
+message: "If you use this work, please cite it as below."
+type: software
+title: "MDR-TS Soil Moisture Estimation"
 authors:
   - family-names: Balkovec
     given-names: Jakob
@@ -27,7 +27,33 @@ authors:
   - family-names: Li
     given-names: Lin
     affiliation: "Seattle University"
-status: "in-press"
-journal: "IEEE Xplore"
-year: 2026
-doi: TODO
+preferred-citation:
+  type: conference-paper
+  title: "Enhancing Spatial and Temporal Coverage of Soil Moisture Estimation Using Satellite and Weather-Driven Machine Learning"
+  authors:
+    - family-names: Balkovec
+      given-names: Jakob
+      affiliation: "Seattle University"
+    - family-names: Cheon
+      given-names: Kerry
+      affiliation: "Seattle University"
+    - family-names: Kirov-Tomilov
+      given-names: Daniel
+      affiliation: "Seattle University"
+    - family-names: Lo
+      given-names: Wai Nam
+      affiliation: "Seattle University"
+    - family-names: Philipose
+      given-names: Gina
+      affiliation: "Seattle University"
+    - family-names: Zhou
+      given-names: Xin
+      affiliation: "Seattle University"
+    - family-names: Abraham
+      given-names: Shiny
+      affiliation: "Seattle University"
+    - family-names: Li
+      given-names: Lin
+      affiliation: "Seattle University"
+  year: 2026
+  collection-title: "IEEE AIIoT 2026"
