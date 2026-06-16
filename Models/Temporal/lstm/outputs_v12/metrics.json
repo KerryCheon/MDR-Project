@@ -1,0 +1,183 @@
+{
+  "train": {
+    "r2": 0.9039962291717529,
+    "rmse": 0.031016649678349495,
+    "ubrmse": 0.030940791592001915,
+    "bias": 0.002167964354157448,
+    "mae": 0.02194024622440338,
+    "q90": 0.04673374071717262,
+    "n": 6818
+  },
+  "val": {
+    "r2": 0.8252739906311035,
+    "rmse": 0.043949518352746964,
+    "ubrmse": 0.039347097277641296,
+    "bias": -0.01957974024116993,
+    "mae": 0.03266148269176483,
+    "q90": 0.07630328088998795,
+    "n": 2680
+  },
+  "test": {
+    "r2": 0.7304068803787231,
+    "rmse": 0.04891664907336235,
+    "ubrmse": 0.047310810536146164,
+    "bias": -0.012430842034518719,
+    "mae": 0.03726472705602646,
+    "q90": 0.07887999713420868,
+    "n": 3966
+  },
+  "grid_search": [
+    {
+      "cfg": {
+        "hidden_size": 40,
+        "dropout": 0.35,
+        "lr": 0.001
+      },
+      "best_val_rmse": 0.04371687005106824,
+      "best_epoch": 16,
+      "n_params": 37322
+    },
+    {
+      "cfg": {
+        "hidden_size": 40,
+        "dropout": 0.25,
+        "lr": 0.001
+      },
+      "best_val_rmse": 0.04389427187969357,
+      "best_epoch": 9,
+      "n_params": 37322
+    },
+    {
+      "cfg": {
+        "hidden_size": 56,
+        "dropout": 0.25,
+        "lr": 0.001
+      },
+      "best_val_rmse": 0.044223585171930264,
+      "best_epoch": 24,
+      "n_params": 64298
+    },
+    {
+      "cfg": {
+        "hidden_size": 40,
+        "dropout": 0.35,
+        "lr": 0.0005
+      },
+      "best_val_rmse": 0.0443721466884883,
+      "best_epoch": 30,
+      "n_params": 37322
+    },
+    {
+      "cfg": {
+        "hidden_size": 56,
+        "dropout": 0.25,
+        "lr": 0.0005
+      },
+      "best_val_rmse": 0.04478885038572821,
+      "best_epoch": 26,
+      "n_params": 64298
+    },
+    {
+      "cfg": {
+        "hidden_size": 56,
+        "dropout": 0.35,
+        "lr": 0.0005
+      },
+      "best_val_rmse": 0.045759220726712076,
+      "best_epoch": 42,
+      "n_params": 64298
+    },
+    {
+      "cfg": {
+        "hidden_size": 56,
+        "dropout": 0.35,
+        "lr": 0.001
+      },
+      "best_val_rmse": 0.04630712154868681,
+      "best_epoch": 24,
+      "n_params": 64298
+    },
+    {
+      "cfg": {
+        "hidden_size": 40,
+        "dropout": 0.25,
+        "lr": 0.0005
+      },
+      "best_val_rmse": 0.047281728416998806,
+      "best_epoch": 17,
+      "n_params": 37322
+    }
+  ],
+  "best_config": {
+    "hidden_size": 40,
+    "dropout": 0.35,
+    "lr": 0.001
+  },
+  "config": {
+    "variant": "v12_small_bilstm_grid",
+    "seq_len": 10,
+    "train_stride": 1,
+    "num_layers": 1,
+    "proj_size": 40,
+    "weight_decay": 0.002,
+    "huber_delta": 0.05,
+    "batch_size": 256,
+    "scheduler": "cosine_annealing",
+    "grid": {
+      "hidden_size": [
+        40,
+        56
+      ],
+      "dropout": [
+        0.25,
+        0.35
+      ],
+      "lr": [
+        0.0005,
+        0.001
+      ]
+    },
+    "grid_max_epochs": 60,
+    "grid_patience": 15,
+    "final_max_epochs": 250,
+    "final_patience": 35,
+    "time_features": [
+      "precip_mm",
+      "s1_vv",
+      "s1_vh",
+      "s2_b4",
+      "s2_b8",
+      "s2_b11",
+      "s2_b12",
+      "LST_modis",
+      "F_NDVI",
+      "F_NDMI",
+      "E_SAR_ratio",
+      "SMAP_sm_am_interp",
+      "SMAP_sm_pm_interp",
+      "SMAP_sm_interp_mask",
+      "sin_year",
+      "cos_year",
+      "SMAP_sm_pm_interp_ema02",
+      "V_ema_LST_modis_kobs7",
+      "V_rollmean_G_API_kobs14"
+    ],
+    "static_features": [
+      "latitude",
+      "longitude",
+      "elev",
+      "slope",
+      "aspect",
+      "K_sand_clay_ratio_b0",
+      "K_clay_plus_sand_b0",
+      "K_slope_sin",
+      "K_slope_cos",
+      "K_aspect_sin",
+      "K_aspect_cos"
+    ],
+    "n_features": 30,
+    "n_params": 37322,
+    "best_epoch": 16,
+    "best_val_rmse": 0.043949519062041836
+  }
+}

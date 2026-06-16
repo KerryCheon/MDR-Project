@@ -1,0 +1,81 @@
+{
+  "train": {
+    "r2": 0.8853474259376526,
+    "rmse": 0.033895544707775116,
+    "ubrmse": 0.033705443143844604,
+    "bias": 0.003584848716855049,
+    "mae": 0.024313267320394516,
+    "q90": 0.05099096894264221,
+    "n": 6818
+  },
+  "val": {
+    "r2": 0.8279030919075012,
+    "rmse": 0.0436176061630249,
+    "ubrmse": 0.03785356506705284,
+    "bias": -0.021670326590538025,
+    "mae": 0.034474700689315796,
+    "q90": 0.0750911608338356,
+    "n": 2680
+  },
+  "test": {
+    "r2": 0.744583010673523,
+    "rmse": 0.047613177448511124,
+    "ubrmse": 0.04633784666657448,
+    "bias": -0.010946151800453663,
+    "mae": 0.03569812700152397,
+    "q90": 0.07734657824039459,
+    "n": 3966
+  },
+  "config": {
+    "variant": "v9_bilstm_attn_with_top_lags",
+    "seq_len": 10,
+    "train_stride": 1,
+    "hidden_size": 80,
+    "num_layers": 2,
+    "dropout": 0.3,
+    "proj_size": 56,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.002,
+    "huber_delta": 0.05,
+    "scheduler": "onecycle(max_lr=3*lr,pct_start=0.1)",
+    "time_features": [
+      "precip_mm",
+      "s1_vv",
+      "s1_vh",
+      "s2_b4",
+      "s2_b8",
+      "s2_b11",
+      "s2_b12",
+      "LST_modis",
+      "F_NDVI",
+      "F_NDMI",
+      "E_SAR_ratio",
+      "SMAP_sm_am_interp",
+      "SMAP_sm_pm_interp",
+      "SMAP_sm_interp_mask",
+      "sin_year",
+      "cos_year",
+      "SMAP_sm_pm_interp_ema02",
+      "V_ema_LST_modis_kobs7",
+      "V_rollmean_G_API_kobs14"
+    ],
+    "static_features": [
+      "latitude",
+      "longitude",
+      "elev",
+      "slope",
+      "aspect",
+      "K_sand_clay_ratio_b0",
+      "K_clay_plus_sand_b0",
+      "K_slope_sin",
+      "K_slope_cos",
+      "K_aspect_sin",
+      "K_aspect_cos"
+    ],
+    "n_features": 30,
+    "n_params": 283818,
+    "best_epoch": 12,
+    "best_val_rmse": 0.04361760684965993
+  }
+}

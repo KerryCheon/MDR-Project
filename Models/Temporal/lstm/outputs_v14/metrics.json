@@ -1,0 +1,92 @@
+{
+  "train": {
+    "r2": 0.9444605112075806,
+    "rmse": 0.023559467867016792,
+    "ubrmse": 0.023244908079504967,
+    "bias": 0.0038370387628674507,
+    "mae": 0.016934450715780258,
+    "q90": 0.03550069034099579,
+    "n": 6768
+  },
+  "val": {
+    "r2": 0.8195214867591858,
+    "rmse": 0.04470263794064522,
+    "ubrmse": 0.0382605604827404,
+    "bias": -0.02311829663813114,
+    "mae": 0.03444528207182884,
+    "q90": 0.0780554786324501,
+    "n": 2640
+  },
+  "test": {
+    "r2": 0.7119689583778381,
+    "rmse": 0.05057240650057793,
+    "ubrmse": 0.04851321503520012,
+    "bias": -0.014284119941294193,
+    "mae": 0.03842056915163994,
+    "q90": 0.08274904638528824,
+    "n": 3916
+  },
+  "config": {
+    "variant": "v14_multiscale_parallel_bilstm",
+    "windows": [
+      5,
+      10,
+      20
+    ],
+    "seq_len": 20,
+    "train_stride": 1,
+    "hidden_size": 32,
+    "num_layers": 1,
+    "dropout": 0.3,
+    "proj_size": 40,
+    "head_hidden": 96,
+    "batch_size": 256,
+    "lr": 0.0007,
+    "weight_decay": 0.002,
+    "huber_delta": 0.05,
+    "max_epochs": 250,
+    "patience": 35,
+    "grad_clip": 1.0,
+    "seed": 42,
+    "scheduler": "cosine_annealing",
+    "time_features": [
+      "precip_mm",
+      "s1_vv",
+      "s1_vh",
+      "s2_b4",
+      "s2_b8",
+      "s2_b11",
+      "s2_b12",
+      "LST_modis",
+      "F_NDVI",
+      "F_NDMI",
+      "E_SAR_ratio",
+      "SMAP_sm_am_interp",
+      "SMAP_sm_pm_interp",
+      "SMAP_sm_interp_mask",
+      "sin_year",
+      "cos_year",
+      "SMAP_sm_pm_interp_ema02",
+      "V_ema_LST_modis_kobs7",
+      "V_rollmean_G_API_kobs14"
+    ],
+    "static_features": [
+      "latitude",
+      "longitude",
+      "elev",
+      "slope",
+      "aspect",
+      "K_sand_clay_ratio_b0",
+      "K_clay_plus_sand_b0",
+      "K_slope_sin",
+      "K_slope_cos",
+      "K_aspect_sin",
+      "K_aspect_cos"
+    ],
+    "n_features": 30,
+    "n_params": 91852,
+    "best_epoch": 30,
+    "best_val_rmse": 0.04470263761610033,
+    "branches_share_input_projection": false
+  }
+}

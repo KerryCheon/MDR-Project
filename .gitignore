@@ -54,3 +54,13 @@ moe_sandbox/
 
 # raw and processed data (large, not versioned)
 data/
+
+# Large experiment outputs (CSV / unzipped ISMN / spatial-eval predictions) not for main
+experiments/non_sm_analysis/
+
+# Captured stdout from training runs (UTF-16 encoded, noisy, large)
+train_log.txt
+*_log.txt
+
+# Claude Code worktrees
+.claude/

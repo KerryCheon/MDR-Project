@@ -1,0 +1,76 @@
+{
+  "train": {
+    "r2": 0.9233765602111816,
+    "rmse": 0.02771182358264923,
+    "mae": 0.020124707370996475,
+    "bias": 0.0013700450072064996,
+    "n": 6808
+  },
+  "val": {
+    "r2": 0.7193389534950256,
+    "rmse": 0.05568810924887657,
+    "mae": 0.04057765752077103,
+    "bias": -0.024385754019021988,
+    "n": 2672
+  },
+  "test": {
+    "r2": 0.5671044588088989,
+    "rmse": 0.06197166070342064,
+    "mae": 0.046824220567941666,
+    "bias": -0.02008720114827156,
+    "n": 3956
+  },
+  "config": {
+    "variant": "v10_bilstm_attn_heavy_reg",
+    "seq_len": 12,
+    "train_stride": 1,
+    "hidden_size": 80,
+    "num_layers": 2,
+    "dropout": 0.4,
+    "proj_size": 56,
+    "input_noise": 0.02,
+    "batch_size": 256,
+    "lr": 0.0007,
+    "weight_decay": 0.005,
+    "huber_delta": 0.05,
+    "scheduler": "cosine_annealing",
+    "time_features": [
+      "precip_mm",
+      "s1_vv",
+      "s1_vh",
+      "s2_b4",
+      "s2_b8",
+      "s2_b11",
+      "s2_b12",
+      "LST_modis",
+      "F_NDVI",
+      "F_NDMI",
+      "E_SAR_ratio",
+      "SMAP_sm_am_interp",
+      "SMAP_sm_pm_interp",
+      "SMAP_sm_interp_mask",
+      "sin_year",
+      "cos_year",
+      "SMAP_sm_pm_interp_ema02",
+      "V_ema_LST_modis_kobs7",
+      "V_rollmean_G_API_kobs14"
+    ],
+    "static_features": [
+      "latitude",
+      "longitude",
+      "elev",
+      "slope",
+      "aspect",
+      "K_sand_clay_ratio_b0",
+      "K_clay_plus_sand_b0",
+      "K_slope_sin",
+      "K_slope_cos",
+      "K_aspect_sin",
+      "K_aspect_cos"
+    ],
+    "n_features": 30,
+    "n_params": 283930,
+    "best_epoch": 48,
+    "best_val_rmse": 0.05568810830335257
+  }
+}
