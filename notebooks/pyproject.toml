@@ -1,0 +1,66 @@
+[project]
+name = "models"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.10.9",
+    "pandas>=3.0.3",
+    "scikit-learn>=1.8.0",
+    "statsmodels>=0.14.6",
+    "torch>=2.11.0",
+    "torchvision>=0.26.0",
+    "xgboost>=3.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.2.0",
+    "jupyter-ai-tools>=0.5.1",
+    "jupyter-collaboration>=4.4.0",
+    "jupyter-mcp-server>=1.0.2",
+    "jupyter-server-mcp>=0.2.1",
+    "jupyterlab>=4.5.7",
+    "jupyterlab-commands-toolkit>=0.1.6",
+    "nbformat>=5.10.4",
+    "pycrdt>=0.12.50",
+]
+
+[project.optional-dependencies]
+cpu = [
+  "torch>=2.11.0",
+  "torchvision>=0.26.0",
+]
+cu128 = [
+  "torch>=2.11.0",
+  "torchvision>=0.26.0",
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = "cpu" },
+    { extra = "cu128" },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu128", extra = "cu128" },
+]
+torchvision = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu128", extra = "cu128" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

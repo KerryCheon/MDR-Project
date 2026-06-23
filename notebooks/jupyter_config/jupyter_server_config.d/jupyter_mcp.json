@@ -1,0 +1,12 @@
+{
+  "ServerApp": {
+    "jpserver_extensions": {
+      "jupyter_mcp_server": true
+    }
+  },
+  "Spawner": {
+    "environment": {
+      "JUPYTERHUB_ALLOW_TOKEN_IN_URL": "1"
+    }
+  }
+}
