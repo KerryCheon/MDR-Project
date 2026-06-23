@@ -4,17 +4,41 @@ Jupyter notebooks for model training and evaluation.
 
 ## training/
 
-Curated notebooks representing the final model versions used in the paper:
+Active notebooks representing the final/ongoing model versions. Top-level files are the current best models; versioned subdirectories hold newer experiment lines that bypass `archive/`:
 
-- `MDR-v20.8.ipynb` — three-regime XGBoost with spatial evaluation
-- `MDR-v23.1.ipynb` — model survey (XGBoost, Gradient Boosting baseline comparison)
-- `MDR-v24.ipynb` — spatial generalization experiments on the 5-station split
-- `MDR-v24-main.ipynb` — spatial generalization main analysis
 - `MDR-TemporalSpatial-v2.1.ipynb` — temporal-spatial transfer notebook
+- `MDR-v25.ipynb` — latest model version
+- `TemporalDelta-v0/MDR-TD-v0.ipynb` — temporal-delta modeling, v0
+- `TemporalDelta-v1/MDR-TD-v1.0.ipynb`, `MDR-TD-v1.1.ipynb` — temporal-delta modeling, v1
+- `Temporal-v20/MDR-v20.4.1-portable.ipynb`, `MDR-v20.4.2.ipynb`, `MDR-v20.5-portable.ipynb` — v20 portable/new variants
+- `Temporal-v21/MDR-v21.4-portable.ipynb`, `MDR-v21.5.ipynb` — v21 portable/new variants
+- `Temporal-v22/MDR-v22.3-portable.ipynb` — v22 portable variant
 
 ### training/archive/
 
-Full versioned notebook history (v0–v22, v21, v22, all sub-versions). Organized by version number, mirroring the `Models/Temporal/` directory structure.
+Full versioned notebook history (v1–v24, all sub-versions). Organized by version number. Notable archived entries:
+
+- `archive/v20/MDR-v20.8.ipynb` — three-regime XGBoost with spatial evaluation
+- `archive/v23/MDR-v23.1.ipynb` — model survey (XGBoost, Gradient Boosting baseline comparison)
+- `archive/v24/MDR-v24.ipynb` — spatial generalization experiments on the 5-station split
+- `archive/v24/MDR-v24-main.ipynb` — spatial generalization main analysis
+
+Do not modify archived notebooks — create new versions for new experiments to preserve history.
+
+## Notebook environment (uv)
+
+The notebook environment is managed with [uv](https://docs.astral.sh/uv/) and lives in this directory (`notebooks/`):
+
+- `pyproject.toml` — project deps (torch, scikit-learn, xgboost, pandas, matplotlib, statsmodels) + jupyter dev deps + uv torch index (cpu/cu128 extras)
+- `uv.lock` — locked dependencies
+- `.python-version` — Python 3.12
+
+To start Jupyter Lab with the notebook environment loaded:
+
+```bash
+cd notebooks
+uv run --with jupyter jupyter lab
+```
 
 ## evaluation/
 
