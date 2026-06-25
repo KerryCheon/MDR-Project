@@ -49,7 +49,7 @@ def add_lia_band(img: ee.Image, dem: ee.Image) -> ee.Image:
         geometry=img.geometry(),
         scale=1000,
         bestEffort=True,
-        maxPixels=1e8
+        maxPixels=100000000
     ).get("aspect")
 
     # relative aspect between look direction and slope aspect
@@ -99,7 +99,8 @@ def per_station_lia_stats(stations_fc: ee.FeatureCollection, start: str,
 def fc_to_df(fc: ee.FeatureCollection) -> pd.DataFrame:
     info = fc.getInfo()
     rows = []
-    for f in info.get("features", []):
+    features = info.get("features", []) if info else []
+    for f in features:
         props = f.get("properties", {})
         if "station_id" in props:
             rows.append(props)
@@ -109,12 +110,18 @@ def fc_to_df(fc: ee.FeatureCollection) -> pd.DataFrame:
 def main():
 
     try:
-      ee.Initialize(project="mdr-project-475522")
+        ee.Initialize(project="mdr-project-475522")
     except Exception:
-      ee.Authenticate()
-      ee.Initialize(project="mdr-project-475522")
-
-      # python -c "import ee; ee.Initialize(project="mdr-project-475522"); print('EE auth ok')"
+        try:
+            ee.Authenticate()
+            ee.Initialize(project="mdr-project-475522")
+        except Exception:
+            try:
+                # Fallback to default user project
+                ee.Initialize()
+            except Exception as e:
+                print(f"Failed to initialize Earth Engine: {e}")
+                raise
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--stations-csv", default="stations.csv")
@@ -124,8 +131,6 @@ def main():
     ap.add_argument("--dem", default="USGS/SRTMGL1_003")
     ap.add_argument("--scale", type=int, default=30, help="Sampling scale at stations (meters)")
     args = ap.parse_args()
-
-    ee.Initialize()
 
     stations = load_stations(args.stations_csv)
     stations_fc = stations_to_fc(stations)

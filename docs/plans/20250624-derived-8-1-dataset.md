@@ -21,14 +21,17 @@ The 13 Washington stations are:
 
 ---
 
-## User Review Required
+## Robust GEE Fetching Enhancements
 
-> [!IMPORTANT]
-> To compile this dataset, the user must provide the raw SNOTEL `.stm` files for the 8 new SNOTEL stations since these files are too large to be committed to Git. They must be placed in:
-> `src/pipeline/data/raw/<StationName>/` (e.g. `src/pipeline/data/raw/CayusePass/` for `cayuse_pass_wa`).
+### 1. Robust Initialization & Fallback
+- Initializing GEE will try the project ID `mdr-project-475522` first.
+- If that project is not accessible, it will fall back to calling `ee.Initialize()` without a project parameter (which utilizes the default cloud project of the authenticated Google account).
+- Fix the bug in `fetch_lia.py` where a duplicate `ee.Initialize()` call at the end of the script overrides the initial project authentication.
 
-> [!WARNING]
-> Running the pipeline fetches satellite, SMAP, and terrain data from Google Earth Engine (GEE). The user must have a registered GEE account and have authenticated `ee` on their local machine (by running `ee.Authenticate()`) before execution.
+### 2. Incremental Caching & Validity Guards
+- Modify `satellite_pipe.py` to write the GEE response cache to disk incrementally (every 20 successful fetches).
+- Only save a GEE response to the cache dictionary if the data is **valid** (i.e. at least one retrieved satellite, SMAP, or terrain feature is not `None`).
+- If a query fails or returns entirely `None` fields, do not save it to the cache dictionary so that it is retried in future runs.
 
 ---
 
@@ -41,6 +44,18 @@ Modify the pipeline configuration to comment out all non-Washington stations. Th
 #### [MODIFY] [config.yaml](file:///c:/Users/pan/Documents/GitHub/MDR-Project/src/pipeline/config.yaml)
 - Comment out all `device_*`, non-WA USCRN (`uscrn_arco_17_sw`, etc.), and non-WA SCAN (`scan_conrad_agrc`, etc.) stations.
 - Retain only the 13 Washington stations.
+
+---
+
+### Earth Engine Setup & Script Bug Fixes
+
+#### [MODIFY] [satellite_pipe.py](file:///c:/Users/pan/Documents/GitHub/MDR-Project/src/pipeline/pipes/satellite_pipe.py)
+- Update `ee.Initialize()` with a fallback block.
+- Update the GEE processing loop in the `run()` method to perform validation checks (`any(v is not None for v in data.values())`) and save the cache to disk incrementally every 20 successful fetches.
+
+#### [MODIFY] [fetch_lia.py](file:///c:/Users/pan/Documents/GitHub/MDR-Project/data/splits/derived_8.0/LIA/fetch_lia.py)
+- Update `ee.Initialize()` with the fallback block.
+- Remove the redundant/buggy `ee.Initialize()` call on line 129.
 
 ---
 
@@ -59,7 +74,8 @@ Create a new split folder `data/splits/derived_8.1/` containing a script to comp
 ## Verification Plan
 
 ### Automated Steps (After User Approval)
-1. **Comment out stations**: Comment out unneeded stations in `config.yaml`.
-2. **Setup directories & scripts**: Write `make_derived_8.1.py` and `stations.csv`.
-3. **LIA Generation**: Verify we can run `fetch_lia.py` for the 13 WA stations to produce `stations_lia.csv`.
-4. **Data Generation Walkthrough**: Provide a step-by-step description to the user of how they should run the pipeline and resplit script locally once they have the raw SNOTEL `.stm` files.
+1. **Apply configurations**: Comment out unneeded stations in `config.yaml`.
+2. **Apply Earth Engine fixes**: Modify `satellite_pipe.py` and `fetch_lia.py`.
+3. **Setup directories & scripts**: Write `make_derived_8.1.py` and `stations.csv`.
+4. **LIA Generation**: Verify we can run `fetch_lia.py` for the 13 WA stations to produce `stations_lia.csv`.
+5. **Data Generation Walkthrough**: Provide a step-by-step description to the user of how they should run the pipeline and resplit script locally once they have the raw SNOTEL `.stm` files.

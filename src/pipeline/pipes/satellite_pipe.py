@@ -40,8 +40,16 @@ class SatellitePipe:
         try:
             ee.Initialize(project=self.config["satellite"].get("gee_project_id", "mdr-project-475522"))
         except Exception:
-            ee.Authenticate()
-            ee.Initialize(project=self.config["satellite"].get("gee_project_id", "mdr-project-475522"))
+            try:
+                ee.Authenticate()
+                ee.Initialize(project=self.config["satellite"].get("gee_project_id", "mdr-project-475522"))
+            except Exception:
+                try:
+                    # Fallback: initialize with default active project
+                    ee.Initialize()
+                except Exception as e:
+                    self.logger.error(f"Failed to initialize Earth Engine: {e}")
+                    raise
 
     def fetch_smap_only(self, lat, lon, start_date, end_date):
         # added due to performance bottleneck
@@ -361,17 +369,29 @@ class SatellitePipe:
                     if not required_smap_keys.issubset(set(entry.keys())):
                         futures[ex.submit(self.fetch_smap_only, lat, lon, start, end)] = ("smap", date_key)
 
+            count = 0
             for future in tqdm(as_completed(futures), total=len(futures), desc=f"Satellite ({self.station_name})"):
                 kind, date_key = futures[future]
                 try:
                     new_data = future.result() or {}
-                    if kind == "full":
-                        cache[date_key] = new_data
-                    else:
-                        cache.setdefault(date_key, {})
-                        cache[date_key].update(new_data)
-                except Exception:
-                    cache.setdefault(date_key, {})
+                    # Check if retrieved features contain any actual data (not all None)
+                    is_valid = any(v is not None for v in new_data.values()) if new_data else False
+                    
+                    if is_valid:
+                        if kind == "full":
+                            cache[date_key] = new_data
+                        else:
+                            cache.setdefault(date_key, {})
+                            cache[date_key].update(new_data)
+                        
+                        count += 1
+                        if count % 20 == 0:
+                            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+                            with open(self.cache_path, "w") as f:
+                                json.dump(cache, f, indent=2)
+                            self.logger.debug(f"[{self.station_name}] Incremental cache save at {count} successful fetches.")
+                except Exception as e:
+                    self.logger.warning(f"[{self.station_name}] Future failed for {date_key}: {e}")
 
         self.cache_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.cache_path, "w") as f:
