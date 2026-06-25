@@ -21,8 +21,7 @@ End-to-end pipeline for processing raw station and satellite data into model-rea
 The preferred way to run the pipeline is using `uv`:
 
 ```bash
-# Set Python path and run the pipeline
-export PYTHONPATH="src"   # On Windows: $env:PYTHONPATH="src"
+# Run the pipeline
 uv run -m pipeline.main
 uv run -m pipeline.main --station spokane_17_ssw
 ```

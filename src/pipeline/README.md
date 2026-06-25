@@ -44,8 +44,7 @@ From the repository root:
 # Sync and set up the virtual environment with all required dependencies
 uv sync --all-packages
 
-# Run the pipeline for all stations (module runner mode)
-$env:PYTHONPATH="src"
+# Run the pipeline for all stations
 uv run -m pipeline.main
 
 # Run a single station from the CLI
@@ -58,8 +57,6 @@ uv run -m pipeline.main --config src/pipeline/config.yaml
 uv run -m pipeline.main --list-stations
 ```
 
-*Note: On Linux/macOS, use `export PYTHONPATH="src"` instead of `$env:PYTHONPATH="src"`.*
-
 ### Option B: Traditional pip venv (Fallback)
 
 If you do not have `uv` installed, you can use standard Python virtual environments:
@@ -69,12 +66,12 @@ If you do not have `uv` installed, you can use standard Python virtual environme
 python3 -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# Install dependencies
+# Install dependencies and package in editable mode
 python -m pip install --upgrade pip
 pip install -r src/pipeline/requirements.txt
+pip install -e src/pipeline
 
-# Set PYTHONPATH and run as module
-export PYTHONPATH=src     # On Windows: $env:PYTHONPATH="src"
+# Run the pipeline as a module directly
 python -m pipeline.main
 ```
 
