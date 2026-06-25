@@ -21,60 +21,66 @@ Key features:
 
 The recommended way to run the pipeline in a self-contained environment is via Docker.
 
-From the `Temporal` root (recommended):
+From the repository root:
 
 ```bash
-cd Temporal
-docker build -t temporal-pipeline .
+docker build -t temporal-pipeline -f src/pipeline/Dockerfile .
 
-# Run the pipeline with data path mounted and current workdir set to Pipeline
+# Run the pipeline with data path mounted
 docker run --rm \
-  --workdir /app/Temporal/Pipeline \
-  -v $(pwd)/Pipeline/data:/app/Temporal/Pipeline/data \
-	temporal-pipeline
+  -v $(pwd)/src/pipeline/data:/app/src/pipeline/data \
+  temporal-pipeline
 ```
 
-Notes:
+## Local Development (Python)
 
-- The repository includes a `Dockerfile` in `Temporal/` that installs dependencies and copies the project into the image.
-  -- The `--workdir /app/Temporal/Pipeline` ensures `main.py` is executed from the `Pipeline/` directory inside the container.
-  If you prefer to build a Pipeline-only image, there is `Pipeline/Dockerfile` which can be built from the `Temporal/` root:
+The preferred method to manage the local environment and run the pipeline is using [uv](https://docs.astral.sh/uv/).
+
+### Option A: Using uv (Preferred)
+
+From the repository root:
 
 ```bash
-cd Temporal
-docker build -t temporal-pipeline -f Pipeline/Dockerfile .
-docker run --rm --workdir /app/Temporal/Pipeline -v $(pwd)/Pipeline/data:/app/Temporal/Pipeline/data temporal-pipeline
-```
+# Sync and set up the virtual environment with all required dependencies
+uv sync --all-packages
 
-## Local development (Python)
-
-To run the pipeline locally without Docker:
-
-````bash
-cd Temporal/Pipeline
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-export PYTHONPATH=$(pwd)/..   # make sure absolute imports `Temporal.Pipeline.*` resolve
-python main.py
+# Run the pipeline for all stations (module runner mode)
+$env:PYTHONPATH="src"
+uv run -m pipeline.main
 
 # Run a single station from the CLI
-```bash
-python main.py --station spokane_17_ssw
-````
+uv run -m pipeline.main --station spokane_17_ssw
 
 # Provide a custom config file
+uv run -m pipeline.main --config src/pipeline/config.yaml
 
-```bash
-python main.py --config /path/to/config.yaml
+# List configured stations
+uv run -m pipeline.main --list-stations
 ```
 
-````
+*Note: On Linux/macOS, use `export PYTHONPATH="src"` instead of `$env:PYTHONPATH="src"`.*
+
+### Option B: Traditional pip venv (Fallback)
+
+If you do not have `uv` installed, you can use standard Python virtual environments:
+
+```bash
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+python -m pip install --upgrade pip
+pip install -r src/pipeline/requirements.txt
+
+# Set PYTHONPATH and run as module
+export PYTHONPATH=src     # On Windows: $env:PYTHONPATH="src"
+python -m pipeline.main
+```
 
 Notes:
 
-- Use the `config.yaml` in the same folder to modify station parameters, years, and IMPUTER/SATELLITE settings.
+- Use the `config.yaml` in `src/pipeline/config.yaml` to modify station parameters, years, and IMPUTER/SATELLITE settings.
 - To run only a subset of stations, edit `config.yaml` (comment-out or remove the unwanted station blocks), or add a shorter year range.
 
 ## Configuration

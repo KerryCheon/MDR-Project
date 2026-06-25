@@ -29,7 +29,7 @@ def load_config(path=CONFIG_FILE):
     # Simulate a quick, clean progress bar for visibility
     with tqdm(total=3, desc="Loading config", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}") as pbar:
         pbar.update(1)
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             config = yaml.safe_load(f)
         time.sleep(0.2)  # small delay for visual feedback
         pbar.update(2)

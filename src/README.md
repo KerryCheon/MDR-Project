@@ -18,10 +18,13 @@ End-to-end pipeline for processing raw station and satellite data into model-rea
 
 ## Usage
 
+The preferred way to run the pipeline is using `uv`:
+
 ```bash
-cd /path/to/MDR
-PYTHONPATH=. python src/pipeline/main.py
-PYTHONPATH=. python src/pipeline/main.py --station spokane_17_ssw
+# Set Python path and run the pipeline
+export PYTHONPATH="src"   # On Windows: $env:PYTHONPATH="src"
+uv run -m pipeline.main
+uv run -m pipeline.main --station spokane_17_ssw
 ```
 
-Processed outputs are written to `Temporal/Pipeline/data/processed/<station>/final.csv`.
+Processed outputs are written to `src/pipeline/data/processed/<station>/final.csv`.

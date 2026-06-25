@@ -1,0 +1,18 @@
+[project]
+name = "pipeline"
+version = "0.1.0"
+description = "Soil moisture modeling data processing pipeline sub-project"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "numpy",
+    "pandas",
+    "requests",
+    "scipy",
+    "scikit-learn",
+    "tqdm",
+    "xgboost",
+    "pyyaml",
+    "earthengine-api",
+    "matplotlib",
+]
