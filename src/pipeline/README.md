@@ -90,7 +90,7 @@ To download and set up the raw files:
 1. Go to the [ISMN Data Viewer](https://ismn.earth/en/dataviewer/).
 2. Register for a free account and log in.
 3. Select the **SNOTEL** network.
-4. Select your desired station(s) (e.g. `Cayuse Pass`, `Sourdough Gulch`, `Touchet`, etc.).
+4. Select your desired station(s) (e.g. `Cayuse Pass`, `Sourdough Gulch`, `Touchet`, etc.) and years (currently the pipeline will parse all years in the downloaded .stm files regardless of the years specified in the config file).
 5. Request a download and configure the following options:
    - **Choose Format:** Variables stored in separate files (Header+values) (zipped)
    - **Gap filling:** Unchecked (do not fill data gaps with NaN values)

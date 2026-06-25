@@ -15,7 +15,7 @@ from ..utils.config import load_config
 
 class SatellitePipe:
     MODIS_LST = "MODIS/061/MOD11A1"
-    MODIS_NDVI = "MODIS/006/MOD13C2"
+    MODIS_NDVI = "MODIS/061/MOD13A3"  # "MODIS/006/MOD13C2" is deprecated
     # GPM_RAIN = "NASA/GPM_L3/IMERG_V07"  # deprecated: replaced by Open-Meteo rain/precip pipes
 
     S1_GRD = "COPERNICUS/S1_GRD"
