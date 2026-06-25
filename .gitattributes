@@ -15,3 +15,4 @@
 MDR/Temporal/Pipeline/data/splits/derived_all/train_derived_all.csv filter=lfs diff=lfs merge=lfs -text
 Temporal/Pipeline/data/splits/derived_all/train_derived_all.csv filter=lfs diff=lfs merge=lfs -text
 Temporal/Pipeline/data/splits/**/*.csv filter=lfs diff=lfs merge=lfs -text
+data/splits/**/*.csv filter=lfs diff=lfs merge=lfs -text
