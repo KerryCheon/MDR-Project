@@ -27,7 +27,7 @@ class WeatherPipe:
             "weather", {}
         ).get(
             "cache_path",
-            "Temporal/Pipeline/data/cache/{station}_weather_cache.pkl"
+            "src/pipeline/data/cache/{station}_weather_cache.pkl"
         )
         self.cache_path = Path(cache_template.format(station=self.station_name))
         self.logger.info(f"Weather cache path set to: {self.cache_path}")

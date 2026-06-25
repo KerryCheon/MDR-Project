@@ -54,6 +54,7 @@ moe_sandbox/
 
 # raw and processed data (large, not versioned)
 data/
+!data/**/*.md
 
 # Large experiment outputs (CSV / unzipped ISMN / spatial-eval predictions) not for main
 experiments/non_sm_analysis/

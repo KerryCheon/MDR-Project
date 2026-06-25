@@ -20,6 +20,10 @@ Spatio-temporal soil moisture modeling research project (IEEE AIIoT 2026).
 | `tests/` | pytest suite |
 | `docs/` | Reserved (empty) |
 
+### Restructuring
+The repo was restructured not long ago, so some paths may be outdated in the docs. The current structure is as above.
+The last commit of the old structure was `6a9b9a044a5d5ddac7818b78544abaa7815e1fdd`, look up the commit history if you need to find old paths.
+
 ## Key Entrypoints
 
 - **Data pipeline:** `PYTHONPATH=. python src/pipeline/main.py` (all stations) or `--station <key>` for one station. Config at `src/pipeline/config.yaml`.

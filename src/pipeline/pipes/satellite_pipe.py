@@ -32,7 +32,7 @@ class SatellitePipe:
 
         cache_template = self.config["satellite"].get(
             "cache_path",
-            "Pipeline/data/cache/{station}_satellite_cache.json"
+            "src/pipeline/data/cache/{station}_satellite_cache.json"
         )
         self.cache_path = Path(cache_template.format(station=self.station_name))
         self.logger.info(f"Satellite cache path set to: {self.cache_path}")

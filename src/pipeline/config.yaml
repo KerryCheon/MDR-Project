@@ -21,7 +21,7 @@ stations:
   #     end_year: 2026
   #     timeout: 20
   #     min_bytes: 500
-  #     out_dir: "Temporal/Pipeline/data/raw/backyard_sensor/"
+  #     out_dir: "src/pipeline/data/raw/backyard_sensor/"
   #
   #   parse:
   #     manual_mode: true
@@ -44,7 +44,7 @@ stations:
   #     how: "outer"
   #
   #   save:
-  #     out_path: "Temporal/Pipeline/data/processed/backyard_sensor/final.csv"
+  #     out_path: "src/pipeline/data/processed/backyard_sensor/final.csv"
   #     format: "csv"
   #     index: false
 
@@ -59,11 +59,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500 # Skip if file too small
-      out_dir: "Temporal/Pipeline/data/raw/spokane/" # Raw data output directory
+      out_dir: "src/pipeline/data/raw/spokane/" # Raw data output directory
 
     parse:
-      in_dir: Temporal/Pipeline/data/raw/spokane/ # Raw input directory
-      out_dir: Temporal/Pipeline/data/processed/spokane
+      in_dir: src/pipeline/data/raw/spokane/ # Raw input directory
+      out_dir: src/pipeline/data/processed/spokane
       drop_duplicates: true
       col_indices: # Column index mapping (0-based)
         station_id: 0 # WBANNO
@@ -105,7 +105,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/spokane/final.csv"
+      out_path: "src/pipeline/data/processed/spokane/final.csv"
       format: "csv"
       index: false
 
@@ -120,11 +120,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/quinault/"
+      out_dir: "src/pipeline/data/raw/quinault/"
 
     parse:
-      in_dir: Temporal/Pipeline/data/raw/quinault/
-      out_dir: Temporal/Pipeline/data/processed/quinault
+      in_dir: src/pipeline/data/raw/quinault/
+      out_dir: src/pipeline/data/processed/quinault
       drop_duplicates: true
       col_indices:
         station_id: 0 # WBANNO
@@ -166,7 +166,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/quinault/final.csv"
+      out_path: "src/pipeline/data/processed/quinault/final.csv"
       format: "csv"
       index: false
 
@@ -181,11 +181,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/darrington/"
+      out_dir: "src/pipeline/data/raw/darrington/"
 
     parse:
-      in_dir: Temporal/Pipeline/data/raw/darrington
-      out_dir: Temporal/Pipeline/data/processed/darrington
+      in_dir: src/pipeline/data/raw/darrington
+      out_dir: src/pipeline/data/processed/darrington
       drop_duplicates: true
       col_indices:
         station_id: 0
@@ -227,7 +227,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/darrington/final.csv"
+      out_path: "src/pipeline/data/processed/darrington/final.csv"
       format: "csv"
       index: false
 
@@ -242,11 +242,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/SourdoughGulch/"
+      out_dir: "src/pipeline/data/raw/SourdoughGulch/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/SourdoughGulch/"
-      out_dir: "Temporal/Pipeline/data/processed/sourdough"
+      in_dir: "src/pipeline/data/raw/SourdoughGulch/"
+      out_dir: "src/pipeline/data/processed/sourdough"
       drop_duplicates: true
       snotel_mode: true # Flag for SNOTEL data format
       station: "SourdoughGulch_WA_985"
@@ -266,7 +266,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/sourdough/final.csv"
+      out_path: "src/pipeline/data/processed/sourdough/final.csv"
       format: "csv"
       index: false
 
@@ -281,11 +281,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/Touchet/"
+      out_dir: "src/pipeline/data/raw/Touchet/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/Touchet/"
-      out_dir: "Temporal/Pipeline/data/processed/touchet"
+      in_dir: "src/pipeline/data/raw/Touchet/"
+      out_dir: "src/pipeline/data/processed/touchet"
       drop_duplicates: true
       snotel_mode: true # Flag for SNOTEL data format
       station: "Touchet_WA_824"
@@ -305,7 +305,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/touchet/final.csv"
+      out_path: "src/pipeline/data/processed/touchet/final.csv"
       format: "csv"
       index: false
 
@@ -333,7 +333,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/device4/final.csv"
+      out_path: "src/pipeline/data/processed/device4/final.csv"
       format: "csv"
       index: false
 
@@ -361,7 +361,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/device7/final.csv"
+      out_path: "src/pipeline/data/processed/device7/final.csv"
       format: "csv"
       index: false
 
@@ -389,7 +389,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/device3/final.csv"
+      out_path: "src/pipeline/data/processed/device3/final.csv"
       format: "csv"
       index: false
 
@@ -404,11 +404,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/CayusePass/"
+      out_dir: "src/pipeline/data/raw/CayusePass/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/CayusePass/"
-      out_dir: "Temporal/Pipeline/data/processed/cayuse_pass"
+      in_dir: "src/pipeline/data/raw/CayusePass/"
+      out_dir: "src/pipeline/data/processed/cayuse_pass"
       drop_duplicates: true
       snotel_mode: true
       station: "CayusePass_WA"
@@ -428,7 +428,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/cayuse_pass/final.csv"
+      out_path: "src/pipeline/data/processed/cayuse_pass/final.csv"
       format: "csv"
       index: false
 
@@ -443,11 +443,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/Paradise/"
+      out_dir: "src/pipeline/data/raw/Paradise/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/Paradise/"
-      out_dir: "Temporal/Pipeline/data/processed/paradise"
+      in_dir: "src/pipeline/data/raw/Paradise/"
+      out_dir: "src/pipeline/data/processed/paradise"
       drop_duplicates: true
       snotel_mode: true
       station: "Paradise_WA"
@@ -467,7 +467,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/paradise/final.csv"
+      out_path: "src/pipeline/data/processed/paradise/final.csv"
       format: "csv"
       index: false
 
@@ -482,11 +482,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/BurntMountain/"
+      out_dir: "src/pipeline/data/raw/BurntMountain/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/BurntMountain/"
-      out_dir: "Temporal/Pipeline/data/processed/burnt_mountain"
+      in_dir: "src/pipeline/data/raw/BurntMountain/"
+      out_dir: "src/pipeline/data/processed/burnt_mountain"
       drop_duplicates: true
       snotel_mode: true
       station: "BurntMountain_WA"
@@ -506,7 +506,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/burnt_mountain/final.csv"
+      out_path: "src/pipeline/data/processed/burnt_mountain/final.csv"
       format: "csv"
       index: false
 
@@ -521,11 +521,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/BeaverPass/"
+      out_dir: "src/pipeline/data/raw/BeaverPass/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/BeaverPass/"
-      out_dir: "Temporal/Pipeline/data/processed/beaver_pass"
+      in_dir: "src/pipeline/data/raw/BeaverPass/"
+      out_dir: "src/pipeline/data/processed/beaver_pass"
       drop_duplicates: true
       snotel_mode: true
       station: "BeaverPass_WA_990"
@@ -545,7 +545,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/beaver_pass/final.csv"
+      out_path: "src/pipeline/data/processed/beaver_pass/final.csv"
       format: "csv"
       index: false
 
@@ -560,11 +560,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/HartsPass/"
+      out_dir: "src/pipeline/data/raw/HartsPass/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/HartsPass/"
-      out_dir: "Temporal/Pipeline/data/processed/harts_pass"
+      in_dir: "src/pipeline/data/raw/HartsPass/"
+      out_dir: "src/pipeline/data/processed/harts_pass"
       drop_duplicates: true
       snotel_mode: true
       station: "HartsPass_WA_515"
@@ -584,7 +584,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/harts_pass/final.csv"
+      out_path: "src/pipeline/data/processed/harts_pass/final.csv"
       format: "csv"
       index: false
 
@@ -599,11 +599,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/MartenRidge/"
+      out_dir: "src/pipeline/data/raw/MartenRidge/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/MartenRidge/"
-      out_dir: "Temporal/Pipeline/data/processed/marten_ridge"
+      in_dir: "src/pipeline/data/raw/MartenRidge/"
+      out_dir: "src/pipeline/data/processed/marten_ridge"
       drop_duplicates: true
       snotel_mode: true
       station: "MartenRidge_WA_999"
@@ -623,7 +623,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/marten_ridge/final.csv"
+      out_path: "src/pipeline/data/processed/marten_ridge/final.csv"
       format: "csv"
       index: false
 
@@ -638,11 +638,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/MFNooksack/"
+      out_dir: "src/pipeline/data/raw/MFNooksack/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/MFNooksack/"
-      out_dir: "Temporal/Pipeline/data/processed/mf_nooksack"
+      in_dir: "src/pipeline/data/raw/MFNooksack/"
+      out_dir: "src/pipeline/data/processed/mf_nooksack"
       drop_duplicates: true
       snotel_mode: true
       station: "MFNooksack_WA_1011"
@@ -662,7 +662,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/mf_nooksack/final.csv"
+      out_path: "src/pipeline/data/processed/mf_nooksack/final.csv"
       format: "csv"
       index: false
 
@@ -691,7 +691,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/uscrn_arco_17_sw/final.csv"
+      out_path: "src/pipeline/data/processed/uscrn_arco_17_sw/final.csv"
       format: "csv"
       index: false
 
@@ -720,7 +720,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/uscrn_coos_bay_8_sw/final.csv"
+      out_path: "src/pipeline/data/processed/uscrn_coos_bay_8_sw/final.csv"
       format: "csv"
       index: false
 
@@ -749,7 +749,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/uscrn_corvallis_10_ssw/final.csv"
+      out_path: "src/pipeline/data/processed/uscrn_corvallis_10_ssw/final.csv"
       format: "csv"
       index: false
 
@@ -778,7 +778,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/uscrn_dillon_18_wsw/final.csv"
+      out_path: "src/pipeline/data/processed/uscrn_dillon_18_wsw/final.csv"
       format: "csv"
       index: false
 
@@ -807,7 +807,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/uscrn_john_day_35_wnw/final.csv"
+      out_path: "src/pipeline/data/processed/uscrn_john_day_35_wnw/final.csv"
       format: "csv"
       index: false
 
@@ -836,7 +836,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/uscrn_murphy_10_w/final.csv"
+      out_path: "src/pipeline/data/processed/uscrn_murphy_10_w/final.csv"
       format: "csv"
       index: false
 
@@ -865,7 +865,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/uscrn_riley_10_wsw/final.csv"
+      out_path: "src/pipeline/data/processed/uscrn_riley_10_wsw/final.csv"
       format: "csv"
       index: false
 
@@ -894,7 +894,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/uscrn_st_mary_1_ssw/final.csv"
+      out_path: "src/pipeline/data/processed/uscrn_st_mary_1_ssw/final.csv"
       format: "csv"
       index: false
 
@@ -923,7 +923,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/scan_conrad_agrc/final.csv"
+      out_path: "src/pipeline/data/processed/scan_conrad_agrc/final.csv"
       format: "csv"
       index: false
 
@@ -952,7 +952,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/scan_cook_farm_field_d/final.csv"
+      out_path: "src/pipeline/data/processed/scan_cook_farm_field_d/final.csv"
       format: "csv"
       index: false
 
@@ -981,7 +981,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/scan_jordan_valley_cwma/final.csv"
+      out_path: "src/pipeline/data/processed/scan_jordan_valley_cwma/final.csv"
       format: "csv"
       index: false
 
@@ -1010,7 +1010,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/scan_lind_1/final.csv"
+      out_path: "src/pipeline/data/processed/scan_lind_1/final.csv"
       format: "csv"
       index: false
 
@@ -1039,7 +1039,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/scan_orchard_range_site/final.csv"
+      out_path: "src/pipeline/data/processed/scan_orchard_range_site/final.csv"
       format: "csv"
       index: false
 
@@ -1068,7 +1068,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/scan_table_mountain/final.csv"
+      out_path: "src/pipeline/data/processed/scan_table_mountain/final.csv"
       format: "csv"
       index: false
 
@@ -1097,7 +1097,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/scan_violett/final.csv"
+      out_path: "src/pipeline/data/processed/scan_violett/final.csv"
       format: "csv"
       index: false
 
@@ -1112,11 +1112,11 @@ stations:
       end_year: 2025
       timeout: 20
       min_bytes: 500
-      out_dir: "Temporal/Pipeline/data/raw/RainyPass/"
+      out_dir: "src/pipeline/data/raw/RainyPass/"
 
     parse:
-      in_dir: "Temporal/Pipeline/data/raw/RainyPass/"
-      out_dir: "Temporal/Pipeline/data/processed/rainy_pass"
+      in_dir: "src/pipeline/data/raw/RainyPass/"
+      out_dir: "src/pipeline/data/processed/rainy_pass"
       drop_duplicates: true
       snotel_mode: true
       station: "RainyPass_WA_711"
@@ -1136,7 +1136,7 @@ stations:
       how: "outer"
 
     save:
-      out_path: "Temporal/Pipeline/data/processed/rainy_pass/final.csv"
+      out_path: "src/pipeline/data/processed/rainy_pass/final.csv"
       format: "csv"
       index: false
 
@@ -1171,22 +1171,22 @@ whittaker:
   target_columns: ["NDVI_modis", "SMAP_sm_am"]
 
 weather:
-  cache_path: "Temporal/Pipeline/data/cache/{station}_weather_cache.json"
+  cache_path: "src/pipeline/data/cache/{station}_weather_cache.json"
 
 satellite:
-  cache_path: "Temporal/Pipeline/data/cache/{station}_satellite_cache.json"
+  cache_path: "src/pipeline/data/cache/{station}_satellite_cache.json"
   interpolate_level: "bands" # or "features"
 
 logging:
   level: "INFO"
   log_to_file: true
-  file_path: "Temporal/Pipeline/logs/pipeline.log"
+  file_path: "src/pipeline/logs/pipeline.log"
 
   # new dedicated imputer log
-  imputer_file_path: "Temporal/Pipeline/logs/imputer.log"
+  imputer_file_path: "src/pipeline/logs/imputer.log"
   imputer_level: "DEBUG"
 
-  validator_file_path: "Temporal/Pipeline/logs/validator.log"
+  validator_file_path: "src/pipeline/logs/validator.log"
   validator_level: "INFO"
 
   format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
