@@ -4,8 +4,14 @@ Processed dataset splits used for model training, validation, and evaluation.
 
 ## splits/
 
-- `derived_9.0/` — canonical final split used for all results reported in the paper (temporal train/val/test: 2017–2020 / 2021–2022 / 2023–2025)
-- `archive/` — earlier split versions (base_1.0, base_2.0, derived_1.0–8.0) and unseen ECE sensor datasets retained for reproducibility
+| Dataset | Parent | Stations | Rows (train / val / test) | Time Range | Key Changes |
+|---|---|---|---|---|---|
+| `derived_8.0/` | derived_7.0 | 5 (Spokane, Darrington, Quinault, Touchet_WA_824, SourdoughGulch_WA_985) | 13,604 (6,868 / 2,720 / 4,016) | 2017–2025 | Filtered to SMAP post-2016; added station-level pass-specific LIA features |
+| `derived_9.0/` | derived_8.0 | 31 (5 original + 8 WA SNOTEL, 11 USCRN, 7 SCAN) | ~63,165 (~29,362 / ~13,637 / ~20,166) | 2017–2025 | Appended 49,561 new rows via ISMN SNOTEL download; added HWSD soil fields; some remote-sensing features still pending upstream |
+
+**Split years:** train = 2017–2020, val = 2021–2022, test = 2023–2025 (both datasets).
+
+- `archive/` — earlier split versions (base_1.0, base_2.0, derived_1.0–7.0) and unseen ECE sensor datasets retained for reproducibility
 
 ## Raw data (not committed)
 
