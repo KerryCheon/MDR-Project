@@ -10,17 +10,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.14"
 
       - name: Install dependencies
         run: |
           pip install pytest
-          pip install -e . 2>/dev/null || pip install -r Temporal/Pipeline/requirements.txt 2>/dev/null || true
+          pip install -e src/pipeline
 
       - name: Run tests
         run: pytest tests/ -v

@@ -12,12 +12,12 @@ def fail(msg: str):
 
 SCRIPT_PATH = Path(__file__).resolve()
 REPO_ROOT = SCRIPT_PATH.parents[2]
-CONFIG_PATH = REPO_ROOT / "Temporal" / "Pipeline" / "config.yaml"
+CONFIG_PATH = REPO_ROOT / "src" / "pipeline" / "config.yaml"
 
 if not CONFIG_PATH.exists():
     fail(f"config.yaml not found at expected path: {CONFIG_PATH}")
 
-with CONFIG_PATH.open("r") as f:
+with CONFIG_PATH.open("r", encoding="utf-8") as f:
     cfg = yaml.safe_load(f)
 
 imputer_cfg = cfg.get("imputer", {})
