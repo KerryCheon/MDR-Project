@@ -80,6 +80,29 @@ Notes:
 - Use the `config.yaml` in `src/pipeline/config.yaml` to modify station parameters, years, and IMPUTER/SATELLITE settings.
 - To run only a subset of stations, edit `config.yaml` (comment-out or remove the unwanted station blocks), or add a shorter year range.
 
+## Preparing Raw SNOTEL Data
+
+While the pipeline automatically downloads USCRN station data, **SNOTEL station data must be manually downloaded** and structured locally because raw SNOTEL files are too large to be committed to version control.
+
+The pipeline processes SNOTEL observations in the standard **ISMN (International Soil Moisture Network)** space-separated `.stm` format (e.g., lines containing `YYYY/MM/DD HH:MM:SS Value Quality Validation`).
+
+To download and set up the raw files:
+1. Go to the [ISMN Data Viewer](https://ismn.earth/en/dataviewer/).
+2. Register for a free account and log in.
+3. Select the **SNOTEL** network.
+4. Select your desired station(s) (e.g. `Cayuse Pass`, `Sourdough Gulch`, `Touchet`, etc.).
+5. Request a download and configure the following options:
+   - **Choose Format:** Variables stored in separate files (Header+values) (zipped)
+   - **Gap filling:** Unchecked (do not fill data gaps with NaN values)
+   - **Quality flags:** Unchecked (do not filter to only observations tagged as "Good" by ISMN QC)
+6. Extract the downloaded zip file and place the individual `.stm` files (e.g. `SNOTEL_SNOTEL_BeaverPass_sm_...stm`) into their respective station subfolders under:
+   ```text
+   src/pipeline/data/raw/<StationName>/
+   ```
+   *Example: Place Beaver Pass files in `src/pipeline/data/raw/BeaverPass/`.*
+   
+   Refer to `parse.in_dir` for each station in [config.yaml](file:///c:/Users/pan/Documents/GitHub/MDR-Project/src/pipeline/config.yaml) to verify the exact case-sensitive folder name required.
+
 ## Configuration
 
 - `config.yaml` controls pipeline execution. Top-level keys include `stations`, `temporal_fill`, `whittaker`, `satellite`, `logging`, and `imputer`.

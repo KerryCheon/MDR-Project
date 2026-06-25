@@ -38,10 +38,10 @@ class SatellitePipe:
         self.logger.info(f"Satellite cache path set to: {self.cache_path}")
 
         try:
-            ee.Initialize(project="mdr-project-475522")
+            ee.Initialize(project=self.config["satellite"].get("gee_project_id", "mdr-project-475522"))
         except Exception:
             ee.Authenticate()
-            ee.Initialize(project="mdr-project-475522")
+            ee.Initialize(project=self.config["satellite"].get("gee_project_id", "mdr-project-475522"))
 
     def fetch_smap_only(self, lat, lon, start_date, end_date):
         # added due to performance bottleneck
