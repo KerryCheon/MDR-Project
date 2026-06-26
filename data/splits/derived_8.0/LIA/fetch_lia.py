@@ -5,6 +5,7 @@
 import argparse
 import pandas as pd
 import ee
+from src.pipeline.utils.gee import initialize_ee
 
 def load_stations(path: str) -> pd.DataFrame:
     df = pd.read_csv(path)
@@ -108,20 +109,7 @@ def fc_to_df(fc: ee.FeatureCollection) -> pd.DataFrame:
 
 
 def main():
-
-    try:
-        ee.Initialize(project="mdr-project-475522")
-    except Exception:
-        try:
-            ee.Authenticate()
-            ee.Initialize(project="mdr-project-475522")
-        except Exception:
-            try:
-                # Fallback to default user project
-                ee.Initialize()
-            except Exception as e:
-                print(f"Failed to initialize Earth Engine: {e}")
-                raise
+    initialize_ee()
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--stations-csv", default="stations.csv")

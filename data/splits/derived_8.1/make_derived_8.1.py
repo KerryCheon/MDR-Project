@@ -98,6 +98,9 @@ PFX = {
 }
 
 STATION_NAME_MAPPING = {
+    "4136": "Spokane",
+    "4237": "Quinault",
+    "4223": "Darrington",
     "WA_Spokane_17_SSW": "Spokane",
     "WA_Quinault_4_NE": "Quinault",
     "WA_Darrington_21_NNE": "Darrington",
@@ -126,7 +129,7 @@ def load_processed_stations(pipeline_root: str) -> pd.DataFrame:
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"config.yaml not found at: {config_path}")
         
-    with open(config_path, "r") as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
         
     stations_cfg = config.get("stations", {})
@@ -444,6 +447,35 @@ def merge_lia(df: pd.DataFrame, lia_path: str) -> pd.DataFrame:
     print("  LIA merge successful.")
     return merged
 
+def merge_static_features(df: pd.DataFrame, static_path: str) -> pd.DataFrame:
+    print("Merging station static features...")
+    if not os.path.exists(static_path):
+        raise FileNotFoundError(f"Static features CSV not found at: {static_path}. Run get_spatial_features.py first.")
+        
+    static_df = pd.read_csv(static_path)
+    
+    # Drop columns that are already present in df to avoid duplicate columns
+    drop_cols = ["latitude", "longitude", "landcover_label"]
+    drop_cols = [c for c in drop_cols if c in static_df.columns]
+    if drop_cols:
+        static_df = static_df.drop(columns=drop_cols)
+        
+    static_df["station_id"] = static_df["station_id"].astype(str)
+    df["station_id"] = df["station_id"].astype(str)
+    
+    merged = df.merge(static_df, on="station_id", how="left")
+    
+    # Check if any got NaNs after merge
+    # Let's check a column that should be populated, e.g. J_lc_code
+    if "J_lc_code" in merged.columns:
+        miss_rate = merged["J_lc_code"].isna().mean()
+        if miss_rate > 0:
+            missing_stations = sorted(merged.loc[merged["J_lc_code"].isna(), "station_id"].unique().tolist())
+            raise ValueError(f"Static features merge produced missing values (rate={miss_rate:.4%}) for stations: {missing_stations}")
+        
+    print("  Static features merge successful.")
+    return merged
+
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, "..", "..", ".."))
@@ -475,8 +507,12 @@ def main():
     lia_path = os.path.join(script_dir, "LIA", "stations_lia.csv")
     df_lia = merge_lia(df_derived, lia_path)
     
+    # Merge static features
+    static_path = os.path.join(script_dir, "station_static_features.csv")
+    df_static = merge_static_features(df_lia, static_path)
+    
     # 4. Split and Add drifts/FFT
-    train_df, val_df, test_df = add_split_and_drift_features(df_lia)
+    train_df, val_df, test_df = add_split_and_drift_features(df_static)
     
     # 5. Save outputs
     out_dir = script_dir
@@ -504,7 +540,7 @@ def main():
         }
     }
     
-    with open(meta_path, "w") as f:
+    with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2)
         
     print(f"\nSaved derived_8.1 splits successfully:")

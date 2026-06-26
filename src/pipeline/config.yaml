@@ -1174,7 +1174,6 @@ weather:
   cache_path: "src/pipeline/data/cache/{station}_weather_cache.json"
 
 satellite:
-  gee_project_id: "mdr-project-500504"  # delete this line if you want to use the original hard-coded one
   cache_path: "src/pipeline/data/cache/{station}_satellite_cache.json"
   interpolate_level: "bands" # or "features"
 

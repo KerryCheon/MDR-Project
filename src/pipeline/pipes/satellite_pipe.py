@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from ..utils.logger import get_logger
 from ..utils.config import load_config
+from ..utils.gee import initialize_ee
 
 
 class SatellitePipe:
@@ -37,19 +38,7 @@ class SatellitePipe:
         self.cache_path = Path(cache_template.format(station=self.station_name))
         self.logger.info(f"Satellite cache path set to: {self.cache_path}")
 
-        try:
-            ee.Initialize(project=self.config["satellite"].get("gee_project_id", "mdr-project-475522"))
-        except Exception:
-            try:
-                ee.Authenticate()
-                ee.Initialize(project=self.config["satellite"].get("gee_project_id", "mdr-project-475522"))
-            except Exception:
-                try:
-                    # Fallback: initialize with default active project
-                    ee.Initialize()
-                except Exception as e:
-                    self.logger.error(f"Failed to initialize Earth Engine: {e}")
-                    raise
+        initialize_ee(self.logger)
 
     def fetch_smap_only(self, lat, lon, start_date, end_date):
         # added due to performance bottleneck
