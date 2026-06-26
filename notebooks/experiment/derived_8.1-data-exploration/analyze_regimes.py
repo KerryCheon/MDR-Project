@@ -1,7 +1,12 @@
 import os
+import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+# Add splits/derived_8.1 directory to sys.path to import the metadata module
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'splits', 'derived_8.1')))
+from metadata import T1 as t1_81_cal, T2 as t2_81_cal
 
 # Set style for premium aesthetics using standard matplotlib
 plt.rcParams.update({
@@ -69,7 +74,7 @@ def main():
     
     t1_80_orig, t2_80_orig = 0.20, 0.313
     t1_90, t2_90 = 0.0993, 0.2115
-    t1_81_cal, t2_81_cal = 0.16, 0.25
+    # t1_81_cal and t2_81_cal are imported from metadata.py
     
     print("\n=== Threshold Calibration Options ===")
     print(f"1. Original 8.0 thresholds:       t1 = {t1_80_orig:.4f}, t2 = {t2_80_orig:.4f}")
