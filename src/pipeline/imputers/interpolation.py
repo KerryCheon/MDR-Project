@@ -9,8 +9,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class LinearInterpolationImputer(BaseImputer):
     # desc: time-based linear interpolation for short gaps.
 
-    def __init__(self):
-        super().__init__("linear_interp")
+    def __init__(self, **kwargs):
+        super().__init__("linear_interp", **kwargs)
         cfg = self.imputer_cfg.get("linear_interp", {})
         tau = cfg.get("tau_days", 7.0)
         self.tau_days = float(tau)

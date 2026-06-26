@@ -16,10 +16,10 @@ from Temporal.Pipeline.utils.logger import get_logger
 class ValidationRunner:
     # desc: Runs validation of imputation by masking real values
 
-    def __init__(self):
+    def __init__(self, config=None):
         # pre: p_mask is fraction of real values to hide (0 < p_mask <= 1)
         # post: ValidationRunner stores config for repeatable evaluations
-        self.cfg = load_config().get("validator", {})
+        self.cfg = (config or load_config()).get("validator", {})
         self.log_cfg = self.cfg.get("logging", {})
 
         seed = self.cfg.get("random_seed", 42)

@@ -28,7 +28,7 @@ from pipeline.Pipeline.validation.validator import (
 )
 
 
-def transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_validate=False):
+def transform_with_ensemble(df, col, config=None, return_diag=False, diag_path=None, auto_validate=False):
     # pre:  df has 'date' and col
     # post: returns df with imputed column and metadata; optionally diagnostics
     # desc: main function to run ensemble imputation on a dataframe column
@@ -41,7 +41,7 @@ def transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_val
     logger = get_logger().getChild(f"imputer.ensemble.{col}")
     logger.debug(f"starting ensemble transform for column '{col}'")
 
-    cfg = load_config()
+    cfg = config or load_config()
 
     _validate_inputs(df, col, logger)
 
@@ -66,7 +66,7 @@ def transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_val
         return (df, {}) if return_diag else df
 
     # run ensemble
-    filled, conf, voter = _run_ensemble(df, col, dates, values, logger)
+    filled, conf, voter = _run_ensemble(df, col, dates, values, logger, config=cfg)
 
     # build per-day records
     builder = DailyRecordBuilder(df, col)
@@ -106,11 +106,11 @@ def transform_with_ensemble(df, col, return_diag=False, diag_path=None, auto_val
 
     if auto_validate:
         try:
-            runner = ValidationRunner()
+            runner = ValidationRunner(config=cfg)
 
             def ensemble_fn(d, c):
                 return transform_with_ensemble(
-                    d, c,
+                    d, c, config=cfg,
                     return_diag=False,
                     diag_path=None,
                     auto_validate=False

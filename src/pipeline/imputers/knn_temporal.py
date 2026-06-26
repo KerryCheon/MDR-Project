@@ -15,8 +15,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class KNNImputer(BaseImputer):
     # desc: K-Nearest Neighbors imputer for temporal data
 
-    def __init__(self):
-        super().__init__("knn")
+    def __init__(self, **kwargs):
+        super().__init__("knn", **kwargs)
 
         cfg = self.imputer_cfg.get("knn", {})
 

@@ -66,7 +66,7 @@ class TemporalFillPipe:
                 return df
 
             self.logger.info(f"[{self.station_name}] Interpolating {col} using ensemble voter")
-            filled_df, _ = transform_with_ensemble(work.copy(), col=col, return_diag=True)
+            filled_df, _ = transform_with_ensemble(work.copy(), col=col, config=self.config, return_diag=True)
 
             df = df.merge(filled_df[["date", f"{col}_interp"]], on="date", how="left")
             df[f"{col}_mask"] = df[col].notna().astype(int)

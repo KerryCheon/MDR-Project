@@ -9,8 +9,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class ForwardBackwardImputer(BaseImputer):
     # desc: Fills very short gaps and edges using ffill + bfill.
 
-    def __init__(self):
-        super().__init__("ffill_bfill")
+    def __init__(self, **kwargs):
+        super().__init__("ffill_bfill", **kwargs)
         cfg = self.imputer_cfg.get("ffill_bfill", {})
         tau = cfg.get("tau_days", 3.0)
         self.tau_days = float(tau)

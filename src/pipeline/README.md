@@ -90,18 +90,20 @@ To download and set up the raw files:
 1. Go to the [ISMN Data Viewer](https://ismn.earth/en/dataviewer/).
 2. Register for a free account and log in.
 3. Select the **SNOTEL** network.
-4. Select your desired station(s) (e.g. `Cayuse Pass`, `Sourdough Gulch`, `Touchet`, etc.) and years (currently the pipeline will parse all years in the downloaded .stm files regardless of the years specified in the config file).
-5. Request a download and configure the following options:
+4. Set date range to 2016/1/1 to 2026/6/1 (currently the pipeline will parse all years in the downloaded .stm files regardless of the years specified in the config file).
+5. Set coordinate bounds to Latitude 45.6~49, Longitude	-124.3~-117.0397 to include only stations in Washington state.
+6. Set Sensor Depth to 5cm~6cm (the pipeline currently only uses the 5cm soil moisture sensor).
+7. Request a download and configure the following options:
    - **Choose Format:** Variables stored in separate files (Header+values) (zipped)
    - **Gap filling:** Unchecked (do not fill data gaps with NaN values)
    - **Quality flags:** Unchecked (do not filter to only observations tagged as "Good" by ISMN QC)
-6. Extract the downloaded zip file and place the individual `.stm` files (e.g. `SNOTEL_SNOTEL_BeaverPass_sm_...stm`) into their respective station subfolders under:
+8. Extract the downloaded zip file and place the individual `.stm` files (e.g. `SNOTEL_SNOTEL_BeaverPass_sm_...stm`) into their respective station subfolders under:
    ```text
    src/pipeline/data/raw/<StationName>/
    ```
    *Example: Place Beaver Pass files in `src/pipeline/data/raw/BeaverPass/`.*
    
-   Refer to `parse.in_dir` for each station in [config.yaml](file:///c:/Users/pan/Documents/GitHub/MDR-Project/src/pipeline/config.yaml) to verify the exact case-sensitive folder name required.
+   Refer to `parse.in_dir` for each station in [config.yaml](config.yaml) to verify the exact case-sensitive folder name required.
 
 ## Configuration
 

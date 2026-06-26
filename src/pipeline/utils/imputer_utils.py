@@ -84,27 +84,27 @@ def _should_skip_interpolation(col, cfg, logger):
     return False
 
 
-def _run_ensemble(df, col, dates, values, logger):
+def _run_ensemble(df, col, dates, values, logger, config=None):
     # pre:  df has 'date' and col
     # post: runs VotingImputer and returns filled, conf, voter
 
     logger.debug(f"initializing imputers for column '{col}'")
     imputers = [
-        LinearInterpolationImputer(),
-        ForwardBackwardImputer(),
-        RollingMeanImputer(),
-        ClimatologyImputer(),
-        LinearModelImputer(),
-        XGBImputer(),
-        GaussianProcessImputer(),
-        KNNImputer(),
-        SeasonalNaiveImputer(),
-        SplineImputer()
+        LinearInterpolationImputer(config=config),
+        ForwardBackwardImputer(config=config),
+        RollingMeanImputer(config=config),
+        ClimatologyImputer(config=config),
+        LinearModelImputer(config=config),
+        XGBImputer(config=config),
+        GaussianProcessImputer(config=config),
+        KNNImputer(config=config),
+        SeasonalNaiveImputer(config=config),
+        SplineImputer(config=config)
     ]
 
     logger.debug(f"initialized {len(imputers)} imputers")
 
-    voter = VotingImputer(imputers)
+    voter = VotingImputer(imputers, config=config)
 
     logger.debug("fitting ensemble...")
     voter.fit(dates, values, aux_df=df)

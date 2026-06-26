@@ -10,8 +10,8 @@ from xgboost import XGBRegressor
 class XGBImputer(BaseImputer):
     # desc: Context-based imputer using temporal encodings + cross-feature signals.
 
-    def __init__(self):
-        super().__init__("xgboost")
+    def __init__(self, **kwargs):
+        super().__init__("xgboost", **kwargs)
         cfg = self.imputer_cfg.get("xgboost", {})
         min_known = cfg.get("min_known", 30)
         self.min_known = int(min_known)

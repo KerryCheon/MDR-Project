@@ -11,9 +11,9 @@ from pipeline.Pipeline.utils.config import load_config
 class BaseImputer:
     # desc: Base class for all imputers.
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, config=None):
         # load config once per instance
-        self.cfg = load_config()
+        self.cfg = config or load_config()
         self.imputer_cfg = self.cfg.get("imputer", {})
         self.log_cfg = self.cfg.get("logging", {})
 

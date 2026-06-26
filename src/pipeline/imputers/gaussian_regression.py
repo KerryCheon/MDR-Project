@@ -16,8 +16,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class GaussianProcessImputer(BaseImputer):
     # desc: Smooth temporal model using RBF kernel + noise term.
 
-    def __init__(self):
-        super().__init__("gaussian_process")
+    def __init__(self, **kwargs):
+        super().__init__("gaussian_process", **kwargs)
 
         cfg = self.imputer_cfg.get("gaussian_process", {})
         self.length_scale = float(cfg.get("length_scale", 30.0))

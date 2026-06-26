@@ -15,8 +15,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class SplineImputer(BaseImputer):
     # desc: Smooth cubic-spline imputer for continuous temporal signals.
 
-    def __init__(self):
-        super().__init__("spline")
+    def __init__(self, **kwargs):
+        super().__init__("spline", **kwargs)
 
         cfg = self.imputer_cfg.get("spline", {})
 

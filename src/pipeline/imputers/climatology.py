@@ -9,8 +9,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class ClimatologyImputer(BaseImputer):
     # desc: Seasonal DOY filling. Strong for long gaps.
 
-    def __init__(self):
-        super().__init__("climatology")
+    def __init__(self, **kwargs):
+        super().__init__("climatology", **kwargs)
         cfg = self.imputer_cfg.get("climatology", {})
         m = cfg.get("min_count_for_high_conf", 10)
         self.min_count_for_high_conf = int(m)

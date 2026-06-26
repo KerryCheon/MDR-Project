@@ -8,8 +8,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class RollingMeanImputer(BaseImputer):
     # desc: Rolling mean for smoothing and medium-size gaps.
 
-    def __init__(self):
-        super().__init__("rolling_mean")
+    def __init__(self, **kwargs):
+        super().__init__("rolling_mean", **kwargs)
         cfg = self.imputer_cfg.get("rolling_mean", {})
         window = cfg.get("window", 7)
         self.window = int(window)

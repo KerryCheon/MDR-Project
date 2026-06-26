@@ -13,8 +13,8 @@ from pipeline.Pipeline.utils.logger import get_logger
 class VotingImputer:
     # desc: Combines multiple imputers into a single voted result.
 
-    def __init__(self, imputers: List[BaseImputer]):
-        cfg = load_config().get("imputer", {})
+    def __init__(self, imputers: List[BaseImputer], config=None):
+        cfg = (config or load_config()).get("imputer", {})
         self.imputers = imputers
 
         bw = cfg.get("base_weights", {})

@@ -15,8 +15,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class SeasonalNaiveImputer(BaseImputer):
     # desc: Day-of-Year historical lookup imputer (seasonal persistence)
 
-    def __init__(self):
-        super().__init__("seasonal_naive")
+    def __init__(self, **kwargs):
+        super().__init__("seasonal_naive", **kwargs)
 
         cfg = self.imputer_cfg.get("seasonal_naive", {})
         self.min_count_for_high_conf = int(cfg.get("min_count_for_high_conf", 10))

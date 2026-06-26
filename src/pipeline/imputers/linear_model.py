@@ -10,8 +10,8 @@ from pipeline.Pipeline.imputers.base import BaseImputer
 class LinearModelImputer(BaseImputer):
     # desc: Linear regression imputer using temporal encodings and optional cross-feature predictors.
 
-    def __init__(self):
-        super().__init__("linear_model")
+    def __init__(self, **kwargs):
+        super().__init__("linear_model", **kwargs)
         cfg = self.imputer_cfg.get("linear_model", {})
         self.min_known = int(cfg.get("min_known", 15))
         self.use_cross = cfg.get("use_cross_features", True)
