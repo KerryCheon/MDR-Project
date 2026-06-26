@@ -19,7 +19,7 @@ Place your downloaded SNOTEL `.stm` files for the 8 new SNOTEL stations in their
 Authenticate your Google Earth Engine account (if not already authenticated) and run the pipeline to parse raw data, query GEE, run Weather API inputs, and perform ensemble temporal gap-filling:
 ```bash
 # Run the pipeline for all 13 Washington stations
-PYTHONPATH=. uv run -m pipeline.main
+PYTHONPATH=. uv run -m pipeline.main --config data/splits/derived_8.1/config.yaml
 ```
 *(The GEE cache will be saved incrementally to `src/pipeline/data/cache/*_satellite_cache.json` after every 20 successful fetches, guarding against quota limit crashes).*
 
@@ -42,3 +42,6 @@ Upon completion, you will find the generated splits under:
 - `data/splits/derived_8.1/val.csv`
 - `data/splits/derived_8.1/test.csv`
 - `data/splits/derived_8.1/split_meta.json`
+
+## Threshold and Selected Features
+See [dataset_metadata.py](dataset_metadata.py) for the bimodal valley-based regime thresholds (T1=0.16, T2=0.25) and the list of selected features used fro each regime.
