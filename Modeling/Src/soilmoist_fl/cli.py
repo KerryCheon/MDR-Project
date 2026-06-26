@@ -34,8 +34,8 @@ from Modeling.Utils.config import load_config
 from Modeling.Utils.logging import get_logger, setup_logger
 
 
-DEFAULT_CONFIG_PATH = Path("/Users/jbalkovec/Desktop/MDR/Modeling/Configs/default.yaml")
-DEFAULT_RUNS_DIR = Path("/Users/jbalkovec/Desktop/MDR/Modeling/Runs")
+DEFAULT_CONFIG_PATH = Path(__file__).resolve().parent.parent.parent / "Configs" / "default.yaml"
+DEFAULT_RUNS_DIR = Path(__file__).resolve().parent.parent.parent / "Runs"
 
 
 def _build_models(cfg):

@@ -1,14 +1,21 @@
 # derived_8.1 Soil Moisture Dataset Exploratory Data Analysis Report
 
-This report documents the exploratory data analysis (EDA) conducted on the `derived_8.1` soil moisture dataset, comparing it against the `derived_8.0` baseline. 
+This directory contains the exploratory data analysis (EDA) conducted on the `derived_8.1` soil moisture dataset, comparing it against the `derived_8.0` baseline. 
 
 The primary objective is to evaluate:
 1. **Dataset Quality**: Whether the new dataset provides a larger, more representative sample size across the target space.
 2. **Regime Distribution**: How samples are distributed across **Dry**, **Transition**, and **Wet** moisture regimes.
 3. **Threshold Validity**: Whether the original thresholds hold or require recalibration.
 
-The code and figures generated for this study are located in:
-- Interactive Notebook: [derived_8.1_exploration.ipynb](derived_8.1_exploration.ipynb)
+---
+
+## Files in this Directory
+
+* **Analysis Script**: [analyze_regimes.py](./analyze_regimes.py) - Python script to load the data splits, compute quantiles, process regime distributions, and save the figures.
+* **Density Comparison Plot**: [soil_moisture_density_comparison.png](./soil_moisture_density_comparison.png)
+* **Aggregated Regimes Plot**: [aggregated_regime_comparison.png](./aggregated_regime_comparison.png)
+* **Regimes by Station Plot**: [regime_distribution_by_station.png](./regime_distribution_by_station.png)
+* **Histograms by Station Grid**: [soil_moisture_by_station_grid.png](./soil_moisture_by_station_grid.png)
 
 ---
 
@@ -50,12 +57,9 @@ Analyzing the percentiles of `soil_moisture_5cm` in the training splits reveals 
 ### Density Distribution comparison
 The plot below displays the density distribution of `soil_moisture_5cm` for the training sets of both versions, showing the locations of the original and recalibrated boundaries:
 
-![Soil Moisture Density Comparison](soil_moisture_density_comparison.png)
+![Soil Moisture Density Comparison](./soil_moisture_density_comparison.png)
 
-> [!NOTE]
-> The new dataset has a wider, flatter profile in the middle-to-high moisture range (0.20 to 0.38), indicating a richer sample set for intermediate and wet regimes.
-
----
+*The new dataset has a wider, flatter profile in the middle-to-high moisture range (0.20 to 0.38), indicating a richer sample set for intermediate and wet regimes.*
 
 ---
 
@@ -66,9 +70,9 @@ Below is the aggregated distribution of Dry, Transition, and Wet regimes across 
 2. `derived_8.1` Train set (with original thresholds: $t_1 = 0.20, t_2 = 0.313$)
 3. `derived_8.1` Train set (with recalibrated thresholds: $t_1 = 0.143, t_2 = 0.269$)
 
-![Aggregated Regime Comparison](aggregated_regime_comparison.png)
+![Aggregated Regime Comparison](./aggregated_regime_comparison.png)
 
-This highlights how the inclusion of new Washington SNOTEL stations increases the proportion of wet observations under the original thresholds (from 12.8% to 21.1%), and how recalibrating the thresholds balances the dataset perfectly at 33% per regime.
+*This highlights how the inclusion of new Washington SNOTEL stations increases the proportion of wet observations under the original thresholds (from 12.8% to 21.1%), and how recalibrating the thresholds balances the dataset perfectly at 33% per regime.*
 
 ---
 
@@ -97,8 +101,7 @@ This recalibration successfully partitions the training split into balanced clas
 | **Val** | 3,253 (42.2%) | 1,850 (24.0%) | 2,611 (33.8%) | 7,714 |
 | **Test** | 4,756 (44.9%) | 3,448 (32.5%) | 2,395 (22.6%) | 10,599 |
 
-> [!WARNING]
-> The original thresholds ($t_1 = 0.20, t_2 = 0.313$) are misaligned with the new dataset structure and should **not** be reused. Recalibrating to $t_1 = 0.143$ and $t_2 = 0.269$ provides a much more balanced base for MoE model training.
+*Note: The original thresholds ($t_1 = 0.20, t_2 = 0.313$) are misaligned with the new dataset structure and should **not** be reused. Recalibrating to $t_1 = 0.143$ and $t_2 = 0.269$ provides a much more balanced base for MoE model training.*
 
 ---
 
@@ -106,7 +109,7 @@ This recalibration successfully partitions the training split into balanced clas
 
 The regime counts and percentages vary significantly across the 13 Washington stations due to localized environmental conditions:
 
-![Regime Distribution by Station](regime_distribution_by_station.png)
+![Regime Distribution by Station](./regime_distribution_by_station.png)
 
 ### Station-Level Metrics (under Recalibrated Thresholds)
 Below is the tabular summary of observations, average soil moisture, and regime counts per station:
@@ -130,7 +133,7 @@ Below is the tabular summary of observations, average soil moisture, and regime 
 ### Individual Target Histograms per Station
 The small multiples grid below shows the soil moisture density distributions for each station, overlaid with the new recalibrated regime boundaries ($t_1$ and $t_2$):
 
-![Soil Moisture Histogram Grid](soil_moisture_by_station_grid.png)
+![Soil Moisture Histogram Grid](./soil_moisture_by_station_grid.png)
 
 ### Key Insights from Station-Level Analysis:
 1. **High Heterogeneity**: Stations have very different soil moisture ranges. **BurntMountain** is extremely dry (mean = 0.0406, 95.5% of days in Dry), whereas **MFNooksack** (mean = 0.3341, 81.1% Wet) and **BeaverPass** (mean = 0.2773, 68.8% Wet) are highly wet. 
