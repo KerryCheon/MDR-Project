@@ -87,7 +87,8 @@ Output per station: processed final CSV under `src/pipeline/data/processed/`.
 
 ## Important Notes
 
-- This is a team project with many contributors, so ensure configs are well-documented.
+- This is a team project with many contributors, so ensure configs are well-documented and never hard-code paths.
+- This is a research project, so make sure to show all the works and ensure reproducibility.
 - This is a large project with many moving parts, so only make changes you are confident about. If unsure, ask the team first.
 - Do not modify existing versioned notebooks (e.g. in `archive/v9/`, `archive/v10/`) — create new versions for new experiments to preserve history.
 - Must use the MCP interface for notebook interactions to maintain formatting and metadata integrity. Never read the notebook file directly.

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 # Add splits/derived_8.1 directory to sys.path to import the metadata module
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'splits', 'derived_8.1')))
-from metadata import T1 as t1_81_cal, T2 as t2_81_cal
+from dataset_metadata import T1 as t1_81_cal, T2 as t2_81_cal
 
 # Set style for premium aesthetics using standard matplotlib
 plt.rcParams.update({
