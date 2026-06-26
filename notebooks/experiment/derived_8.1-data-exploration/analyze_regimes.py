@@ -106,8 +106,8 @@ def main():
     
     # Analyze global splits under different thresholds
     print("\n--- GLOBAL REGIME DISTRIBUTIONS ---")
-    analyze_regime_distribution(d80_train, t1_80_orig, t2_80_orig, "derived_8.0 Train with Original thresholds")
-    analyze_regime_distribution(d81_train, t1_80_orig, t2_80_orig, "derived_8.1 Train with Original thresholds")
+    d80_train_reg = analyze_regime_distribution(d80_train, t1_80_orig, t2_80_orig, "derived_8.0 Train with Original thresholds")
+    d81_train_reg_orig = analyze_regime_distribution(d81_train, t1_80_orig, t2_80_orig, "derived_8.1 Train with Original thresholds")
     
     print("\n--- derived_8.1 splits with recalibrated thresholds (t1={:.4f}, t2={:.4f}) ---".format(t1_81_cal, t2_81_cal))
     df81_train_reg = analyze_regime_distribution(d81_train, t1_81_cal, t2_81_cal, "derived_8.1 Train")
@@ -206,7 +206,7 @@ def main():
                             fontweight='bold', fontsize=9)
             accum += val
             
-    ax.set_title("derived_8.1: Soil Moisture Regime Counts & Percentages by Station", pad=15)
+    ax.set_title(f"derived_8.1: Soil Moisture Regime Counts & Percentages by Station (t1={t1_81_cal:.3f}, t2={t2_81_cal:.3f})", pad=15)
     ax.set_xlabel("Observations (Days)")
     ax.set_ylabel("Station ID")
     ax.legend(title="Regime", frameon=True, facecolor="white")
@@ -245,13 +245,17 @@ def main():
 
     # Figure 4: Aggregated Regime Proportions Comparison (Dry + Transition + Wet)
     categories = [
-        "derived_8.0 Train\n(Orig thresholds: t1=0.20, t2=0.313)",
-        "derived_8.1 Train\n(Orig thresholds: t1=0.20, t2=0.313)",
-        "derived_8.1 Train\n(Recalibrated: t1=0.160, t2=0.250)"
+        f"derived_8.0 Train\n(Orig thresholds: t1={t1_80_orig:.2f}, t2={t2_80_orig:.3f})",
+        f"derived_8.1 Train\n(Orig thresholds: t1={t1_80_orig:.2f}, t2={t2_80_orig:.3f})",
+        f"derived_8.1 Train\n(Recalibrated: t1={t1_81_cal:.3f}, t2={t2_81_cal:.3f})"
     ]
-    dry_pcts = [47.7, 47.8, 36.8]
-    trans_pcts = [39.5, 31.1, 24.4]
-    wet_pcts = [12.8, 21.1, 38.8]
+    pcts_80_orig = d80_train_reg["regime"].value_counts(normalize=True).reindex(["Dry", "Transition", "Wet"], fill_value=0) * 100
+    pcts_81_orig = d81_train_reg_orig["regime"].value_counts(normalize=True).reindex(["Dry", "Transition", "Wet"], fill_value=0) * 100
+    pcts_81_cal = df81_train_reg["regime"].value_counts(normalize=True).reindex(["Dry", "Transition", "Wet"], fill_value=0) * 100
+
+    dry_pcts = [pcts_80_orig["Dry"], pcts_81_orig["Dry"], pcts_81_cal["Dry"]]
+    trans_pcts = [pcts_80_orig["Transition"], pcts_81_orig["Transition"], pcts_81_cal["Transition"]]
+    wet_pcts = [pcts_80_orig["Wet"], pcts_81_orig["Wet"], pcts_81_cal["Wet"]]
 
     plot_df = pd.DataFrame({
         'Dry': dry_pcts,
@@ -276,7 +280,7 @@ def main():
     ax.set_title("Aggregated Soil Moisture Regime Proportions Comparison", pad=15)
     ax.set_xlabel("Percentage (%)")
     ax.set_xlim(0, 100)
-    ax.legend(title="Regime", loc="lower right", frameon=True, facecolor="white")
+    ax.legend(title="Regime", loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=True, facecolor="white")
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, "aggregated_regime_comparison.png"))
     plt.close()
