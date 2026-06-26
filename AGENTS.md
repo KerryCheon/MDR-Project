@@ -2,6 +2,13 @@
 
 Spatio-temporal soil moisture modeling research project (IEEE AIIoT 2026).
 
+## Status
+There're two models in development:
+1. Spatial model: `notebooks/training`.
+2. LSTM-based Temporal models: `Models/Temporal/lstm`.
+
+Currently we're focusing on stations within Washington state as part of the collaboration with the ECE team that develop and deploy new in-situ soil moisture sensors, for which will be used to evaluate the model's performance. Thus, out-of-region spatial generalization is not a concern for now (but we still need some sptial generalization within the state).
+
 ## Repo Layout
 
 | Directory | Purpose |
@@ -12,14 +19,14 @@ Spatio-temporal soil moisture modeling research project (IEEE AIIoT 2026).
 | `notebooks/training/` | Active model training notebooks (final versions + newer experiment lines) |
 | `notebooks/training/archive/` | Full versioned notebook history (v1–v24, all sub-versions) |
 | `notebooks/evaluation/` | Model diagnostics: eval, regime separability, SHAP feature importance, best-model analysis |
-| `experiments/` | EDA and one-off investigations (domain analysis, correlation, interpolation, missing values) |
+| `experiments/` | Legacy EDA and one-off investigations (domain analysis, correlation, interpolation, missing values) |
 | `Modeling/` | Feature selection lab (`soilmoist-fl`): MI → ElasticNet → Stability → Model eval |
 | `d_models/` | Deep-learning model history (LSTM, GRU-transformer, TCN, transformer) |
 | `results/figures/` | Saved figures organized by type (temporal, loso, spatial, shap, writeup) |
 | `writeup/` | LaTeX paper draft (compile with `cd writeup && bash compile.sh`) |
 | `paper/` | Submitted IEEE PDF |
 | `tests/` | pytest suite |
-| `docs/` | Reserved (empty) |
+| `docs/` | Knowledge base (WIP) and random notes |
 
 ### Restructuring
 The repo was restructured not long ago, so some paths may be outdated in the docs. The current structure is as above.

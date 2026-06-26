@@ -65,3 +65,4 @@ train_log.txt
 
 # Claude Code worktrees
 .claude/
+scratch/
