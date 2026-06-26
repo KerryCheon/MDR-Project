@@ -19,6 +19,8 @@ def select_elasticnet(
     k=60,
     l1_ratio=(0.1, 0.5, 0.9, 0.95, 1.0),
     n_alphas=100,
+    l1_ratio=(0.5, 0.9, 1.0),
+    n_alphas=30,
     cv=5,
     max_iter=20000,
     random_state=42,
@@ -41,6 +43,7 @@ def select_elasticnet(
             cv=int(cv),
             max_iter=int(max_iter),
             random_state=int(random_state),
+            n_jobs=-1,
         ))
     ])
 

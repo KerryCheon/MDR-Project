@@ -3,6 +3,9 @@ name = "mdr-soil-moisture"
 version = "0.1.0"
 description = "Satellite and weather-driven soil moisture estimation — MDR IEEE 2026"
 requires-python = ">=3.14"
+dependencies = [
+    "tabulate>=0.10.0",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
