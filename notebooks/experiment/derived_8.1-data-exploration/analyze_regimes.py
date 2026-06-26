@@ -69,12 +69,12 @@ def main():
     
     t1_80_orig, t2_80_orig = 0.20, 0.313
     t1_90, t2_90 = 0.0993, 0.2115
-    t1_81_cal, t2_81_cal = d81_train["soil_moisture_5cm"].quantile(0.33), d81_train["soil_moisture_5cm"].quantile(0.66)
+    t1_81_cal, t2_81_cal = 0.16, 0.25
     
     print("\n=== Threshold Calibration Options ===")
     print(f"1. Original 8.0 thresholds:       t1 = {t1_80_orig:.4f}, t2 = {t2_80_orig:.4f}")
     print(f"2. Current 9.0 thresholds:        t1 = {t1_90:.4f}, t2 = {t2_90:.4f}")
-    print(f"3. Recalibrated 8.1 thresholds (33/66 percentiles on 8.1 Train): t1 = {t1_81_cal:.4f}, t2 = {t2_81_cal:.4f}")
+    print(f"3. Recalibrated 8.1 thresholds (valleys-based on 8.1 Train): t1 = {t1_81_cal:.4f}, t2 = {t2_81_cal:.4f}")
     
     # Analyze regimes helper
     def analyze_regime_distribution(df, t1, t2, label):
@@ -242,11 +242,11 @@ def main():
     categories = [
         "derived_8.0 Train\n(Orig thresholds: t1=0.20, t2=0.313)",
         "derived_8.1 Train\n(Orig thresholds: t1=0.20, t2=0.313)",
-        "derived_8.1 Train\n(Recalibrated: t1=0.143, t2=0.269)"
+        "derived_8.1 Train\n(Recalibrated: t1=0.160, t2=0.250)"
     ]
-    dry_pcts = [47.7, 47.8, 32.9]
-    trans_pcts = [39.5, 31.1, 33.0]
-    wet_pcts = [12.8, 21.1, 34.1]
+    dry_pcts = [47.7, 47.8, 36.8]
+    trans_pcts = [39.5, 31.1, 24.4]
+    wet_pcts = [12.8, 21.1, 38.8]
 
     plot_df = pd.DataFrame({
         'Dry': dry_pcts,
