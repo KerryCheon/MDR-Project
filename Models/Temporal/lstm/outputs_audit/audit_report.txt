@@ -1,0 +1,131 @@
+======================================================================
+SPLIT AUDIT -- derived_8.0
+Train: 2017-2020 | Val: 2021-2022 | Test: 2023-2025
+======================================================================
+
+[load]  train=(6868, 499)  val=(2720, 499)  test=(4016, 499)
+
+----------------------------------------------------------------------
+1. STATION OVERLAP
+----------------------------------------------------------------------
+  train stations : 5
+  val   stations : 4
+  test  stations : 5
+  in train  intersect test: 5
+  only in test   : set()
+  only in train  : set()
+
+  Saved: station_split_summary.csv
+
+  Rows per station (train / val / test):
+                       train_rows  val_rows  test_rows
+station_id                                            
+Darrington                   1377       671        999
+Quinault                     1447       713       1044
+SourdoughGulch_WA_985        1461       729        906
+Spokane                      1186       607        897
+Touchet_WA_824               1397         0        170
+
+----------------------------------------------------------------------
+2. FEATURE DISTRIBUTION BY SPLIT
+----------------------------------------------------------------------
+
+  Saved: feature_distribution_summary.csv
+
+  soil_moisture_5cm:
+    train  mean=+0.1961  std=0.1001  [0.0390, 0.3203]
+    val    mean=+0.2215  std=0.1051  [0.0630, 0.3390]
+    test   mean=+0.2113  std=0.0942  [0.0600, 0.3170]
+  SMAP_sm_am_interp:
+    train  mean=+0.3660  std=0.1987  [0.1155, 0.6211]
+    val    mean=+0.3612  std=0.2049  [0.0998, 0.6329]
+    test   mean=+0.3799  std=0.2199  [0.0979, 0.6780]
+  SMAP_sm_pm_interp:
+    train  mean=+0.3779  std=0.2079  [0.1019, 0.6511]
+    val    mean=+0.3735  std=0.2122  [0.0973, 0.6455]
+    test   mean=+0.3926  std=0.2251  [0.0968, 0.6762]
+  LST_modis:
+    train  mean=+287.1171  std=11.4068  [272.7271, 301.7968]
+    val    mean=+288.3231  std=12.3559  [273.3035, 305.2785]
+    test   mean=+287.4431  std=11.6943  [273.2279, 303.3585]
+  F_NDVI:
+    train  mean=+0.3563  std=0.1979  [0.0975, 0.6171]
+    val    mean=+0.3979  std=0.2084  [0.1330, 0.7420]
+    test   mean=+0.3337  std=0.1411  [0.1454, 0.5307]
+  F_NDMI:
+    train  mean=+0.2186  std=0.2029  [-0.0293, 0.4882]
+    val    mean=+0.1697  std=0.1874  [-0.0608, 0.3834]
+    test   mean=+0.1456  std=0.1778  [-0.0618, 0.2835]
+  precip_mm:
+    train  mean=+4.5981  std=10.4269  [0.0000, 13.8000]
+    val    mean=+5.0946  std=12.0344  [0.0000, 15.1000]
+    test   mean=+4.4320  std=10.2355  [0.0000, 13.5500]
+  latitude:
+    train  mean=+47.1460  std=0.9074  [46.1167, 48.5400]
+    val    mean=+47.4018  std=0.8300  [46.2333, 48.5400]
+    test   mean=+47.3991  std=0.8387  [46.2333, 48.5400]
+  elev:
+    train  mean=+757.7940  std=576.8370  [96.3921, 1606.7654]
+    val    mean=+545.2806  std=431.5029  [96.3921, 1160.5261]
+    test   mean=+564.4428  std=466.0938  [96.3921, 1160.5261]
+
+----------------------------------------------------------------------
+3. PER-STATION TARGET SHIFT (soil_moisture_5cm)
+----------------------------------------------------------------------
+
+  Saved: station_target_shift.csv
+
+                       train_mean  val_mean  test_mean  train_test_diff  train_test_ratio  train_val_diff
+station_id                                                                                               
+Quinault                  +0.1907   +0.2245    +0.2410          +0.0503           +1.2638         +0.0338
+Touchet_WA_824            +0.1542       NaN    +0.1989          +0.0447           +1.2899             NaN
+Darrington                +0.2184   +0.2433    +0.2042          -0.0142           +0.9351         +0.0249
+Spokane                   +0.1707   +0.1766    +0.1596          -0.0111           +0.9349         +0.0059
+SourdoughGulch_WA_985     +0.2412   +0.2359    +0.2382          -0.0030           +0.9874         -0.0054
+
+  Mean |train-test diff|: 0.0247  Stations with |diff| > 0.02: 2/5
+
+  Saved: target_shift_scatter.png
+
+----------------------------------------------------------------------
+4. OUT-OF-DISTRIBUTION FEATURE FRACTIONS (test vs. train [p1, p99])
+----------------------------------------------------------------------
+  soil_moisture_5cm               0.007  (0.7% of test rows OOD)
+  SMAP_sm_am_interp               0.197  (19.7% of test rows OOD)
+  SMAP_sm_pm_interp               0.166  (16.6% of test rows OOD)
+  LST_modis                       0.030  (3.0% of test rows OOD)
+  F_NDVI                          0.007  (0.7% of test rows OOD)
+  F_NDMI                          0.047  (4.7% of test rows OOD)
+  precip_mm                       0.009  (0.9% of test rows OOD)
+  latitude                        0.000  (0.0% of test rows OOD)
+  elev                            0.000  (0.0% of test rows OOD)
+
+  Saved: feature_ood_fraction.csv
+
+----------------------------------------------------------------------
+5. TEMPORAL TREND IN TARGET (annual mean soil_moisture_5cm)
+----------------------------------------------------------------------
+
+  Year | mean  | std   | n
+  2017  +0.1895  0.1108  1696
+  2018  +0.1777  0.1029  1751
+  2019  +0.1942  0.0838  1692
+  2020  +0.2232  0.0953  1729
+  2021  +0.2140  0.1028  1381
+  2022  +0.2292  0.1069  1339
+  2023  +0.2043  0.0947  1266
+  2024  +0.2208  0.0893  1493
+  2025  +0.2070  0.0983  1257
+
+======================================================================
+SUMMARY
+======================================================================
+  Split type         : TEMPORAL (same stations, different years)
+  Train  intersect Test overlap: 5/5 stations
+  Mean |target shift|: 0.0247 m^3/m^3 (train->test per station)
+  Stations w/ large shift: 2 with |diff| > 0.02
+
+  -> If target means shift substantially between train and test years,
+    per-station normalization (v17) should reduce the systematic component.
+  -> If feature OOD fractions are high, consider retraining with more
+    recent data or applying domain adaptation.

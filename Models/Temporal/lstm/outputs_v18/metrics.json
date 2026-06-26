@@ -1,0 +1,96 @@
+{
+  "train": {
+    "r2": 0.8354442119598389,
+    "rmse": 0.040885187685489655,
+    "ubrmse": 0.037003353238105774,
+    "bias": 0.017388230189681053,
+    "mae": 0.030289286747574806,
+    "q90": 0.06577341258525848,
+    "n": 8199
+  },
+  "val": {
+    "r2": 0.8338432312011719,
+    "rmse": 0.04368504136800766,
+    "ubrmse": 0.0403408408164978,
+    "bias": -0.01676304079592228,
+    "mae": 0.03536932170391083,
+    "q90": 0.07193434983491898,
+    "n": 1299
+  },
+  "test": {
+    "r2": 0.6832578182220459,
+    "rmse": 0.05302190035581589,
+    "ubrmse": 0.05264847353100777,
+    "bias": 0.006281745620071888,
+    "mae": 0.040628496557474136,
+    "q90": 0.08289492875337601,
+    "n": 3966
+  },
+  "config": {
+    "variant": "v18_rolling_window",
+    "train_years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021
+    ],
+    "val_years": [
+      2022
+    ],
+    "test_years": [
+      2023,
+      2024,
+      2025
+    ],
+    "seq_len": 10,
+    "train_stride": 1,
+    "hidden_size": 80,
+    "num_layers": 2,
+    "dropout": 0.3,
+    "proj_size": 56,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.002,
+    "huber_delta": 0.05,
+    "scheduler": "onecycle(max_lr=3*lr,pct_start=0.1)",
+    "time_features": [
+      "precip_mm",
+      "s1_vv",
+      "s1_vh",
+      "s2_b4",
+      "s2_b8",
+      "s2_b11",
+      "s2_b12",
+      "LST_modis",
+      "F_NDVI",
+      "F_NDMI",
+      "E_SAR_ratio",
+      "SMAP_sm_am_interp",
+      "SMAP_sm_pm_interp",
+      "SMAP_sm_interp_mask",
+      "sin_year",
+      "cos_year",
+      "SMAP_sm_pm_interp_ema02",
+      "V_ema_LST_modis_kobs7",
+      "V_rollmean_G_API_kobs14"
+    ],
+    "static_features": [
+      "latitude",
+      "longitude",
+      "elev",
+      "slope",
+      "aspect",
+      "K_sand_clay_ratio_b0",
+      "K_clay_plus_sand_b0",
+      "K_slope_sin",
+      "K_slope_cos",
+      "K_aspect_sin",
+      "K_aspect_cos"
+    ],
+    "n_features": 30,
+    "n_params": 283818,
+    "best_epoch": 13,
+    "best_val_rmse": 0.04368504167940796
+  }
+}

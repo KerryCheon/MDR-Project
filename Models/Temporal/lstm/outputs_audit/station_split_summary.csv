@@ -1,0 +1,6 @@
+station_id,train_rows,val_rows,test_rows
+Darrington,1377,671,999
+Quinault,1447,713,1044
+SourdoughGulch_WA_985,1461,729,906
+Spokane,1186,607,897
+Touchet_WA_824,1397,0,170

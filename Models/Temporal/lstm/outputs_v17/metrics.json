@@ -1,0 +1,111 @@
+{
+  "train_residual": {
+    "r2": 0.8418037295341492,
+    "rmse": 0.0377538688480854,
+    "ubrmse": 0.03652971610426903,
+    "bias": 0.009535946883261204,
+    "mae": 0.027000246569514275,
+    "q90": 0.059628892689943314,
+    "n": 6818
+  },
+  "val_residual": {
+    "r2": 0.8163015842437744,
+    "rmse": 0.04425680264830589,
+    "ubrmse": 0.039671577513217926,
+    "bias": -0.019617101177573204,
+    "mae": 0.034424204379320145,
+    "q90": 0.07042455673217773,
+    "n": 2680
+  },
+  "test_residual": {
+    "r2": 0.7046939134597778,
+    "rmse": 0.05048379674553871,
+    "ubrmse": 0.05040730908513069,
+    "bias": -0.002777928253635764,
+    "mae": 0.03817826136946678,
+    "q90": 0.08155374228954315,
+    "n": 3966
+  },
+  "train_reconstructed": {
+    "r2": 0.857418417930603,
+    "rmse": 0.0377538688480854,
+    "ubrmse": 0.03652971610426903,
+    "bias": 0.009535946883261204,
+    "mae": 0.027000246569514275,
+    "q90": 0.059628892689943314,
+    "n": 6818
+  },
+  "val_reconstructed": {
+    "r2": 0.822822093963623,
+    "rmse": 0.04425680264830589,
+    "ubrmse": 0.039671577513217926,
+    "bias": -0.019617101177573204,
+    "mae": 0.034424204379320145,
+    "q90": 0.07042454928159714,
+    "n": 2680
+  },
+  "test_reconstructed": {
+    "r2": 0.7128562331199646,
+    "rmse": 0.05048379674553871,
+    "ubrmse": 0.05040730908513069,
+    "bias": -0.002777928253635764,
+    "mae": 0.03817826136946678,
+    "q90": 0.08155374228954315,
+    "n": 3966
+  },
+  "config": {
+    "variant": "v17_bilstm_attn_per_station_norm",
+    "seq_len": 10,
+    "train_stride": 1,
+    "hidden_size": 80,
+    "num_layers": 2,
+    "dropout": 0.3,
+    "proj_size": 56,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.002,
+    "huber_delta": 0.05,
+    "scheduler": "onecycle(max_lr=3*lr,pct_start=0.1)",
+    "time_features": [
+      "precip_mm",
+      "s1_vv",
+      "s1_vh",
+      "s2_b4",
+      "s2_b8",
+      "s2_b11",
+      "s2_b12",
+      "LST_modis",
+      "F_NDVI",
+      "F_NDMI",
+      "E_SAR_ratio",
+      "SMAP_sm_am_interp",
+      "SMAP_sm_pm_interp",
+      "SMAP_sm_interp_mask",
+      "sin_year",
+      "cos_year",
+      "SMAP_sm_pm_interp_ema02",
+      "V_ema_LST_modis_kobs7",
+      "V_rollmean_G_API_kobs14"
+    ],
+    "static_features": [
+      "latitude",
+      "longitude",
+      "elev",
+      "slope",
+      "aspect",
+      "K_sand_clay_ratio_b0",
+      "K_clay_plus_sand_b0",
+      "K_slope_sin",
+      "K_slope_cos",
+      "K_aspect_sin",
+      "K_aspect_cos"
+    ],
+    "n_features": 30,
+    "n_params": 283818,
+    "best_epoch": 8,
+    "best_val_rmse": 0.04425680444298319,
+    "n_station_means": 5,
+    "station_mean_grand": 0.19504353736301888,
+    "normalization": "per_station_train_mean_subtracted"
+  }
+}
