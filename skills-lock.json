@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "notebook-cli": {
+      "source": "jupyter-ai-contrib/nb-cli",
+      "sourceType": "github",
+      "skillPath": "skills/notebook-cli/SKILL.md",
+      "computedHash": "8dd7743d9b48940514cfb40f25134b87c84e1cbde21bc33eafea7eebf84bba11"
+    }
+  }
+}

@@ -5,4 +5,4 @@ It's intended for cross-components documentation (i.e. across multiple notebooks
 
 ## Rules
 - Ensure the contents are up-to-date with the latest code and notebooks. If you created a new notebook or made a change to the pipeline, please update the docs accordingly.
-- DO NOT edit `docs/changelogs/`. 
+- DO NOT edit `docs/changelogs/`, they are meant for human collaborator to storing notes. 
