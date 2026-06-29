@@ -194,17 +194,16 @@ As part of this work we designed and deployed a low-cost soil moisture sensor no
 ## Citation
 
 ```bibtex
-@article{balkovec2026mdr,
-  title   = {Enhancing Spatial and Temporal Coverage of Soil Moisture Estimation
-             Using Satellite and Weather-Driven Machine Learning},
-  author  = {Balkovec, Jakob and Cheon, Kerry and Kirov-Tomilov, Daniel and
-             Lo, Wai Nam and Philipose, Gina and Zhou, Xin and
-             Abraham, Shiny and Li, Lin},
-  journal = {IEEE Xplore},
-  year    = {2026},
-  note    = {in press},
-  doi     = 10.1109/AIIoT68874.2026.11569136
-}
+@INPROCEEDINGS{11569136,
+  author={Balkovec, Jakob and Cheon, Kerry and Kirov-Tomilov, Daniel and Lo, Wai Nam and Philipose, Gina and Zhou, Xin and Abraham, Shiny and Li, Lin},
+  booktitle={2026 IEEE World AI IoT Congress (AIIoT)}, 
+  title={Enhancing Spatial and Temporal Coverage of Soil Moisture Estimation Using Satellite and Weather-Driven Machine Learning}, 
+  year={2026},
+  volume={},
+  number={},
+  pages={0258-0267},
+  keywords={Modeling;Soil moisture;Image sensors;Satellites;Meteorology;Timing;Machine learning;Weather;Weathering;Training;soil moisture;remote sensing;satellite observations;machine learning;in-situ sensing},
+  doi={10.1109/AIIoT68874.2026.11569136}}
 ```
 
 ---
