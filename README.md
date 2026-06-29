@@ -203,7 +203,7 @@ As part of this work we designed and deployed a low-cost soil moisture sensor no
   journal = {IEEE Xplore},
   year    = {2026},
   note    = {in press},
-  % TODO: add doi = {...} when assigned
+  doi     = 10.1109/AIIoT68874.2026.11569136
 }
 ```
 
