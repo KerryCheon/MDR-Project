@@ -1,0 +1,1272 @@
+# ===========================================================
+# Multi-Station MDR Pipeline Configuration
+# ===========================================================
+# This configuration defines all parameters for the full
+# pipeline — request, parse, clean, merge, save, temporal fill,
+# satellite caching, and logging.
+#
+# Each station block contains the same structure and can be
+# processed automatically by looping through `stations:`.
+# ===========================================================
+
+stations:
+  # -----------------------------------------------------------
+  # TEMPLATE: Custom Backyard Sensor (manual scaffold mode)
+  # -----------------------------------------------------------
+  # backyard_sensor:
+  #   request:
+  #     base_url: null
+  #     station: "BACKYARD_SENSOR"
+  #     start_year: 2025
+  #     end_year: 2026
+  #     timeout: 20
+  #     min_bytes: 500
+  #     out_dir: "src/pipeline/data/raw/backyard_sensor/"
+  #
+  #   parse:
+  #     manual_mode: true
+  #     station: "BACKYARD_SENSOR"
+  #     latitude: 47.12345
+  #     longitude: -117.12345
+  #     elevation: 650
+  #     start_date: "2025-03-18"
+  #     end_date: "2026-03-18"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/backyard_sensor/final.csv"
+  #     format: "csv"
+  #     index: false
+
+  # -----------------------------------------------------------
+  # STATION 1: Spokane 17 SSW
+  # -----------------------------------------------------------
+  spokane_17_ssw:
+    request:
+      base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01" # NOAA USCRN daily dataset base URL
+      station: "WA_Spokane_17_SSW" # Station code
+      start_year: 2016 # < 2007 = non-existent data; was set to 2007
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500 # Skip if file too small
+      out_dir: "src/pipeline/data/raw/spokane/" # Raw data output directory
+
+    parse:
+      in_dir: src/pipeline/data/raw/spokane/ # Raw input directory
+      out_dir: src/pipeline/data/processed/spokane
+      drop_duplicates: true
+      col_indices: # Column index mapping (0-based)
+        station_id: 0 # WBANNO
+        date: 1 # DATE (YYYYMMDD)
+        crx_vn: 2 # CRX_VN (station/version)
+        longitude: 3 # LONGITUDE (decimal degrees)
+        latitude: 4 # LATITUDE (decimal degrees)
+        air_temp_max: 5 # TEMP_DAILY_MAX (°C)
+        air_temp_min: 6 # TEMP_DAILY_MIN (°C)
+        air_temp_mean: 7 # TEMP_DAILY_MEAN (°C)
+        air_temp_avg: 8 # TEMP_DAILY_AVG (°C)
+        precipitation: 9 # PERCIP_DAILY_CALC (mm)
+        solar_radiation: 10 # SOLAR_RAD_DAILY (MJ/m^2)
+        sur_temp_type: 11 # SURFACE_TEMP_DAILY_TYPE (R/C/U)
+        sur_temp_max: 12 # SURFACE_TEMP_DAILY_MAX (°C)
+        sur_temp_min: 13 # SURFACE_TEMP_DAILY_MIN (°C)
+        sur_temp_avg: 14 # SURFACE_TEMP_DAILY_AVG (°C)
+        rh_max: 15 # RELATIVE_HUMIDITY_DAILY_MAX (%)
+        rh_min: 16 # RELATIVE_HUMIDITY_DAILY_MIN (%)
+        rh_mean: 17 # RELATIVE_HUMIDITY_DAILY_AVG (%)
+        soil_moisture_5cm: 18 # SOIL_MOISTURE_5_DAILY (m³/m³)
+        soil_moisture_10cm: 19
+        soil_moisture_20cm: 20
+        soil_moisture_50cm: 21
+        soil_moisture_100cm: 22
+        soil_temp_5cm: 23 # SOIL_TEMP_5_DAILY (°C)
+        soil_temp_10cm: 24
+        soil_temp_20cm: 25
+        soil_temp_50cm: 26
+        soil_temp_100cm: 27
+
+    clean:
+      drop_missing: true
+      fillna_value: null
+      keep_columns: [] # == KEEP ALL, configure later
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/spokane/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 2: Quinault 4 NE (WA_Quinault_4_NE)
+  # -----------------------------------------------------------
+  quinault_4_ne:
+    request:
+      base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01"
+      station: "WA_Quinault_4_NE"
+      start_year: 2016  # was set to 2007
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/quinault/"
+
+    parse:
+      in_dir: src/pipeline/data/raw/quinault/
+      out_dir: src/pipeline/data/processed/quinault
+      drop_duplicates: true
+      col_indices:
+        station_id: 0 # WBANNO
+        date: 1 # DATE (YYYYMMDD)
+        crx_vn: 2 # CRX_VN
+        longitude: 3 # LONGITUDE (°)
+        latitude: 4 # LATITUDE (°)
+        air_temp_max: 5
+        air_temp_min: 6
+        air_temp_mean: 7
+        air_temp_avg: 8
+        precipitation: 9
+        solar_radiation: 10
+        sur_temp_type: 11
+        sur_temp_max: 12
+        sur_temp_min: 13
+        sur_temp_avg: 14
+        rh_max: 15
+        rh_min: 16
+        rh_mean: 17
+        soil_moisture_5cm: 18
+        soil_moisture_10cm: 19
+        soil_moisture_20cm: 20
+        soil_moisture_50cm: 21
+        soil_moisture_100cm: 22
+        soil_temp_5cm: 23
+        soil_temp_10cm: 24
+        soil_temp_20cm: 25
+        soil_temp_50cm: 26
+        soil_temp_100cm: 27
+
+    clean:
+      drop_missing: true
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/quinault/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 3: Darrington 21 NNE (WA_Darrington_21_NNE)
+  # -----------------------------------------------------------
+  darrington_21_nne:
+    request:
+      base_url: "https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01"
+      station: "WA_Darrington_21_NNE"
+      start_year: 2016  # was set to 2007
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/darrington/"
+
+    parse:
+      in_dir: src/pipeline/data/raw/darrington
+      out_dir: src/pipeline/data/processed/darrington
+      drop_duplicates: true
+      col_indices:
+        station_id: 0
+        date: 1
+        crx_vn: 2
+        longitude: 3
+        latitude: 4
+        air_temp_max: 5
+        air_temp_min: 6
+        air_temp_mean: 7
+        air_temp_avg: 8
+        precipitation: 9
+        solar_radiation: 10
+        sur_temp_type: 11
+        sur_temp_max: 12
+        sur_temp_min: 13
+        sur_temp_avg: 14
+        rh_max: 15
+        rh_min: 16
+        rh_mean: 17
+        soil_moisture_5cm: 18
+        soil_moisture_10cm: 19
+        soil_moisture_20cm: 20
+        soil_moisture_50cm: 21
+        soil_moisture_100cm: 22
+        soil_temp_5cm: 23
+        soil_temp_10cm: 24
+        soil_temp_20cm: 25
+        soil_temp_50cm: 26
+        soil_temp_100cm: 27
+
+    clean:
+      drop_missing: true
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/darrington/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 4: Sourdough Gulch SNOTEL #985
+  # -----------------------------------------------------------
+  sourdough_gulch:
+    request:
+      base_url: null # SNOTEL data - no download needed
+      station: "SourdoughGulch_WA_985"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/SourdoughGulch/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/SourdoughGulch/"
+      out_dir: "src/pipeline/data/processed/sourdough"
+      drop_duplicates: true
+      snotel_mode: true # Flag for SNOTEL data format
+      station: "SourdoughGulch_WA_985"
+      latitude: 46.233333
+      longitude: -117.4
+      elevation: 1210
+      add_rolling_rain: true # Add 3-day rolling precipitation
+      col_indices: {} # SNOTEL uses different format
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/sourdough/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 5: Touchet SNOTEL #824
+  # -----------------------------------------------------------
+  touchnet:
+    request:
+      base_url: null # SNOTEL data - no download needed
+      station: "Touchet_WA_824"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Touchet/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Touchet/"
+      out_dir: "src/pipeline/data/processed/touchet"
+      drop_duplicates: true
+      snotel_mode: true # Flag for SNOTEL data format
+      station: "Touchet_WA_824"
+      latitude: 46.116667
+      longitude: -117.85
+      elevation: 1682
+      add_rolling_rain: true # Add 3-day rolling precipitation
+      col_indices: {} # SNOTEL uses different format
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/touchet/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 6: Sensor: Device 4
+  # -----------------------------------------------------------
+  # device_4:
+  #   parse:
+  #     manual_mode: true
+  #     station: "DEV4"
+  #     latitude: REDACTED
+  #     longitude: REDACTED
+  #     start_date: "2026-03-06"
+  #     end_date: "2026-03-16"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/device4/final.csv"
+  #     format: "csv"
+  #     index: false
+
+  # -----------------------------------------------------------
+  # STATION 7: Sensor: Device 7
+  # -----------------------------------------------------------
+  # device_7:
+  #   parse:
+  #     manual_mode: true
+  #     station: "DEV7"
+  #     latitude: REDACTED
+  #     longitude: REDACTED
+  #     start_date: "2026-03-06"
+  #     end_date: "2026-03-18"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/device7/final.csv"
+  #     format: "csv"
+  #     index: false
+
+  # -----------------------------------------------------------
+  # STATION 8: Sensor: Device 3
+  # -----------------------------------------------------------
+  # device_3:
+  #   parse:
+  #     manual_mode: true
+  #     station: "DEV3"
+  #     latitude: REDACTED
+  #     longitude: REDACTED
+  #     start_date: "2026-03-06"
+  #     end_date: "2026-03-16"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/device3/final.csv"
+  #     format: "csv"
+  #     index: false
+
+  # -----------------------------------------------------------
+  # STATION: CayusePass WA SNOTEL
+  # -----------------------------------------------------------
+  cayuse_pass_wa:
+    request:
+      base_url: null
+      station: "CayusePass_WA"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/CayusePass/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/CayusePass/"
+      out_dir: "src/pipeline/data/processed/cayuse_pass"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "CayusePass_WA"
+      latitude: 46.86956
+      longitude: -121.53434
+      elevation: 1603.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/cayuse_pass/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION: Paradise WA SNOTEL
+  # -----------------------------------------------------------
+  paradise_wa:
+    request:
+      base_url: null
+      station: "Paradise_WA"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Paradise/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Paradise/"
+      out_dir: "src/pipeline/data/processed/paradise"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Paradise_WA"
+      latitude: 46.78266
+      longitude: -121.74767
+      elevation: 1570.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/paradise/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION: BurntMountain WA SNOTEL
+  # -----------------------------------------------------------
+  burnt_mountain_wa:
+    request:
+      base_url: null
+      station: "BurntMountain_WA"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/BurntMountain/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/BurntMountain/"
+      out_dir: "src/pipeline/data/processed/burnt_mountain"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "BurntMountain_WA"
+      latitude: 47.04440
+      longitude: -121.94032
+      elevation: 1268.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/burnt_mountain/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION: BeaverPass WA SNOTEL #990
+  # -----------------------------------------------------------
+  beaver_pass_wa:
+    request:
+      base_url: null
+      station: "BeaverPass_WA_990"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/BeaverPass/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/BeaverPass/"
+      out_dir: "src/pipeline/data/processed/beaver_pass"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "BeaverPass_WA_990"
+      latitude: 48.87930
+      longitude: -121.25550
+      elevation: 1106.4
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/beaver_pass/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION: HartsPass WA SNOTEL #515
+  # -----------------------------------------------------------
+  harts_pass_wa:
+    request:
+      base_url: null
+      station: "HartsPass_WA_515"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/HartsPass/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/HartsPass/"
+      out_dir: "src/pipeline/data/processed/harts_pass"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "HartsPass_WA_515"
+      latitude: 48.72047
+      longitude: -120.65860
+      elevation: 1978.2
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/harts_pass/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION: MartenRidge WA SNOTEL #999
+  # -----------------------------------------------------------
+  marten_ridge_wa:
+    request:
+      base_url: null
+      station: "MartenRidge_WA_999"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/MartenRidge/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/MartenRidge/"
+      out_dir: "src/pipeline/data/processed/marten_ridge"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "MartenRidge_WA_999"
+      latitude: 48.76292
+      longitude: -121.69823
+      elevation: 1072.9
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/marten_ridge/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION: MFNooksack WA SNOTEL #1011
+  # -----------------------------------------------------------
+  mf_nooksack_wa:
+    request:
+      base_url: null
+      station: "MFNooksack_WA_1011"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/MFNooksack/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/MFNooksack/"
+      out_dir: "src/pipeline/data/processed/mf_nooksack"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "MFNooksack_WA_1011"
+      latitude: 48.82441
+      longitude: -121.92947
+      elevation: 1505.7
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/mf_nooksack/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION: USCRN Arco 17 SW (ISMN manual mode)
+  # -----------------------------------------------------------
+  # uscrn_arco_17_sw:
+  #   parse:
+  #     manual_mode: true
+  #     station: "USCRN_Arco_17_SW"
+  #     latitude: 43.46210
+  #     longitude: -113.55600
+  #     elevation: 1804.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/uscrn_arco_17_sw/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: USCRN Coos Bay 8 SW (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # uscrn_coos_bay_8_sw:
+  #   parse:
+  #     manual_mode: true
+  #     station: "USCRN_Coos_Bay_8_SW"
+  #     latitude: 43.27180
+  #     longitude: -124.31860
+  #     elevation: 4.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/uscrn_coos_bay_8_sw/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: USCRN Corvallis 10 SSW (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # uscrn_corvallis_10_ssw:
+  #   parse:
+  #     manual_mode: true
+  #     station: "USCRN_Corvallis_10_SSW"
+  #     latitude: 44.41850
+  #     longitude: -123.32570
+  #     elevation: 95.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/uscrn_corvallis_10_ssw/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: USCRN Dillon 18 WSW (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # uscrn_dillon_18_wsw:
+  #   parse:
+  #     manual_mode: true
+  #     station: "USCRN_Dillon_18_WSW"
+  #     latitude: 45.15800
+  #     longitude: -113.00570
+  #     elevation: 1820.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/uscrn_dillon_18_wsw/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: USCRN John Day 35 WNW (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # uscrn_john_day_35_wnw:
+  #   parse:
+  #     manual_mode: true
+  #     station: "USCRN_John_Day_35_WNW"
+  #     latitude: 44.55600
+  #     longitude: -119.64590
+  #     elevation: 684.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/uscrn_john_day_35_wnw/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: USCRN Murphy 10 W (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # uscrn_murphy_10_w:
+  #   parse:
+  #     manual_mode: true
+  #     station: "USCRN_Murphy_10_W"
+  #     latitude: 43.20440
+  #     longitude: -116.75050
+  #     elevation: 1204.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/uscrn_murphy_10_w/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: USCRN Riley 10 WSW (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # uscrn_riley_10_wsw:
+  #   parse:
+  #     manual_mode: true
+  #     station: "USCRN_Riley_10_WSW"
+  #     latitude: 43.47110
+  #     longitude: -119.69170
+  #     elevation: 1397.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/uscrn_riley_10_wsw/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: USCRN St Mary 1 SSW (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # uscrn_st_mary_1_ssw:
+  #   parse:
+  #     manual_mode: true
+  #     station: "USCRN_St_Mary_1_SSW"
+  #     latitude: 48.74120
+  #     longitude: -113.43300
+  #     elevation: 1388.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/uscrn_st_mary_1_ssw/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: SCAN Conrad AgRc (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # scan_conrad_agrc:
+  #   parse:
+  #     manual_mode: true
+  #     station: "SCAN_ConradAgRc"
+  #     latitude: 48.30453
+  #     longitude: -111.92363
+  #     elevation: 1130.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/scan_conrad_agrc/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: SCAN Cook Farm Field D (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # scan_cook_farm_field_d:
+  #   parse:
+  #     manual_mode: true
+  #     station: "SCAN_CookFarmFieldD"
+  #     latitude: 46.78373
+  #     longitude: -117.08008
+  #     elevation: 786.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/scan_cook_farm_field_d/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: SCAN Jordan Valley CWMA (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # scan_jordan_valley_cwma:
+  #   parse:
+  #     manual_mode: true
+  #     station: "SCAN_JordanValleyCwma"
+  #     latitude: 42.94863
+  #     longitude: -117.01060
+  #     elevation: 1374.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/scan_jordan_valley_cwma/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: SCAN Lind 1 (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # scan_lind_1:
+  #   parse:
+  #     manual_mode: true
+  #     station: "SCAN_Lind_1"
+  #     latitude: 47.00000
+  #     longitude: -118.56667
+  #     elevation: 500.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/scan_lind_1/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: SCAN Orchard Range Site (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # scan_orchard_range_site:
+  #   parse:
+  #     manual_mode: true
+  #     station: "SCAN_OrchardRangeSite"
+  #     latitude: 43.32268
+  #     longitude: -115.99643
+  #     elevation: 975.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/scan_orchard_range_site/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: SCAN Table Mountain (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # scan_table_mountain:
+  #   parse:
+  #     manual_mode: true
+  #     station: "SCAN_TableMountain"
+  #     latitude: 45.80272
+  #     longitude: -111.58655
+  #     elevation: 1364.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/scan_table_mountain/final.csv"
+  #     format: "csv"
+  #     index: false
+  #
+  # # -----------------------------------------------------------
+  # # STATION: SCAN Violett (ISMN manual mode)
+  # # -----------------------------------------------------------
+  # scan_violett:
+  #   parse:
+  #     manual_mode: true
+  #     station: "SCAN_Violett"
+  #     latitude: 48.43578
+  #     longitude: -111.18423
+  #     elevation: 983.0
+  #     start_date: "2014-05-20"
+  #     end_date: "2026-05-06"
+  #     freq: "D"
+  #     include_soil_moisture_placeholder: true
+  #
+  #   clean:
+  #     drop_missing: false
+  #     fillna_value: null
+  #     keep_columns: []
+  #
+  #   merge:
+  #     on_columns: ["station_id", "date"]
+  #     how: "outer"
+  #
+  #   save:
+  #     out_path: "src/pipeline/data/processed/scan_violett/final.csv"
+  #     format: "csv"
+  #     index: false
+
+  # -----------------------------------------------------------
+  # STATION: RainyPass WA SNOTEL #711
+  # -----------------------------------------------------------
+  rainy_pass_wa:
+    request:
+      base_url: null
+      station: "RainyPass_WA_711"
+      start_year: 2016  # was set to 1979
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/RainyPass/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/RainyPass/"
+      out_dir: "src/pipeline/data/processed/rainy_pass"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "RainyPass_WA_711"
+      latitude: 48.51865
+      longitude: -120.73580
+      elevation: 1487.4
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/rainy_pass/final.csv"
+      format: "csv"
+      index: false
+
+# ===========================================================
+# GLOBAL SECTIONS
+# ===========================================================
+
+temporal_fill:
+  interpolate_cols:
+    - LST_modis
+    - NDVI_modis
+    - s1_vv
+    - s1_vh
+    - s2_b2
+    - s2_b3
+    - s2_b4
+    - s2_b8
+    - s2_b11
+    - s2_b12
+    - SMAP_sm_am
+    - SMAP_sm_pm
+
+  min_known_required: 15
+
+  # The rest are legacy params from linear/regression filling.
+  max_gap_days: 30 # unused (kept for safety)
+  switch_gap: 4 # unused (kept for safety)
+  regression_window: 7 # unused (kept for safety)
+
+whittaker:
+  lambda: 5000
+  target_columns: ["NDVI_modis", "SMAP_sm_am"]
+
+weather:
+  cache_path: "src/pipeline/data/cache/{station}_weather_cache.json"
+
+satellite:
+  cache_path: "src/pipeline/data/cache/{station}_satellite_cache.json"
+  interpolate_level: "bands" # or "features"
+
+logging:
+  level: "INFO"
+  log_to_file: true
+  file_path: "src/pipeline/logs/pipeline.log"
+
+  # new dedicated imputer log
+  imputer_file_path: "src/pipeline/logs/imputer.log"
+  imputer_level: "DEBUG"
+
+  validator_file_path: "src/pipeline/logs/validator.log"
+  validator_level: "INFO"
+
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+  datefmt: "%Y-%m-%d %H:%M:%S"
+  max_bytes: 10485760
+  backup_count: 5
+
+imputer:
+  enabled:
+    linear_interp: true
+    ffill_bfill: true
+    rolling_mean: true
+    climatology: true
+    xgboost: true
+    knn: true
+    gaussian_process: true
+    seasonal_naive: true
+
+  base_weights:
+    linear_model: 0.25
+    spline: 0.20
+    gaussian_process: 0.15
+    xgboost: 0.10
+    knn: 0.08
+    ffill_bfill: 0.07
+    linear_interp: 0.06
+    rolling_mean: 0.05
+    climatology: 0.02
+    seasonal_naive: 0.02
+
+  # hyperparameters
+  linear_interp:
+    tau_days: 7.0
+
+  linear_model:
+    enabled: true
+    min_known: 15
+    use_cross_features: true
+
+  ffill_bfill:
+    tau_days: 3.0
+
+  rolling_mean:
+    window: 7
+
+  climatology:
+    min_count_for_high_conf: 10
+
+  xgboost:
+    min_known: 30
+
+  knn:
+    n_neighbors: 5
+    distance_weighting: true
+
+  gaussian_process: # tune
+    length_scale: 20.0
+    noise_level: 0.5
+
+  seasonal_naive:
+    min_count_for_high_conf: 10
+    use_median: true
+
+  spline:
+    smooth: 0.5
+    degree: 3
+    extrap_penalty: 0.3
+
+  ndvi_max_gap: 10
+  tau_gap: 10
+
+  high_freq_feat:
+    - first_difference
+    - second_difference
+    - temporal_gradient
+    - spectral_entropy
+
+  outlier_factor: 3.0
+
+validator:
+  n_folds: 5
+  mask_fraction: 0.1
+  random_seed: 42

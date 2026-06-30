@@ -1,0 +1,40 @@
+{
+  "source": "derived_8.1 splits with soil_moisture_5cm <= 0.0 filtered out",
+  "derived_features": "350+ lags, rolling means, and GEE remote-sensing features fully populated",
+  "train_years": [
+    2017,
+    2018,
+    2019,
+    2020
+  ],
+  "val_years": [
+    2021,
+    2022
+  ],
+  "test_years": [
+    2023,
+    2024,
+    2025
+  ],
+  "lia_csv": "data/splits/derived_8.1_pos/LIA/stations_lia.csv",
+  "stations": [
+    "BeaverPass_WA_990",
+    "BurntMountain_WA",
+    "CayusePass_WA",
+    "Darrington",
+    "HartsPass_WA_515",
+    "MFNooksack_WA_1011",
+    "MartenRidge_WA_999",
+    "Paradise_WA",
+    "Quinault",
+    "RainyPass_WA_711",
+    "SourdoughGulch_WA_985",
+    "Spokane",
+    "Touchet_WA_824"
+  ],
+  "rows": {
+    "train": 15964,
+    "val": 7149,
+    "test": 8902
+  }
+}
