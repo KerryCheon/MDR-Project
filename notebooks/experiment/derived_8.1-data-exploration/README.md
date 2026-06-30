@@ -16,6 +16,7 @@ The primary objective is to evaluate:
 * **Aggregated Regimes Plot**: [aggregated_regime_comparison.png](./aggregated_regime_comparison.png)
 * **Regimes by Station Plot**: [regime_distribution_by_station.png](./regime_distribution_by_station.png)
 * **Histograms by Station Grid**: [soil_moisture_by_station_grid.png](./soil_moisture_by_station_grid.png)
+* **Histograms by Month Grid**: [soil_moisture_by_month_grid.png](./soil_moisture_by_month_grid.png)
 
 ---
 
@@ -135,10 +136,17 @@ The small multiples grid below shows the soil moisture density distributions for
 
 ![Soil Moisture Histogram Grid](./soil_moisture_by_station_grid.png)
 
-### Key Insights from Station-Level Analysis:
-1. **High Heterogeneity**: Stations have very different soil moisture ranges. **BurntMountain** is extremely dry (mean = 0.0406, 96.5% of days in Dry), whereas **MFNooksack** (mean = 0.3341, 81.5% Wet) and **BeaverPass** (mean = 0.2773, 76.1% Wet) are highly wet. 
-2. **Data Sparsity**: **MFNooksack** has only **265 observations** total due to missing target sensor data. It should be treated as a sparse target station during model training.
-3. **Balanced Stations**: **Spokane**, **Darrington**, and **CayusePass** span a wide range of values and display bimodal or spread distributions across all three regimes.
+### Individual Target Histograms per Month (Aggregated)
+The small multiples grid below shows the soil moisture density distributions for all observations aggregated by month across the year, overlaid with the valleys-based regime boundaries:
+
+![Soil Moisture Histogram by Month Grid](./soil_moisture_by_month_grid.png)
+
+### Key Insights from Station-Level & Seasonal Analysis:
+1. **Seasonal Cycles (Wet Winters, Dry Summers)**: As expected from the Pacific Northwest climate, soil moisture displays strong seasonality. Winter months (November through March) are heavily skewed towards the Wet regime (exceeding the $t_2 = 0.250$ threshold), with very few dry observations. Conversely, Summer months (July, August, September) show a dominant Dry mode (below the $t_1 = 0.160$ threshold) as precipitation drops and evapotranspiration peaks.
+2. **Transition Periods**: Months like May, June, and October act as transition zones where the target distributions are broad and span all three regimes, reflecting the shifting weather patterns.
+3. **High Spatial Heterogeneity**: Stations have very different soil moisture ranges. **BurntMountain** is extremely dry (mean = 0.0406, 96.5% of days in Dry), whereas **MFNooksack** (mean = 0.3341, 81.5% Wet) and **BeaverPass** (mean = 0.2773, 76.1% Wet) are highly wet. 
+4. **Data Sparsity**: **MFNooksack** has only **265 observations** total due to missing target sensor data. It should be treated as a sparse target station during model training.
+5. **Balanced Stations**: **Spokane**, **Darrington**, and **CayusePass** span a wide range of values and display bimodal or spread distributions across all three regimes.
 
 ---
 

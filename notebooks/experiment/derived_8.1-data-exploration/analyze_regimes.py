@@ -285,6 +285,36 @@ def main():
     plt.savefig(os.path.join(output_dir, "aggregated_regime_comparison.png"))
     plt.close()
 
+    # Figure 5: Target distributions across months (aggregated across stations)
+    print("Generating monthly target distributions...")
+    df81_all_reg["date"] = pd.to_datetime(df81_all_reg["date"])
+    df81_all_reg["month"] = df81_all_reg["date"].dt.month
+    
+    months_names = {
+        1: "January", 2: "February", 3: "March", 4: "April",
+        5: "May", 6: "June", 7: "July", 8: "August",
+        9: "September", 10: "October", 11: "November", 12: "December"
+    }
+    
+    n_cols = 4
+    n_rows = 3
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(16, 3 * n_rows), sharex=True)
+    axes = axes.flatten()
+    
+    for idx, m in enumerate(range(1, 13)):
+        ax = axes[idx]
+        data = df81_all_reg[df81_all_reg["month"] == m]["soil_moisture_5cm"]
+        ax.hist(data, bins=25, color="#1F77B4", alpha=0.7, edgecolor="white", linewidth=0.5)
+        ax.axvline(t1_81_cal, color="#9467BD", linestyle="--", linewidth=1.2, label="t1")
+        ax.axvline(t2_81_cal, color="#9467BD", linestyle="-.", linewidth=1.2, label="t2")
+        ax.set_title(f"{months_names[m]} (n={len(data):,})", fontsize=11, pad=5)
+        ax.set_xlim(0, 0.6)
+        
+    fig.suptitle("derived_8.1: Target Distributions across Months with Recalibrated Thresholds", fontsize=16, y=0.98)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "soil_moisture_by_month_grid.png"))
+    plt.close()
+
     print("Done generating figures.")
 
 if __name__ == "__main__":
