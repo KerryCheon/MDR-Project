@@ -55,3 +55,30 @@ WET_SELECTED_FEATURES = [
     "V_rollmax_E_SAR_ratio_kobs7", "V_rollmax_F_NDMI_kobs30", "V_rollmin_F_NDVI_kobs7", "V_rollmin_LST_modis_kobs14", "V_rollmin_SMAP_sm_interp_kobs14",
     "V_rollmin_SMAP_sm_interp_kobs30", "V_rollmin_s2_b11_kobs14", "V_rollrng_s2_b12_kobs30", "s2_b8", "C_lag_E_SAR_ratio_kobs30"
 ]
+
+# 2-Regime threshold and features calibrated using calibrate_valleys.py on derived_8.1_pos Train
+# Valley is at 0.159 which separates dry modes from wet/transition modes.
+T_2REGIME = 0.159
+
+DRY_2REGIME_SELECTED_FEATURES = [
+    "C_lag_E_SAR_diff_kobs30", "C_lag_F_NDMI_kobs12", "C_lag_F_NDMI_kobs30", "C_lag_F_NDVI_kobs6", "C_lag_LST_modis_kobs2",
+    "C_lag_SMAP_sm_interp_kobs12", "C_lag_s2_b11_kobs6", "DOY", "D_sa_E_SAR_ratio", "E_SAR_diff",
+    "F_MSI", "F_NDMI", "SMAP_sm_pm_interp_lag7", "V_ema_LST_modis_kobs30", "V_rollmax_F_NDMI_kobs14",
+    "V_rollmax_F_NDMI_kobs30", "V_rollmax_F_NDVI_kobs14", "V_rollmax_G_API_kobs30", "V_rollmax_LST_modis_kobs30", "V_rollmax_SMAP_sm_interp_kobs14",
+    "V_rollmax_SMAP_sm_interp_kobs30", "V_rollmax_s2_b11_kobs7", "V_rollmax_s2_b12_kobs14", "V_rollmin_E_SAR_diff_kobs30", "V_rollmin_E_SAR_ratio_kobs30",
+    "V_rollmin_F_NDMI_kobs30", "V_rollmin_F_NDVI_kobs30", "V_rollmin_G_API_kobs14", "V_rollmin_LST_modis_kobs30", "V_rollmin_SMAP_sm_interp_kobs30",
+    "s1_vh", "C_lag_E_SAR_ratio_kobs30", "C_lag_F_NDVI_kobs30", "C_lag_LST_modis_kobs12", "C_lag_s2_b11_kobs30",
+    "SMAP_sm_am_interp_lag30", "V_rollmax_s2_b11_kobs30", "V_rollmax_s2_b12_kobs30", "V_rollmin_E_SAR_ratio_kobs7", "V_rollmin_s2_b11_kobs30"
+]
+
+WET_2REGIME_SELECTED_FEATURES = [
+    "C_lag_E_SAR_ratio_kobs30", "C_lag_F_NDMI_kobs30", "C_lag_LST_modis_kobs30", "C_lag_SMAP_sm_interp_kobs12", "D_sa_LST_modis",
+    "D_z_E_SAR_ratio", "D_z_LST_modis", "E_SAR_diff", "F_MSI", "LST_modis",
+    "SMAP_sm_pm_interp_lag7", "V_rollmax_E_SAR_diff_kobs14", "V_rollmax_E_SAR_ratio_kobs14", "V_rollmax_F_NDVI_kobs14", "V_rollmax_F_NDVI_kobs30",
+    "V_rollmin_E_SAR_diff_kobs14", "V_rollmin_E_SAR_diff_kobs30", "V_rollmin_F_NDVI_kobs30", "V_rollmin_G_API_kobs30", "V_rollmin_LST_modis_kobs14",
+    "V_rollmin_LST_modis_kobs30", "V_rollmin_s2_b11_kobs30", "V_rollmin_s2_b12_kobs30", "V_rollrng_E_SAR_diff_kobs30", "s1_vh",
+    "s2_b11", "s2_b4", "s2_b8", "A_d_LST_modis_kobs14", "C_lag_E_SAR_diff_kobs12",
+    "C_lag_F_NDMI_kobs6", "C_lag_F_NDVI_kobs30", "C_lag_s2_b12_kobs5", "V_rollmax_E_SAR_ratio_kobs30", "V_rollmax_LST_modis_kobs30",
+    "V_rollmax_LST_modis_kobs7", "V_rollmax_s2_b12_kobs14", "V_rollmin_s2_b12_kobs14", "A_grad_E_SAR_diff_kobs14", "C_lag_E_SAR_diff_kobs1"
+]
+
