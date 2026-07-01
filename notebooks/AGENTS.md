@@ -20,3 +20,6 @@ For simplicity, you don't need to use Jupyter notebook; you can just write regul
 ## Working with Notebooks (.ipynb files)
 
 When the user asks to read, edit, execute, or work with .ipynb files, use the notebook-cli skill, which provides the `nb` command-line tool. Do not use the built-in Read/Write tools for `.ipynb` files.
+
+## Runtime
+The dependencies are managed with `uv`, so don't use `python` directly as the global installation might not have all the packages. You should use `uv run` to run any python scripts.
