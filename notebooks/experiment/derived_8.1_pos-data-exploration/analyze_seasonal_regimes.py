@@ -66,6 +66,8 @@ def main():
     t1_cal, t2_cal = 0.159, 0.248
     # Original thresholds (for comparison)
     t1_orig, t2_orig = 0.20, 0.313
+    # 2-Regime threshold
+    t_2regime = 0.159
     
     def assign_regime(df, t1, t2):
         sm = df["soil_moisture_5cm"]
@@ -74,6 +76,7 @@ def main():
         
     all_df["regime_cal"] = assign_regime(all_df, t1_cal, t2_cal)
     all_df["regime_orig"] = assign_regime(all_df, t1_orig, t2_orig)
+    all_df["regime_cal_2r"] = np.where(all_df["soil_moisture_5cm"] < t_2regime, 0, 1) # 0: Dry, 1: Wet
     
     # 3. Monthly regime distribution
     print("\n--- Calculating Monthly Regime Distribution (Recalibrated) ---")
@@ -111,6 +114,23 @@ def main():
     fig.suptitle("Monthly Soil Moisture Regime Distributions (derived_8.1_pos)", fontweight="bold")
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, "monthly_regime_distribution.png"))
+    plt.close()
+    
+    # Figure 1b: Monthly 2-Regime Proportions (Stacked Bar)
+    print("\n--- Calculating Monthly 2-Regime Distribution (T=0.159) ---")
+    monthly_cal_2r = all_df.groupby(["month", "regime_cal_2r"]).size().unstack(fill_value=0)
+    monthly_cal_2r_pct = monthly_cal_2r.div(monthly_cal_2r.sum(axis=1), axis=0) * 100
+    
+    fig_2r, ax_2r = plt.subplots(figsize=(8, 6))
+    colors_2r = ["#FFBB78", "#98DF8A"] # Warm Dry, Rich Wet
+    monthly_cal_2r_pct.plot(kind="bar", stacked=True, color=colors_2r, ax=ax_2r, width=0.7, edgecolor="none")
+    ax_2r.set_title(f"Monthly 2-Regime Soil Moisture Distributions (T={t_2regime:.3f})", fontweight="bold")
+    ax_2r.set_xlabel("Month")
+    ax_2r.set_ylabel("Percentage (%)")
+    ax_2r.set_xticklabels(months_names, rotation=0)
+    ax_2r.legend(["Dry", "Wet"], title="Regime")
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "monthly_regime_distribution_2r.png"))
     plt.close()
     
     # Figure 2: Monthly Target Densities
@@ -214,6 +234,47 @@ def main():
     fig.suptitle("Feature Separability vs. Soil Moisture Regimes", fontweight="bold", y=1.02)
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, "separability_scatter_plots.png"))
+    plt.close()
+
+    # Figure 4b: 2D 2-Regime Separability (Scatter plots)
+    fig_2r, axes_2r = plt.subplots(1, 3, figsize=(18, 5))
+    
+    # API vs SM
+    for r in [0, 1]:
+        mask = sample_df["regime_cal_2r"] == r
+        axes_2r[0].scatter(sample_df.loc[mask, "G_API"], sample_df.loc[mask, "soil_moisture_5cm"],
+                           color=colors_2r[r], label=["Dry", "Wet"][r], s=10, alpha=0.6)
+    axes_2r[0].axhline(t_2regime, color="#D62728", linestyle="--", linewidth=1.5, label=f"Boundary (T={t_2regime})")
+    axes_2r[0].set_xlabel("Antecedent Precipitation Index (G_API)")
+    axes_2r[0].set_ylabel("Soil Moisture (5cm)")
+    axes_2r[0].set_title("G_API vs. Soil Moisture")
+    axes_2r[0].legend()
+    
+    # LST vs SM
+    for r in [0, 1]:
+        mask = sample_df["regime_cal_2r"] == r
+        axes_2r[1].scatter(sample_df.loc[mask, "LST_modis"], sample_df.loc[mask, "soil_moisture_5cm"],
+                           color=colors_2r[r], label=["Dry", "Wet"][r], s=10, alpha=0.6)
+    axes_2r[1].axhline(t_2regime, color="#D62728", linestyle="--", linewidth=1.5, label=f"Boundary (T={t_2regime})")
+    axes_2r[1].set_xlabel("Land Surface Temperature (LST_modis)")
+    axes_2r[1].set_ylabel("Soil Moisture (5cm)")
+    axes_2r[1].set_title("LST vs. Soil Moisture")
+    axes_2r[1].legend()
+    
+    # SMAP vs SM
+    for r in [0, 1]:
+        mask = sample_df["regime_cal_2r"] == r
+        axes_2r[2].scatter(sample_df.loc[mask, "SMAP_sm_pm_interp"], sample_df.loc[mask, "soil_moisture_5cm"],
+                           color=colors_2r[r], label=["Dry", "Wet"][r], s=10, alpha=0.6)
+    axes_2r[2].axhline(t_2regime, color="#D62728", linestyle="--", linewidth=1.5, label=f"Boundary (T={t_2regime})")
+    axes_2r[2].set_xlabel("Satellite Soil Moisture (SMAP)")
+    axes_2r[2].set_ylabel("Soil Moisture (5cm)")
+    axes_2r[2].set_title("SMAP vs. Soil Moisture")
+    axes_2r[2].legend()
+    
+    fig_2r.suptitle("Feature Separability vs. 2-Regime Soil Moisture Boundary", fontweight="bold", y=1.02)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "separability_scatter_plots_2r.png"))
     plt.close()
     
     # 5. Gating Classification Evaluation
@@ -322,6 +383,95 @@ def main():
     plt.title("Interpretable Decision Tree (Month + G_API) for Regime Routing", pad=15, fontweight="bold")
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, "decision_tree_gating_structure.png"))
+    plt.close()
+    
+    # 2-Regime Gating Evaluation
+    print("\n=== EVALUATING 2-REGIME GATING STRATEGIES (validation + test sets) ===")
+    
+    # Heuristic Month-only Gating for 2-regime
+    def month_gating_2r(month):
+        if month in [7, 8, 9]:
+            return 0 # Dry
+        else:
+            return 1 # Wet
+            
+    eval_df["pred_month_gating_2r"] = eval_df["month"].apply(month_gating_2r)
+    y_true_2r = eval_df["regime_cal_2r"]
+    y_pred_m_2r = eval_df["pred_month_gating_2r"]
+    
+    print("\n--- 1. Heuristic Month-Only Binary Gating ---")
+    print(classification_report(y_true_2r, y_pred_m_2r, target_names=["Dry", "Wet"]))
+    cm_m_2r = confusion_matrix(y_true_2r, y_pred_m_2r)
+    
+    # Train binary models
+    print(f"\nTraining ML models for 2-regime gating on train set ({len(train_clean)} rows)...")
+    
+    # Simple DT: Month + G_API
+    dt_api_2r = DecisionTreeClassifier(max_depth=3, random_state=42)
+    dt_api_2r.fit(train_clean[["month", "G_API"]], train_clean["regime_cal_2r"])
+    y_pred_dt_api_2r = dt_api_2r.predict(eval_clean[["month", "G_API"]])
+    
+    print("\n--- 2. Decision Tree Gating (Month + G_API) [2-Regime] ---")
+    print(classification_report(eval_clean["regime_cal_2r"], y_pred_dt_api_2r, target_names=["Dry", "Wet"]))
+    cm_dt_api_2r = confusion_matrix(eval_clean["regime_cal_2r"], y_pred_dt_api_2r)
+    
+    # Decision Tree: Month + G_API + LST + SMAP
+    dt_all_2r = DecisionTreeClassifier(max_depth=4, random_state=42)
+    dt_all_2r.fit(train_clean[["month", "G_API", "LST_modis", "SMAP_sm_pm_interp"]], train_clean["regime_cal_2r"])
+    y_pred_dt_all_2r = dt_all_2r.predict(eval_clean[["month", "G_API", "LST_modis", "SMAP_sm_pm_interp"]])
+    
+    print("\n--- 3. Decision Tree Gating (Month + G_API + LST + SMAP) [2-Regime] ---")
+    print(classification_report(eval_clean["regime_cal_2r"], y_pred_dt_all_2r, target_names=["Dry", "Wet"]))
+    cm_dt_all_2r = confusion_matrix(eval_clean["regime_cal_2r"], y_pred_dt_all_2r)
+    
+    # Random Forest: Month + G_API + LST + SMAP
+    rf_2r = RandomForestClassifier(n_estimators=100, max_depth=8, random_state=42, n_jobs=-1)
+    rf_2r.fit(train_clean[["month", "G_API", "LST_modis", "SMAP_sm_pm_interp"]], train_clean["regime_cal_2r"])
+    y_pred_rf_2r = rf_2r.predict(eval_clean[["month", "G_API", "LST_modis", "SMAP_sm_pm_interp"]])
+    
+    print("\n--- 4. Random Forest Gating (Month + G_API + LST + SMAP) [2-Regime] ---")
+    print(classification_report(eval_clean["regime_cal_2r"], y_pred_rf_2r, target_names=["Dry", "Wet"]))
+    cm_rf_2r = confusion_matrix(eval_clean["regime_cal_2r"], y_pred_rf_2r)
+    
+    # Print DT rules to log
+    print("\n=== DECISION TREE RULES (Month + G_API) [2-Regime] ===")
+    tree_rules_2r = export_text(dt_api_2r, feature_names=["month", "G_API"])
+    print(tree_rules_2r)
+    
+    # Figure 5b: Confusion Matrices Comparison (2-Regime)
+    fig_cm_2r, axes_cm_2r = plt.subplots(2, 2, figsize=(12, 11))
+    
+    ConfusionMatrixDisplay(cm_m_2r, display_labels=["Dry", "Wet"]).plot(
+        ax=axes_cm_2r[0, 0], cmap="Blues", values_format="d", colorbar=False
+    )
+    axes_cm_2r[0, 0].set_title("Heuristic Month-Only Gating (2-Regime)")
+    
+    ConfusionMatrixDisplay(cm_dt_api_2r, display_labels=["Dry", "Wet"]).plot(
+        ax=axes_cm_2r[0, 1], cmap="Blues", values_format="d", colorbar=False
+    )
+    axes_cm_2r[0, 1].set_title("DT Gating (Month + G_API) (2-Regime)")
+    
+    ConfusionMatrixDisplay(cm_dt_all_2r, display_labels=["Dry", "Wet"]).plot(
+        ax=axes_cm_2r[1, 0], cmap="Blues", values_format="d", colorbar=False
+    )
+    axes_cm_2r[1, 0].set_title("DT Gating (Month + G_API + LST + SMAP) (2-Regime)")
+    
+    ConfusionMatrixDisplay(cm_rf_2r, display_labels=["Dry", "Wet"]).plot(
+        ax=axes_cm_2r[1, 1], cmap="Blues", values_format="d", colorbar=False
+    )
+    axes_cm_2r[1, 1].set_title("RF Gating (Month + G_API + LST + SMAP) (2-Regime)")
+    
+    fig_cm_2r.suptitle("2-Regime Gating Performance Comparison on Val+Test Sets", fontweight="bold", fontsize=14)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "gating_confusion_matrices_2r.png"))
+    plt.close()
+    
+    # Figure 6b: Decision Tree Structure Visualization (2-Regime)
+    plt.figure(figsize=(12, 6))
+    plot_tree(dt_api_2r, feature_names=["month", "G_API"], class_names=["Dry", "Wet"], filled=True, rounded=True, fontsize=9)
+    plt.title("Interpretable Decision Tree (Month + G_API) for 2-Regime Routing", pad=15, fontweight="bold")
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "decision_tree_gating_structure_2r.png"))
     plt.close()
     
     print("\nDone. All figures saved in the experiment directory.")

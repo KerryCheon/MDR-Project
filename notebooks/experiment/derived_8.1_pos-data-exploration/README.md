@@ -17,10 +17,16 @@ The primary objective is to evaluate:
 * **Calibration Script**: [calibrate_valleys.py](./calibrate_valleys.py) - Programmatic threshold valley-calibration verification script using KDE and peak/valley detection.
 * **Density Comparison Plot**: [soil_moisture_density_comparison.png](./soil_moisture_density_comparison.png)
 * **Calibration Plot**: [programmatic_valleys_calibration.png](./programmatic_valleys_calibration.png) - Plot showing identified density modes and valleys.
-* **Aggregated Regimes Plot**: [aggregated_regime_comparison.png](./aggregated_regime_comparison.png)
-* **Regimes by Station Plot**: [regime_distribution_by_station.png](./regime_distribution_by_station.png)
+* **Aggregated Regimes Plot (3-Regime)**: [aggregated_regime_comparison.png](./aggregated_regime_comparison.png)
+* **Regimes by Station Plot (3-Regime)**: [regime_distribution_by_station.png](./regime_distribution_by_station.png)
 * **Histograms by Station Grid**: [soil_moisture_by_station_grid.png](./soil_moisture_by_station_grid.png)
 * **Histograms by Month Grid**: [soil_moisture_by_month_grid.png](./soil_moisture_by_month_grid.png)
+* **Aggregated Regimes Plot (2-Regime)**: [aggregated_regime_comparison_2r.png](./aggregated_regime_comparison_2r.png)
+* **Regimes by Station Plot (2-Regime)**: [regime_distribution_by_station_2r.png](./regime_distribution_by_station_2r.png)
+* **Monthly Regime Proportions (2-Regime)**: [monthly_regime_distribution_2r.png](./monthly_regime_distribution_2r.png)
+* **Separability Scatter Plots (2-Regime)**: [separability_scatter_plots_2r.png](./separability_scatter_plots_2r.png)
+* **Gating Confusion Matrices (2-Regime)**: [gating_confusion_matrices_2r.png](./gating_confusion_matrices_2r.png)
+* **Decision Tree Gating Structure (2-Regime)**: [decision_tree_gating_structure_2r.png](./decision_tree_gating_structure_2r.png)
 
 ---
 
@@ -161,7 +167,52 @@ The small multiples grid below shows the soil moisture density distributions for
 
 ---
 
-## 6. Seasonal Regime Distributions & Gating Feasibility
+## 6. 2-Regime Boundary Analysis
+
+In addition to the 3-regime specialist framework, we analyzed a **2-regime specialist model** configuration. In this setup, we collapse the Transition and Wet classes into a single **Wet (Transition & Wet combined)** regime, leaving a single boundary threshold $T_{2REGIME} = 0.159$ to partition the dataset.
+
+* **Dry**: $SM < 0.159$
+* **Wet**: $SM \ge 0.159$
+
+This bimodal split aligns with the primary valley identified in the training distribution, dividing the moisture space into two robust training conditions.
+
+### Aggregated 2-Regime Split Proportions
+Partitioning the splits under the $T = 0.159$ boundary produces the following distributions:
+
+| Split | Dry % (Count) | Wet % (Count) | Total Rows |
+|---|---|---|---|
+| **Train** | 34.5% (5,514) | 65.5% (10,450) | 15,964 |
+| **Val** | 40.8% (2,918) | 59.2% (4,231) | 7,149 |
+| **Test** | 37.4% (3,333) | 62.6% (5,569) | 8,902 |
+
+Using a single threshold yields a highly balanced sample split between the Dry and Wet specialists, ensuring both models receive ample training data.
+
+![Aggregated 2-Regime Comparison](./aggregated_regime_comparison_2r.png)
+
+### Station-by-Station 2-Regime Distributions
+The percentage of Dry vs Wet observations varies substantially between stations due to local climates:
+
+| Station | Total Obs | Dry % (Count) | Wet % (Count) |
+|:---|:---:|:---:|:---:|
+| **BeaverPass_WA_990** | 2,811 | 14.1% (395) | **85.9% (2,416)** |
+| **BurntMountain_WA** | 1,483 | **93.5% (1,387)** | 6.5% (96) |
+| **CayusePass_WA** | 3,123 | 32.3% (1,008) | 67.7% (2,115) |
+| **Darrington** | 3,047 | 30.7% (934) | 69.3% (2,113) |
+| **HartsPass_WA_515** | 1,600 | 41.4% (663) | 58.6% (937) |
+| **MFNooksack_WA_1011** | 260 | 13.1% (34) | **86.9% (226)** |
+| **MartenRidge_WA_999** | 2,957 | 27.3% (808) | 72.7% (2,149) |
+| **Paradise_WA** | 3,256 | 32.0% (1,041) | 68.0% (2,215) |
+| **Quinault** | 3,204 | 22.7% (727) | 77.3% (2,477) |
+| **RainyPass_WA_711** | 3,108 | **73.4% (2,281)** | 26.6% (827) |
+| **SourdoughGulch_WA_985** | 3,097 | 26.6% (824) | 73.4% (2,273) |
+| **Spokane** | 2,690 | 46.2% (1,243) | 53.8% (1,447) |
+| **Touchet_WA_824** | 1,379 | 30.5% (420) | 69.5% (959) |
+
+![Regime Distribution by Station 2-Regime](./regime_distribution_by_station_2r.png)
+
+---
+
+## 7. Seasonal Regime Distributions & Gating Feasibility
 
 We conducted a detailed analysis of monthly regime distributions and evaluated the feasibility of modeling the 3-regime gating router using seasonal indicators and key physical features.
 
@@ -189,6 +240,7 @@ Comparing this to the original thresholds shows a massive difference in how tran
 
 ![Monthly Regime Distributions](./monthly_regime_distribution.png)
 ![Monthly Target Densities](./monthly_sm_density.png)
+![Monthly 2-Regime Distributions](./monthly_regime_distribution_2r.png)
 
 ### Seasonal Correlation Trends
 We computed the Pearson correlation ($r$) of target soil moisture against key physical drivers across each month:
@@ -199,11 +251,13 @@ We computed the Pearson correlation ($r$) of target soil moisture against key ph
 
 ![Monthly Correlations](./monthly_correlations.png)
 ![Separability Scatter Plots](./separability_scatter_plots.png)
+![Separability Scatter Plots (2-Regime)](./separability_scatter_plots_2r.png)
 
 ### Evaluating Gating Routing Strategies
-To evaluate how realistic it is to route samples using seasonal or simple physical rules, we benchmarked four different gating routers on the validation + test splits:
+To evaluate how realistic it is to route samples using seasonal or simple physical rules, we benchmarked gating routers on the validation + test splits:
 
-#### 1. Heuristic Month-Only Gating
+#### 3-Regime Gating Performance
+##### 1. Heuristic Month-Only Gating
 We route samples using a static seasonal rule:
 * **Wet Season (Nov–Mar)** $\to$ Wet
 * **Dry Season (Jul–Sep)** $\to$ Dry
@@ -215,7 +269,7 @@ We route samples using a static seasonal rule:
   - **Transition F1-Score:** 0.31 (Recall: 38%, Precision: 26%)
   - **Wet F1-Score:** 0.52 (Recall: 54%, Precision: 50%)
 
-#### 2. Decision Tree Gating (Month + `G_API`)
+##### 2. Decision Tree Gating (Month + `G_API`)
 A simple, interpretable tree trained on the train split (max_depth=3).
 
 * **Performance:**
@@ -223,9 +277,8 @@ A simple, interpretable tree trained on the train split (max_depth=3).
   - **Dry F1-Score:** 0.67 (Recall: 61%, Precision: 75%)
   - **Transition F1-Score:** **0.00** (Recall: 0%, Precision: 0%)
   - **Wet F1-Score:** 0.66 (Recall: 92%, Precision: 51%)
-  - *Note: The tree completely collapses the Transition predictions due to extreme overlap with Dry/Wet classes.*
 
-#### 3. Decision Tree Gating (Month + `G_API` + `LST_modis` + `SMAP_sm_pm_interp`)
+##### 3. Decision Tree Gating (Month + `G_API` + `LST_modis` + `SMAP_sm_pm_interp`)
 Max depth = 4.
 
 * **Performance:**
@@ -234,7 +287,7 @@ Max depth = 4.
   - **Transition F1-Score:** 0.13 (Recall: 9%, Precision: 27%)
   - **Wet F1-Score:** 0.63 (Recall: 81%, Precision: 51%)
 
-#### 4. Random Forest Gating (Month + `G_API` + `LST_modis` + `SMAP_sm_pm_interp`)
+##### 4. Random Forest Gating (Month + `G_API` + `LST_modis` + `SMAP_sm_pm_interp`)
 100 estimators, max depth = 8.
 
 * **Performance:**
@@ -246,14 +299,46 @@ Max depth = 4.
 ![Gating Confusion Matrices](./gating_confusion_matrices.png)
 ![Decision Tree Gating Structure](./decision_tree_gating_structure.png)
 
+#### 2-Regime Gating Performance (Binary Routing)
+By collapsing the gating problem into a binary router (Dry vs. Wet/Transition), we bypass the poorly separable intermediate transition zone. We benchmarked the four routing strategies on the val + test splits:
+
+##### 1. Heuristic Month-Only Binary Gating
+Dry season is defined as Jul–Sep (Months 7, 8, 9), and all other months route to the Wet specialist.
+
+* **Performance:**
+  - **Overall Accuracy:** **77%**
+  - **Dry F1-Score:** 0.63 (Recall: 51%, Precision: 83%)
+  - **Wet F1-Score:** **0.83** (Recall: 93%, Precision: 75%)
+
+##### 2. Decision Tree Gating (Month + `G_API`)
+* **Performance:**
+  - **Overall Accuracy:** **77%**
+  - **Dry F1-Score:** 0.67 (Recall: 61%, Precision: 75%)
+  - **Wet F1-Score:** **0.82** (Recall: 87%, Precision: 78%)
+
+##### 3. Decision Tree Gating (Month + `G_API` + `LST_modis` + `SMAP_sm_pm_interp`)
+* **Performance:**
+  - **Overall Accuracy:** **78%**
+  - **Dry F1-Score:** 0.68 (Recall: 60%, Precision: 79%)
+  - **Wet F1-Score:** **0.83** (Recall: 90%, Precision: 78%)
+
+##### 4. Random Forest Gating (Month + `G_API` + `LST_modis` + `SMAP_sm_pm_interp`)
+* **Performance:**
+  - **Overall Accuracy:** **80%**
+  - **Dry F1-Score:** **0.70** (Recall: 60%, Precision: 85%)
+  - **Wet F1-Score:** **0.85** (Recall: 93%, Precision: 79%)
+
+![Gating Confusion Matrices (2-Regime)](./gating_confusion_matrices_2r.png)
+![Decision Tree Gating Structure (2-Regime)](./decision_tree_gating_structure_2r.png)
+
 ### Key Takeaways on Season-Based Gating Feasibility
-1. **Seasons alone are insufficient for gating:** A simple seasonal router only achieves 49% accuracy. This is because soil moisture is highly dynamic and varies substantially within calendar months due to weather volatility (e.g. rain events in summer) and spatial elevation differences.
-2. **Transition class is poorly separable:** Across all gating strategies, the Transition class F1-score peaks at only 0.26. The intermediate moisture range acts as a high-entropy zone where Dry-like and Wet-like dynamics overlap in feature space.
-3. **ML Gating with 4 features matches full model:** A simple Random Forest using only 4 features (`month`, `G_API`, `LST_modis`, `SMAP`) achieves **58% accuracy**. This is only slightly below the full multi-class XGBoost classifier (~63%), which uses all 40+ features. This suggests that antecedent precipitation and land surface temperature, combined with month, capture the vast majority of the gating signal.
+1. **Seasons alone are insufficient for 3-regime routing:** A simple seasonal router only achieves 49% accuracy in the 3-regime setup, but achieves **77% accuracy** in the 2-regime setup.
+2. **Transition class is poorly separable:** Across all 3-regime gating strategies, the Transition class F1-score peaks at only 0.26. The intermediate moisture range acts as a high-entropy zone where Dry-like and Wet-like dynamics overlap in feature space.
+3. **2-Regime collapses the high-entropy zone:** By using a single threshold ($T_{2REGIME}=0.159$) and binary routing, we achieve **80% overall accuracy** with a 4-feature Random Forest. This completely avoids the recall wall of the transition zone, boosting routing accuracy by over 20% absolute.
 
 ---
 
-## 7. Conclusions & Next Steps
+## 8. Conclusions & Next Steps
 
 ### 1. Dataset Quality Verdict: **EXCELLENT**
 * The `derived_8.1_pos` dataset provides a **2.35x larger sample set** (32,015 rows vs 13,604 in `derived_8.0`).
@@ -266,5 +351,5 @@ Max depth = 4.
 ### 3. Recommendations for MoE Modeling
 * **Gating Design**: Because individual stations are highly skewed (e.g. BurntMountain is 93.5% Dry), station-level static features (latitude, longitude, elevation, HWSD clay/sand fractions) will be critical for the router to identify spatial regime shifts.
 * **Simplifying the Router**: Since a 4-feature Random Forest (using Month, API, LST, SMAP) matches within 5% of the full classifier, we should consider a simplified, lower-dimensional router to reduce overfitting and make the end-to-end model more robust to geographic feature distribution shifts.
-* **Binary Routing Alternative**: Given the Transition class's poor separability (F1-score of 0.26), collapsing the problem into a Binary MoE (Dry vs. Wet/Transition) is highly recommended. The binary gating model achieves ~80% accuracy and completely avoids the transition zone recall wall.
+* **Binary Routing Alternative**: Given the Transition class's poor separability (F1-score of 0.26), collapsing the problem into a Binary MoE (Dry vs. Wet/Transition) using the valley-calibrated threshold $T=0.159$ is highly recommended. The binary gating model achieves **80% accuracy** and completely avoids the transition zone recall wall.
 

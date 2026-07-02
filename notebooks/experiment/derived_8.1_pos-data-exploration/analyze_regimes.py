@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 # Add splits/derived_8.1_pos directory to sys.path to import the metadata module
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'splits', 'derived_8.1_pos')))
-from dataset_metadata import T1 as t1_81_cal, T2 as t2_81_cal
+from dataset_metadata import T1 as t1_81_cal, T2 as t2_81_cal, T_2REGIME as t_2regime
 
 # Set style for premium aesthetics using standard matplotlib
 plt.rcParams.update({
@@ -121,6 +121,56 @@ def main():
     df81_test_reg  = analyze_regime_distribution(d81_test, t1_81_cal, t2_81_cal, "derived_8.1_pos Test")
     df81_all_reg   = pd.concat([df81_train_reg, df81_val_reg, df81_test_reg], ignore_index=True)
     
+    # 2-Regime definitions and distributions
+    print(f"\n--- 2-REGIME GLOBAL DISTRIBUTIONS (T_2REGIME={t_2regime:.3f}) ---")
+    def analyze_2regime_distribution(df, t_2r, label):
+        sm = df["soil_moisture_5cm"]
+        conditions = [sm < t_2r, sm >= t_2r]
+        choices = ["Dry", "Wet"]
+        regimes = np.select(conditions, choices, default="Wet")
+        df_copy = df.copy()
+        df_copy["regime_2r"] = regimes
+        counts = df_copy["regime_2r"].value_counts().reindex(choices, fill_value=0)
+        pcts = df_copy["regime_2r"].value_counts(normalize=True).reindex(choices, fill_value=0) * 100
+        
+        summary = pd.DataFrame({
+            "Count": counts,
+            "Percentage": pcts
+        })
+        print(f"\n2-Regime distribution ({label}) [T={t_2r:.4f}]:")
+        print(summary.to_string())
+        return df_copy
+
+    df81_train_reg_2r = analyze_2regime_distribution(d81_train, t_2regime, "derived_8.1_pos Train")
+    df81_val_reg_2r   = analyze_2regime_distribution(d81_val, t_2regime, "derived_8.1_pos Val")
+    df81_test_reg_2r  = analyze_2regime_distribution(d81_test, t_2regime, "derived_8.1_pos Test")
+    df81_all_reg_2r   = pd.concat([df81_train_reg_2r, df81_val_reg_2r, df81_test_reg_2r], ignore_index=True)
+
+    # Station-by-station analysis on derived_8.1_pos for 2-regime
+    print(f"\n=== Station-by-Station Details (derived_8.1_pos with 2-Regime T={t_2regime:.3f}) ===")
+    station_regimes_2r = []
+    for station, group in df81_all_reg_2r.groupby("station_id"):
+        total = len(group)
+        counts = group["regime_2r"].value_counts().reindex(["Dry", "Wet"], fill_value=0)
+        pcts = (counts / total * 100)
+        min_sm = group["soil_moisture_5cm"].min()
+        max_sm = group["soil_moisture_5cm"].max()
+        mean_sm = group["soil_moisture_5cm"].mean()
+        
+        station_regimes_2r.append({
+            "Station": station,
+            "Total Obs": total,
+            "Mean SM": f"{mean_sm:.4f}",
+            "Min SM": f"{min_sm:.4f}",
+            "Max SM": f"{max_sm:.4f}",
+            "Dry Count": counts["Dry"],
+            "Dry %": f"{pcts['Dry']:.1f}%",
+            "Wet Count": counts["Wet"],
+            "Wet %": f"{pcts['Wet']:.1f}%",
+        })
+    station_reg_2r_df = pd.DataFrame(station_regimes_2r)
+    print(station_reg_2r_df.to_string(index=False))
+
     # Station-by-station analysis on derived_8.1_pos with recalibrated thresholds
     print("\n=== Station-by-Station Details (derived_8.1_pos with Recalibrated Thresholds) ===")
     station_regimes = []
@@ -293,6 +343,85 @@ def main():
     ax.legend(title="Regime", loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=True, facecolor="white")
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, "aggregated_regime_comparison.png"))
+    plt.close()
+
+    # Figure 6: 2-Regime Distribution by Station (Stacked Bar Chart)
+    pivot_df_2r = df81_all_reg_2r.groupby(["station_id", "regime_2r"]).size().unstack(fill_value=0).reindex(columns=["Dry", "Wet"])
+    pivot_df_2r["Total"] = pivot_df_2r.sum(axis=1)
+    pivot_df_2r = pivot_df_2r.sort_values(by="Total", ascending=True)
+    pivot_plot_2r = pivot_df_2r.drop(columns="Total")
+    
+    fig, ax = plt.subplots(figsize=(12, 7))
+    colors_2r = ["#FFBB78", "#98DF8A"] # Warm Dry, Rich Wet
+    pivot_plot_2r.plot(kind="barh", stacked=True, color=colors_2r, ax=ax, width=0.7)
+    
+    for i, (idx, row) in enumerate(pivot_df_2r.iterrows()):
+        total = row["Total"]
+        accum = 0
+        for col_idx, col in enumerate(["Dry", "Wet"]):
+            val = row[col]
+            if val > 0:
+                pct = val / total * 100
+                if pct > 4.0:
+                    ax.text(accum + val/2, i, f"{pct:.0f}%", 
+                            ha='center', va='center', color='black', 
+                            fontweight='bold', fontsize=9)
+            accum += val
+            
+    ax.set_title(f"derived_8.1_pos: 2-Regime Counts & Percentages by Station (T={t_2regime:.3f})", pad=15)
+    ax.set_xlabel("Observations (Days)")
+    ax.set_ylabel("Station ID")
+    ax.legend(title="Regime", frameon=True, facecolor="white")
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "regime_distribution_by_station_2r.png"))
+    plt.close()
+
+    # Figure 7: Aggregated 2-Regime Proportions Comparison
+    categories_2r = [
+        f"derived_8.0 Train\n(T={t_2regime:.3f})",
+        f"derived_8.1 Train\n(T={t_2regime:.3f})",
+        f"derived_8.1_pos Train\n(T={t_2regime:.3f})",
+        f"derived_8.1_pos Val\n(T={t_2regime:.3f})",
+        f"derived_8.1_pos Test\n(T={t_2regime:.3f})"
+    ]
+    def get_2r_pcts(df, t_2r):
+        sm = df["soil_moisture_5cm"]
+        reg = np.where(sm < t_2r, "Dry", "Wet")
+        counts = pd.Series(reg).value_counts(normalize=True).reindex(["Dry", "Wet"], fill_value=0) * 100
+        return counts
+
+    pcts_80_tr = get_2r_pcts(d80_train, t_2regime)
+    pcts_81_tr = get_2r_pcts(d81_raw_train, t_2regime)
+    pcts_81_pos_tr = get_2r_pcts(d81_train, t_2regime)
+    pcts_81_pos_val = get_2r_pcts(d81_val, t_2regime)
+    pcts_81_pos_te = get_2r_pcts(d81_test, t_2regime)
+    
+    dry_pcts_2r = [pcts_80_tr["Dry"], pcts_81_tr["Dry"], pcts_81_pos_tr["Dry"], pcts_81_pos_val["Dry"], pcts_81_pos_te["Dry"]]
+    wet_pcts_2r = [pcts_80_tr["Wet"], pcts_81_tr["Wet"], pcts_81_pos_tr["Wet"], pcts_81_pos_val["Wet"], pcts_81_pos_te["Wet"]]
+    
+    plot_df_2r = pd.DataFrame({
+        'Dry': dry_pcts_2r,
+        'Wet': wet_pcts_2r
+    }, index=categories_2r)
+    
+    fig, ax = plt.subplots(figsize=(11, 6))
+    plot_df_2r.plot(kind="barh", stacked=True, color=colors_2r, ax=ax, width=0.6)
+    
+    for i in range(len(categories_2r)):
+        accum = 0
+        for col in ['Dry', 'Wet']:
+            val = plot_df_2r.loc[categories_2r[i], col]
+            ax.text(accum + val/2, i, f"{val:.1f}%", 
+                    ha='center', va='center', color='black', 
+                    fontweight='bold', fontsize=10)
+            accum += val
+            
+    ax.set_title("Aggregated 2-Regime Proportions Comparison", pad=15)
+    ax.set_xlabel("Percentage (%)")
+    ax.set_xlim(0, 100)
+    ax.legend(title="Regime", loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=True, facecolor="white")
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "aggregated_regime_comparison_2r.png"))
     plt.close()
 
     # Figure 5: Target distributions across months (aggregated across stations)
