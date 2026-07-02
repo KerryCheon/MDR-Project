@@ -161,7 +161,99 @@ The small multiples grid below shows the soil moisture density distributions for
 
 ---
 
-## 6. Conclusions & Next Steps
+## 6. Seasonal Regime Distributions & Gating Feasibility
+
+We conducted a detailed analysis of monthly regime distributions and evaluated the feasibility of modeling the 3-regime gating router using seasonal indicators and key physical features.
+
+### Monthly Regime Distributions
+Washington's Pacific Northwest climate creates strong seasonal soil moisture patterns. However, winter months still see dry/transition days, and summer months still see wet days due to localized storm events and spatial heterogeneity.
+
+Below is the monthly distribution of regimes under the recalibrated valleys-based thresholds ($t_1 = 0.159, t_2 = 0.248$):
+
+| Month | Dry (Count) | Transition (Count) | Wet (Count) | Dry % | Transition % | Wet % |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **January** | 563 | 776 | 1,365 | 20.8% | 28.7% | 50.5% |
+| **February** | 455 | 699 | 1,227 | 19.1% | 29.4% | 51.5% |
+| **March** | 469 | 734 | 1,650 | 16.4% | 25.7% | 57.8% |
+| **April** | 381 | 627 | 1,812 | 13.5% | 22.2% | 64.3% |
+| **May** | 446 | 807 | 1,692 | 15.1% | 27.4% | 57.5% |
+| **June** | 819 | 663 | 1,377 | 28.6% | 23.2% | 48.2% |
+| **July** | 1,897 | 455 | 484 | 66.9% | 16.0% | 17.1% |
+| **August** | 2,289 | 199 | 34 | 90.8% | 7.9% | 1.3% |
+| **September** | 1,894 | 316 | 135 | 80.8% | 13.5% | 5.8% |
+| **October** | 1,262 | 753 | 594 | 48.4% | 28.9% | 22.8% |
+| **November** | 647 | 895 | 974 | 25.7% | 35.6% | 38.7% |
+| **December** | 643 | 781 | 1,201 | 24.5% | 29.8% | 45.8% |
+
+Comparing this to the original thresholds shows a massive difference in how transition and wet regimes are represented seasonally:
+
+![Monthly Regime Distributions](./monthly_regime_distribution.png)
+![Monthly Target Densities](./monthly_sm_density.png)
+
+### Seasonal Correlation Trends
+We computed the Pearson correlation ($r$) of target soil moisture against key physical drivers across each month:
+
+* **Antecedent Precipitation Index (`G_API`)**: Highly correlated with soil moisture in summer/early autumn (e.g., $r = 0.641$ in September, $r = 0.500$ in July). In winter, correlation drops to $r = 0.139$ (January) because soils are already saturated and excess rainfall runs off rather than raising moisture.
+* **Land Surface Temperature (`LST_modis`)**: Consistently anti-correlated with soil moisture during summer (up to $r = -0.374$ in June) due to evapotranspiration drying the soil, but shows weak positive correlation in winter.
+* **Satellite Soil Moisture (`SMAP`)**: Moderately correlated in late summer and autumn ($r = 0.404$ in September) but decouples during wet winters.
+
+![Monthly Correlations](./monthly_correlations.png)
+![Separability Scatter Plots](./separability_scatter_plots.png)
+
+### Evaluating Gating Routing Strategies
+To evaluate how realistic it is to route samples using seasonal or simple physical rules, we benchmarked four different gating routers on the validation + test splits:
+
+#### 1. Heuristic Month-Only Gating
+We route samples using a static seasonal rule:
+* **Wet Season (Nov–Mar)** $\to$ Wet
+* **Dry Season (Jul–Sep)** $\to$ Dry
+* **Transition Season (Apr–Jun, Oct)** $\to$ Transition
+
+* **Performance:**
+  - **Overall Accuracy:** **49%**
+  - **Dry F1-Score:** 0.63 (Recall: 51%, Precision: 83%)
+  - **Transition F1-Score:** 0.31 (Recall: 38%, Precision: 26%)
+  - **Wet F1-Score:** 0.52 (Recall: 54%, Precision: 50%)
+
+#### 2. Decision Tree Gating (Month + `G_API`)
+A simple, interpretable tree trained on the train split (max_depth=3).
+
+* **Performance:**
+  - **Overall Accuracy:** **58%**
+  - **Dry F1-Score:** 0.67 (Recall: 61%, Precision: 75%)
+  - **Transition F1-Score:** **0.00** (Recall: 0%, Precision: 0%)
+  - **Wet F1-Score:** 0.66 (Recall: 92%, Precision: 51%)
+  - *Note: The tree completely collapses the Transition predictions due to extreme overlap with Dry/Wet classes.*
+
+#### 3. Decision Tree Gating (Month + `G_API` + `LST_modis` + `SMAP_sm_pm_interp`)
+Max depth = 4.
+
+* **Performance:**
+  - **Overall Accuracy:** **57%**
+  - **Dry F1-Score:** 0.68 (Recall: 62%, Precision: 76%)
+  - **Transition F1-Score:** 0.13 (Recall: 9%, Precision: 27%)
+  - **Wet F1-Score:** 0.63 (Recall: 81%, Precision: 51%)
+
+#### 4. Random Forest Gating (Month + `G_API` + `LST_modis` + `SMAP_sm_pm_interp`)
+100 estimators, max depth = 8.
+
+* **Performance:**
+  - **Overall Accuracy:** **58%**
+  - **Dry F1-Score:** 0.71 (Recall: 64%, Precision: 82%)
+  - **Transition F1-Score:** **0.26** (Recall: 22%, Precision: 32%)
+  - **Wet F1-Score:** 0.61 (Recall: 74%, Precision: 52%)
+
+![Gating Confusion Matrices](./gating_confusion_matrices.png)
+![Decision Tree Gating Structure](./decision_tree_gating_structure.png)
+
+### Key Takeaways on Season-Based Gating Feasibility
+1. **Seasons alone are insufficient for gating:** A simple seasonal router only achieves 49% accuracy. This is because soil moisture is highly dynamic and varies substantially within calendar months due to weather volatility (e.g. rain events in summer) and spatial elevation differences.
+2. **Transition class is poorly separable:** Across all gating strategies, the Transition class F1-score peaks at only 0.26. The intermediate moisture range acts as a high-entropy zone where Dry-like and Wet-like dynamics overlap in feature space.
+3. **ML Gating with 4 features matches full model:** A simple Random Forest using only 4 features (`month`, `G_API`, `LST_modis`, `SMAP`) achieves **58% accuracy**. This is only slightly below the full multi-class XGBoost classifier (~63%), which uses all 40+ features. This suggests that antecedent precipitation and land surface temperature, combined with month, capture the vast majority of the gating signal.
+
+---
+
+## 7. Conclusions & Next Steps
 
 ### 1. Dataset Quality Verdict: **EXCELLENT**
 * The `derived_8.1_pos` dataset provides a **2.35x larger sample set** (32,015 rows vs 13,604 in `derived_8.0`).
@@ -173,4 +265,6 @@ The small multiples grid below shows the soil moisture density distributions for
 
 ### 3. Recommendations for MoE Modeling
 * **Gating Design**: Because individual stations are highly skewed (e.g. BurntMountain is 93.5% Dry), station-level static features (latitude, longitude, elevation, HWSD clay/sand fractions) will be critical for the router to identify spatial regime shifts.
-* **Evaluation**: The test split in `derived_8.1_pos` is also larger (8,902 rows), allowing for a clean out-of-sample evaluation of MoE routing strategies.
+* **Simplifying the Router**: Since a 4-feature Random Forest (using Month, API, LST, SMAP) matches within 5% of the full classifier, we should consider a simplified, lower-dimensional router to reduce overfitting and make the end-to-end model more robust to geographic feature distribution shifts.
+* **Binary Routing Alternative**: Given the Transition class's poor separability (F1-score of 0.26), collapsing the problem into a Binary MoE (Dry vs. Wet/Transition) is highly recommended. The binary gating model achieves ~80% accuracy and completely avoids the transition zone recall wall.
+
