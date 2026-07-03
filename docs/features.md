@@ -59,24 +59,88 @@ Features follow a strict prefix naming convention representing the mathematical 
 
 ---
 
-## 3. Core Base Variables (Time-Series)
+## 3. Combinatorial Feature Breakdown (Math: 499 Columns)
 
-The temporal operators (difference, lag, gradient, rolling statistics) are applied systematically to a set of **9 primary base variables**:
+Every single column in the dataset is generated through a rigorous combinatorial formulation. By understanding these groupings, you can ensure that you do not introduce redundant features.
 
-1. **`s2_b11`**: Sentinel-2 Shortwave Infrared 1 (SWIR-1, ~1610 nm). Sensitive to soil moisture and leaf water content.
-2. **`s2_b12`**: Sentinel-2 Shortwave Infrared 2 (SWIR-2, ~2190 nm). Sensitive to soil mineral composition and moisture.
-3. **`F_NDVI`**: Gap-filled/Smoothed Normalized Difference Vegetation Index. Computed from Sentinel-2 NIR (`s2_b8`) and Red (`s2_b4`) bands:
-   $$\text{NDVI} = \frac{\text{B8} - \text{B4}}{\text{B8} + \text{B4}}$$
-4. **`F_NDMI`**: Gap-filled/Smoothed Normalized Difference Moisture Index. Computed from Sentinel-2 NIR (`s2_b8`) and SWIR-1 (`s2_b11`) bands:
-   $$\text{NDMI} = \frac{\text{B8} - \text{B11}}{\text{B8} + \text{B11}}$$
-5. **`LST_modis`**: Land Surface Temperature (Kelvin) retrieved from MODIS thermal bands.
-6. **`E_SAR_ratio`**: Cross-polarization backscatter ratio derived from Sentinel-1:
-   $$\text{SAR\_ratio} = \frac{\text{s1\_vv}}{\text{s1\_vh}}$$
-7. **`E_SAR_diff`**: Polarization backscatter difference derived from Sentinel-1:
-   $$\text{SAR\_diff} = \text{s1\_vv} - \text{s1\_vh}$$
-8. **`SMAP_sm_interp`**: Multi-daily soil moisture estimate interpolated from Soil Moisture Active Passive (SMAP) L-band radiometry.
-9. **`G_API`**: Antecedent Precipitation Index, modeling soil moisture decay ("hydrologic memory") from daily rainfall:
-   $$\text{API}_t = \text{API}_{t-1} \cdot k + \text{precip}_t \quad (\text{with decay } k \approx 0.85 \text{ to } 0.90)$$
+### A. Metadata, Targets & Raw Inputs (17 columns)
+* **Metadata & Targets (3)**: `station_id`, `date`, `soil_moisture_5cm`
+* **Raw Geospatial, Weather & Satellite Inputs (14)**:
+  * Spatial coordinates (2): `longitude`, `latitude`
+  * Terrain attributes (3): `elev`, `slope`, `aspect`
+  * Time variables (1): `DOY` (Day of Year)
+  * Meteorological (1): `precip_mm`
+  * Sentinel-1 backscatter (2): `s1_vv`, `s1_vh`
+  * Sentinel-2 raw spectral bands (4): `s2_b4` (Red), `s2_b8` (NIR), `s2_b11` (SWIR-1), `s2_b12` (SWIR-2)
+  * MODIS raw temperature (1): `LST_modis`
+
+### B. Core Time-Series Transforms (362 columns)
+The temporal operators are systematically applied to **9 base variables**:
+`s2_b11`, `s2_b12`, `F_NDVI`, `F_NDMI`, `LST_modis`, `E_SAR_ratio`, `E_SAR_diff`, `SMAP_sm_interp`, `G_API`.
+
+* **Autoregressive Lags (`C_lag_`)**: Applied at $k \in \{1, 2, 5, 6, 12, 30\}$
+  $$\text{Count: } 9 \text{ bases} \times 6 \text{ lags} = 54 \text{ columns}$$
+* **Temporal Differences (`A_d_`)**: First-order difference $\Delta x = x_t - x_{t-k}$ applied at $k \in \{1, 2, 5, 7, 14, 30\}$
+  $$\text{Count: } 9 \text{ bases} \times 6 \text{ windows} = 54 \text{ columns}$$
+* **Temporal Gradients (`A_grad_`)**: Regression slope of the variable over window $k \in \{7, 14, 30\}$
+  $$\text{Count: } 9 \text{ bases} \times 3 \text{ windows} = 27 \text{ columns}$$
+* **Percent Change (`A_pct_`)**: Normalized rate of change $(x_t - x_{t-1}) / x_{t-1}$
+  $$\text{Count: } 9 \text{ bases} \times 1 = 9 \text{ columns}$$
+* **Smoothed Moving Averages (`C_smm_`)**: Double moving averages smoothed with parameter $\alpha=0.85$ and window size $n=5$
+  $$\text{Count: } 9 \text{ bases} \times 1 = 9 \text{ columns}$$
+* **Rolling Volatilities & Moving Averages (`V_roll*`, `V_ema_`)**: Rolling statistical transforms applied over $k \in \{7, 14, 30\}$:
+  * Rolling Standard Deviation (`V_rollstd_`)
+  * Rolling Range (`V_rollrng_`)
+  * Rolling Coefficient of Variation (`V_rollcv_`)
+  * Rolling Mean (`V_rollmean_`)
+  * Rolling Minimum (`V_rollmin_`)
+  * Rolling Maximum (`V_rollmax_`)
+  * Exponential Moving Average (`V_ema_`)
+  $$\text{Count: } 9 \text{ bases} \times 7 \text{ operators} \times 3 \text{ windows} = 189 \text{ columns}$$
+
+### C. Advanced Temporal & Spectral Dynamics (20 columns)
+* **Roughness Proxies (`E_rough_`)**: Rolling standard deviation of Sentinel-1 backscatter on both `s1_vv` and `s1_vh` over $k \in \{7, 14\}$ observations.
+  $$\text{Count: } 2 \text{ channels} \times 2 \text{ windows} = 4 \text{ columns}$$
+* **Cross-Correlations (`H_corr_`)**: Moving Pearson correlation between:
+  1. `E_SAR_ratio` and `F_NDMI` (at $k \in \{7, 14\}$)
+  2. `LST_modis` and `F_NDMI` (at $k \in \{7, 14\}$)
+  $$\text{Count: } 2 \text{ pairs} \times 2 \text{ windows} = 4 \text{ columns}$$
+* **Seasonal Anomalies (`D_sa_`, `D_z_`)**: Seasonally-adjusted and climatology-standardized z-scores computed for `F_NDMI`, `E_SAR_ratio`, and `LST_modis`.
+  $$\text{Count: } 3 \text{ bases} \times 2 \text{ methods} = 6 \text{ columns}$$
+* **Spectral Fourier Features (`D_fft_`)**: Rolling Fast Fourier Transform dominant frequency and spectral entropy computed over $k=30$ observations for `F_NDMI`, `E_SAR_ratio`, and `LST_modis`.
+  $$\text{Count: } 3 \text{ bases} \times 2 \text{ spectral attributes} = 6 \text{ columns}$$
+
+### D. SMAP Active Passive Interpolations (43 columns)
+Separate morning (AM) and evening (PM) SMAP passes are interpolated and derived as follows:
+* **Base variables (3)**: `SMAP_sm_am_interp`, `SMAP_sm_pm_interp`, `SMAP_sm_interp`
+* **Diurnal difference (1)**: `SMAP_ampm_diff_interp`
+* **Derived indicators (39)**: For each of the 3 base variables, the following 13 metrics are computed:
+  * Presence Mask: `_mask`
+  * Historical Lags: `_lag1`, `_lag7`, `_lag30`
+  * First-order difference: `_diff1`
+  * Slope gradient: `_grad7`
+  * Rate changes: `_pctchg`
+  * Rolling features: `_rollmean7`, `_rollstd7`, `_rollrange7`, `_rollmean30`, `_rollstd30`, `_rollrange30`
+  * Moving average: `_ema02`
+  $$\text{Count: } 3 \text{ bases} \times 13 \text{ derived} = 39 \text{ columns}$$
+
+### E. Static Soils, GIS & Bioclimatic variables (49 columns)
+* **GIS Terrain Parameters (3)**: `J_aspect_deg`, `J_slope_deg`, `J_elev_m`
+* **Engineered Terrain parameters (4)**: Sine and cosine transformations to solve angular discontinuities:
+  * Aspect: `K_aspect_sin`, `K_aspect_cos`
+  * Slope: `K_slope_sin`, `K_slope_cos`
+* **HWSD Soil fractions at 6 depths (12)**: Clay weight fraction (`J_clay_wfrac_b*`) and Sand weight fraction (`J_sand_wfrac_b*`) at depths $\{0, 10, 30, 60, 100, 200\}$ cm.
+* **USDA Soil Classes at 6 depths (6)**: USDA Soil texture category code (`J_soil_texture_usda_b*`) at depths $\{0, 10, 30, 60, 100, 200\}$ cm.
+* **Soil Fraction Composites (5)**:
+  * Land Cover code: `J_lc_code`
+  * Soil mixture sum: `J_clay_plus_sand_b0`, `K_clay_plus_sand_b0`
+  * Soil fraction ratios: `J_sand_clay_ratio_b0`, `K_sand_clay_ratio_b0`
+* **WorldClim Climatological Seasonality (19)**: long term climate variables `J_bio_bio01` to `J_bio_bio19`.
+
+### F. Calendar Cycles & Interaction Features (8 columns)
+* **Temporal baseline (4)**: `year`, `year_frac`, `sin_year`, `cos_year` (cyclical calendar seasonality).
+* **Interactions (2)**: `API_x_year`, `SMAP_x_year` (cross-multiplication interactions with long term years).
+* **Sine/Cosine DOY (2)**: `D_sin_DOY`, `D_cos_DOY`.
 
 ---
 
@@ -90,74 +154,9 @@ The temporal operators (difference, lag, gradient, rolling statistics) are appli
 Optical satellite data (Sentinel-2) is heavily obscured by clouds, and radar satellite data (Sentinel-1) operates on a 6-to-12-day revisit cycle. Consequently, a 30-calendar-day window might contain only 1 or 2 valid observation points. 
 * By structuring windows around **observations** (steps in the database series), the statistics (mean, standard deviation, lags) are always calculated over a constant number of data points, ensuring mathematical stability during model training.
 
-### Configured Window Sizes:
-* **Lags (`C_lag_`)**: $k \in \{1, 2, 5, 6, 12, 30\}$
-* **Differences (`A_d_`)**: $k \in \{1, 2, 5, 7, 14, 30\}$
-* **Gradients and Rolling Stats (`A_grad_`, `V_roll*`, `V_ema_`)**: $k \in \{7, 14, 30\}$ (analogous to short, medium, and long memory).
-
 ---
 
-## 5. Raw Physical Features (`RAW`)
-
-These are the baseline physical inputs ingested directly by the pipeline before any windowed engineering:
-
-* **Coordinates & Elevation**: `longitude`, `latitude`, and `elev` (meters above sea level).
-* **Local Terrain**: `slope` (terrain inclination in degrees) and `aspect` (terrain orientation in degrees).
-* **Precipitation**: `precip_mm` (raw daily total precipitation).
-* **Day of Year**: `DOY` (Julian calendar day, 1–366).
-* **Sentinel-1 SAR Backscatter**: `s1_vv` and `s1_vh` (vertical-vertical and vertical-horizontal backscatter coefficients in dB).
-* **Sentinel-2 Optical Bands**: `s2_b4` (Red), `s2_b8` (NIR), `s2_b11` (SWIR-1), and `s2_b12` (SWIR-2).
-* **Land Surface Temperature**: `LST_modis` (MODIS thermal observation).
-
----
-
-## 6. Static GIS & Soil Properties (`J_` and `K_`)
-
-Static features capture the spatial context of SNOTEL and weather stations, allowing the models (particularly gating routers and spatial specialists) to generalize across different mountain sites in Washington state.
-
-### HWSD Soil Physical Fractions (`J_` and `K_`)
-Soil characteristics are extracted from the Harmonized World Soil Database (HWSD) at multiple depth layers: surface (`b0`), 10cm (`b10`), 30cm (`b30`), 60cm (`b60`), 100cm (`b100`), and 200cm (`b200`).
-* **`J_clay_wfrac_b<depth>`**: Clay weight fraction in the soil layer.
-* **`J_sand_wfrac_b<depth>`**: Sand weight fraction in the soil layer.
-* **`J_soil_texture_usda_b<depth>`**: USDA numerical soil texture classification code.
-* **`J_clay_plus_sand_b0`**: Sum of clay and sand fractions at the surface.
-* **`J_sand_clay_ratio_b0`**: Ratio of sand weight to clay weight.
-* **`J_lc_code`**: ESA Land Cover classification code.
-* **`K_clay_plus_sand_b0` & `K_sand_clay_ratio_b0`**: Engineered versions of the surface soil fractions.
-
-### Terrain Transformations (`K_`)
-To prevent boundary discontinuities during modeling, slope and aspect angles are decomposed into sine and cosine components:
-* **`K_slope_sin` / `K_slope_cos`**: $\sin(\text{slope})$ and $\cos(\text{slope})$
-* **`K_aspect_sin` / `K_aspect_cos`**: $\sin(\text{aspect})$ and $\cos(\text{aspect})$
-
-### WorldClim Bioclimatic variables (`J_bio_`)
-These 19 variables capture long-term climatology patterns (annual trends, seasonality, and extreme temperature/precipitation parameters) associated with each station's location:
-
-| Feature Name | Bioclimatic Variable (Description) |
-| :--- | :--- |
-| **`J_bio_bio01`** | Annual Mean Temperature |
-| **`J_bio_bio02`** | Mean Diurnal Range (Mean of monthly max - min temp) |
-| **`J_bio_bio03`** | Isothermality (BIO2 / BIO7) × 100 |
-| **`J_bio_bio04`** | Temperature Seasonality (standard deviation × 100) |
-| **`J_bio_bio05`** | Max Temperature of Warmest Month |
-| **`J_bio_bio06`** | Min Temperature of Coldest Month |
-| **`J_bio_bio07`** | Temperature Annual Range (BIO5 - BIO6) |
-| **`J_bio_bio08`** | Mean Temperature of Wettest Quarter |
-| **`J_bio_bio09`** | Mean Temperature of Driest Quarter |
-| **`J_bio_bio10`** | Mean Temperature of Warmest Quarter |
-| **`J_bio_bio11`** | Mean Temperature of Coldest Quarter |
-| **`J_bio_bio12`** | Annual Precipitation |
-| **`J_bio_bio13`** | Precipitation of Wettest Month |
-| **`J_bio_bio14`** | Precipitation of Driest Month |
-| **`J_bio_bio15`** | Precipitation Seasonality (Coefficient of Variation) |
-| **`J_bio_bio16`** | Precipitation of Wettest Quarter |
-| **`J_bio_bio17`** | Precipitation of Driest Quarter |
-| **`J_bio_bio18`** | Precipitation of Warmest Quarter |
-| **`J_bio_bio19`** | Precipitation of Coldest Quarter |
-
----
-
-## 7. Local Incidence Angle (LIA) Features
+## 5. Local Incidence Angle (LIA) Features
 
 Radar backscatter intensity is highly sensitive to the local terrain slope relative to the satellite's look direction. LIA features correct for these geometric distortions using statistics derived over the historical Sentinel-1 collection. See the extraction script at [fetch_lia.py](../data/splits/derived_8.0/LIA/fetch_lia.py).
 
@@ -167,13 +166,24 @@ Radar backscatter intensity is highly sensitive to the local terrain slope relat
 
 ---
 
-## 8. Miscellaneous & Interaction Features (`Other`)
+## 9. Feature Hygiene & Avoiding Redundant Features
 
-* **`F_MSI`**: Moisture Stress Index computed as SWIR-1 / NIR:
-  $$\text{MSI} = \frac{\text{s2\_b11}}{\text{s2\_b8}}$$
-* **`SMAP_sm_am_interp` / `SMAP_sm_pm_interp`**: Separate morning (AM) and evening (PM) satellite soil moisture passes.
-* **`SMAP_ampm_diff_interp`**: The daily diurnal soil moisture variation observed by SMAP:
-  $$\text{SMAP\_ampm\_diff} = \text{SMAP\_sm\_am\_interp} - \text{SMAP\_sm\_pm\_interp}$$
-* **`API_x_year`**: An interaction term crossing `G_API` with the year fraction, allowing the model to adapt rainfall memory response depending on long-term inter-annual trends.
-* **`SMAP_x_year`**: An interaction term crossing `SMAP_sm_interp` with the year fraction.
-* **`sin_year` / `cos_year`**: Sine and cosine of the year fraction, providing a smooth seasonal cyclicity signal.
+To maintain dataset integrity and avoid model degradation due to multicollinearity (which increases overfitting risk and slows training), follow these feature hygiene guidelines before engineering new features:
+
+### 1. Cross-Reference Before Coding
+Check if your proposed feature is already present in the combinatorial mapping:
+* **Rolling statistics**: Do not build a custom rolling mean or standard deviation on `NDVI`, `NDMI`, `SAR`, `LST`, or `SMAP`. They are already computed for windows $7$, $14$, and $30$ under `V_rollmean_`, `V_rollstd_`, etc.
+* **Lags & Differences**: Lag values up to 30 steps (`C_lag_`) and differences (`A_d_`) are pre-computed. Do not manually shift the target or predictors unless testing a model architecture that specifically handles sequence steps natively.
+* **Terrain Transformations**: Do not compute $\sin$ or $\cos$ values of aspects and slopes. They are already provided as `K_aspect_sin`, `K_aspect_cos`, `K_slope_sin`, and `K_slope_cos`.
+
+### 2. Differentiate `kobs` and Calendar Days
+If your task requires calendar-based hydrologic memory (e.g. cumulative rainfall over the past 3 days, 7 days, or 30 calendar days), use the **`G_rain_sum_3d`**, **`G_rain_sum_7d`**, and **`G_rain_sum_30d`** columns. These are calculated over true calendar days because weather precipitation data is daily and continuous.
+* *Do not recreate rolling sums of precipitation using `kobs` indices*, as gaps in satellite observations would skew the precipitation sums.
+
+### 3. Check Static GIS variables
+Before extracting elevation, slope, aspect, USDA soil classification, clay/sand weights, or regional climates (annual precipitation, mean temperatures), check the **`J_`** and **`J_bio_`** groups. These static variables are already mapped at the station locations. Adding duplicate terrain parameters from a different digital elevation model (DEM) will introduce correlation issues without adding predictive signal.
+
+### 4. Code Symbol Entry Points
+* Feature creation logic is defined in [feature_pipe.py](../src/pipeline/pipes/feature_pipe.py).
+* Filtering, sanity checking, and preprocessing of features are performed in [preprocess.py](../Modeling/Src/soilmoist_fl/Features/preprocess.py).
+* Automated feature grouping by prefixes is maintained in [groups.py](../Modeling/Src/soilmoist_fl/Features/groups.py). Refer to `infer_family()` when writing any new family tag classifiers.
