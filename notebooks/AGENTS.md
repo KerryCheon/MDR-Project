@@ -15,7 +15,7 @@ The full version history (v1–v24) is in `notebooks/training/archive/`, organiz
 ### Experiments
 New experiments live it `notebooks/experiment/`. Each experiment should have its own subdirectory (e.g. `derived_8.1-data-exploration/`).
 
-For simplicity, you don't need to use Jupyter notebook; you can just write regular Python scripts to run analysis and generate figures, then present findings in a Markdown file. 
+For simplicity, you don't need to use Jupyter notebook for short-running experiments (i.e. less than 5 minutes). In that case, you can just write regular Python scripts to run analysis and generate figures, then present findings in a Markdown file. 
 
 ## Working with Notebooks (.ipynb files)
 
@@ -24,3 +24,6 @@ Note: you need to run `nb execute` inside `notebooks/` directory, otherwise the 
 
 ## Runtime
 The dependencies are managed with `uv`, so don't use `python` directly as the global installation might not have all the packages. You should use `uv run` to run any python scripts.
+
+## Best Practices
+- For long running scripts (i.e. more than 5 minutes), create checkpoints and saving results incrementally to prevent lossing all progress.
