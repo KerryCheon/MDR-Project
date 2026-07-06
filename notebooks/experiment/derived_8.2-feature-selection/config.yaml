@@ -14,7 +14,7 @@ data:
 
 selection:
   top_k: 40
-  stability_n_boot: 10
+  stability_n_boot: 100
   stages:
     - kind: mi
       k: 300

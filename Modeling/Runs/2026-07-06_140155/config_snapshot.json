@@ -1,0 +1,66 @@
+{
+  "data": {
+    "target": "soil_moisture_5cm",
+    "splits": {
+      "train": "data/splits/derived_9.0/train.csv",
+      "val": "data/splits/derived_9.0/val.csv",
+      "test": "data/splits/derived_9.0/test.csv"
+    },
+    "time_col": "date",
+    "id_cols": [
+      "station_id"
+    ],
+    "drop_cols": [
+      "station_id",
+      "date"
+    ]
+  },
+  "selection": {
+    "top_k": 40,
+    "stages": [
+      {
+        "kind": "mi",
+        "k": 200
+      },
+      {
+        "kind": "correlation",
+        "threshold": 0.95
+      },
+      {
+        "kind": "rf_importance",
+        "k": 40
+      },
+      {
+        "kind": "stability",
+        "base": "rf",
+        "stability_n_boot": 10,
+        "min_freq": 0.5
+      }
+    ]
+  },
+  "models": [
+    {
+      "kind": "linear"
+    },
+    {
+      "kind": "xgb"
+    },
+    {
+      "kind": "rf"
+    }
+  ],
+  "logging": {
+    "level": "INFO",
+    "console": true,
+    "log_to_file": true,
+    "runs_subdir": "logs",
+    "file_name": "pipeline_feat_test.log",
+    "max_bytes": 10485760,
+    "backup_count": 5,
+    "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    "datefmt": "%Y-%m-%d %H:%M:%S"
+  },
+  "_meta": {
+    "config_path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Configs\\test_custom_stages.yaml"
+  }
+}

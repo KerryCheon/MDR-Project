@@ -63,6 +63,22 @@
       "meta": {
         "config": "Modeling/Configs/test_custom_stages.yaml"
       }
+    },
+    {
+      "run_id": "2026-07-06_154000",
+      "timestamp": "2026-07-06T15:40:00",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\2026-07-06_154000",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config.yaml"
+      }
+    },
+    {
+      "run_id": "2026-07-06_154516",
+      "timestamp": "2026-07-06T15:45:16",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\2026-07-06_154516",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config.yaml"
+      }
     }
   ]
 }
