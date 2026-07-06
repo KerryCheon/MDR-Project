@@ -16,7 +16,7 @@ selection:
   top_k: 40
   stages:
     - kind: mi
-      k: 120
+      k: 300
     - kind: elasticnet
       k: 60
     - kind: stability

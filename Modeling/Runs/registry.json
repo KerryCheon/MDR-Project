@@ -39,6 +39,14 @@
       "meta": {
         "config": "/Users/jbalkovec/Desktop/MDR/Modeling/Configs/default.yaml"
       }
+    },
+    {
+      "run_id": "verify_cli_fix",
+      "timestamp": "2026-07-05T22:44:26",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\verify_cli_fix",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.1_pos-feature-selection/config.yaml"
+      }
     }
   ]
 }

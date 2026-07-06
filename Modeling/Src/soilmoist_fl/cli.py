@@ -149,12 +149,28 @@ def run_feature_selection(
         elif kind == "stability":
             min_freq = float(st.get("min_freq", min_freq))
 
-    mi_out = select_mi(X_tr, y_tr, k=mi_k)
+    # Identify bypass features before select_mi
+    bypass_prefixes = ('J_', 'K_', 'D_', 'G_')
+    bypass_exact = {'longitude', 'latitude', 'elev', 'slope', 'aspect', 'DOY', 'precip_mm', 'sin_year', 'cos_year'}
+    
+    bypass_cols = [
+        c for c in X_tr.columns 
+        if c.startswith(bypass_prefixes) or 'year' in c or c in bypass_exact
+    ]
+    ts_cols = [c for c in X_tr.columns if c not in bypass_cols]
+
+    mi_out = select_mi(X_tr[ts_cols], y_tr, k=mi_k)
     mi_feats = mi_out["selected"]
     save_stage_features(run_dir, "mi", mi_feats, ranked=mi_out.get("ranked"), scores=mi_out.get("scores"))
-    log.info("Stage MI done: selected=%d", len(mi_feats))
+    
+    # Force include bypass cols in the elasticnet candidates
+    enet_candidate_feats = list(set(mi_feats + bypass_cols))
+    # Double check they exist in X_tr
+    enet_candidate_feats = [f for f in enet_candidate_feats if f in X_tr.columns]
+    
+    log.info("Stage MI done: selected=%d (plus %d bypassed features sent to ElasticNet)", len(mi_feats), len(bypass_cols))
 
-    X_tr_mi = X_tr[mi_feats]
+    X_tr_mi = X_tr[enet_candidate_feats]
     enet_out = select_elasticnet(X_tr_mi, y_tr, k=enet_k)
     enet_feats = enet_out["selected"]
     save_stage_features(run_dir, "elasticnet", enet_feats, ranked=enet_out.get("ranked"), scores=enet_out.get("scores"))
