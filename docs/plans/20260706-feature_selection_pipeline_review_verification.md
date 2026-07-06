@@ -113,3 +113,22 @@ Per-station counts of all-NaN feature columns in `derived_9.0`:
 ## Additional Context
 
 The `Modeling/Configs/default.yaml` still points to a macOS path under `/Users/jbalkovec/Desktop/.../derived_new/`, which does not exist in this repo. The canonical local split is `data/splits/derived_9.0/`. This path issue is separate from the review findings but should be updated when reproducing the pipeline.
+
+---
+
+## What if the data were complete?
+
+If the satellite-derived features were fully populated (i.e., no high missingness), the impact of the five findings would change as follows:
+
+**Still present:**
+
+- **Issue 2 — Linear bias in a non-linear stack:** Using ElasticNet to pre-select features for Random Forest and XGBoost would still suppress non-linear and interaction effects.
+- **Issue 3 — Collinearity / coefficient dilution:** Lagged soil-moisture features would still be highly collinear, and ElasticNet's L2 penalty would still split their coefficients.
+- **Issue 4 — Stability selection waste:** Running `ElasticNetCV(cv=5)` inside every bootstrap iteration would still be computationally wasteful and add hyperparameter noise, independent of missingness.
+
+**Would disappear or become latent:**
+
+- **Issue 5 — MI entropy bias:** Would disappear. With complete data, there are no median-imputed ties to bias the KSG k-NN estimator.
+- **Issue 1 — Silent alignment bug:** Would become latent. With no all-NaN columns, `SimpleImputer` would not drop anything, so the `zip`-based alignment would not trigger. However, the bug remains in the code: if the pipeline is run per-station, on a subset, or in a bootstrap sample where a feature becomes all-NaN, it would silently corrupt rankings again.
+
+In short, fixing the missing data would resolve the immediate MI problem and reduce the chance of hitting the alignment bug, but the design-level issues (linear selector, collinearity handling, stability methodology) would still need to be addressed.

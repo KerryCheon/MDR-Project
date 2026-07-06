@@ -8,6 +8,7 @@ from joblib import Parallel, delayed
 from Modeling.Utils.logging import get_logger
 from Modeling.Src.soilmoist_fl.Selectors.base import _top_k, log_top
 from Modeling.Src.soilmoist_fl.Selectors.elasticnet import select_elasticnet
+from Modeling.Src.soilmoist_fl.Selectors.rf_importance import select_rf_importance
 
 
 def stability_from_feature_lists(feature_lists, min_freq=0.6, top_k=None):
@@ -49,35 +50,35 @@ def stability_from_feature_lists(feature_lists, min_freq=0.6, top_k=None):
     }
 
 
-def stability_bootstrap_elasticnet(
+def stability_bootstrap(
     X,
     y,
-    n_boot=30,
+    base="elasticnet",
+    n_boot=100,
     sample_frac=0.8,
     min_freq=0.6,
     top_k=None,
     random_state=42,
-    enet_k=60,
-    enet_kwargs=None,
+    base_k=60,
+    base_kwargs=None,
 ):
     log = get_logger("selectors.stability")
 
     if n_boot <= 1:
-        raise ValueError("stability_bootstrap_elasticnet: n_boot must be >= 2")
+        raise ValueError("stability_bootstrap: n_boot must be >= 2")
 
-    enet_kwargs = enet_kwargs or {}
+    base_kwargs = base_kwargs or {}
 
     n = X.shape[0]
     m = int(round(float(sample_frac) * n))
     if m <= 0:
-        raise ValueError("stability_bootstrap_elasticnet: sample_frac produced empty sample")
+        raise ValueError("stability_bootstrap: sample_frac produced empty sample")
 
     rng = np.random.default_rng(int(random_state))
-    selections = []
 
     log.info(
-        "stability_bootstrap_elasticnet: n_boot=%d sample_frac=%.3f enet_k=%d min_freq=%.3f",
-        int(n_boot), float(sample_frac), int(enet_k), float(min_freq)
+        "stability_bootstrap: base=%s n_boot=%d sample_frac=%.3f base_k=%d min_freq=%.3f",
+        base, int(n_boot), float(sample_frac), int(base_k), float(min_freq)
     )
 
     # Pre-generate indices to ensure reproducibility with the parallel rng usage
@@ -86,11 +87,19 @@ def stability_bootstrap_elasticnet(
     def _run_bootstrap(b, idx):
         Xb = X.iloc[idx]
         yb = y.iloc[idx] if hasattr(y, "iloc") else y[idx]
-        
-        kwargs = dict(enet_kwargs)
-        kwargs["n_jobs"] = 1
-        
-        out = select_elasticnet(Xb, yb, k=enet_k, random_state=int(random_state) + b, **kwargs)
+
+        kwargs = dict(base_kwargs)
+        if base == "elasticnet":
+            # For the bootstrap step, we always force standard ElasticNet by using single thread
+            kwargs["n_jobs"] = 1
+            out = select_elasticnet(Xb, yb, k=base_k, random_state=int(random_state) + b, **kwargs)
+        elif base == "rf":
+            # RandomForest bootstrap step uses 1 thread inside to prevent joblib collision
+            kwargs["n_jobs"] = 1
+            out = select_rf_importance(Xb, yb, k=base_k, random_state=int(random_state) + b, **kwargs)
+        else:
+            raise ValueError(f"stability_bootstrap: unsupported base estimator: {base}")
+
         return out["selected"]
 
     selections = Parallel(n_jobs=-1)(
@@ -101,7 +110,33 @@ def stability_bootstrap_elasticnet(
     out_stab["bootstrap"] = {
         "n_boot": int(n_boot),
         "sample_frac": float(sample_frac),
-        "base": "elasticnet",
-        "enet_k": int(enet_k),
+        "base": base,
+        "base_k": int(base_k),
     }
     return out_stab
+
+
+def stability_bootstrap_elasticnet(
+    X,
+    y,
+    n_boot=100,
+    sample_frac=0.8,
+    min_freq=0.6,
+    top_k=None,
+    random_state=42,
+    enet_k=60,
+    enet_kwargs=None,
+):
+    # Backward compatible wrapper calling the unified stability_bootstrap
+    return stability_bootstrap(
+        X=X,
+        y=y,
+        base="elasticnet",
+        n_boot=n_boot,
+        sample_frac=sample_frac,
+        min_freq=min_freq,
+        top_k=top_k,
+        random_state=random_state,
+        base_k=enet_k,
+        base_kwargs=enet_kwargs,
+    )

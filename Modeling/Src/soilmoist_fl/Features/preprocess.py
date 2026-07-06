@@ -97,4 +97,32 @@ def preprocess_split(df, target, drop_cols=None, drop_non_numeric=False):
 
     basic_sanity_checks(X_num, y)
 
+    # Systematic missingness checks & diagnostics
+    log = get_logger("features.preprocess")
+    all_nan_cols = []
+    high_nan_cols = []
+    
+    for c in X_num.columns:
+        isna_series = X_num[c].isna()
+        if isna_series.all():
+            all_nan_cols.append(c)
+        else:
+            nan_rate = isna_series.mean()
+            if nan_rate > 0.5:
+                high_nan_cols.append((c, nan_rate))
+                
+    if all_nan_cols:
+        log.warning(
+            "Systematically missing features detected! %d columns are 100%% NaN (all-NaN): %s",
+            len(all_nan_cols), all_nan_cols[:25]
+        )
+    if high_nan_cols:
+        # Sort by missingness rate descending
+        high_nan_cols.sort(key=lambda t: -t[1])
+        log.warning(
+            "High missingness features detected! %d columns have >50%% NaN rates: %s",
+            len(high_nan_cols), [(name, f"{rate:.1%}") for name, rate in high_nan_cols[:15]]
+        )
+
     return X_num, y, feature_cols, bad_cols
+
