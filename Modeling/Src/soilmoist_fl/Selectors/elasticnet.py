@@ -43,7 +43,7 @@ def select_elasticnet(
             cv=int(cv),
             max_iter=int(max_iter),
             random_state=int(random_state),
-            n_jobs=-1,
+            n_jobs=1,
         ))
     ])
 

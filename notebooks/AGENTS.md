@@ -26,4 +26,8 @@ Note: you need to run `nb execute` inside `notebooks/` directory, otherwise the 
 The dependencies are managed with `uv`, so don't use `python` directly as the global installation might not have all the packages. You should use `uv run` to run any python scripts.
 
 ## Best Practices
-- For long running scripts (i.e. more than 5 minutes), create checkpoints and saving results incrementally to prevent lossing all progress.
+### Value user's time:
+- Check for potential errors before start long-running executions
+- Enable accelerations like CUDA when possible
+- For long running scripts (i.e. more than 5 minutes; if you're training models in a loop then it must be exceed that), must create checkpoints and saving results incrementally to prevent lossing all progress.
+- Must set timer/timeout then executing code, they will take longer than you expected
