@@ -3,6 +3,7 @@
 
 import numpy as np
 import pandas as pd
+from joblib import Parallel, delayed
 
 from Modeling.Utils.logging import get_logger
 from Modeling.Src.soilmoist_fl.Selectors.base import _top_k, log_top
@@ -79,13 +80,22 @@ def stability_bootstrap_elasticnet(
         int(n_boot), float(sample_frac), int(enet_k), float(min_freq)
     )
 
-    for b in range(int(n_boot)):
-        idx = rng.choice(n, size=m, replace=True)
+    # Pre-generate indices to ensure reproducibility with the parallel rng usage
+    boot_indices = [rng.choice(n, size=m, replace=True) for _ in range(int(n_boot))]
+
+    def _run_bootstrap(b, idx):
         Xb = X.iloc[idx]
         yb = y.iloc[idx] if hasattr(y, "iloc") else y[idx]
+        
+        kwargs = dict(enet_kwargs)
+        kwargs["n_jobs"] = 1
+        
+        out = select_elasticnet(Xb, yb, k=enet_k, random_state=int(random_state) + b, **kwargs)
+        return out["selected"]
 
-        out = select_elasticnet(Xb, yb, k=enet_k, random_state=int(random_state) + b, **enet_kwargs)
-        selections.append(out["selected"])
+    selections = Parallel(n_jobs=-1)(
+        delayed(_run_bootstrap)(b, idx) for b, idx in enumerate(boot_indices)
+    )
 
     out_stab = stability_from_feature_lists(selections, min_freq=min_freq, top_k=top_k)
     out_stab["bootstrap"] = {
