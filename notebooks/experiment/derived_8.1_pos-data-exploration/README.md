@@ -338,18 +338,96 @@ Dry season is defined as Jul–Sep (Months 7, 8, 9), and all other months route 
 
 ---
 
-## 8. Conclusions & Next Steps
+## 8. Temporal Regime Drift & Year-over-Year Analysis
+
+Because the dataset splits are partitioned on a year-by-year basis (**Train**: 2017–2020, **Val**: 2021–2022, **Test**: 2023–2025), any inter-annual variability in weather patterns and soil moisture levels translates directly into a **temporal covariate shift** or **temporal label shift** between the training, validation, and testing sets.
+
+To assess this drift, we analyzed the annual regime distributions from 2017 through 2025 across all splits under the three threshold configurations:
+
+### 1. Original 3-Regime Thresholds ($t_1 = 0.20, t_2 = 0.313$)
+
+Under the original baseline thresholds, the test split years (2023–2025) exhibit a severe drop in the proportion of Wet observations, falling to only ~10–12% compared to ~19–26% in the training years.
+
+| Year | Dry Count | Dry % | Transition Count | Transition % | Wet Count | Wet % | Total |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **2017** | 1,959 | 48.01% | 1,044 | 25.59% | 1,077 | 26.40% | 4,080 |
+| **2018** | 2,239 | 54.99% | 1,048 | 25.74% | 785 | 19.28% | 4,072 |
+| **2019** | 1,584 | 41.34% | 1,529 | 39.90% | 719 | 18.76% | 3,832 |
+| **2020** | 1,586 | 39.85% | 1,498 | 37.64% | 896 | 22.51% | 3,980 |
+| **2021** | 1,645 | 45.04% | 1,095 | 29.98% | 912 | 24.97% | 3,652 |
+| **2022** | 1,693 | 48.41% | 988 | 28.25% | 816 | 23.33% | 3,497 |
+| **2023** | 1,943 | 59.29% | 1,003 | 30.61% | 331 | 10.10% | 3,277 |
+| **2024** | 1,275 | 40.77% | 1,478 | 47.27% | 374 | 11.96% | 3,127 |
+| **2025** | 1,131 | 45.28% | 1,072 | 42.91% | 295 | 11.81% | 2,498 |
+
+![Annual Regime Distribution - Original Thresholds](./annual_regime_distribution_original.png)
+
+---
+
+### 2. Valley-Calibrated 3-Regime Thresholds ($t_1 = 0.159, t_2 = 0.248$)
+
+Recalibrating boundaries to the empirical distribution valleys maintains a more substantial representation of the Wet class in the test set (averaging ~35% across 2023–2025, compared to ~41% in training years). 
+
+| Year | Dry Count | Dry % | Transition Count | Transition % | Wet Count | Wet % | Total |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **2017** | 1,476 | 36.18% | 964 | 23.63% | 1,640 | 40.20% | 4,080 |
+| **2018** | 1,671 | 41.04% | 1,025 | 25.17% | 1,376 | 33.79% | 4,072 |
+| **2019** | 1,058 | 27.61% | 1,224 | 31.94% | 1,550 | 40.45% | 3,832 |
+| **2020** | 1,309 | 32.89% | 758 | 19.05% | 1,913 | 48.07% | 3,980 |
+| **2021** | 1,444 | 39.54% | 703 | 19.25% | 1,505 | 41.21% | 3,652 |
+| **2022** | 1,474 | 42.15% | 590 | 16.87% | 1,433 | 40.98% | 3,497 |
+| **2023** | 1,566 | 47.79% | 734 | 22.40% | 977 | 29.81% | 3,277 |
+| **2024** | 933 | 29.84% | 928 | 29.68% | 1,266 | 40.49% | 3,127 |
+| **2025** | 834 | 33.39% | 779 | 31.18% | 885 | 35.43% | 2,498 |
+
+![Annual Regime Distribution - Valley-Calibrated Thresholds](./annual_regime_distribution_calibrated.png)
+
+---
+
+### 3. Valley-Calibrated 2-Regime Threshold ($T = 0.159$)
+
+Collapsing the classification to a binary router at $T = 0.159$ creates a robust split that remains highly stable across years, with Wet observations consistently making up 52–72% of the dataset.
+
+| Year | Dry Count | Dry % | Wet Count | Wet % | Total |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| **2017** | 1,476 | 36.18% | 2,604 | 63.82% | 4,080 |
+| **2018** | 1,671 | 41.04% | 2,401 | 58.96% | 4,072 |
+| **2019** | 1,058 | 27.61% | 2,774 | 72.39% | 3,832 |
+| **2020** | 1,309 | 32.89% | 2,671 | 67.11% | 3,980 |
+| **2021** | 1,444 | 39.54% | 2,208 | 60.46% | 3,652 |
+| **2022** | 1,474 | 42.15% | 2,023 | 57.85% | 3,497 |
+| **2023** | 1,566 | 47.79% | 1,711 | 52.21% | 3,277 |
+| **2024** | 933 | 29.84% | 2,194 | 70.16% | 3,127 |
+| **2025** | 834 | 33.39% | 1,664 | 66.61% | 2,498 |
+
+![Annual Regime Distribution - 2-Regime Threshold](./annual_regime_distribution_2r.png)
+
+---
+
+### 4. Year-over-Year Trends and Key Insights
+
+![Annual 3-Regime Soil Moisture Trends](./annual_regime_trends_3r.png)
+![Annual 2-Regime Soil Moisture Trends](./annual_regime_trends_2r.png)
+
+1. **The 2023 Drought Shift**: The year 2023 stands out as an exceptionally dry outlier. The Dry regime proportion surges to **47.79%** (valley-calibrated) and **59.29%** (original thresholds), representing the driest conditions in the 9-year dataset. Concurrently, the Wet regime proportion hits a record low.
+2. **Impact of Temporal Split**: Since the validation split covers 2021–2022 and the test split covers 2023–2025, evaluating models on 2023 tests their ability to generalize to drier-than-average climate regimes. 
+3. **Evaluating Wet Specialists**: If using the original thresholds, the test set has so few Wet samples (only 10.10% in 2023, 11.96% in 2024, 11.81% in 2025) that evaluating the Wet Specialist will yield high-variance, low-sample metrics. Valley-calibrated thresholds ($t_2 = 0.248$) mitigate this by keeping a healthy Wet population (~30–40%) in the test set.
+
+---
+
+## 9. Conclusions & Next Steps
 
 ### 1. Dataset Quality Verdict: **EXCELLENT**
 * The `derived_8.1_pos` dataset provides a **2.35x larger sample set** (32,015 rows vs 13,604 in `derived_8.0`).
-* Under valleys-based thresholds, the **Wet regime has 6,479 training samples** (compared to 879 in `derived_8.0`). This solves the minority class undersupply issue highlighted in the handoff notes, providing a robust base to train a high-quality **Wet Specialist** expert model.
+* Under valleys-based thresholds, the **Wet regime has 6,479 training samples** (compared to 879 in `derived_8.0`). This solves the minority class undersupply issue, providing a robust base to train a high-quality **Wet Specialist** expert model.
 
 ### 2. Threshold Verdict: **RECALIBRATE**
-* Do **not** use the original thresholds ($t_1=0.20, t_2=0.313$), as they result in a heavily dry-skewed model.
+* Do **not** use the original thresholds ($t_1=0.20, t_2=0.313$), as they result in a heavily dry-skewed model and leave very few test observations for evaluating the Wet Specialist.
 * Adopt the **valleys-based thresholds ($t_1=0.159, t_2=0.248$)** to align with the empirical distribution modes.
 
 ### 3. Recommendations for MoE Modeling
 * **Gating Design**: Because individual stations are highly skewed (e.g. BurntMountain is 93.5% Dry), station-level static features (latitude, longitude, elevation, HWSD clay/sand fractions) will be critical for the router to identify spatial regime shifts.
-* **Simplifying the Router**: Since a 4-feature Random Forest (using Month, API, LST, SMAP) matches within 5% of the full classifier, we should consider a simplified, lower-dimensional router to reduce overfitting and make the end-to-end model more robust to geographic feature distribution shifts.
-* **Binary Routing Alternative**: Given the Transition class's poor separability (F1-score of 0.26), collapsing the problem into a Binary MoE (Dry vs. Wet/Transition) using the valley-calibrated threshold $T=0.159$ is highly recommended. The binary gating model achieves **80% accuracy** and completely avoids the transition zone recall wall.
+* **Temporal Shift Robustness**: Due to year-to-year climate drift (like the 2023 drought), router gating networks must be simple and robust to avoid overfitting to specific training years.
+* **Binary Routing Alternative**: Given the Transition class's poor separability (F1-score of 0.26), collapsing the problem into a Binary MoE (Dry vs. Wet/Transition) using the valley-calibrated threshold $T=0.159$ is highly recommended. The binary gating model achieves **80% accuracy** and completely avoids the transition zone recall wall, yielding balanced and stable regime counts over time.
+
 
