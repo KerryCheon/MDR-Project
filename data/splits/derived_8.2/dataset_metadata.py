@@ -1,1 +1,7 @@
-# Blank metadata file for derived_8.2
+# Metadata and configuration constants for derived_8.2 splits
+# Note: Regime thresholds T1 and T2 are not used for regime separation since derived_8.2 focuses on a single global model.
+
+# Selected features for overall global model
+OVERALL_SELECTED_FEATURES_V1 = ['DOY', 'D_cos_DOY', 'D_sa_E_SAR_ratio', 'D_sa_F_NDMI', 'D_sa_LST_modis', 'D_sin_DOY', 'D_z_E_SAR_ratio', 'D_z_F_NDMI', 'D_z_LST_modis', 'E_SAR_ratio', 'F_MSI', 'F_NDMI', 'G_API', 'J_aspect_deg', 'J_bio_bio15', 'J_soil_texture_usda_b0', 'K_aspect_cos', 'LST_modis', 'V_ema_E_SAR_diff_kobs30', 'V_ema_E_SAR_ratio_kobs30', 'V_ema_F_NDVI_kobs30', 'V_rollmax_E_SAR_ratio_kobs30', 'V_rollmax_F_NDMI_kobs7', 'V_rollmean_E_SAR_diff_kobs30', 'V_rollmean_E_SAR_ratio_kobs30', 'V_rollmean_F_NDMI_kobs30', 'V_rollmin_F_NDVI_kobs30', 'V_rollmin_s2_b12_kobs30', 'latitude', 'lia_std_asc_deg', 's2_b4', 's2_b8', 'sin_year', 'slope', 'J_bio_bio03', 'V_rollmax_F_NDMI_kobs30', 'V_rollmax_s2_b11_kobs30', 'V_rollmean_LST_modis_kobs30', 'C_smm_E_SAR_diff_alpha0.85_n5', 'J_soil_texture_usda_b200']
+# Note: V1 is just for versioning, its generated the same wat as other OVERALL_SELECTED_FEATURES.
+#       But DO NOT alias it to OVERALL_SELECTED_FEATURES as I want to compare different feature sets without changing models used the older feature sets.
