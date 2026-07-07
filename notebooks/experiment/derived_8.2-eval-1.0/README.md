@@ -107,4 +107,5 @@ Overall, the model does not show extreme degradation in any single test year, in
 ## 6. Year-by-Year Visualizations
 
 - `residuals_by_year.png` (displays a 3x2 grid comparing residuals of Model V1 (Weighted) and Model V2 (Weighted) for 2023, 2024, and 2025)
+- `r2_by_year.png` (displays a line chart of yearly R2 scores for all four model configurations with horizontal dashed reference lines indicating overall test set R2 scores)
 - `metrics_by_year.csv` (contains the detailed metrics breakdown by year)
