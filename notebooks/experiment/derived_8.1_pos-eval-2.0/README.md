@@ -28,6 +28,16 @@ The performance metrics on the held-out test split (N=8,902) are summarized belo
 | **Model 5** | 2-Regime Random Forest Gating (Adapted) | **0.5219** | 0.0728 | 0.0719 | −0.0115 | 0.0528 | 0.0385 | 0.7335 |
 | **Model 6** | 2-Regime Oracle Gating (Tuned 2R - Reference) | **0.7752** | 0.0499 | 0.0483 | −0.0127 | 0.0388 | 0.0318 | 0.8887 |
 
+### Gating Router Classification Performance Summary
+
+The classification performance of the gating routers on the held-out test split (N=8,902) is summarized below:
+
+| Gating Router Configuration | Accuracy | Precision (Macro) | Recall (Macro) | F1-Score (Macro) | Precision (Weighted) | Recall (Weighted) | F1-Score (Weighted) |
+|---|---|---|---|---|---|---|---|
+| **3-Regime Heuristic Month Gating** | **0.4974** | 0.5342 | 0.4870 | 0.4971 | 0.5602 | 0.4974 | 0.5141 |
+| **3-Regime Random Forest Gating** | **0.6136** | 0.6127 | 0.5808 | 0.5572 | 0.6235 | 0.6136 | 0.5828 |
+| **2-Regime Random Forest Gating** | **0.8257** | 0.8349 | 0.7889 | 0.8022 | 0.8296 | 0.8257 | 0.8193 |
+
 ---
 
 ## 2. Key Insights and Discussion
@@ -51,7 +61,7 @@ This is a critical milestone for the research project, as it represents the firs
 
 ### 3. Why the 2-Regime Model Wins
 The 2-Regime RF Gated model ($R^2 = 0.5219$) outperforms the 3-Regime RF Gated model ($R^2 = 0.4965$) because collapsing the intermediate transition zone into a binary routing task (Dry vs. Wet/Transition at $T=0.159$) significantly improves the router's performance:
-* The 2-Regime RF router achieves **83% accuracy** on the test set, compared to only **58% accuracy** for the 3-Regime RF router.
+* The 2-Regime RF router achieves **82.57% accuracy** (macro F1-score of **0.8022**) on the test set, compared to **61.36% accuracy** (macro F1-score of **0.5572**) for the 3-Regime RF router.
 * Because the 2R router is more accurate, the specialist models are trained on cleaner, more homogeneous data splits, and fewer samples are misrouted at test time.
 
 ---
