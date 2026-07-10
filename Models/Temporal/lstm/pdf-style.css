@@ -1,0 +1,132 @@
+/* LaTeX "article" look for Markdown PDF (yzane) export.
+   Uses the Computer Modern web fonts (the LaTeX default typeface).
+   Requires network on first export to fetch the font; falls back to a serif. */
+
+@import url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css');
+
+:root {
+  --cm-serif: "Computer Modern Serif", "Latin Modern Roman", Georgia, "Times New Roman", serif;
+  --cm-mono:  "Computer Modern Typewriter", "Latin Modern Mono", "SFMono-Regular", Menlo, monospace;
+  --ink: #111111;
+  --rule: #111111;
+}
+
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+body {
+  font-family: var(--cm-serif);
+  font-size: 11.5pt;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  max-width: 6.5in;
+  margin: 0 auto;
+}
+
+/* Title block, like \maketitle */
+h1 {
+  font-family: var(--cm-serif);
+  font-weight: 700;
+  font-size: 20pt;
+  text-align: center;
+  line-height: 1.25;
+  margin: 0 0 1.4em 0;
+  padding-bottom: 0.3em;
+  border: none;
+}
+
+/* Section / subsection */
+h2 {
+  font-family: var(--cm-serif);
+  font-weight: 700;
+  font-size: 15pt;
+  margin: 1.6em 0 0.5em;
+  border: none;
+  text-align: left;
+}
+h3 {
+  font-family: var(--cm-serif);
+  font-weight: 700;
+  font-size: 12.5pt;
+  margin: 1.2em 0 0.4em;
+  text-align: left;
+}
+
+p { margin: 0 0 0.7em 0; }
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+/* Inline + block code in the typewriter face, no GitHub gray boxes */
+code {
+  font-family: var(--cm-mono);
+  font-size: 90%;
+  background: none;
+  padding: 0;
+}
+pre {
+  font-family: var(--cm-mono);
+  font-size: 9.5pt;
+  line-height: 1.35;
+  background: #f6f6f6;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.7em 0.9em;
+  text-align: left;
+  hyphens: none;
+  overflow-x: auto;
+}
+pre code { font-size: 100%; }
+
+/* booktabs-style tables: horizontal rules only */
+table {
+  border-collapse: collapse;
+  margin: 1em auto;
+  font-size: 10.5pt;
+  width: auto;
+}
+thead th {
+  border-top: 1.3px solid var(--rule);
+  border-bottom: 0.8px solid var(--rule);
+  font-weight: 700;
+  text-align: left;
+  padding: 4px 12px;
+}
+tbody td {
+  border: none;
+  padding: 3px 12px;
+  text-align: left;
+}
+tbody tr:last-child td { border-bottom: 1.3px solid var(--rule); }
+table, th, td { background: none !important; }
+
+/* Blockquotes -> LaTeX-ish "remark" indent, no heavy bar */
+blockquote {
+  margin: 0.8em 1.5em;
+  padding-left: 0.8em;
+  border-left: 2px solid #bbb;
+  color: #222;
+  font-size: 10.8pt;
+}
+
+/* Lists */
+ul, ol { margin: 0 0 0.7em 1.4em; padding: 0; }
+li { margin: 0.2em 0; }
+
+/* Figures */
+img {
+  display: block;
+  margin: 1em auto;
+  max-width: 100%;
+}
+
+/* Horizontal rule as a thin centered break */
+hr {
+  border: none;
+  border-top: 0.6px solid #999;
+  margin: 1.6em 0;
+}
+
+a { color: var(--ink); text-decoration: none; }
