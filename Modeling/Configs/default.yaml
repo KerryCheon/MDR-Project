@@ -15,8 +15,8 @@ data:
 selection:
   top_k: 40
   stages:
-    - kind: mi
-      k: 300
+    # - kind: mi
+    #   k: 300 # Commented out after evaluation showed that independent MI filtering starves joint-predictive features (e.g. V_rollcv_G_API_kobs30) and adds 66% runtime overhead without performance benefits.
     - kind: elasticnet
       k: 60
     - kind: stability
