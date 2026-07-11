@@ -1,10 +1,10 @@
-# Root experiment config
+# config_v5.yaml for derived_8.2 feature selection (V5, max 60 features, no MI, min_freq 0.6)
 data:
   target: soil_moisture_5cm
   splits:
-    train: "data/splits/derived_9.0/train.csv"
-    val: "data/splits/derived_9.0/val.csv"
-    test: "data/splits/derived_9.0/test.csv"
+    train: "data/splits/derived_8.2/train.csv"
+    val: "data/splits/derived_8.2/val.csv"
+    test: "data/splits/derived_8.2/test.csv"
   time_col: date
   id_cols:
     - station_id
@@ -13,14 +13,14 @@ data:
     - date # after leakage check!
 
 selection:
-  top_k: 40
+  top_k: 60
+  stability_n_boot: 100
   stages:
-    - kind: mi
-      k: 300 # Crucial pre-filtering stage. Evaluation on derived_8.2 (eval-1.1/1.2) showed that skipping MI causes severe collinearity confusion for ElasticNet on the full feature space, leading to a sparse, suboptimal selection (only 34 non-zero coefficients) and a drop in test-set R2 from 0.6474 to 0.5957.
     - kind: elasticnet
-      k: 60
+      k: 100
     - kind: stability
       min_freq: 0.6
+      k: 100
 
 models:
   - kind: linear

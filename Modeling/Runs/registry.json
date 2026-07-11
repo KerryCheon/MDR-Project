@@ -103,6 +103,14 @@
       "meta": {
         "config": "notebooks/experiment/derived_8.2-feature-selection/config_v4.yaml"
       }
+    },
+    {
+      "run_id": "2026-07-10_201657",
+      "timestamp": "2026-07-10T20:16:57",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\2026-07-10_201657",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v5.yaml"
+      }
     }
   ]
 }
