@@ -114,3 +114,6 @@ The performance metrics on the held-out test split, broken down by test year (20
 - `r2_by_year.png` (displays a line chart of yearly R2 scores for all ten configurations)
 - `metrics_by_year.csv` (contains the detailed metrics breakdown by year)
 - `metrics_summary.csv` (contains the overall metrics comparison)
+
+## 7. Features List
+See [features.md](features.md)

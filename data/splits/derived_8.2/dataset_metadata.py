@@ -1,6 +1,18 @@
 # Metadata and configuration constants for derived_8.2 splits
 # Note: Regime thresholds T1 and T2 are not used for regime separation since derived_8.2 focuses on a single global model.
 
+# Selected features for overall global model but very flawed
+OVERALL_SELECTED_FEATURES_V0 = [
+    "C_lag_E_SAR_diff_kobs30", "C_lag_E_SAR_ratio_kobs30", "C_lag_F_NDMI_kobs12", "C_lag_F_NDMI_kobs30", "C_lag_LST_modis_kobs30",
+    "C_lag_s2_b11_kobs30", "D_sa_LST_modis", "D_z_E_SAR_ratio", "E_SAR_ratio", "LST_modis",
+    "SMAP_sm_am_interp_lag30", "SMAP_sm_pm_interp_lag1", "SMAP_sm_pm_interp_lag30", "V_rollmax_E_SAR_diff_kobs14", "V_rollmax_E_SAR_ratio_kobs30",
+    "V_rollmax_F_NDMI_kobs30", "V_rollmax_F_NDVI_kobs30", "V_rollmax_G_API_kobs14", "V_rollmax_G_API_kobs30", "V_rollmax_LST_modis_kobs30",
+    "V_rollmax_SMAP_sm_interp_kobs14", "V_rollmax_s2_b11_kobs7", "V_rollmin_E_SAR_diff_kobs30", "V_rollmin_E_SAR_ratio_kobs30", "V_rollmin_F_NDVI_kobs30",
+    "V_rollmin_G_API_kobs14", "V_rollmin_G_API_kobs30", "V_rollmin_LST_modis_kobs30", "V_rollmin_s2_b11_kobs30", "V_rollmin_s2_b12_kobs30",
+    "C_lag_E_SAR_diff_kobs12", "C_lag_E_SAR_ratio_kobs5", "C_lag_F_NDMI_kobs6", "C_lag_SMAP_sm_interp_kobs2", "C_lag_SMAP_sm_interp_kobs6",
+    "SMAP_sm_am_interp_rollrange30", "V_rollmax_F_NDMI_kobs7", "V_rollmax_F_NDVI_kobs7", "V_rollmax_LST_modis_kobs7", "V_rollmax_SMAP_sm_interp_kobs7"
+]
+
 # Selected features for overall global model
 OVERALL_SELECTED_FEATURES_V1 = ['DOY', 'D_cos_DOY', 'D_sa_E_SAR_ratio', 'D_sa_F_NDMI', 'D_sa_LST_modis', 'D_sin_DOY', 'D_z_E_SAR_ratio', 'D_z_F_NDMI', 'D_z_LST_modis', 'E_SAR_ratio', 'F_MSI', 'F_NDMI', 'G_API', 'J_aspect_deg', 'J_bio_bio15', 'J_soil_texture_usda_b0', 'K_aspect_cos', 'LST_modis', 'V_ema_E_SAR_diff_kobs30', 'V_ema_E_SAR_ratio_kobs30', 'V_ema_F_NDVI_kobs30', 'V_rollmax_E_SAR_ratio_kobs30', 'V_rollmax_F_NDMI_kobs7', 'V_rollmean_E_SAR_diff_kobs30', 'V_rollmean_E_SAR_ratio_kobs30', 'V_rollmean_F_NDMI_kobs30', 'V_rollmin_F_NDVI_kobs30', 'V_rollmin_s2_b12_kobs30', 'latitude', 'lia_std_asc_deg', 's2_b4', 's2_b8', 'sin_year', 'slope', 'J_bio_bio03', 'V_rollmax_F_NDMI_kobs30', 'V_rollmax_s2_b11_kobs30', 'V_rollmean_LST_modis_kobs30', 'C_smm_E_SAR_diff_alpha0.85_n5', 'J_soil_texture_usda_b200']
 # Note: V1 is just for versioning, its generated the same wat as other OVERALL_SELECTED_FEATURES.
