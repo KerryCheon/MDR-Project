@@ -14,7 +14,7 @@ Currently we're focusing on stations within Washington state as part of the coll
 | Directory | Purpose |
 |-----------|---------|
 | `src/pipeline/` | Ingestion → cleaning → imputation → feature engineering data pipeline (modular "pipes") |
-| `data/splits/` | Train/validation/test split CSVs; `derived_9.0/` is the canonical split, `archive/` holds older versions |
+| `data/splits/` | Train/validation/test split CSVs; `derived_8.2/` is the activly used split, `archive/` holds older versions |
 | `notebooks/experiment/` | New experiments goes here |
 | `notebooks/training/` | Active model training notebooks (final versions + newer experiment lines) |
 | `notebooks/training/archive/` | Full versioned notebook history (v1–v24, all sub-versions) |
