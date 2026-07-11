@@ -49,7 +49,7 @@ Model V5, which skips the MI stage and filters features strictly with `min_freq:
 ## 3. Visualizations
 
 The generated scatter plots of residuals against true soil moisture are saved in this directory:
-- `residuals_comparison.png` (displays residuals for V1, V2, V3, V4, and V5 Weighted side-by-side)
+- `residuals_comparison.png` (displays a 5x2 grid comparing unweighted and weighted residuals for Models V1, V2, V3, V4, and V5)
 
 ---
 
@@ -110,7 +110,7 @@ The performance metrics on the held-out test split, broken down by test year (20
 
 ## 6. Year-by-Year Visualizations
 
-- `residuals_by_year.png` (displays a 3x5 grid comparing residuals of Weighted Models V1, V2, V3, V4, and V5 for 2023, 2024, and 2025)
+- `residuals_by_year.png` (displays a 5x3 grid with the five models as rows and the three test years as columns, comparing weighted model residuals)
 - `r2_by_year.png` (displays a line chart of yearly R2 scores for all ten configurations)
 - `metrics_by_year.csv` (contains the detailed metrics breakdown by year)
 - `metrics_summary.csv` (contains the overall metrics comparison)
