@@ -288,3 +288,28 @@ Below is the complete catalog of all 133 unique features across all six models, 
 | `sin_year` | Seasonal / Calendar (D_) | Sine of fractional year. Models inter-annual cycles. |
 | `slope` | Raw Input (RAW) | Terrain slope angle. Controls the rate of surface water runoff vs infiltration. |
 
+---
+
+### V0's 2024 Jump
+
+Here are the key findings on why Model V0 jumped to a weighted $R^2$ of **0.6239** in 2024 (beating Model V1's **0.5983** and matching V3's **0.6283**) but collapsed in 2023 (**0.4559**) and 2025 (**0.3827**):
+
+#### 1. Stronger Temperature & Hydrologic Coupling in 2024
+In 2024, soil moisture at the Washington stations was extremely strongly coupled with Land Surface Temperature (LST) and antecedent precipitation index (API):
+- **MODIS LST**: `C_lag_LST_modis_kobs30` (30-obs LST lag) correlation with soil moisture jumped to **−0.5471** in 2024, whereas in 2023 it was only **−0.3370**.
+- **Precipitation API**: `V_rollmin_G_API_kobs30` (rolling minimum API) correlation with soil moisture rose to **+0.4286** in 2024 (vs **+0.2626** in 2023).
+Because Model V0 relies almost entirely on direct rolling operators of temperature and precipitation, its features became highly predictive during 2024.
+
+#### 2. SMAP Regional Predictive Power
+In 2023, coarse-scale SMAP soil moisture interpolations had zero correlation with the Washington in-situ soil moisture stations:
+- **SMAP lag (`SMAP_sm_pm_interp_lag1`)**:
+  - Year 2023 Correlation: **−0.0050** (completely uncorrelated)
+  - Year 2024 Correlation: **+0.1928** (positively correlated)
+  - Year 2025 Correlation: **+0.2033** (positively correlated)
+During the drier year of 2023, local soil moisture dried out significantly (mean: **0.1668**), but coarse SMAP data failed to capture this localized drydown (mean remained **0.3557**). Model V0 includes multiple SMAP lags, which acted as pure noise in 2023 but provided a predictive prior in 2024 and 2025.
+
+#### 3. Direct Temporal Operators vs. Multi-Year Climatological Anomalies
+- Model V1 relies heavily on seasonal adjusted anomalies (`D_sa_*`, `D_z_*`), which subtract the daily climatology mean. If a test year's weather deviates significantly from the historical average (such as seasonal shifts in 2024), these anomalies can mislead the model.
+- Model V0 uses direct rolling statistics over the current year's local observation window (e.g., `V_rollmin_G_API_kobs30` and `V_rollmin_LST_modis_kobs30`). This allows it to capture the actual sub-seasonal drydown and heating trends of 2024 directly, without being biased by smooth climatological averages.
+
+---
