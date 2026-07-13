@@ -56,7 +56,14 @@ Skipping the MI stage (Model V4 and V5) leads to L1 regularization driving all c
 
 The generated plots are saved in this directory:
 - `residuals_comparison.png` (displays a 6x2 grid comparing unweighted and weighted residuals for Models V0 through V5)
-- `shap_importance_comparison.png` (compares mean absolute SHAP values for the top features across the weighted models)
+- `shap_importance_comparison.png` (compares mean absolute SHAP values for the top 20 overall features across the weighted models)
+- **Individual SHAP Charts**:
+  - `shap_model_v0_weighted.png`
+  - `shap_model_v1_weighted.png`
+  - `shap_model_v2_weighted.png`
+  - `shap_model_v3_weighted.png`
+  - `shap_model_v4_weighted.png`
+  - `shap_model_v5_weighted.png`
 
 ---
 

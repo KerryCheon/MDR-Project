@@ -55,26 +55,96 @@ The table below breaks down the number of features selected in each category acr
 
 We conducted SHAP analysis on all 6 weighted models to identify their top drivers and understand their physical representations:
 
+### Model V0 (Weighted)
+![SHAP Top Features for Model V0 (Weighted)](shap_model_v0_weighted.png)
 
-### 1. Model V0 (40 Features - Weighted)
-- **Top Driver**: `V_rollmin_G_API_kobs30` (Mean Abs SHAP: 0.025526)
-- **Second Driver**: `V_rollmin_LST_modis_kobs30` (Mean Abs SHAP: 0.013231)
-- **Interpretation**: Model V0 relied heavily on antecedent precipitation memory bounds (`V_rollmin_G_API_kobs30` representing seasonal dry/wet baseline) and temperature extremes. The total lack of static coordinates meant that the model had to use temporal metrics to guess local conditions.
+Top 10 features sorted by mean absolute SHAP value:
+1. **`V_rollmin_G_API_kobs30`** (SHAP = 0.025526)
+2. **`V_rollmin_LST_modis_kobs30`** (SHAP = 0.013231)
+3. **`C_lag_LST_modis_kobs30`** (SHAP = 0.011205)
+4. **`V_rollmax_F_NDVI_kobs30`** (SHAP = 0.009617)
+5. **`V_rollmax_G_API_kobs14`** (SHAP = 0.006719)
+6. **`V_rollmin_G_API_kobs14`** (SHAP = 0.006281)
+7. **`V_rollmin_E_SAR_diff_kobs30`** (SHAP = 0.005784)
+8. **`V_rollmin_E_SAR_ratio_kobs30`** (SHAP = 0.005659)
+9. **`V_rollmax_F_NDVI_kobs7`** (SHAP = 0.005051)
+10. **`V_rollmax_F_NDMI_kobs7`** (SHAP = 0.004530)
 
-### 2. Model V1 (40 Features - Weighted)
-- **Top Driver**: `V_rollmean_LST_modis_kobs30` (Mean Abs SHAP: 0.034121)
-- **Second Driver**: `J_aspect_deg` (Mean Abs SHAP: 0.029759)
-- **Interpretation**: Model V1 relies on climatological trends (average temperature `V_rollmean_LST_modis_kobs30`) and geographic slope aspect (`J_aspect_deg`) to resolve spatial and temporal variations.
+### Model V1 (Weighted)
+![SHAP Top Features for Model V1 (Weighted)](shap_model_v1_weighted.png)
 
-### 3. Model V2 & V3 (40 & 47 Features - Weighted)
-- **Top Driver**: `J_aspect_deg` (Mean Abs SHAP: 0.024576)
-- **Second Driver**: `V_rollmean_LST_modis_kobs30` (Mean Abs SHAP: 0.017188)
-- **Interpretation**: With the introduction of SMAP soil moisture priors and local incidence angle calibration, terrain aspect (`J_aspect_deg`) becomes the primary driver to align satellite signals with ground truth, followed by seasonal temperature averages and lags.
+Top 10 features sorted by mean absolute SHAP value:
+1. **`V_rollmean_LST_modis_kobs30`** (SHAP = 0.034121)
+2. **`J_aspect_deg`** (SHAP = 0.029759)
+3. **`G_API`** (SHAP = 0.016553)
+4. **`DOY`** (SHAP = 0.015474)
+5. **`D_sin_DOY`** (SHAP = 0.014791)
+6. **`latitude`** (SHAP = 0.007577)
+7. **`K_aspect_cos`** (SHAP = 0.006054)
+8. **`D_cos_DOY`** (SHAP = 0.004628)
+9. **`J_bio_bio15`** (SHAP = 0.004580)
+10. **`V_ema_F_NDVI_kobs30`** (SHAP = 0.003786)
 
-### 4. Model V4 & V5 (50 & 32 Features - Weighted)
-- **Top Driver**: `lia_std_asc_deg` (Mean Abs SHAP: 0.028155)
-- **Second Driver**: `V_ema_LST_modis_kobs30` / `V_rollmin_LST_modis_kobs30` (Mean Abs SHAP: 0.025062 / 0.021291)
-- **Interpretation**: Because these models lack MI pre-filtering, L1 regularization in ElasticNet eliminated all static/spatial inputs. Consequently, the models rely completely on radar Look Incidence Angle calibration (`lia_std_asc_deg`) and temporal temperature metrics to explain daily soil moisture variations.
+### Model V2 (Weighted)
+![SHAP Top Features for Model V2 (Weighted)](shap_model_v2_weighted.png)
+
+Top 10 features sorted by mean absolute SHAP value:
+1. **`J_aspect_deg`** (SHAP = 0.024525)
+2. **`V_rollmean_LST_modis_kobs30`** (SHAP = 0.018433)
+3. **`DOY`** (SHAP = 0.015831)
+4. **`D_sin_DOY`** (SHAP = 0.011676)
+5. **`G_API`** (SHAP = 0.011356)
+6. **`C_lag_LST_modis_kobs30`** (SHAP = 0.010662)
+7. **`V_ema_LST_modis_kobs30`** (SHAP = 0.008880)
+8. **`K_aspect_cos`** (SHAP = 0.008311)
+9. **`latitude`** (SHAP = 0.007694)
+10. **`V_rollmax_G_API_kobs30`** (SHAP = 0.006837)
+
+### Model V3 (Weighted)
+![SHAP Top Features for Model V3 (Weighted)](shap_model_v3_weighted.png)
+
+Top 10 features sorted by mean absolute SHAP value:
+1. **`J_aspect_deg`** (SHAP = 0.024576)
+2. **`V_rollmean_LST_modis_kobs30`** (SHAP = 0.017188)
+3. **`DOY`** (SHAP = 0.015674)
+4. **`C_lag_LST_modis_kobs30`** (SHAP = 0.012039)
+5. **`G_API`** (SHAP = 0.011540)
+6. **`D_sin_DOY`** (SHAP = 0.010886)
+7. **`V_ema_LST_modis_kobs30`** (SHAP = 0.009670)
+8. **`K_aspect_cos`** (SHAP = 0.008126)
+9. **`V_rollmax_G_API_kobs30`** (SHAP = 0.006876)
+10. **`latitude`** (SHAP = 0.006797)
+
+### Model V4 (Weighted)
+![SHAP Top Features for Model V4 (Weighted)](shap_model_v4_weighted.png)
+
+Top 10 features sorted by mean absolute SHAP value:
+1. **`lia_std_asc_deg`** (SHAP = 0.025436)
+2. **`V_ema_LST_modis_kobs30`** (SHAP = 0.025062)
+3. **`lia_mean_asc_deg`** (SHAP = 0.015743)
+4. **`C_lag_LST_modis_kobs30`** (SHAP = 0.014323)
+5. **`C_lag_G_API_kobs1`** (SHAP = 0.010701)
+6. **`V_rollmax_G_API_kobs30`** (SHAP = 0.006690)
+7. **`V_rollmin_LST_modis_kobs30`** (SHAP = 0.006189)
+8. **`A_d_LST_modis_kobs30`** (SHAP = 0.004227)
+9. **`C_lag_F_NDVI_kobs30`** (SHAP = 0.003799)
+10. **`V_rollmax_E_SAR_ratio_kobs30`** (SHAP = 0.003402)
+
+### Model V5 (Weighted)
+![SHAP Top Features for Model V5 (Weighted)](shap_model_v5_weighted.png)
+
+Top 10 features sorted by mean absolute SHAP value:
+1. **`lia_std_asc_deg`** (SHAP = 0.028155)
+2. **`V_rollmin_LST_modis_kobs30`** (SHAP = 0.021291)
+3. **`C_lag_LST_modis_kobs30`** (SHAP = 0.020598)
+4. **`C_lag_G_API_kobs1`** (SHAP = 0.017670)
+5. **`lia_mean_asc_deg`** (SHAP = 0.013821)
+6. **`V_rollcv_G_API_kobs30`** (SHAP = 0.005288)
+7. **`C_lag_F_NDVI_kobs30`** (SHAP = 0.005184)
+8. **`V_rollmax_E_SAR_ratio_kobs30`** (SHAP = 0.004966)
+9. **`A_d_LST_modis_kobs30`** (SHAP = 0.004660)
+10. **`A_d_E_SAR_ratio_kobs30`** (SHAP = 0.004334)
+
 
 ---
 
