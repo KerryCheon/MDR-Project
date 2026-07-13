@@ -111,7 +111,7 @@ The performance metrics on the held-out test split, broken down by test year (20
 ## 6. Year-by-Year Visualizations
 
 - `residuals_by_year.png` (displays a 5x3 grid with the five models as rows and the three test years as columns, comparing weighted model residuals)
-- `r2_by_year.png` (displays a line chart of yearly R2 scores for all ten configurations)
+- `r2_by_year.png` (displays a side-by-side comparison of yearly R2 scores for unweighted and weighted models, with overall R2 scores included in the legend to minimize clutter)
 - `metrics_by_year.csv` (contains the detailed metrics breakdown by year)
 - `metrics_summary.csv` (contains the overall metrics comparison)
 
