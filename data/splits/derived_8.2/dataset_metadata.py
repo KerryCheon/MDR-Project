@@ -1,7 +1,7 @@
 # Metadata and configuration constants for derived_8.2 splits
 # Note: Regime thresholds T1 and T2 are not used for regime separation since derived_8.2 focuses on a single global model.
 
-# Selected features for overall global model but very flawed
+# Selected features for overall global model but very flawed (used the OG pipeline settings)
 OVERALL_SELECTED_FEATURES_V0 = [
     "C_lag_E_SAR_diff_kobs30", "C_lag_E_SAR_ratio_kobs30", "C_lag_F_NDMI_kobs12", "C_lag_F_NDMI_kobs30", "C_lag_LST_modis_kobs30",
     "C_lag_s2_b11_kobs30", "D_sa_LST_modis", "D_z_E_SAR_ratio", "E_SAR_ratio", "LST_modis",
