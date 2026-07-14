@@ -1,0 +1,18 @@
+{
+  "train_time_s": 31.252962800001114,
+  "inference_time_s": 0.34762659999978496,
+  "params": {
+    "objective": "reg:pseudohubererror",
+    "random_state": 42,
+    "n_jobs": -1,
+    "subsample": 0.9,
+    "colsample_bytree": 0.8,
+    "max_depth": 8,
+    "min_child_weight": 2,
+    "n_estimators": 5500,
+    "learning_rate": 0.04,
+    "reg_lambda": 1.5,
+    "reg_alpha": 0.03,
+    "huber_slope": 5.0
+  }
+}
