@@ -35,10 +35,13 @@ Both models suffer from **extreme overfitting**:
 
 The training vs. validation (test) loss curves are saved in `loss_curves.png`.
 
-- **Option A (Robust Workhorse, 5500 trees, learning rate = 0.04)**: The training Pseudo-Huber loss decays exponentially and approaches 0 after 2000 rounds. However, the validation (test) Pseudo-Huber loss plateaus around round 1000 and remains flat.
-- **Option B (Finer MSE Regularizer, 11000 trees, learning rate = 0.02)**: The training RMSE decays exponentially towards 0. The validation (test) RMSE plateaus early and shows no further improvement beyond the first 2000 trees, confirming that the remaining 9000 boosting trees contribute solely to memorizing training residuals rather than learning generalizable signals.
+- **Option A (Robust Workhorse, 5500 trees, learning rate = 0.04)**: The training Pseudo-Huber loss decays exponentially and approaches 0 after 2000 rounds. However, the validation (test) Pseudo-Huber loss plateaus around **round 1000** and remains flat. This means **4,500 rounds (~82% of the training budget)** were wastefully trained without yielding any generalization benefit.
+- **Option B (Finer MSE Regularizer, 11000 trees, learning rate = 0.02)**: The training RMSE decays exponentially towards 0. The validation (test) RMSE plateaus early and shows no further improvement beyond **round 2000**. This means **9,000 rounds (~82% of the training budget)** were wastefully trained without improvement.
 
-*Recommendation*: To mitigate overfitting and reduce training times, early stopping (with a small validation set) or much stronger tree regularization (e.g., lower `max_depth` like 4 or 5, larger `min_child_weight`, higher `gamma` or L1/L2 penalties) should be explored.
+### Implications of "Flatline Overfitting"
+While validation performance does not degrade (there is no U-shaped deterioration in loss), this "flatline overfitting" has critical practical consequences:
+1. **Severely Wasteful Compute**: Roughly 82% of the trees in both models are trained redundantly. Option B requires over 100 seconds to train on GPU, which could be cut down to ~20 seconds by capping the tree count.
+2. **No Generalization Penalty**: Because validation error does not worsen, GBDT shrinkage and regularization effectively protect the model from generating high-variance predictions on unseen samples, even when trained long past convergence.
 
 ---
 
