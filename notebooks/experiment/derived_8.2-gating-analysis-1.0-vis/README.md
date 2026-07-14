@@ -46,9 +46,21 @@ To verify that different specialist models are justified, we look at the feature
 ---
 
 ### 3. Feature Space Separation
-We analyze how the unsupervised cluster-based strategies partition observations.
-- **![clustering_dynamic_k3_pairplot.png](./clustering_dynamic_k3_pairplot.png)** Pairwise scatter matrix of the input features (`SMAP_sm_pm_interp_lag1`, `G_API`, `LST_modis`) for `Clustering_Dynamic` (K=3).
-- **![clustering_v3_full_k3_pca.png](./clustering_v3_full_k3_pca.png)** 2D Principal Component Analysis (PCA) projection of the 47-dimensional full V3 feature space, colored by `Clustering_V3_Full` labels.
+We analyze how the unsupervised cluster-based strategies partition observations for both $K=2$ and $K=3$ configurations.
+
+#### Dynamic Physical Clustering (`Clustering_Dynamic`)
+These pairplots show cluster separation in the 3D space of dynamic meteorological features (`SMAP_sm_pm_interp_lag1`, `G_API`, `LST_modis`):
+* **Binary (K=2)**:
+  ![clustering_dynamic_k2_pairplot.png](./clustering_dynamic_k2_pairplot.png)
+* **3-Class (K=3)**:
+  ![clustering_dynamic_k3_pairplot.png](./clustering_dynamic_k3_pairplot.png)
+
+#### Full Feature Clustering (`Clustering_V3_Full`)
+These PCA scatterplots project the 47-dimensional V3 feature space onto the first two Principal Components:
+* **Binary (K=2)**:
+  ![clustering_v3_full_k2_pca.png](./clustering_v3_full_k2_pca.png)
+* **3-Class (K=3)**:
+  ![clustering_v3_full_k3_pca.png](./clustering_v3_full_k3_pca.png)
 
 #### PCA Component Interpretations:
 - **PC1 (14.2% variance)** is dominated by **thermal/temperature indices**:
@@ -60,7 +72,7 @@ We analyze how the unsupervised cluster-based strategies partition observations.
   - `J_bio_bio16` (precipitation of wettest quarter, loading: 0.316)
   - `J_bio_bio19` (precipitation of coldest quarter, loading: 0.313)
 
-The PCA scatterplot shows distinct, well-separated cluster clouds, validating that K-Means effectively partitions the high-dimensional feature space.
+The PCA scatterplots show distinct, well-separated cluster clouds for both K=2 and K=3, validating that K-Means effectively partitions the high-dimensional feature space.
 
 ---
 
