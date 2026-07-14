@@ -10,6 +10,7 @@ from Modeling.Src.soilmoist_fl.Selectors.correlation import select_correlation
 from Modeling.Src.soilmoist_fl.Selectors.rf_importance import select_rf_importance
 from Modeling.Src.soilmoist_fl.Selectors.mi import select_mi
 from Modeling.Src.soilmoist_fl.Selectors.elasticnet import select_elasticnet
+from Modeling.Src.soilmoist_fl import select_features
 
 
 def test_select_correlation():
@@ -115,3 +116,42 @@ def test_select_elasticnet_alignment():
     assert out_fixed["scores"]["empty_col"] == 0.0
     assert out_fixed["ranked"][0] == "col1"
     assert out_fixed["ranked"][-1] == "empty_col"
+
+
+def test_select_features():
+    np.random.seed(42)
+    X = pd.DataFrame({
+        "J_spatial": np.random.randn(100),
+        "ts_feat_1": np.random.randn(100),
+        "ts_feat_2": np.random.randn(100),
+    })
+    y = X["J_spatial"] * 2.0 + X["ts_feat_1"] * 1.5 + np.random.randn(100) * 0.1
+    
+    stages = [
+        {"kind": "correlation", "threshold": 0.95},
+        {"kind": "elasticnet", "k": 2}
+    ]
+    
+    config = {
+        "selection": {
+            "top_k": 2,
+            "stages": stages
+        },
+        "logging": {
+            "level": "INFO",
+            "console": True,
+            "log_to_file": False
+        }
+    }
+    
+    res = select_features(
+        X_train=X,
+        y_train=y,
+        config=config,
+        verbose=False
+    )
+    
+    selected = res["selected_features"]
+    assert len(selected) > 0
+    assert "ts_feat_1" in selected or "J_spatial" in selected
+

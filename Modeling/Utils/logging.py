@@ -12,8 +12,8 @@ _ROOT_LOGGER = "soilmoist_feat"
 _INITIALIZED = False
 
 
-def setup_logger(config: Dict[str, Any], run_dir: str | Path) -> logging.Logger:
-    # pre: config is a dict, run_dir is a valid path
+def setup_logger(config: Dict[str, Any], run_dir: str | Path | None = None) -> logging.Logger:
+    # pre: config is a dict, run_dir is a valid path or None
     # post: instantiates a logger globally
     # desc: sets up logging; other modules should use get_logger() or .getChild()
 
@@ -35,16 +35,15 @@ def setup_logger(config: Dict[str, Any], run_dir: str | Path) -> logging.Logger:
 
     root.handlers.clear()
 
-    run_dir = Path(run_dir)
-    run_dir.mkdir(parents=True, exist_ok=True)
-
     if log_cfg.get("console", True):
         ch = logging.StreamHandler()
         ch.setLevel(level)
         ch.setFormatter(formatter)
         root.addHandler(ch)
 
-    if log_cfg.get("log_to_file", True):
+    if run_dir is not None and log_cfg.get("log_to_file", True):
+        run_dir = Path(run_dir)
+        run_dir.mkdir(parents=True, exist_ok=True)
         log_dir = run_dir / str(log_cfg.get("runs_subdir", "logs"))
         log_dir.mkdir(parents=True, exist_ok=True)
 

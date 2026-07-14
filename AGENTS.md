@@ -38,7 +38,8 @@ The last commit of the old structure was `6a9b9a044a5d5ddac7818b78544abaa7815e1f
 ## Key Entrypoints
 
 - **Data pipeline:** `PYTHONPATH=. python src/pipeline/main.py` (all stations) or `--station <key>` for one station, use `--config` to specify the config file; default config at `src/pipeline/config.yaml` but new datasets should version their own config files.
-- **Feature selection lab:** `Modeling/main.py` (or `python -m Modeling.Src.soilmoist_fl.cli run`). Config at `Modeling/Configs/default.yaml`. Note: paths in Modeling config may be hardcoded macOS paths — update for your environment.
+- **Feature selection lab (CLI):** `Modeling/main.py` (or `python -m Modeling.Src.soilmoist_fl.cli run`). Config at `Modeling/Configs/default.yaml`. Note: paths in Modeling config may be hardcoded macOS paths — update for your environment.
+- **Feature selection lab (Programmatic/Notebooks):** Import and call `select_features` from `Modeling.Src.soilmoist_fl` to run selection on in-memory DataFrames (e.g. for MoE gating/regime selections).
 - **Tests:** `make test` or `pytest tests/`.
 - **Lint:** `make lint`.
 

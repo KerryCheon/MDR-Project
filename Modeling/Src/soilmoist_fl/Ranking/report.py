@@ -46,8 +46,9 @@ def make_report(
 ):
     log = get_logger("ranking.report")
 
-    run_dir = Path(run_dir)
-    run_dir.mkdir(parents=True, exist_ok=True)
+    if run_dir is not None:
+        run_dir = Path(run_dir)
+        run_dir.mkdir(parents=True, exist_ok=True)
 
     metric_rows = metric_rows or []
     weights = weights or _cfg_get(config, "scoring", "score_weights", default={})
@@ -62,7 +63,7 @@ def make_report(
 
     data_cfg = (config or {}).get("data", {}) if isinstance(config, dict) else {}
     sel_cfg = (config or {}).get("selection", {}) if isinstance(config, dict) else {}
-    run_id = run_dir.name
+    run_id = run_dir.name if run_dir is not None else "ad-hoc"
     timestamp = datetime.now().isoformat(timespec="seconds")
 
     lines = []
@@ -129,29 +130,34 @@ def make_report(
         lines.append("_No metrics provided._")
         lines.append("")
 
-    report_path = run_dir / "report.md"
-    report_path.write_text("\n".join(lines), encoding="utf-8")
-    log.info("make_report: wrote %s", report_path)
+    report_content = "\n".join(lines)
+    report_path = None
 
-    if score_out is not None:
-        score_path = run_dir / "score.json"
-        score_path.write_text(json.dumps(score_out, indent=2), encoding="utf-8")
-        log.info("make_report: wrote %s", score_path)
+    if run_dir is not None:
+        report_path = run_dir / "report.md"
+        report_path.write_text(report_content, encoding="utf-8")
+        log.info("make_report: wrote %s", report_path)
 
-    if selected_features is not None:
-        feat_path = run_dir / "selected_features.json"
-        feat_path.write_text(json.dumps(list(selected_features), indent=2), encoding="utf-8")
-        log.info("make_report: wrote %s", feat_path)
+        if score_out is not None:
+            score_path = run_dir / "score.json"
+            score_path.write_text(json.dumps(score_out, indent=2), encoding="utf-8")
+            log.info("make_report: wrote %s", score_path)
 
-    if config is not None:
-        cfg_path = run_dir / "config_snapshot.json"
-        try:
-            cfg_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
-            log.info("make_report: wrote %s", cfg_path)
-        except Exception:
-            log.warning("make_report: could not json-dump config (non-serializable values?)")
+        if selected_features is not None:
+            feat_path = run_dir / "selected_features.json"
+            feat_path.write_text(json.dumps(list(selected_features), indent=2), encoding="utf-8")
+            log.info("make_report: wrote %s", feat_path)
+
+        if config is not None:
+            cfg_path = run_dir / "config_snapshot.json"
+            try:
+                cfg_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+                log.info("make_report: wrote %s", cfg_path)
+            except Exception:
+                log.warning("make_report: could not json-dump config (non-serializable values?)")
 
     return {
-        "report_path": str(report_path),
+        "report_path": str(report_path) if report_path is not None else None,
+        "report_content": report_content,
         "score": score_out,
     }
