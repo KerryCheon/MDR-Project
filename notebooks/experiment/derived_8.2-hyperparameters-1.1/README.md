@@ -70,3 +70,47 @@ Detailed year-by-year results are saved in `metrics_by_year.csv`.
 - `r2_by_year.png` (displays yearly trends for each of the 5 configuration groups)
 - `residuals_comparison.png` (displays residuals for all 52 configurations)
 - `residuals_by_year.png` (displays yearly residuals for 7 selected representative models)
+
+---
+
+## 5. Recommended Hyperparameter Configurations for Future Modeling
+
+When training other models on this dataset (where a dedicated validation split is not available for early stopping), the following two fixed configurations are recommended to ensure model stability and prevent overfitting:
+
+### Option A: The "Robust Workhorse" (Recommended for Iteration)
+* **Objective**: `reg:pseudohubererror` (Huber Slope = 3.0)
+* **Parameters**:
+  ```python
+  params = {
+      "objective": "reg:pseudohubererror",
+      "huber_slope": 3.0,
+      "max_depth": 8,
+      "min_child_weight": 2,
+      "reg_lambda": 3.0,
+      "reg_alpha": 0.1,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8,
+      "n_estimators": 5500,
+      "learning_rate": 0.04,
+  }
+  ```
+* **Why**: Achieves $R^2 = 0.6517$ (well above the 0.65 threshold). Because Pseudo-Huber loss naturally bounds gradient updates for large outliers, it is much more robust against overfitting than pure MSE when trained for a fixed number of trees without early stopping.
+
+### Option B: The "Finer MSE Regularizer" (For Peak Performance)
+* **Objective**: `reg:squarederror` (MSE)
+* **Parameters**:
+  ```python
+  params = {
+      "objective": "reg:squarederror",
+      "max_depth": 8,
+      "min_child_weight": 2,
+      "reg_lambda": 3.0,
+      "reg_alpha": 0.1,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8,
+      "n_estimators": 11000,
+      "learning_rate": 0.02,
+  }
+  ```
+* **Why**: Delivers peak performance ($R^2 \ge 0.6520$) by leveraging smaller learning steps and doubling trees. Regularization parameters (`reg_alpha=0.1`, `reg_lambda=3.0`) are explicitly added to enforce simplicity and compensate for the absence of validation-based early stopping.
+
