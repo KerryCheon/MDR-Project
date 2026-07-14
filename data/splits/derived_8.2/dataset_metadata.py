@@ -1,5 +1,7 @@
 # Metadata and configuration constants for derived_8.2 splits
-# Note: Regime thresholds T1 and T2 are not used for regime separation since derived_8.2 focuses on a single global model.
+TERNARY_REGIME_DRY_THRESHOLD = 0.16
+TERNARY_REGIME_WET_THRESHOLD = 0.25
+BINARY_REGIME_THRESHOLD = 0.16
 
 # Selected features for overall global model but very flawed (used the OG pipeline settings)
 OVERALL_SELECTED_FEATURES_V0 = [
@@ -29,3 +31,18 @@ OVERALL_SELECTED_FEATURES_V4 = ['A_d_E_SAR_diff_kobs30', 'A_d_E_SAR_ratio_kobs30
 
 # Selected features for overall global model - V5 (no MI, restored min_freq 0.6)
 OVERALL_SELECTED_FEATURES_V5 = ['A_d_E_SAR_diff_kobs30', 'A_d_E_SAR_ratio_kobs30', 'A_d_F_NDMI_kobs30', 'A_d_LST_modis_kobs30', 'A_d_SMAP_sm_interp_kobs30', 'A_grad_E_SAR_diff_kobs30', 'A_grad_E_SAR_ratio_kobs30', 'A_grad_F_NDMI_kobs30', 'A_grad_LST_modis_kobs30', 'A_grad_SMAP_sm_interp_kobs30', 'C_lag_E_SAR_ratio_kobs30', 'C_lag_F_NDVI_kobs30', 'C_lag_G_API_kobs1', 'C_lag_LST_modis_kobs30', 'I_ts_spike_s1_vv', 'SMAP_ampm_diff_interp', 'SMAP_sm_pm_interp_rollrange30', 'V_rollcv_E_SAR_diff_kobs30', 'V_rollcv_G_API_kobs30', 'V_rollmax_E_SAR_ratio_kobs30', 'V_rollmin_LST_modis_kobs30', 'V_rollrng_F_NDMI_kobs30', 'V_rollrng_G_API_kobs30', 'V_rollrng_G_API_kobs7', 'V_rollstd_G_API_kobs30', 'lia_mean_asc_deg', 'lia_std_asc_deg', 'V_rollrng_E_SAR_diff_kobs30', 'V_rollstd_G_API_kobs7', 'SMAP_sm_pm_interp_rollstd30', 'E_rough_s1_vv_kobs14', 'V_rollstd_G_API_kobs14']
+
+# Selected features for TERNARY_REGIME_DRY_SELECTED_FEATURES_V1
+TERNARY_REGIME_DRY_SELECTED_FEATURES_V1 = ['D_sin_DOY', 'J_bio_bio02', 'SMAP_sm_pm_interp_rollrange30', 'SMAP_x_year', 'V_rollrng_F_NDMI_kobs30', 'sin_year', 'G_DSLR', 'V_rollmin_E_SAR_ratio_kobs30', 'V_rollstd_G_API_kobs30', 'A_grad_E_SAR_diff_kobs30', 'C_lag_E_SAR_ratio_kobs30', 'latitude', 'A_d_E_SAR_diff_kobs30', 'SMAP_sm_pm_interp_rollmean30', 'C_lag_F_NDVI_kobs30', 'V_rollrng_F_NDVI_kobs14', 'J_lc_code', 'V_rollmax_LST_modis_kobs7', 'C_lag_SMAP_sm_interp_kobs12', 'V_rollrng_E_SAR_diff_kobs30', 'SMAP_sm_pm_interp_lag30', 'slope', 'SMAP_sm_am_interp_rollrange30', 'V_rollmax_LST_modis_kobs14', 'SMAP_sm_interp_rollrange30', 'K_aspect_cos', 'V_rollrng_SMAP_sm_interp_kobs30']
+
+# Selected features for TERNARY_REGIME_TRANSITION_SELECTED_FEATURES_V1
+TERNARY_REGIME_TRANSITION_SELECTED_FEATURES_V1 = ['API_x_year', 'J_bio_bio06', 'V_rollmin_G_API_kobs30', 'G_rain_sum_3d', 'A_d_E_SAR_diff_kobs5', 'A_d_E_SAR_ratio_kobs30', 'A_d_E_SAR_ratio_kobs5', 'A_d_E_SAR_ratio_kobs7', 'A_d_LST_modis_kobs5', 'A_d_s2_b11_kobs5', 'A_grad_E_SAR_ratio_kobs14', 'A_grad_E_SAR_ratio_kobs7', 'A_grad_s2_b11_kobs14', 'C_lag_E_SAR_diff_kobs30', 'C_lag_E_SAR_diff_kobs6', 'C_lag_E_SAR_ratio_kobs12', 'C_lag_F_NDMI_kobs2', 'C_lag_F_NDVI_kobs1', 'C_lag_F_NDVI_kobs6', 'C_lag_LST_modis_kobs1', 'C_lag_s2_b11_kobs1', 'C_lag_s2_b12_kobs12', 'C_lag_s2_b12_kobs6', 'DOY', 'F_MSI', 'F_NDVI', 'G_DSLR', 'J_aspect_deg', 'J_bio_bio02', 'J_bio_bio10', 'J_bio_bio11', 'J_bio_bio14', 'J_bio_bio16', 'J_clay_wfrac_b0', 'J_sand_wfrac_b10', 'J_sand_wfrac_b60', 'K_sand_clay_ratio_b0', 'SMAP_sm_am_interp_lag30', 'SMAP_sm_am_interp_lag7', 'SMAP_sm_pm_interp_rollrange30', 'SMAP_x_year', 'V_ema_G_API_kobs30', 'V_rollmax_E_SAR_ratio_kobs14', 'V_rollmax_E_SAR_ratio_kobs7', 'V_rollmax_G_API_kobs30', 'V_rollmax_s2_b12_kobs14', 'V_rollmean_F_NDVI_kobs7', 'V_rollmin_E_SAR_diff_kobs30', 'V_rollmin_F_NDMI_kobs7', 'V_rollmin_F_NDVI_kobs14']
+
+# Selected features for TERNARY_REGIME_WET_SELECTED_FEATURES_V1
+TERNARY_REGIME_WET_SELECTED_FEATURES_V1 = ['D_cos_DOY', 'V_rollrng_E_SAR_diff_kobs30', 'latitude', 'slope', 'J_soil_texture_usda_b200', 'D_sin_DOY']
+
+# Selected features for BINARY_REGIME_DRY_SELECTED_FEATURES_V1
+BINARY_REGIME_DRY_SELECTED_FEATURES_V1 = ['D_sin_DOY', 'J_bio_bio02', 'SMAP_sm_pm_interp_rollrange30', 'SMAP_x_year', 'V_rollrng_F_NDMI_kobs30', 'sin_year', 'G_DSLR', 'V_rollmin_E_SAR_ratio_kobs30', 'V_rollstd_G_API_kobs30', 'A_grad_E_SAR_diff_kobs30', 'C_lag_E_SAR_ratio_kobs30', 'latitude', 'A_d_E_SAR_diff_kobs30', 'SMAP_sm_pm_interp_rollmean30', 'C_lag_F_NDVI_kobs30', 'V_rollrng_F_NDVI_kobs14', 'J_lc_code', 'V_rollmax_LST_modis_kobs7', 'C_lag_SMAP_sm_interp_kobs12', 'V_rollrng_E_SAR_diff_kobs30', 'SMAP_sm_pm_interp_lag30', 'slope', 'SMAP_sm_am_interp_rollrange30', 'V_rollmax_LST_modis_kobs14', 'SMAP_sm_interp_rollrange30', 'K_aspect_cos', 'V_rollrng_SMAP_sm_interp_kobs30']
+
+# Selected features for BINARY_REGIME_WET_SELECTED_FEATURES_V1
+BINARY_REGIME_WET_SELECTED_FEATURES_V1 = ['DOY', 'D_cos_DOY', 'D_sa_F_NDMI', 'D_z_E_SAR_ratio', 'D_z_F_NDMI', 'D_z_LST_modis', 'F_MSI', 'J_aspect_deg', 'J_bio_bio15', 'K_aspect_cos', 'V_rollmax_F_NDVI_kobs30', 'cos_year', 'latitude', 'lia_std_asc_deg', 's2_b4', 's2_b8', 'slope', 'E_SAR_ratio', 'G_API', 'V_ema_LST_modis_kobs30', 'V_rollcv_E_SAR_diff_kobs30', 'V_rollmean_F_NDVI_kobs30', 'V_rollstd_E_SAR_ratio_kobs30', 'D_sa_LST_modis', 'V_ema_E_SAR_ratio_kobs30', 'V_ema_s2_b11_kobs30', 'V_rollcv_E_SAR_ratio_kobs30', 'V_rollmean_E_SAR_ratio_kobs30', 'V_ema_s2_b12_kobs30', 'V_ema_E_SAR_diff_kobs30', 'F_NDMI', 'J_lc_code', 'V_rollrng_E_SAR_ratio_kobs30', 'V_rollstd_s2_b12_kobs30', 'V_rollmin_LST_modis_kobs14', 'G_DSLR', 'V_rollmean_F_NDMI_kobs30', 'J_soil_texture_usda_b200', 'K_aspect_sin', 'V_rollstd_F_NDMI_kobs30', 'V_rollstd_E_SAR_diff_kobs30', 'J_soil_texture_usda_b0', 'V_rollmax_LST_modis_kobs14', 'V_rollmean_s2_b12_kobs30', 'J_soil_texture_usda_b10']

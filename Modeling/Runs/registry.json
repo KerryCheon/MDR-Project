@@ -119,6 +119,51 @@
       "meta": {
         "config": "notebooks/experiment/derived_8.2-feature-selection/config_v4.yaml"
       }
+    },
+    {
+      "run_id": "derived_8.2_regime_ternary_regime_dry_v1",
+      "timestamp": "2026-07-14T14:00:26",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_regime_ternary_regime_dry_v1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "regime": "Ternary Dry"
+      }
+    },
+    {
+      "run_id": "derived_8.2_regime_ternary_regime_transition_v1",
+      "timestamp": "2026-07-14T14:01:56",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_regime_ternary_regime_transition_v1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "regime": "Ternary Transition"
+      }
+    },
+    {
+      "run_id": "derived_8.2_regime_ternary_regime_wet_v1",
+      "timestamp": "2026-07-14T14:03:38",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_regime_ternary_regime_wet_v1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "regime": "Ternary Wet"
+      }
+    },
+    {
+      "run_id": "derived_8.2_regime_binary_regime_dry_v1",
+      "timestamp": "2026-07-14T14:04:52",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_regime_binary_regime_dry_v1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "regime": "Binary Dry"
+      }
+    },
+    {
+      "run_id": "derived_8.2_regime_binary_regime_wet_v1",
+      "timestamp": "2026-07-14T14:06:28",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_regime_binary_regime_wet_v1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "regime": "Binary Wet"
+      }
     }
   ]
 }

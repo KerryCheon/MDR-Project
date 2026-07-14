@@ -1,0 +1,52 @@
+{
+  "stage": "stability",
+  "selected": [
+    "D_cos_DOY",
+    "V_rollrng_E_SAR_diff_kobs30",
+    "latitude",
+    "slope",
+    "J_soil_texture_usda_b200",
+    "D_sin_DOY"
+  ],
+  "ranked": [
+    "D_cos_DOY",
+    "V_rollrng_E_SAR_diff_kobs30",
+    "latitude",
+    "slope",
+    "J_soil_texture_usda_b200",
+    "D_sin_DOY",
+    "A_d_LST_modis_kobs30",
+    "A_d_SMAP_sm_interp_kobs30",
+    "A_grad_LST_modis_kobs30",
+    "A_grad_SMAP_sm_interp_kobs30",
+    "J_bio_bio19",
+    "A_d_SMAP_sm_interp_kobs14",
+    "A_grad_SMAP_sm_interp_kobs14",
+    "C_lag_SMAP_sm_interp_kobs30",
+    "SMAP_sm_am_interp_lag30",
+    "SMAP_sm_interp_lag30",
+    "year",
+    "year_frac"
+  ],
+  "scores": {
+    "D_cos_DOY": 1.0,
+    "V_rollrng_E_SAR_diff_kobs30": 1.0,
+    "latitude": 1.0,
+    "slope": 1.0,
+    "J_soil_texture_usda_b200": 0.98,
+    "D_sin_DOY": 0.62,
+    "A_d_LST_modis_kobs30": 0.26,
+    "A_d_SMAP_sm_interp_kobs30": 0.26,
+    "A_grad_LST_modis_kobs30": 0.26,
+    "A_grad_SMAP_sm_interp_kobs30": 0.26,
+    "J_bio_bio19": 0.12,
+    "A_d_SMAP_sm_interp_kobs14": 0.02,
+    "A_grad_SMAP_sm_interp_kobs14": 0.02,
+    "C_lag_SMAP_sm_interp_kobs30": 0.02,
+    "SMAP_sm_am_interp_lag30": 0.02,
+    "SMAP_sm_interp_lag30": 0.02,
+    "year": 0.01,
+    "year_frac": 0.01
+  },
+  "extra": null
+}
