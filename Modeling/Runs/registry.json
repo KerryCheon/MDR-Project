@@ -164,6 +164,156 @@
         "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
         "regime": "Binary Wet"
       }
+    },
+    {
+      "run_id": "derived_8.2_cluster_univariate_g_api_k2_c0",
+      "timestamp": "2026-07-14T16:16:32",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_univariate_g_api_k2_c0",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Univariate_G_API_k2",
+        "cluster": 0
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_univariate_g_api_k2_c1",
+      "timestamp": "2026-07-14T16:17:48",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_univariate_g_api_k2_c1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Univariate_G_API_k2",
+        "cluster": 1
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_clustering_dynamic_k2_c0",
+      "timestamp": "2026-07-14T16:18:57",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_clustering_dynamic_k2_c0",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Clustering_Dynamic_k2",
+        "cluster": 0
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_clustering_dynamic_k2_c1",
+      "timestamp": "2026-07-14T16:21:14",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_clustering_dynamic_k2_c1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Clustering_Dynamic_k2",
+        "cluster": 1
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_seasonal_binary_k2_c0",
+      "timestamp": "2026-07-14T16:23:17",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_seasonal_binary_k2_c0",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Seasonal_Binary_k2",
+        "cluster": 0
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_seasonal_binary_k2_c1",
+      "timestamp": "2026-07-14T16:27:54",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_seasonal_binary_k2_c1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Seasonal_Binary_k2",
+        "cluster": 1
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_clustering_v3_full_k3_c0",
+      "timestamp": "2026-07-14T16:29:05",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_clustering_v3_full_k3_c0",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Clustering_V3_Full_k3",
+        "cluster": 0
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_clustering_v3_full_k3_c1",
+      "timestamp": "2026-07-14T16:30:10",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_clustering_v3_full_k3_c1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Clustering_V3_Full_k3",
+        "cluster": 1
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_clustering_v3_full_k3_c2",
+      "timestamp": "2026-07-14T16:30:44",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_clustering_v3_full_k3_c2",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Clustering_V3_Full_k3",
+        "cluster": 2
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_clustering_dynamic_k3_c0",
+      "timestamp": "2026-07-14T16:32:24",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_clustering_dynamic_k3_c0",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Clustering_Dynamic_k3",
+        "cluster": 0
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_clustering_dynamic_k3_c1",
+      "timestamp": "2026-07-14T16:33:10",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_clustering_dynamic_k3_c1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Clustering_Dynamic_k3",
+        "cluster": 1
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_clustering_dynamic_k3_c2",
+      "timestamp": "2026-07-14T16:33:39",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_clustering_dynamic_k3_c2",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Clustering_Dynamic_k3",
+        "cluster": 2
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_univariate_g_api_k3_c0",
+      "timestamp": "2026-07-14T16:34:40",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_univariate_g_api_k3_c0",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Univariate_G_API_k3",
+        "cluster": 0
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_univariate_g_api_k3_c1",
+      "timestamp": "2026-07-14T16:35:13",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_univariate_g_api_k3_c1",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Univariate_G_API_k3",
+        "cluster": 1
+      }
+    },
+    {
+      "run_id": "derived_8.2_cluster_univariate_g_api_k3_c2",
+      "timestamp": "2026-07-14T16:35:59",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\derived_8.2_cluster_univariate_g_api_k3_c2",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.2-feature-selection/config_v3.yaml",
+        "strategy": "Univariate_G_API_k3",
+        "cluster": 2
+      }
     }
   ]
 }

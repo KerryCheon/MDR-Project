@@ -1,0 +1,31 @@
+{
+  "stage": "stability",
+  "selected": [
+    "D_sin_DOY",
+    "J_aspect_deg",
+    "C_lag_F_NDVI_kobs30"
+  ],
+  "ranked": [
+    "D_sin_DOY",
+    "J_aspect_deg",
+    "C_lag_F_NDVI_kobs30",
+    "K_aspect_cos",
+    "C_lag_E_SAR_diff_kobs30",
+    "A_d_LST_modis_kobs30",
+    "A_grad_LST_modis_kobs30",
+    "V_rollmin_E_SAR_diff_kobs30",
+    "C_lag_E_SAR_ratio_kobs30"
+  ],
+  "scores": {
+    "D_sin_DOY": 1.0,
+    "J_aspect_deg": 1.0,
+    "C_lag_F_NDVI_kobs30": 0.62,
+    "K_aspect_cos": 0.52,
+    "C_lag_E_SAR_diff_kobs30": 0.14,
+    "A_d_LST_modis_kobs30": 0.02,
+    "A_grad_LST_modis_kobs30": 0.02,
+    "V_rollmin_E_SAR_diff_kobs30": 0.02,
+    "C_lag_E_SAR_ratio_kobs30": 0.01
+  },
+  "extra": null
+}

@@ -1,0 +1,10 @@
+[
+  "D_sin_DOY",
+  "V_ema_F_NDVI_kobs30",
+  "V_ema_G_API_kobs14",
+  "V_rollmean_LST_modis_kobs30",
+  "V_rollmin_G_API_kobs30",
+  "C_lag_E_SAR_ratio_kobs30",
+  "V_rollmin_LST_modis_kobs30",
+  "C_lag_G_API_kobs1"
+]

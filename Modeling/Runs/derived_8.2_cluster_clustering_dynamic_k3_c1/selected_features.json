@@ -1,0 +1,18 @@
+[
+  "API_x_year",
+  "C_lag_G_API_kobs1",
+  "D_sin_DOY",
+  "J_bio_bio12",
+  "J_lc_code",
+  "K_aspect_cos",
+  "V_rollmax_G_API_kobs30",
+  "V_rollmin_LST_modis_kobs30",
+  "J_aspect_deg",
+  "C_lag_E_SAR_ratio_kobs30",
+  "V_ema_F_NDVI_kobs30",
+  "G_DSLR",
+  "V_rollmax_LST_modis_kobs30",
+  "G_API",
+  "V_rollrng_E_SAR_ratio_kobs30",
+  "V_ema_LST_modis_kobs30"
+]
