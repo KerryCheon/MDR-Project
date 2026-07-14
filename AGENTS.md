@@ -10,7 +10,7 @@ There're two models in development:
 Currently we're focusing on stations within Washington state as part of the collaboration with the ECE team that develop and deploy new in-situ soil moisture sensors, for which will be used to evaluate the model's performance. Thus, out-of-region spatial generalization is not a concern for now (but we still need some sptial generalization within the state).
 
 ### Current Challenges
-The spatial model have performance degrade quite a lot after we introduced more stations to the dataset, the model seems to be underfitting, and we haven't found the root cause yet.
+The spatial model have performance degrade quite a lot after we introduced more stations to the dataset, ~~the model seems to be underfitting, and we haven't found the root cause yet~~, turns out the model is overfitting and fallback to the mean for unseen inputs.
 
 ## Repo Layout
 
