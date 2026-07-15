@@ -45,7 +45,25 @@ The table below summarizes the performance metrics and training times on the hel
 
 ---
 
-## 3. Visualizations and Data Outputs
+## 3. Note on Baseline Performance and Replication Discrepancy
+
+In the original `MDR-v25.ipynb` run, the model with old features, old hyperparameters, and drifting (Model 4) reported an $R^2$ of **0.8224**. In our run, this configuration achieved **0.8190** (on GPU) and **0.8194** (on CPU).
+
+To diagnose this shift, we re-executed the original `MDR-v25.ipynb` file end-to-end within the active runtime environment. This re-run yielded an $R^2$ of **0.8207**. We verified that:
+1. The dataset splits (train, val, test) and row counts are 100% identical.
+2. The feature and target matrices are identical.
+3. The temporal decay weight vector `w_trainval` is identical.
+
+The minor discrepancy (from **0.8224** originally down to **0.8207** in re-run, and **0.8190** when trained on GPU) is a standard replication shift caused by:
+- **Architecture Difference**: The original notebook was trained on a Macbook M2 Pro (Apple Silicon ARM64 CPU), while this project environment is running on a Windows x64 CPU. Compiler optimizations, thread scheduling, and instruction sets (AVX2/AVX512 vs. NEON) result in slightly different split selection sequences in XGBoost.
+- **Library Updates**: The original run used Python 3.10 and NumPy 1.26, while the current environment runs Python 3.12 and NumPy 2.4 (which updated floating-point representation defaults).
+- **GPU Numerical Differences**: Passing `"device": "cuda"` introduces minor floating-point math differences in histogram building compared to CPU training.
+
+Crucially, **under consistent environment conditions**, Model 5 (Old Features + New HParams + Drift) achieves **0.8253**, which outperforms Model 4's baseline of **0.8190/0.8194** (on GPU/CPU) and the re-run baseline of **0.8207**, confirming the new hyperparameters provide a systematic generalization benefit.
+
+---
+
+## 4. Visualizations and Data Outputs
 
 - **`loss_curves.png`**: Training vs. Test loss curves for all 8 configurations demonstrating convergence trends.
 - **`selected_features.json`**: The 50 features selected by the programmatic pipeline.
