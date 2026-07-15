@@ -314,6 +314,14 @@
         "strategy": "Univariate_G_API_k3",
         "cluster": 2
       }
+    },
+    {
+      "run_id": "2026-07-14_193434",
+      "timestamp": "2026-07-14T19:34:34",
+      "path": "C:\\Users\\pan\\Documents\\GitHub\\MDR-Project\\Modeling\\Runs\\2026-07-14_193434",
+      "meta": {
+        "config": "notebooks/experiment/derived_8.0-optimization-1.0/config.yaml"
+      }
     }
   ]
 }

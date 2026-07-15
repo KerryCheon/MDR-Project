@@ -1,0 +1,53 @@
+[
+  {
+    "model": "linear",
+    "robustness": {
+      "gap_r2": -0.047497645050565085,
+      "gap_rmse": 0.002921609242256061,
+      "gap_rel_rmse": 0.041943097815939384,
+      "val_minus_test_r2": 0.14905408811182608
+    },
+    "stability": {
+      "train_r2_mean": 0.7582621820034572,
+      "train_r2_std": 0.0,
+      "val_r2_mean": 0.8057598270540223,
+      "val_r2_std": 0.0,
+      "test_r2_mean": 0.6567057389421962,
+      "test_r2_std": 0.0
+    }
+  },
+  {
+    "model": "xgb",
+    "robustness": {
+      "gap_r2": 0.17141934120516245,
+      "gap_rmse": -0.032808841076053245,
+      "gap_rel_rmse": -0.14071663094928855,
+      "val_minus_test_r2": 0.1635620818065684
+    },
+    "stability": {
+      "train_r2_mean": 0.9839466548858238,
+      "train_r2_std": 0.0,
+      "val_r2_mean": 0.8125273136806613,
+      "val_r2_std": 0.0,
+      "test_r2_mean": 0.6489652318740929,
+      "test_r2_std": 0.0
+    }
+  },
+  {
+    "model": "rf",
+    "robustness": {
+      "gap_r2": 0.15828672055727688,
+      "gap_rmse": -0.032995310837650546,
+      "gap_rel_rmse": -0.14304423142792447,
+      "val_minus_test_r2": 0.0859285988129449
+    },
+    "stability": {
+      "train_r2_mean": 0.989739130392873,
+      "train_r2_std": 0.0,
+      "val_r2_mean": 0.8314524098355961,
+      "val_r2_std": 0.0,
+      "test_r2_mean": 0.7455238110226512,
+      "test_r2_std": 0.0
+    }
+  }
+]
