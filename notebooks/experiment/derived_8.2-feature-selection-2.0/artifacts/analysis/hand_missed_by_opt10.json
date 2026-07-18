@@ -1,0 +1,74 @@
+{
+  "missed": [
+    "API_x_year",
+    "A_d_E_SAR_diff_kobs14",
+    "A_d_LST_modis_kobs14",
+    "A_d_SMAP_sm_interp_kobs14",
+    "C_lag_G_API_kobs1",
+    "C_lag_LST_modis_kobs6",
+    "C_lag_s2_b11_kobs30",
+    "J_clay_wfrac_b0",
+    "J_sand_wfrac_b0",
+    "K_aspect_cos",
+    "K_slope_cos",
+    "K_slope_sin",
+    "SMAP_sm_interp_grad7",
+    "SMAP_sm_pm_interp_ema02",
+    "V_ema_G_API_kobs14",
+    "V_ema_G_API_kobs30",
+    "V_ema_G_API_kobs7",
+    "V_ema_LST_modis_kobs7",
+    "V_rollmax_G_API_kobs30",
+    "V_rollmean_G_API_kobs14",
+    "V_rollmean_G_API_kobs7",
+    "V_rollmean_s2_b11_kobs7",
+    "V_rollmin_G_API_kobs30",
+    "V_rollmin_LST_modis_kobs30",
+    "V_rollstd_SMAP_sm_interp_kobs30",
+    "cos_year",
+    "elev",
+    "slope",
+    "year_frac"
+  ],
+  "by_family": {
+    "satellite": [
+      "A_d_E_SAR_diff_kobs14",
+      "A_d_LST_modis_kobs14",
+      "A_d_SMAP_sm_interp_kobs14",
+      "C_lag_LST_modis_kobs6",
+      "C_lag_s2_b11_kobs30",
+      "SMAP_sm_interp_grad7",
+      "SMAP_sm_pm_interp_ema02",
+      "V_ema_LST_modis_kobs7",
+      "V_rollmean_s2_b11_kobs7",
+      "V_rollmin_LST_modis_kobs30",
+      "V_rollstd_SMAP_sm_interp_kobs30"
+    ],
+    "hydro": [
+      "C_lag_G_API_kobs1",
+      "V_ema_G_API_kobs14",
+      "V_ema_G_API_kobs30",
+      "V_ema_G_API_kobs7",
+      "V_rollmax_G_API_kobs30",
+      "V_rollmean_G_API_kobs14",
+      "V_rollmean_G_API_kobs7",
+      "V_rollmin_G_API_kobs30"
+    ],
+    "static": [
+      "J_clay_wfrac_b0",
+      "J_sand_wfrac_b0",
+      "K_aspect_cos",
+      "K_slope_cos",
+      "K_slope_sin",
+      "elev",
+      "slope"
+    ],
+    "calendar": [
+      "API_x_year",
+      "cos_year",
+      "year_frac"
+    ],
+    "temporal": [],
+    "other": []
+  }
+}

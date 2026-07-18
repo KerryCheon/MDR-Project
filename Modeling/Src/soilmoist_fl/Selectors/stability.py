@@ -9,6 +9,7 @@ from Modeling.Utils.logging import get_logger
 from Modeling.Src.soilmoist_fl.Selectors.base import _top_k, log_top
 from Modeling.Src.soilmoist_fl.Selectors.elasticnet import select_elasticnet
 from Modeling.Src.soilmoist_fl.Selectors.rf_importance import select_rf_importance
+from Modeling.Src.soilmoist_fl.Selectors.xgb_importance import select_xgb_importance
 
 
 def stability_from_feature_lists(feature_lists, min_freq=0.6, top_k=None):
@@ -97,6 +98,9 @@ def stability_bootstrap(
             # RandomForest bootstrap step uses 1 thread inside to prevent joblib collision
             kwargs["n_jobs"] = 1
             out = select_rf_importance(Xb, yb, k=base_k, random_state=int(random_state) + b, **kwargs)
+        elif base == "xgb":
+            kwargs["n_jobs"] = 1
+            out = select_xgb_importance(Xb, yb, k=base_k, random_state=int(random_state) + b, **kwargs)
         else:
             raise ValueError(f"stability_bootstrap: unsupported base estimator: {base}")
 

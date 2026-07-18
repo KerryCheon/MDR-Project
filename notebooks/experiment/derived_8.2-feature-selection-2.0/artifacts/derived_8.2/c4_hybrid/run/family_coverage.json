@@ -1,0 +1,18 @@
+{
+  "promoted": [],
+  "family_counts_before": {
+    "satellite": 46,
+    "hydro": 6,
+    "static": 19,
+    "calendar": 8,
+    "temporal": 0
+  },
+  "family_counts_after": {
+    "satellite": 46,
+    "hydro": 6,
+    "static": 19,
+    "calendar": 8,
+    "temporal": 0
+  },
+  "min_per_family": 1
+}

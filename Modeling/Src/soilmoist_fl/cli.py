@@ -24,6 +24,8 @@ from Modeling.Src.soilmoist_fl.Selectors.mi import select_mi
 from Modeling.Src.soilmoist_fl.Selectors.stability import stability_bootstrap, stability_bootstrap_elasticnet
 from Modeling.Src.soilmoist_fl.Selectors.correlation import select_correlation
 from Modeling.Src.soilmoist_fl.Selectors.rf_importance import select_rf_importance
+from Modeling.Src.soilmoist_fl.Selectors.xgb_importance import select_xgb_importance
+from Modeling.Src.soilmoist_fl.Selectors.family_coverage import enforce_min_family_coverage
 from Modeling.Src.soilmoist_fl.Tracking.artifacts import (
     ensure_run_dir,
     save_json,
@@ -91,8 +93,8 @@ def select_features(
     run_id=None,
     top_k=None,
     stages=None,
-    bypass_prefixes=('J_', 'K_', 'D_', 'G_'),
-    bypass_exact={'longitude', 'latitude', 'elev', 'slope', 'aspect', 'DOY', 'precip_mm', 'sin_year', 'cos_year'},
+    bypass_prefixes=None,
+    bypass_exact=None,
     random_state=42,
     verbose=True,
 ):
@@ -132,99 +134,214 @@ def select_features(
     check_feature_name_leakage(list(X_train.columns), forbidden=forbidden)
     group_features(list(X_train.columns))
 
-    # Identify bypass features
+    # Bypass list is opt-in (legacy MI-starvation patch). Prefer family_coverage.
+    # Enabled when: selection.bypass.enabled is True, OR caller passes non-None
+    # bypass_prefixes/exact, OR legacy default path when config omits bypass key
+    # but stages include "mi" and no explicit bypass.enabled:false.
+    bypass_cfg = sel_cfg.get("bypass", {}) if isinstance(sel_cfg.get("bypass", {}), dict) else {}
+    default_bypass_prefixes = ("J_", "K_", "D_", "G_")
+    default_bypass_exact = {
+        "longitude", "latitude", "elev", "slope", "aspect", "DOY",
+        "precip_mm", "sin_year", "cos_year",
+    }
+
+    if bypass_prefixes is not None or bypass_exact is not None:
+        # Explicit call-site override
+        bypass_enabled = True
+        if bypass_prefixes is None:
+            bypass_prefixes = tuple(bypass_cfg.get("prefixes", default_bypass_prefixes))
+        if bypass_exact is None:
+            bypass_exact = set(bypass_cfg.get("exact", default_bypass_exact))
+    elif "bypass" in sel_cfg:
+        bypass_enabled = bool(bypass_cfg.get("enabled", False))
+        bypass_prefixes = tuple(bypass_cfg.get("prefixes", default_bypass_prefixes)) if bypass_enabled else ()
+        bypass_exact = set(bypass_cfg.get("exact", default_bypass_exact)) if bypass_enabled else set()
+    else:
+        # Backward compatible: if MI is in the pipeline and bypass not configured,
+        # keep the historical force-include behavior so V1–V3 configs still work.
+        has_mi = any(str(s.get("kind", "")).lower() == "mi" for s in stages if isinstance(s, dict))
+        bypass_enabled = has_mi
+        bypass_prefixes = default_bypass_prefixes if bypass_enabled else ()
+        bypass_exact = default_bypass_exact if bypass_enabled else set()
+
     if bypass_prefixes is None:
         bypass_prefixes = ()
     if bypass_exact is None:
         bypass_exact = set()
-    
-    bypass_cols = [
-        c for c in X_train.columns 
-        if (bypass_prefixes and c.startswith(bypass_prefixes)) or 'year' in c or c in bypass_exact
-    ]
-    ts_cols = [c for c in X_train.columns if c not in bypass_cols]
+    bypass_exact = set(bypass_exact)
 
-    # Initialize current features to TS features
-    current_feats = [c for c in ts_cols if c in X_train.columns]
-    
+    bypass_cols = []
+    if bypass_enabled:
+        bypass_cols = [
+            c for c in X_train.columns
+            if (bypass_prefixes and c.startswith(tuple(bypass_prefixes)))
+            or ("year" in c)
+            or (c in bypass_exact)
+        ]
+        log.info("Bypass enabled: %d features force-kept through MI (%s...)", len(bypass_cols), bypass_cols[:5])
+    else:
+        log.info("Bypass disabled; relying on selectors + optional family_coverage")
+
+    # Start from the full feature set (not TS-only). Bypass only re-injects after MI.
+    current_feats = [c for c in X_train.columns]
+    all_available = list(current_feats)
+
     opt_alpha = None
     opt_l1_ratio = None
     last_stage_kind = None
     ranking_input_feats = None
+    last_score_map = {}
+    coverage_meta = None
 
     # Run selection stages
     for i, st in enumerate(stages):
         kind = str(st.get("kind", "")).lower()
         log.info("Running selection stage %d: %s", i + 1, kind)
-        
+
         if kind == "mi":
             mi_k = int(st.get("k", 120))
             mi_out = select_mi(X_train[current_feats], y_train, k=mi_k)
             mi_feats = mi_out["selected"]
+            last_score_map = mi_out.get("scores") or last_score_map
             if run_dir:
                 save_stage_features(run_dir, "mi", mi_feats, ranked=mi_out.get("ranked"), scores=mi_out.get("scores"))
-            
-            # Force include bypass cols back in the candidates
-            current_feats = list(set(mi_feats + bypass_cols))
-            current_feats = [f for f in current_feats if f in X_train.columns]
-            log.info("Stage MI done: selected=%d (plus %d bypassed features)", len(mi_feats), len(bypass_cols))
-            
+
+            if bypass_enabled and bypass_cols:
+                current_feats = list(dict.fromkeys(mi_feats + bypass_cols))
+                current_feats = [f for f in current_feats if f in X_train.columns]
+                log.info("Stage MI done: selected=%d (plus %d bypassed features)", len(mi_feats), len(bypass_cols))
+            else:
+                current_feats = mi_feats
+                log.info("Stage MI done: selected=%d (no bypass)", len(current_feats))
+
         elif kind == "correlation":
             threshold = float(st.get("threshold", 0.95))
             corr_out = select_correlation(X_train[current_feats], y_train, threshold=threshold)
             corr_feats = corr_out["selected"]
+            last_score_map = corr_out.get("scores") or last_score_map
             if run_dir:
                 save_stage_features(run_dir, "correlation", corr_feats, ranked=corr_out.get("ranked"), scores=corr_out.get("scores"))
             current_feats = corr_feats
-            log.info("Stage Correlation done: selected=%d (dropped %d collinear features)", len(current_feats), len(corr_out.get("dropped", [])))
-            
+            log.info(
+                "Stage Correlation done: selected=%d (dropped %d collinear features)",
+                len(current_feats),
+                len(corr_out.get("dropped", [])),
+            )
+
         elif kind == "elasticnet":
             enet_k = int(st.get("k", 60))
-            ranking_input_feats = list(current_feats)  # Candidates for stability bootstrap
+            ranking_input_feats = list(current_feats)
             enet_out = select_elasticnet(X_train[current_feats], y_train, k=enet_k)
             enet_feats = enet_out["selected"]
+            last_score_map = enet_out.get("scores") or last_score_map
             if run_dir:
                 save_stage_features(run_dir, "elasticnet", enet_feats, ranked=enet_out.get("ranked"), scores=enet_out.get("scores"))
-            
+
             opt_alpha = enet_out["alpha"]
             opt_l1_ratio = enet_out["l1_ratio"]
             current_feats = enet_feats
-            log.info("Stage ElasticNet done: selected=%d (alpha=%.6g, l1_ratio=%.3f)", len(current_feats), opt_alpha, opt_l1_ratio)
-            
+            log.info(
+                "Stage ElasticNet done: selected=%d (alpha=%.6g, l1_ratio=%.3f)",
+                len(current_feats),
+                opt_alpha,
+                opt_l1_ratio,
+            )
+
         elif kind == "rf_importance":
             rf_k = int(st.get("k", 60))
-            ranking_input_feats = list(current_feats)  # Candidates for stability bootstrap
+            ranking_input_feats = list(current_feats)
             rf_out = select_rf_importance(X_train[current_feats], y_train, k=rf_k)
             rf_feats = rf_out["selected"]
+            last_score_map = rf_out.get("scores") or last_score_map
             if run_dir:
                 save_stage_features(run_dir, "rf_importance", rf_feats, ranked=rf_out.get("ranked"), scores=rf_out.get("scores"))
             current_feats = rf_feats
             log.info("Stage RF Importance done: selected=%d", len(current_feats))
-            
+
+        elif kind == "xgb_importance":
+            xgb_k = int(st.get("k", 60))
+            ranking_input_feats = list(current_feats)
+            xgb_params = st.get("params") or sel_cfg.get("xgb_importance_params")
+            xgb_out = select_xgb_importance(
+                X_train[current_feats],
+                y_train,
+                k=xgb_k,
+                params=xgb_params,
+                random_state=int(sel_cfg.get("random_state", random_state)),
+                n_jobs=int(st.get("n_jobs", 1)),
+            )
+            xgb_feats = xgb_out["selected"]
+            last_score_map = xgb_out.get("scores") or last_score_map
+            if run_dir:
+                save_stage_features(run_dir, "xgb_importance", xgb_feats, ranked=xgb_out.get("ranked"), scores=xgb_out.get("scores"))
+            current_feats = xgb_feats
+            log.info("Stage XGB Importance done: selected=%d", len(current_feats))
+
+        elif kind == "family_coverage":
+            min_per = int(st.get("min_per_family", sel_cfg.get("family_coverage", {}).get("min_per_family", 1)))
+            families = st.get("families") or sel_cfg.get("family_coverage", {}).get("families")
+            available = ranking_input_feats if ranking_input_feats is not None else all_available
+            cov_out = enforce_min_family_coverage(
+                selected=current_feats,
+                ranked_scores=last_score_map,
+                available=available,
+                min_per_family=min_per,
+                families=families,
+            )
+            current_feats = cov_out["selected"]
+            coverage_meta = cov_out
+            if run_dir:
+                save_stage_features(
+                    run_dir,
+                    "family_coverage",
+                    current_feats,
+                    ranked=None,
+                    scores={p["feature"]: p["score"] for p in cov_out.get("promoted", [])},
+                )
+                save_json(Path(run_dir) / "family_coverage.json", {
+                    "promoted": cov_out.get("promoted"),
+                    "family_counts_before": cov_out.get("family_counts_before"),
+                    "family_counts_after": cov_out.get("family_counts_after"),
+                    "min_per_family": min_per,
+                })
+            log.info(
+                "Stage FamilyCoverage done: selected=%d (promoted=%d)",
+                len(current_feats),
+                len(cov_out.get("promoted", [])),
+            )
+
         elif kind == "stability":
             min_freq = float(st.get("min_freq", 0.6))
             n_boot = int(st.get("stability_n_boot", sel_cfg.get("stability_n_boot", 100)))
             sample_frac = float(st.get("stability_sample_frac", sel_cfg.get("stability_sample_frac", 0.8)))
-            
-            # Determine base estimator for stability bootstrap
+
             base_estimator = str(st.get("base", "")).lower()
             if not base_estimator:
                 if last_stage_kind == "rf_importance":
                     base_estimator = "rf"
+                elif last_stage_kind == "xgb_importance":
+                    base_estimator = "xgb"
+                elif last_stage_kind == "family_coverage":
+                    # Look further back is not tracked; prefer xgb if scores came from xgb
+                    base_estimator = "xgb" if last_score_map else "elasticnet"
                 else:
                     base_estimator = "elasticnet"
-            
-            # Use candidates from before the ranking step
+
             stab_input_feats = ranking_input_feats if ranking_input_feats is not None else current_feats
-            X_tr_stab = X_train[stab_input_feats]
-            
-            # Determine stability k
+            # Ensure current_feats (e.g. coverage promotions) stay in the pool
+            stab_pool = list(dict.fromkeys(list(stab_input_feats) + list(current_feats)))
+            X_tr_stab = X_train[stab_pool]
+
             stab_k = int(st.get("k", 60))
-            
+
             base_kwargs = {}
             if base_estimator == "elasticnet" and opt_alpha is not None:
                 base_kwargs = {"alpha": opt_alpha, "l1_ratio": opt_l1_ratio}
-                
+            elif base_estimator == "xgb":
+                xgb_params = st.get("params") or sel_cfg.get("xgb_importance_params")
+                if xgb_params:
+                    base_kwargs = {"params": xgb_params}
+
             stab_out = stability_bootstrap(
                 X=X_tr_stab,
                 y=y_train,
@@ -238,12 +355,65 @@ def select_features(
                 base_kwargs=base_kwargs,
             )
             stable_feats = stab_out["selected"]
+            last_score_map = stab_out.get("scores") or last_score_map
             if run_dir:
                 save_stage_features(run_dir, "stability", stable_feats, ranked=stab_out.get("ranked"), scores=stab_out.get("scores"))
+
+            # Adaptive floor: if stability returns too few features, fall back to top_k by frequency
+            min_keep = int(st.get("min_keep", sel_cfg.get("stability_min_keep", max(10, top_k // 2 if top_k else 10))))
+            if len(stable_feats) < min_keep and stab_out.get("ranked"):
+                log.warning(
+                    "Stability returned only %d features (min_keep=%d); falling back to top_k by frequency",
+                    len(stable_feats),
+                    min_keep,
+                )
+                ranked = stab_out["ranked"]
+                n_take = int(top_k) if top_k is not None else min_keep
+                stable_feats = ranked[: max(min_keep, n_take)]
+                if run_dir:
+                    save_stage_features(
+                        run_dir,
+                        "stability_fallback",
+                        stable_feats,
+                        ranked=ranked,
+                        scores=stab_out.get("scores"),
+                    )
+
             current_feats = stable_feats
-            log.info("Stage Stability done: selected=%d (base=%s, n_boot=%d)", len(current_feats), base_estimator, n_boot)
-            
+            log.info(
+                "Stage Stability done: selected=%d (base=%s, n_boot=%d)",
+                len(current_feats),
+                base_estimator,
+                n_boot,
+            )
+
+        else:
+            log.warning("Unknown selection stage kind=%s; skipping", kind)
+            continue
+
         last_stage_kind = kind
+
+    # Optional post-stability family coverage from config (if not already a stage)
+    fam_cfg = sel_cfg.get("family_coverage", {}) if isinstance(sel_cfg.get("family_coverage", {}), dict) else {}
+    stage_kinds = {str(s.get("kind", "")).lower() for s in stages if isinstance(s, dict)}
+    if fam_cfg.get("enabled") and "family_coverage" not in stage_kinds:
+        available = ranking_input_feats if ranking_input_feats is not None else all_available
+        cov_out = enforce_min_family_coverage(
+            selected=current_feats,
+            ranked_scores=last_score_map,
+            available=available,
+            min_per_family=int(fam_cfg.get("min_per_family", 1)),
+            families=fam_cfg.get("families"),
+        )
+        current_feats = cov_out["selected"]
+        coverage_meta = cov_out
+        if run_dir:
+            save_json(Path(run_dir) / "family_coverage.json", {
+                "promoted": cov_out.get("promoted"),
+                "family_counts_before": cov_out.get("family_counts_before"),
+                "family_counts_after": cov_out.get("family_counts_after"),
+            })
+        log.info("Post family_coverage: selected=%d promoted=%d", len(current_feats), len(cov_out.get("promoted", [])))
 
     final_feats = current_feats
     log.info("Final selected features (first 20): %s", final_feats[:20])
@@ -359,6 +529,8 @@ def select_features(
         "model_summaries": model_summaries,
         "report_content": report_out.get("report_content"),
         "score": report_out.get("score"),
+        "family_coverage": coverage_meta,
+        "scores": last_score_map,
     }
 
 

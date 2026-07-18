@@ -1,0 +1,26 @@
+[
+  {
+    "dataset": "derived_8.0",
+    "variant": "c2d_xgb_softcorr_k65",
+    "n_features": 65,
+    "family_counts": {
+      "calendar": 7,
+      "hydro": 11,
+      "other": 1,
+      "satellite": 42,
+      "static": 4
+    }
+  },
+  {
+    "dataset": "derived_8.2",
+    "variant": "c2d_xgb_softcorr_k65",
+    "n_features": 65,
+    "family_counts": {
+      "calendar": 6,
+      "hydro": 13,
+      "other": 1,
+      "satellite": 33,
+      "static": 12
+    }
+  }
+]
