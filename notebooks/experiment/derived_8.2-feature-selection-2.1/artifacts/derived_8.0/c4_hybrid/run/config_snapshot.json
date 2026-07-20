@@ -1,0 +1,78 @@
+{
+  "data": {
+    "target": "soil_moisture_5cm",
+    "splits": {
+      "train": "data/splits/derived_8.0/train.csv",
+      "val": "data/splits/derived_8.0/val.csv",
+      "test": "data/splits/derived_8.0/test.csv"
+    },
+    "time_col": "date",
+    "id_cols": [
+      "station_id"
+    ],
+    "drop_cols": [
+      "station_id",
+      "date"
+    ]
+  },
+  "selection": {
+    "top_k": 50,
+    "stability_n_boot": 50,
+    "stability_min_keep": 20,
+    "bypass": {
+      "enabled": false
+    },
+    "xgb_importance_params": {
+      "n_estimators": 200,
+      "max_depth": 6,
+      "learning_rate": 0.05,
+      "min_child_weight": 5,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8
+    },
+    "stages": [
+      {
+        "kind": "correlation",
+        "threshold": 0.95
+      },
+      {
+        "kind": "mi",
+        "k": 300
+      },
+      {
+        "kind": "xgb_importance",
+        "k": 80
+      },
+      {
+        "kind": "family_coverage",
+        "min_per_family": 1,
+        "families": [
+          "satellite",
+          "hydro",
+          "static",
+          "calendar",
+          "temporal"
+        ]
+      },
+      {
+        "kind": "stability",
+        "base": "xgb",
+        "k": 80,
+        "min_freq": 0.5,
+        "stability_n_boot": 50
+      }
+    ]
+  },
+  "models": [],
+  "logging": {
+    "level": "INFO",
+    "console": true,
+    "log_to_file": true,
+    "runs_subdir": "logs",
+    "file_name": "pipeline_feat.log",
+    "max_bytes": 10485760,
+    "backup_count": 5,
+    "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    "datefmt": "%Y-%m-%d %H:%M:%S"
+  }
+}

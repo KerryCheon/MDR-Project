@@ -1,0 +1,11 @@
+set,n,satellite,hydro,static,calendar,temporal,other
+hand_mdr_v25,38,13,12,7,6,0,0
+opt1.0_pipeline_8.0,50,31,6,3,10,0,0
+V0,40,34,4,0,2,0,0
+V1,40,21,1,8,10,0,0
+V2,40,18,4,13,5,0,0
+V3,47,24,4,11,8,0,0
+V4,50,38,12,0,0,0,0
+V5,32,25,7,0,0,0,0
+regime_ternary_wet_v1,6,1,0,3,2,0,0
+regime_ternary_transition_v1,50,31,5,11,3,0,0

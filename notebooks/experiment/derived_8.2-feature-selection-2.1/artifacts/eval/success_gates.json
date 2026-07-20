@@ -1,0 +1,43 @@
+{
+  "with_drift": {
+    "8.0": {
+      "hand_r2": 0.8253479076167946,
+      "best_v6": "v6_c2d_xgb_softcorr_k65",
+      "best_v6_r2": 0.8152109866672849,
+      "delta": -0.010136920949509687,
+      "pass": false
+    },
+    "8.2": {
+      "v3_r2": 0.6375830319820986,
+      "best_v6": "v6_c1_baseline_bypass_off",
+      "best_v6_r2": 0.6615147869477482,
+      "delta": 0.023931754965649588,
+      "pass": true
+    }
+  },
+  "no_drift": {
+    "8.0": {
+      "hand_r2": 0.8222217274633208,
+      "best_v6": "v6_c2d_xgb_softcorr_k65",
+      "best_v6_r2": 0.8147567187721769,
+      "delta": -0.0074650086911438596,
+      "pass": true
+    },
+    "8.2": {
+      "v3_r2": 0.6550625808725593,
+      "best_v6": "v6_c1_baseline_bypass_off",
+      "best_v6_r2": 0.6647651697716395,
+      "delta": 0.009702588899080156,
+      "pass": true
+    }
+  },
+  "meta": {
+    "protocol": "2.1",
+    "device": "cuda",
+    "seed": 42,
+    "beta": 0.2,
+    "weights": "mean_normalized_exp",
+    "timestamp_utc": "2026-07-20T00:57:13.550275+00:00",
+    "opt1.0_hand_drift_r2_ref": 0.8253479076167946
+  }
+}
