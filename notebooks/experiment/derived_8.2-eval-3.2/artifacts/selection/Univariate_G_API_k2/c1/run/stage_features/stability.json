@@ -1,0 +1,13 @@
+{
+  "stage": "stability",
+  "selected": [
+    "J_aspect_deg"
+  ],
+  "ranked": [
+    "J_aspect_deg"
+  ],
+  "scores": {
+    "J_aspect_deg": 1.0
+  },
+  "extra": null
+}
