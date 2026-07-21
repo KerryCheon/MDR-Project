@@ -2,6 +2,7 @@ import os
 import sys
 import glob
 import json
+import argparse
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -21,214 +22,221 @@ EXP_DIR = PROJECT_ROOT / "notebooks/experiment/derived_8.2-eval-3.3"
 MODELS_DIR = EXP_DIR / "models"
 TEST_PATH = PROJECT_ROOT / "data/splits/derived_8.2/test.csv"
 
-# Load test data
-test_df = pd.read_csv(TEST_PATH)
-y_te = test_df["soil_moisture_5cm"].values
+def generate_table(model_id: int, output_filename: str, title_suffix: str = ""):
+    # Load test data
+    test_df = pd.read_csv(TEST_PATH)
 
-# Load metrics summary to find best model
-summary_path = EXP_DIR / "metrics_summary.csv"
-if not summary_path.exists():
-    print(f"Error: {summary_path} does not exist. Did you run the notebook?")
-    sys.exit(1)
+    # Load metrics summary
+    summary_path = EXP_DIR / "metrics_summary.csv"
+    if not summary_path.exists():
+        print(f"Error: {summary_path} does not exist. Did you run the notebook?")
+        sys.exit(1)
 
-summary = pd.read_csv(summary_path)
-best_row = summary.sort_values("R2", ascending=False).iloc[0]
-best_id = int(best_row["Model ID"])
-best_name = best_row["Model Name"]
-print(f"Best model: {best_name} (ID: {best_id}) with overall R2 = {best_row['R2']:.4f}")
+    summary = pd.read_csv(summary_path)
+    model_row = summary[summary["Model ID"] == model_id]
+    if model_row.empty:
+        print(f"Error: Model ID {model_id} not found in {summary_path}")
+        return
 
-# Find predictions file
-pred_files = list(MODELS_DIR.glob(f"model_{best_id}_*_preds.npy"))
-if not pred_files:
-    print(f"Error: Could not find predictions file for model {best_id} in {MODELS_DIR}")
-    sys.exit(1)
+    model_row = model_row.iloc[0]
+    model_name = model_row["Model Name"]
+    overall_r2 = model_row["R2"]
+    print(f"Generating table for: {model_name} (ID: {model_id}) with R2 = {overall_r2:.4f}")
 
-pred_file = pred_files[0]
-print(f"Loading predictions from: {pred_file.name}")
-preds = np.load(pred_file)
+    # Find predictions file
+    pred_files = list(MODELS_DIR.glob(f"model_{model_id}_*_preds.npy"))
+    if not pred_files:
+        print(f"Error: Could not find predictions file for model {model_id} in {MODELS_DIR}")
+        return
 
-# Align station_id and year
-test_df["pred"] = preds
-stations = sorted(test_df["station_id"].unique())
-years = sorted(test_df["year"].unique())
+    pred_file = pred_files[0]
+    preds = np.load(pred_file)
 
-# Initialize data structures for table
-cell_data = {}
+    # Align station_id and year
+    df = test_df.copy()
+    df["pred"] = preds
+    stations = sorted(df["station_id"].unique())
+    years = sorted(df["year"].unique())
 
-for s in stations:
-    cell_data[s] = {}
+    # Initialize data structures for table
+    cell_data = {}
+
+    for s in stations:
+        cell_data[s] = {}
+        for y in years:
+            mask = (df["station_id"] == s) & (df["year"] == y)
+            sub = df[mask]
+            n = len(sub)
+            if n > 1:
+                r2 = r2_score(sub["soil_moisture_5cm"], sub["pred"])
+                rmse = root_mean_squared_error(sub["soil_moisture_5cm"], sub["pred"])
+            else:
+                r2, rmse = float("nan"), float("nan")
+            cell_data[s][y] = {"r2": r2, "rmse": rmse, "n": n}
+
+        # Station overall
+        mask_s = df["station_id"] == s
+        sub_s = df[mask_s]
+        n_s = len(sub_s)
+        if n_s > 1:
+            r2_s = r2_score(sub_s["soil_moisture_5cm"], sub_s["pred"])
+            rmse_s = root_mean_squared_error(sub_s["soil_moisture_5cm"], sub_s["pred"])
+        else:
+            r2_s, rmse_s = float("nan"), float("nan")
+        cell_data[s]["Overall"] = {"r2": r2_s, "rmse": rmse_s, "n": n_s}
+
+    # Year overall (row at the bottom)
+    cell_data["Overall"] = {}
     for y in years:
-        mask = (test_df["station_id"] == s) & (test_df["year"] == y)
-        sub = test_df[mask]
-        n = len(sub)
-        if n > 1:
-            r2 = r2_score(sub["soil_moisture_5cm"], sub["pred"])
-            rmse = root_mean_squared_error(sub["soil_moisture_5cm"], sub["pred"])
+        mask_y = df["year"] == y
+        sub_y = df[mask_y]
+        n_y = len(sub_y)
+        if n_y > 1:
+            r2_y = r2_score(sub_y["soil_moisture_5cm"], sub_y["pred"])
+            rmse_y = root_mean_squared_error(sub_y["soil_moisture_5cm"], sub_y["pred"])
         else:
-            r2, rmse = float("nan"), float("nan")
-        cell_data[s][y] = {"r2": r2, "rmse": rmse, "n": n}
+            r2_y, rmse_y = float("nan"), float("nan")
+        cell_data["Overall"][y] = {"r2": r2_y, "rmse": rmse_y, "n": n_y}
 
-    # Station overall
-    mask_s = test_df["station_id"] == s
-    sub_s = test_df[mask_s]
-    n_s = len(sub_s)
-    if n_s > 1:
-        r2_s = r2_score(sub_s["soil_moisture_5cm"], sub_s["pred"])
-        rmse_s = root_mean_squared_error(sub_s["soil_moisture_5cm"], sub_s["pred"])
-    else:
-        r2_s, rmse_s = float("nan"), float("nan")
-    cell_data[s]["Overall"] = {"r2": r2_s, "rmse": rmse_s, "n": n_s}
+    # Global overall (bottom right cell)
+    n_tot = len(df)
+    r2_tot = r2_score(df["soil_moisture_5cm"], df["pred"])
+    rmse_tot = root_mean_squared_error(df["soil_moisture_5cm"], df["pred"])
+    cell_data["Overall"]["Overall"] = {"r2": r2_tot, "rmse": rmse_tot, "n": n_tot}
 
-# Year overall (row at the bottom)
-cell_data["Overall"] = {}
-for y in years:
-    mask_y = test_df["year"] == y
-    sub_y = test_df[mask_y]
-    n_y = len(sub_y)
-    if n_y > 1:
-        r2_y = r2_score(sub_y["soil_moisture_5cm"], sub_y["pred"])
-        rmse_y = root_mean_squared_error(sub_y["soil_moisture_5cm"], sub_y["pred"])
-    else:
-        r2_y, rmse_y = float("nan"), float("nan")
-    cell_data["Overall"][y] = {"r2": r2_y, "rmse": rmse_y, "n": n_y}
+    # Plotting table
+    col_labels = ["Station"] + [str(int(y)) for y in years] + ["Overall"]
+    row_labels = stations + ["Overall"]
 
-# Global overall (bottom right cell)
-n_tot = len(test_df)
-r2_tot = r2_score(test_df["soil_moisture_5cm"], test_df["pred"])
-rmse_tot = root_mean_squared_error(test_df["soil_moisture_5cm"], test_df["pred"])
-cell_data["Overall"]["Overall"] = {"r2": r2_tot, "rmse": rmse_tot, "n": n_tot}
+    nrows = len(row_labels)
+    ncols = len(col_labels)
 
-# Now, we plot this beautiful table
-col_labels = ["Station"] + [str(int(y)) for y in years] + ["Overall"]
-row_labels = stations + ["Overall"]
+    fig, ax = plt.subplots(figsize=(14, 10), facecolor="#0f172a")
+    ax.set_facecolor("#0f172a")
 
-nrows = len(row_labels)
-ncols = len(col_labels)
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
 
-# We draw the table using custom boxes in Matplotlib for complete aesthetic control
-fig, ax = plt.subplots(figsize=(14, 10), facecolor="#0f172a")
-ax.set_facecolor("#0f172a")
+    dx = 1.0 / ncols
+    dy = 1.0 / (nrows + 1)
 
-# Hide axes
-ax.xaxis.set_visible(False)
-ax.yaxis.set_visible(False)
-for spine in ax.spines.values():
-    spine.set_visible(False)
+    BG_HEADER = "#1e293b"
+    BG_STATION_COL = "#1e293b"
+    BG_CELL_EVEN = "#0f172a"
+    BG_CELL_ODD = "#1e293b"
+    BG_OVERALL = "#334155"
+    BORDER_COLOR = "#475569"
 
-# Cell dimensions
-dx = 1.0 / ncols
-dy = 1.0 / (nrows + 1) # +1 for header
+    TEXT_WHITE = "#ffffff"
+    TEXT_MUTED = "#94a3b8"
+    COLOR_R2_POS = "#22d3ee" # Vibrant cyan
+    COLOR_R2_NEG = "#f87171" # Coral red
+    COLOR_RMSE = "#fb923c"   # Amber/Orange
 
-# Color palette
-BG_HEADER = "#1e293b"
-BG_STATION_COL = "#1e293b"
-BG_CELL_EVEN = "#0f172a"
-BG_CELL_ODD = "#1e293b"
-BG_OVERALL = "#334155" # highlighted overall row/col
-BORDER_COLOR = "#475569"
-
-TEXT_WHITE = "#ffffff"
-TEXT_MUTED = "#94a3b8"
-COLOR_R2_POS = "#22d3ee" # Vibrant cyan
-COLOR_R2_NEG = "#f87171" # Coral red
-COLOR_RMSE = "#fb923c"   # Amber/Orange
-
-# Draw headers
-for c_idx, label in enumerate(col_labels):
-    rect = plt.Rectangle(
-        (c_idx * dx, 1 - dy), dx, dy,
-        facecolor=BG_HEADER, edgecolor=BORDER_COLOR, linewidth=1.5
-    )
-    ax.add_patch(rect)
-    ax.text(
-        c_idx * dx + dx/2, 1 - dy/2, label,
-        color=TEXT_WHITE, weight="bold", fontsize=12,
-        ha="center", va="center"
-    )
-
-# Draw rows
-for r_idx, row_name in enumerate(row_labels):
-    y_pos = 1 - (r_idx + 2) * dy
-    is_overall_row = (row_name == "Overall")
-
-    for c_idx in range(ncols):
-        rect_x = c_idx * dx
-        is_overall_col = (col_labels[c_idx] == "Overall")
-        
-        # Decide cell background
-        if is_overall_row or is_overall_col:
-            cell_bg = BG_OVERALL
-        elif c_idx == 0:
-            cell_bg = BG_STATION_COL
-        else:
-            cell_bg = BG_CELL_EVEN if r_idx % 2 == 0 else BG_CELL_ODD
-
+    # Draw headers
+    for c_idx, label in enumerate(col_labels):
         rect = plt.Rectangle(
-            (rect_x, y_pos), dx, dy,
-            facecolor=cell_bg, edgecolor=BORDER_COLOR, linewidth=1
+            (c_idx * dx, 1 - dy), dx, dy,
+            facecolor=BG_HEADER, edgecolor=BORDER_COLOR, linewidth=1.5
         )
         ax.add_patch(rect)
+        ax.text(
+            c_idx * dx + dx/2, 1 - dy/2, label,
+            color=TEXT_WHITE, weight="bold", fontsize=12,
+            ha="center", va="center"
+        )
 
-        # Draw cell contents
-        if c_idx == 0:
-            # Station label
-            label_text = row_name
-            font_w = "bold" if is_overall_row else "normal"
-            ax.text(
-                rect_x + 0.02, y_pos + dy/2, label_text,
-                color=TEXT_WHITE, weight=font_w, fontsize=11,
-                ha="left", va="center"
-            )
-        else:
-            col_name = col_labels[c_idx]
-            # Retrieve metric data
-            y_key = float(col_name) if col_name != "Overall" else "Overall"
-            cell_metrics = cell_data[row_name][y_key]
+    # Draw rows
+    for r_idx, row_name in enumerate(row_labels):
+        y_pos = 1 - (r_idx + 2) * dy
+        is_overall_row = (row_name == "Overall")
+
+        for c_idx in range(ncols):
+            rect_x = c_idx * dx
+            is_overall_col = (col_labels[c_idx] == "Overall")
             
-            r2 = cell_metrics["r2"]
-            rmse = cell_metrics["rmse"]
-            n = cell_metrics["n"]
+            if is_overall_row or is_overall_col:
+                cell_bg = BG_OVERALL
+            elif c_idx == 0:
+                cell_bg = BG_STATION_COL
+            else:
+                cell_bg = BG_CELL_EVEN if r_idx % 2 == 0 else BG_CELL_ODD
 
-            if n == 0 or np.isnan(r2):
+            rect = plt.Rectangle(
+                (rect_x, y_pos), dx, dy,
+                facecolor=cell_bg, edgecolor=BORDER_COLOR, linewidth=1
+            )
+            ax.add_patch(rect)
+
+            if c_idx == 0:
+                label_text = row_name
+                font_w = "bold" if is_overall_row else "normal"
                 ax.text(
-                    rect_x + dx/2, y_pos + dy/2, "No Data",
-                    color=TEXT_MUTED, fontsize=10, ha="center", va="center"
+                    rect_x + 0.02, y_pos + dy/2, label_text,
+                    color=TEXT_WHITE, weight=font_w, fontsize=11,
+                    ha="left", va="center"
                 )
             else:
-                # Top text: R2
-                r2_color = COLOR_R2_POS if r2 >= 0 else COLOR_R2_NEG
-                r2_text = f"R²: {r2:.4f}" if not np.isnan(r2) else "R²: N/A"
-                ax.text(
-                    rect_x + dx/2, y_pos + 2*dy/3, r2_text,
-                    color=r2_color, weight="bold", fontsize=10,
-                    ha="center", va="center"
-                )
+                col_name = col_labels[c_idx]
+                y_key = float(col_name) if col_name != "Overall" else "Overall"
+                cell_metrics = cell_data[row_name][y_key]
                 
-                # Bottom text: RMSE
-                rmse_text = f"RMSE: {rmse:.4f}"
-                ax.text(
-                    rect_x + dx/2, y_pos + dy/3, rmse_text,
-                    color=COLOR_RMSE, fontsize=10,
-                    ha="center", va="center"
-                )
-                
-                # Subscript text: sample count (n)
-                n_text = f"n={n}"
-                ax.text(
-                    rect_x + dx/2, y_pos + dy/10, n_text,
-                    color=TEXT_MUTED, fontsize=8,
-                    ha="center", va="center"
-                )
+                r2 = cell_metrics["r2"]
+                rmse = cell_metrics["rmse"]
+                n = cell_metrics["n"]
 
-# Title
-ax.text(
-    0.5, 1.05, f"Station × Year Metrics Breakdown\nBest Model: {best_name}",
-    color=TEXT_WHITE, fontsize=16, weight="bold", ha="center", va="bottom", transform=ax.transAxes
-)
+                if n == 0 or np.isnan(r2):
+                    ax.text(
+                        rect_x + dx/2, y_pos + dy/2, "No Data",
+                        color=TEXT_MUTED, fontsize=10, ha="center", va="center"
+                    )
+                else:
+                    r2_color = COLOR_R2_POS if r2 >= 0 else COLOR_R2_NEG
+                    r2_text = f"R²: {r2:.4f}" if not np.isnan(r2) else "R²: N/A"
+                    ax.text(
+                        rect_x + dx/2, y_pos + 2*dy/3, r2_text,
+                        color=r2_color, weight="bold", fontsize=10,
+                        ha="center", va="center"
+                    )
+                    
+                    rmse_text = f"RMSE: {rmse:.4f}"
+                    ax.text(
+                        rect_x + dx/2, y_pos + dy/3, rmse_text,
+                        color=COLOR_RMSE, fontsize=10,
+                        ha="center", va="center"
+                    )
+                    
+                    n_text = f"n={n}"
+                    ax.text(
+                        rect_x + dx/2, y_pos + dy/10, n_text,
+                        color=TEXT_MUTED, fontsize=8,
+                        ha="center", va="center"
+                    )
 
-# Tighten layout and save
-plt.tight_layout()
-output_path = EXP_DIR / "station_year_metrics.png"
-plt.savefig(output_path, dpi=200, bbox_inches="tight", facecolor="#0f172a")
-plt.close()
-print(f"Successfully generated and saved styled breakdown table image to: {output_path.name}")
+    title_text = f"Station × Year Metrics Breakdown{title_suffix}\nModel: {model_name}"
+    ax.text(
+        0.5, 1.05, title_text,
+        color=TEXT_WHITE, fontsize=16, weight="bold", ha="center", va="bottom", transform=ax.transAxes
+    )
+
+    plt.tight_layout()
+    output_path = EXP_DIR / output_filename
+    plt.savefig(output_path, dpi=200, bbox_inches="tight", facecolor="#0f172a")
+    plt.close()
+    print(f"Saved: {output_path.name}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate Station x Year breakdown table images.")
+    parser.add_argument("--model-id", type=int, default=None, help="Model ID to generate table for")
+    args = parser.parse_args()
+
+    if args.model_id is not None:
+        generate_table(args.model_id, f"station_year_metrics_model_{args.model_id}.png")
+    else:
+        # 1. Global c1 (Model 2: Baseline c1)
+        generate_table(2, "station_year_metrics_global_c1.png", title_suffix=" (Global c1 Baseline)")
+
+        # 2. Cluster Dynamic K=2 (Model 14: Clustering Dynamic K=2 Global-c1)
+        generate_table(14, "station_year_metrics_clustering_dynamic_k2.png", title_suffix=" (Clustering Dynamic K=2)")

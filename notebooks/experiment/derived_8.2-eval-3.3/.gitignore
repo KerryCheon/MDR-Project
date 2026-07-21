@@ -3,3 +3,4 @@ models/
 __pycache__/
 artifacts/selection/*/run/
 .ipynb_checkpoints/
+!station_year_metrics_*.png

@@ -51,21 +51,23 @@ Evaluated on CUDA. Below is the performance compared with the old **1.3-lite con
 | Trained Gating K=2 | 0.5782 | 0.5856 | 0.5837 | **0.6174** |
 | Univariate G_API K=2 | 0.5381 | 0.5363 | 0.6383 | **0.6445** |
 
-## Key Insights
-
-1. **Global Hyperparameter Transfer Degradation:** Tuning hyperparameters specifically for a global single model (`Baseline V3` improved by **+0.0038** from 0.6551 to **0.6589**) does *not* automatically transfer optimally to Mixture-of-Experts. The best MoE model (`Clustering Dynamic K=2 (Global-c1)`) dropped slightly by **-0.0033** (from 0.6672 to **0.6639**). This indicates that specialists training on smaller partitioned subsets are more sensitive to high-depth (depth=9) / high-estimator (2500) parameters, likely suffering from mild overfitting compared to the more conservative 1.3-lite parameters (depth=8, estimators=1500).
-2. **MoE vs. Global Baseline:** Even under tuned global hyperparameters, the **Clustering Dynamic K=2 (Global-c1)** model remains the top performer overall, edging past `Baseline c1` (0.6639 vs 0.6637).
-3. **Routing Stability:** Routing accuracy for trained gating remains high (~0.874), representing a tiny increase (+0.0015) over 1.3-lite.
-
 ---
 
-## Station × Year Metrics Breakdown
+## Station × Year Metrics Breakdown Charts
 
-To detect weak spots, we generated a full breakdown of the best overall model (**Model 14: Clustering Dynamic K=2 (Global-c1)**) across stations and years.
+### 1. Global c1 Baseline (`Model 2: Baseline c1`)
 
-![Station Year Breakdown](station_year_metrics.png)
+![Global c1 Breakdown](station_year_metrics_global_c1.png)
 
-### Weak Spots Analysis:
-* **Significant Weak Spot (BurntMountain_WA):** This station exhibits extreme negative $R^2$ values across all years (2023: -1.7107, 2024: -0.4283, 2025: -2.3924), indicating the model predicts worse than the local mean. This is a severe outlier station where the model fails to capture the soil moisture dynamics.
-* **Touchet_WA_824:** Also shows negative $R^2$ in 2024 (-0.1706), indicating temporal mismatches in that specific year.
-* **Year 2024 Performance:** Consistent with earlier observations, 2024 remains a weak year overall ($R^2$ = 0.6292) compared to 2025 ($R^2$ = 0.6996) and 2023 ($R^2$ = 0.6470) for this MoE model.
+### 2. Cluster Dynamic K=2 (`Model 14: Clustering Dynamic K=2 Global-c1`)
+
+![Cluster Dynamic K=2 Breakdown](station_year_metrics_clustering_dynamic_k2.png)
+
+### Comparative Summary
+
+| Station | Global c1 ($R^2$) | Cluster Dynamic K=2 ($R^2$) | Key Takeaway |
+|---------|:-----------------:|:--------------------------:|:-------------|
+| **Touchet_WA_824** | **-1.6207** | **+0.1706** | **Major MoE Win (+1.7913 $\Delta R^2$):** Global c1 baseline collapses on this station across all years. Cluster Dynamic K=2 successfully recovers positive performance. |
+| **BurntMountain_WA** | -0.7834 | -1.1578 | **Shared Weak Spot:** Both models predict poorly on `BurntMountain_WA` (negative $R^2$), pointing to localized sensor or input data anomalies. |
+| **MartenRidge_WA_999** | -0.1862 | -0.1345 | **Shared Weak Spot:** Both models exhibit minor negative performance ($R^2 \approx -0.13$ to $-0.18$). |
+| **Spokane** | **0.9121** | 0.9067 | Global c1 performs slightly higher on well-behaved urban inland stations. |
