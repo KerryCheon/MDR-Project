@@ -26,6 +26,7 @@ from Modeling.Src.soilmoist_fl.Selectors.correlation import select_correlation
 from Modeling.Src.soilmoist_fl.Selectors.rf_importance import select_rf_importance
 from Modeling.Src.soilmoist_fl.Selectors.xgb_importance import select_xgb_importance
 from Modeling.Src.soilmoist_fl.Selectors.family_coverage import enforce_min_family_coverage
+from Modeling.Src.soilmoist_fl.Selectors.grouped_oof import select_grouped_oof
 from Modeling.Src.soilmoist_fl.Tracking.artifacts import (
     ensure_run_dir,
     save_json,
@@ -97,6 +98,7 @@ def select_features(
     bypass_exact=None,
     random_state=42,
     verbose=True,
+    selection_context=None,
 ):
     # 1. Resolve config
     if config is None:
@@ -192,6 +194,7 @@ def select_features(
     ranking_input_feats = None
     last_score_map = {}
     coverage_meta = None
+    selection_diagnostics = None
 
     # Run selection stages
     for i, st in enumerate(stages):
@@ -387,6 +390,43 @@ def select_features(
                 n_boot,
             )
 
+        elif kind == "grouped_oof":
+            if selection_context is None:
+                raise ValueError(
+                    "grouped_oof stage requires selection_context with station and date columns"
+                )
+            required_features = st.get("required_features") or []
+            grouped_cfg = dict(st)
+            grouped_cfg.pop("kind", None)
+            grouped_cfg.pop("required_features", None)
+            grouped_out = select_grouped_oof(
+                X_train[current_feats],
+                y_train,
+                selection_context,
+                config=grouped_cfg,
+                required_features=required_features,
+            )
+            current_feats = list(grouped_out["selected"])
+            last_score_map = grouped_out.get("scores") or last_score_map
+            selection_diagnostics = grouped_out
+            if run_dir:
+                save_stage_features(
+                    run_dir,
+                    "grouped_oof",
+                    current_feats,
+                    ranked=grouped_out.get("ranked"),
+                    scores=grouped_out.get("scores"),
+                )
+                save_json(
+                    Path(run_dir) / "grouped_oof_diagnostics.json",
+                    grouped_out,
+                )
+            log.info(
+                "Stage GroupedOOF done: selected=%d reason=%s",
+                len(current_feats),
+                grouped_out.get("stopping_reason"),
+            )
+
         else:
             log.warning("Unknown selection stage kind=%s; skipping", kind)
             continue
@@ -531,6 +571,7 @@ def select_features(
         "score": report_out.get("score"),
         "family_coverage": coverage_meta,
         "scores": last_score_map,
+        "selection_diagnostics": selection_diagnostics,
     }
 
 
@@ -581,6 +622,13 @@ def run_feature_selection(
     if list(X_tr.columns) != list(X_va.columns) or list(X_tr.columns) != list(X_te.columns):
         raise SystemExit("Feature columns mismatch across splits after preprocessing.")
 
+    context_cols = list(dict.fromkeys(id_cols + ([time_col] if time_col else [])))
+    selection_context = (
+        fold.train.loc[X_tr.index, context_cols].copy()
+        if context_cols
+        else None
+    )
+
     res = select_features(
         X_train=X_tr,
         y_train=y_tr,
@@ -592,6 +640,7 @@ def run_feature_selection(
         run_dir=run_dir,
         run_id=run_id,
         verbose=False,
+        selection_context=selection_context,
     )
 
     return {

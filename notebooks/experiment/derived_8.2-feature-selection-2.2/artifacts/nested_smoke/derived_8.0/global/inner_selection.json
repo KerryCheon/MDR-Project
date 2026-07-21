@@ -1,0 +1,247 @@
+{
+  "kind": "grouped_oof",
+  "selected": [
+    "API_x_year",
+    "V_rollmin_F_NDVI_kobs30",
+    "V_ema_LST_modis_kobs30",
+    "DOY",
+    "V_rollmean_LST_modis_kobs30",
+    "LST_modis",
+    "G_rain_sum_3d",
+    "V_rollrng_F_NDVI_kobs30"
+  ],
+  "ranked": [
+    "API_x_year",
+    "V_ema_LST_modis_kobs30",
+    "G_rain_sum_3d",
+    "V_rollrng_F_NDVI_kobs30",
+    "DOY",
+    "V_rollmin_F_NDVI_kobs30",
+    "V_rollmean_LST_modis_kobs30",
+    "LST_modis"
+  ],
+  "scores": {
+    "API_x_year": 0.09611011860831764,
+    "V_ema_LST_modis_kobs30": 0.035049465368501065,
+    "G_rain_sum_3d": 0.008347460722660571,
+    "V_rollrng_F_NDVI_kobs30": 0.0042168649146909765,
+    "DOY": 0.001820261183686618,
+    "V_rollmin_F_NDVI_kobs30": 0.0014210574641830911,
+    "V_rollmean_LST_modis_kobs30": 0.0008126263268939532,
+    "LST_modis": -0.005606746055910604
+  },
+  "importance_detail": {
+    "API_x_year": {
+      "mean_delta_nrmse": 0.10687621540551401,
+      "standard_error": 0.010766096797196366,
+      "lower_confidence_bound": 0.09611011860831764,
+      "n_folds": 2
+    },
+    "V_rollmin_F_NDVI_kobs30": {
+      "mean_delta_nrmse": 0.04451760361692808,
+      "standard_error": 0.04309654615274499,
+      "lower_confidence_bound": 0.0014210574641830911,
+      "n_folds": 2
+    },
+    "V_ema_LST_modis_kobs30": {
+      "mean_delta_nrmse": 0.05308835003621498,
+      "standard_error": 0.018038884667713917,
+      "lower_confidence_bound": 0.035049465368501065,
+      "n_folds": 2
+    },
+    "DOY": {
+      "mean_delta_nrmse": 0.03750637466424617,
+      "standard_error": 0.03568611348055955,
+      "lower_confidence_bound": 0.001820261183686618,
+      "n_folds": 2
+    },
+    "V_rollmean_LST_modis_kobs30": {
+      "mean_delta_nrmse": 0.09703782273803824,
+      "standard_error": 0.09622519641114428,
+      "lower_confidence_bound": 0.0008126263268939532,
+      "n_folds": 2
+    },
+    "LST_modis": {
+      "mean_delta_nrmse": -0.0012408501544710626,
+      "standard_error": 0.004365895901439542,
+      "lower_confidence_bound": -0.005606746055910604,
+      "n_folds": 2
+    },
+    "G_rain_sum_3d": {
+      "mean_delta_nrmse": 0.01188300052356367,
+      "standard_error": 0.0035355398009030976,
+      "lower_confidence_bound": 0.008347460722660571,
+      "n_folds": 2
+    },
+    "V_rollrng_F_NDVI_kobs30": {
+      "mean_delta_nrmse": 0.012267531310239277,
+      "standard_error": 0.0080506663955483,
+      "lower_confidence_bound": 0.0042168649146909765,
+      "n_folds": 2
+    }
+  },
+  "selection_path": [
+    {
+      "n_features": 12,
+      "features": [
+        "V_ema_LST_modis_kobs30",
+        "G_rain_sum_3d",
+        "V_rollmin_F_NDVI_kobs30",
+        "A_d_LST_modis_kobs30",
+        "DOY",
+        "API_x_year",
+        "V_rollmean_LST_modis_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_F_NDVI_kobs14",
+        "LST_modis",
+        "C_smm_E_SAR_ratio_alpha0.85_n5",
+        "V_rollrng_F_NDVI_kobs30"
+      ],
+      "mean_nrmse": 0.873938902012472,
+      "standard_error": 0.2148644126862881,
+      "upper_confidence_bound": 1.0888033146987601,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "SourdoughGulch_WA_985",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2176,
+          "n_validation": 1061,
+          "rmse": 0.10582007733455856,
+          "nrmse": 1.0888033146987601
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2963,
+          "n_validation": 668,
+          "rmse": 0.0587077524679862,
+          "nrmse": 0.659074489326184
+        }
+      ]
+    },
+    {
+      "n_features": 8,
+      "features": [
+        "API_x_year",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_ema_LST_modis_kobs30",
+        "DOY",
+        "V_rollmean_LST_modis_kobs30",
+        "LST_modis",
+        "G_rain_sum_3d",
+        "V_rollrng_F_NDVI_kobs30"
+      ],
+      "mean_nrmse": 0.8646745862121172,
+      "standard_error": 0.21662160546993894,
+      "upper_confidence_bound": 1.0812961916820563,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "SourdoughGulch_WA_985",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2176,
+          "n_validation": 1061,
+          "rmse": 0.10509046499093025,
+          "nrmse": 1.0812961916820563
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2963,
+          "n_validation": 668,
+          "rmse": 0.0577260000132142,
+          "nrmse": 0.6480529807421783
+        }
+      ]
+    }
+  ],
+  "baseline_required": null,
+  "folds": [
+    {
+      "fold_id": "year_2020_stations_0",
+      "fold_family": "station_time",
+      "validation_year": 2020,
+      "held_out_stations": [
+        "Darrington",
+        "SourdoughGulch_WA_985",
+        "Spokane"
+      ],
+      "n_train": 2176,
+      "n_validation": 1061
+    },
+    {
+      "fold_id": "year_2020_stations_1",
+      "fold_family": "station_time",
+      "validation_year": 2020,
+      "held_out_stations": [
+        "Quinault",
+        "Touchet_WA_824"
+      ],
+      "n_train": 2963,
+      "n_validation": 668
+    }
+  ],
+  "stopping_reason": "minimum_grouped_oof_upper_confidence_bound",
+  "required_features": [],
+  "config": {
+    "station_col": "station_id",
+    "time_col": "date",
+    "candidate_sizes": [
+      12,
+      8
+    ],
+    "n_station_folds": 2,
+    "min_train_years": 2,
+    "max_validation_years": 1,
+    "min_train_rows": 40,
+    "min_validation_rows": 8,
+    "confidence_z": 1.0,
+    "permutation_repeats": 1,
+    "permutation_batch_size": 16,
+    "parallel_workers": 16,
+    "train_weight_betas": [
+      0.0
+    ],
+    "random_state": 42,
+    "model_params": {
+      "objective": "reg:squarederror",
+      "max_depth": 3,
+      "min_child_weight": 5,
+      "n_estimators": 20,
+      "learning_rate": 0.04,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8,
+      "reg_lambda": 1.5,
+      "reg_alpha": 0.03,
+      "tree_method": "hist",
+      "n_jobs": 1,
+      "verbosity": 0,
+      "device": "cuda"
+    }
+  }
+}

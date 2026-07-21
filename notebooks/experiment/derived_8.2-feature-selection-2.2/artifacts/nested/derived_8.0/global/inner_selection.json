@@ -1,0 +1,2756 @@
+{
+  "kind": "grouped_oof",
+  "selected": [
+    "V_rollmin_LST_modis_kobs30",
+    "SMAP_sm_pm_interp",
+    "C_lag_E_SAR_diff_kobs30",
+    "V_rollmin_G_API_kobs30",
+    "C_lag_LST_modis_kobs30",
+    "C_lag_G_API_kobs1",
+    "V_ema_G_API_kobs14",
+    "V_rollmin_F_NDVI_kobs30",
+    "V_rollmin_LST_modis_kobs14",
+    "V_rollmin_s2_b12_kobs30",
+    "G_rain_sum_3d",
+    "G_rain_sum_7d",
+    "V_rollmax_G_API_kobs14",
+    "API_x_year",
+    "A_d_F_NDMI_kobs30",
+    "V_rollmax_E_SAR_ratio_kobs30",
+    "V_rollrng_F_NDMI_kobs30",
+    "V_rollmean_LST_modis_kobs30",
+    "A_d_E_SAR_ratio_kobs30",
+    "V_rollcv_s2_b11_kobs30",
+    "V_rollmax_G_API_kobs7",
+    "SMAP_sm_pm_interp_lag30",
+    "V_rollmin_E_SAR_ratio_kobs14",
+    "V_rollrng_F_NDVI_kobs30",
+    "V_rollrng_s2_b11_kobs30",
+    "A_d_G_API_kobs14",
+    "V_rollcv_G_API_kobs30",
+    "V_rollmin_G_API_kobs7",
+    "D_sa_LST_modis",
+    "D_sa_E_SAR_ratio",
+    "precip_mm",
+    "A_d_G_API_kobs2",
+    "V_rollcv_G_API_kobs7",
+    "A_d_s2_b12_kobs30",
+    "A_d_LST_modis_kobs14",
+    "s1_vv",
+    "A_grad_E_SAR_diff_kobs30",
+    "A_d_G_API_kobs7",
+    "A_grad_E_SAR_ratio_kobs14",
+    "A_d_LST_modis_kobs30",
+    "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+    "A_grad_s2_b12_kobs7",
+    "V_rollcv_SMAP_sm_interp_kobs30",
+    "A_d_G_API_kobs5",
+    "A_d_F_NDVI_kobs7",
+    "A_d_F_NDVI_kobs1",
+    "latitude",
+    "elev",
+    "slope",
+    "aspect"
+  ],
+  "ranked": [
+    "SMAP_sm_pm_interp",
+    "V_rollmin_LST_modis_kobs30",
+    "C_lag_E_SAR_diff_kobs30",
+    "V_ema_G_API_kobs14",
+    "V_rollmin_F_NDVI_kobs30",
+    "C_lag_LST_modis_kobs30",
+    "C_lag_G_API_kobs1",
+    "V_rollmin_G_API_kobs30",
+    "G_rain_sum_3d",
+    "V_rollmax_G_API_kobs7",
+    "V_rollmin_s2_b12_kobs30",
+    "A_d_F_NDMI_kobs30",
+    "API_x_year",
+    "G_rain_sum_7d",
+    "V_rollrng_F_NDMI_kobs30",
+    "V_rollmax_G_API_kobs14",
+    "V_rollcv_s2_b11_kobs30",
+    "V_rollmax_E_SAR_ratio_kobs30",
+    "V_rollrng_F_NDVI_kobs30",
+    "SMAP_sm_pm_interp_lag30",
+    "A_d_E_SAR_ratio_kobs30",
+    "A_d_LST_modis_kobs30",
+    "A_d_G_API_kobs14",
+    "V_rollmin_E_SAR_ratio_kobs14",
+    "precip_mm",
+    "V_rollmin_G_API_kobs7",
+    "D_sa_E_SAR_ratio",
+    "V_rollrng_s2_b11_kobs30",
+    "V_rollmin_LST_modis_kobs14",
+    "V_rollcv_SMAP_sm_interp_kobs30",
+    "A_d_G_API_kobs2",
+    "V_rollcv_G_API_kobs7",
+    "s1_vv",
+    "A_d_G_API_kobs7",
+    "V_rollmean_LST_modis_kobs30",
+    "V_rollcv_G_API_kobs30",
+    "A_d_LST_modis_kobs14",
+    "A_grad_E_SAR_diff_kobs30",
+    "A_grad_E_SAR_ratio_kobs14",
+    "A_d_G_API_kobs5",
+    "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+    "D_sa_LST_modis",
+    "A_grad_s2_b12_kobs7",
+    "latitude",
+    "elev",
+    "slope",
+    "aspect",
+    "A_d_F_NDVI_kobs7",
+    "A_d_F_NDVI_kobs1",
+    "A_d_s2_b12_kobs30"
+  ],
+  "scores": {
+    "SMAP_sm_pm_interp": 0.03283048088879702,
+    "V_rollmin_LST_modis_kobs30": 0.02471962901094697,
+    "C_lag_E_SAR_diff_kobs30": 0.01701527022297424,
+    "V_ema_G_API_kobs14": 0.012994064536992325,
+    "V_rollmin_F_NDVI_kobs30": 0.011842133337574863,
+    "C_lag_LST_modis_kobs30": 0.011564440991567036,
+    "C_lag_G_API_kobs1": 0.010810702610207152,
+    "V_rollmin_G_API_kobs30": 0.010546079130703552,
+    "G_rain_sum_3d": 0.0077999488641570264,
+    "V_rollmax_G_API_kobs7": 0.0077071713499038165,
+    "V_rollmin_s2_b12_kobs30": 0.007020490120078431,
+    "A_d_F_NDMI_kobs30": 0.005727117091915564,
+    "API_x_year": 0.005286495150732566,
+    "G_rain_sum_7d": 0.005206356788407684,
+    "V_rollrng_F_NDMI_kobs30": 0.004799014542871228,
+    "V_rollmax_G_API_kobs14": 0.004761164168903508,
+    "V_rollcv_s2_b11_kobs30": 0.003903889632086705,
+    "V_rollmax_E_SAR_ratio_kobs30": 0.003554739819445041,
+    "V_rollrng_F_NDVI_kobs30": 0.003399863557259435,
+    "SMAP_sm_pm_interp_lag30": 0.0033132818385473942,
+    "A_d_E_SAR_ratio_kobs30": 0.0030562318347152955,
+    "A_d_LST_modis_kobs30": 0.0027692258311191958,
+    "A_d_G_API_kobs14": 0.002654168451764517,
+    "V_rollmin_E_SAR_ratio_kobs14": 0.00228373549910675,
+    "precip_mm": 0.0019602702955282074,
+    "V_rollmin_G_API_kobs7": 0.0017773043212597718,
+    "D_sa_E_SAR_ratio": 0.00164277913608179,
+    "V_rollrng_s2_b11_kobs30": 0.00149301642560754,
+    "V_rollmin_LST_modis_kobs14": 0.0014881609216069484,
+    "V_rollcv_SMAP_sm_interp_kobs30": 0.0011935054294133767,
+    "A_d_G_API_kobs2": 0.0011682843433883654,
+    "V_rollcv_G_API_kobs7": 0.0011577674220098217,
+    "s1_vv": 0.0011205298524303428,
+    "A_d_G_API_kobs7": 0.0009076974733125754,
+    "V_rollmean_LST_modis_kobs30": 0.0008137199560462743,
+    "V_rollcv_G_API_kobs30": 0.0007798390861930446,
+    "A_d_LST_modis_kobs14": 0.0007651594065019079,
+    "A_grad_E_SAR_diff_kobs30": 0.0003671161563481023,
+    "A_grad_E_SAR_ratio_kobs14": 0.00036525651242687844,
+    "A_d_G_API_kobs5": 0.0003455052035502472,
+    "H_corr_E_SAR_ratio__F_NDMI_kobs7": 0.00029347039266871893,
+    "D_sa_LST_modis": 0.0002703517049027922,
+    "A_grad_s2_b12_kobs7": 0.00015605501462520556,
+    "latitude": 0.0,
+    "elev": 0.0,
+    "slope": 0.0,
+    "aspect": 0.0,
+    "A_d_F_NDVI_kobs7": -6.439703423095959e-05,
+    "A_d_F_NDVI_kobs1": -7.481815271851387e-05,
+    "A_d_s2_b12_kobs30": -0.0002422510565698511
+  },
+  "importance_detail": {
+    "V_rollmin_LST_modis_kobs30": {
+      "mean_delta_nrmse": 0.03928739686705936,
+      "standard_error": 0.014567767856112388,
+      "lower_confidence_bound": 0.02471962901094697,
+      "n_folds": 16
+    },
+    "SMAP_sm_pm_interp": {
+      "mean_delta_nrmse": 0.05167088277993623,
+      "standard_error": 0.018840401891139214,
+      "lower_confidence_bound": 0.03283048088879702,
+      "n_folds": 16
+    },
+    "C_lag_E_SAR_diff_kobs30": {
+      "mean_delta_nrmse": 0.035280352906151835,
+      "standard_error": 0.018265082683177596,
+      "lower_confidence_bound": 0.01701527022297424,
+      "n_folds": 16
+    },
+    "V_rollmin_G_API_kobs30": {
+      "mean_delta_nrmse": 0.028832885632277528,
+      "standard_error": 0.018286806501573976,
+      "lower_confidence_bound": 0.010546079130703552,
+      "n_folds": 16
+    },
+    "C_lag_LST_modis_kobs30": {
+      "mean_delta_nrmse": 0.014499394267812965,
+      "standard_error": 0.0029349532762459303,
+      "lower_confidence_bound": 0.011564440991567036,
+      "n_folds": 16
+    },
+    "C_lag_G_API_kobs1": {
+      "mean_delta_nrmse": 0.016504052455802238,
+      "standard_error": 0.005693349845595086,
+      "lower_confidence_bound": 0.010810702610207152,
+      "n_folds": 16
+    },
+    "V_ema_G_API_kobs14": {
+      "mean_delta_nrmse": 0.021011201823169554,
+      "standard_error": 0.008017137286177228,
+      "lower_confidence_bound": 0.012994064536992325,
+      "n_folds": 16
+    },
+    "V_rollmin_F_NDVI_kobs30": {
+      "mean_delta_nrmse": 0.021695987771297547,
+      "standard_error": 0.009853854433722683,
+      "lower_confidence_bound": 0.011842133337574863,
+      "n_folds": 16
+    },
+    "V_rollmin_LST_modis_kobs14": {
+      "mean_delta_nrmse": 0.004024763398409237,
+      "standard_error": 0.0025366024768022884,
+      "lower_confidence_bound": 0.0014881609216069484,
+      "n_folds": 16
+    },
+    "V_rollmin_s2_b12_kobs30": {
+      "mean_delta_nrmse": 0.010912257694259572,
+      "standard_error": 0.003891767574181141,
+      "lower_confidence_bound": 0.007020490120078431,
+      "n_folds": 16
+    },
+    "G_rain_sum_3d": {
+      "mean_delta_nrmse": 0.012861770475898534,
+      "standard_error": 0.0050618216117415075,
+      "lower_confidence_bound": 0.0077999488641570264,
+      "n_folds": 16
+    },
+    "G_rain_sum_7d": {
+      "mean_delta_nrmse": 0.007811878445331693,
+      "standard_error": 0.0026055216569240086,
+      "lower_confidence_bound": 0.005206356788407684,
+      "n_folds": 16
+    },
+    "V_rollmax_G_API_kobs14": {
+      "mean_delta_nrmse": 0.009500045529300168,
+      "standard_error": 0.00473888136039666,
+      "lower_confidence_bound": 0.004761164168903508,
+      "n_folds": 16
+    },
+    "API_x_year": {
+      "mean_delta_nrmse": 0.01076557798569779,
+      "standard_error": 0.005479082834965223,
+      "lower_confidence_bound": 0.005286495150732566,
+      "n_folds": 16
+    },
+    "A_d_F_NDMI_kobs30": {
+      "mean_delta_nrmse": 0.010030014815691695,
+      "standard_error": 0.004302897723776131,
+      "lower_confidence_bound": 0.005727117091915564,
+      "n_folds": 16
+    },
+    "V_rollmax_E_SAR_ratio_kobs30": {
+      "mean_delta_nrmse": 0.005284052251437202,
+      "standard_error": 0.001729312431992161,
+      "lower_confidence_bound": 0.003554739819445041,
+      "n_folds": 16
+    },
+    "V_rollrng_F_NDMI_kobs30": {
+      "mean_delta_nrmse": 0.008260996992391582,
+      "standard_error": 0.0034619824495203543,
+      "lower_confidence_bound": 0.004799014542871228,
+      "n_folds": 16
+    },
+    "V_rollmean_LST_modis_kobs30": {
+      "mean_delta_nrmse": 0.008845633117263333,
+      "standard_error": 0.008031913161217059,
+      "lower_confidence_bound": 0.0008137199560462743,
+      "n_folds": 16
+    },
+    "A_d_E_SAR_ratio_kobs30": {
+      "mean_delta_nrmse": 0.004978470295823153,
+      "standard_error": 0.0019222384611078576,
+      "lower_confidence_bound": 0.0030562318347152955,
+      "n_folds": 16
+    },
+    "V_rollcv_s2_b11_kobs30": {
+      "mean_delta_nrmse": 0.006930580992549652,
+      "standard_error": 0.0030266913604629474,
+      "lower_confidence_bound": 0.003903889632086705,
+      "n_folds": 16
+    },
+    "V_rollmax_G_API_kobs7": {
+      "mean_delta_nrmse": 0.011523354432896222,
+      "standard_error": 0.003816183082992405,
+      "lower_confidence_bound": 0.0077071713499038165,
+      "n_folds": 16
+    },
+    "SMAP_sm_pm_interp_lag30": {
+      "mean_delta_nrmse": 0.00987807543148167,
+      "standard_error": 0.006564793592934276,
+      "lower_confidence_bound": 0.0033132818385473942,
+      "n_folds": 16
+    },
+    "V_rollmin_E_SAR_ratio_kobs14": {
+      "mean_delta_nrmse": 0.0038607693767185383,
+      "standard_error": 0.0015770338776117884,
+      "lower_confidence_bound": 0.00228373549910675,
+      "n_folds": 16
+    },
+    "V_rollrng_F_NDVI_kobs30": {
+      "mean_delta_nrmse": 0.004641892427135433,
+      "standard_error": 0.0012420288698759977,
+      "lower_confidence_bound": 0.003399863557259435,
+      "n_folds": 16
+    },
+    "V_rollrng_s2_b11_kobs30": {
+      "mean_delta_nrmse": 0.0026937584093421167,
+      "standard_error": 0.0012007419837345766,
+      "lower_confidence_bound": 0.00149301642560754,
+      "n_folds": 16
+    },
+    "A_d_G_API_kobs14": {
+      "mean_delta_nrmse": 0.003978314757393384,
+      "standard_error": 0.0013241463056288673,
+      "lower_confidence_bound": 0.002654168451764517,
+      "n_folds": 16
+    },
+    "V_rollcv_G_API_kobs30": {
+      "mean_delta_nrmse": 0.001749180949628816,
+      "standard_error": 0.0009693418634357714,
+      "lower_confidence_bound": 0.0007798390861930446,
+      "n_folds": 16
+    },
+    "V_rollmin_G_API_kobs7": {
+      "mean_delta_nrmse": 0.004405743385724078,
+      "standard_error": 0.002628439064464306,
+      "lower_confidence_bound": 0.0017773043212597718,
+      "n_folds": 16
+    },
+    "D_sa_LST_modis": {
+      "mean_delta_nrmse": 0.0008135487658619545,
+      "standard_error": 0.0005431970609591622,
+      "lower_confidence_bound": 0.0002703517049027922,
+      "n_folds": 16
+    },
+    "D_sa_E_SAR_ratio": {
+      "mean_delta_nrmse": 0.004096286373851579,
+      "standard_error": 0.0024535072377697893,
+      "lower_confidence_bound": 0.00164277913608179,
+      "n_folds": 16
+    },
+    "precip_mm": {
+      "mean_delta_nrmse": 0.005132204135465328,
+      "standard_error": 0.0031719338399371203,
+      "lower_confidence_bound": 0.0019602702955282074,
+      "n_folds": 16
+    },
+    "A_d_G_API_kobs2": {
+      "mean_delta_nrmse": 0.00396604424899823,
+      "standard_error": 0.002797759905609865,
+      "lower_confidence_bound": 0.0011682843433883654,
+      "n_folds": 16
+    },
+    "V_rollcv_G_API_kobs7": {
+      "mean_delta_nrmse": 0.0014891872991782996,
+      "standard_error": 0.00033141987716847805,
+      "lower_confidence_bound": 0.0011577674220098217,
+      "n_folds": 16
+    },
+    "A_d_s2_b12_kobs30": {
+      "mean_delta_nrmse": 0.00038851275350769085,
+      "standard_error": 0.0006307638100775419,
+      "lower_confidence_bound": -0.0002422510565698511,
+      "n_folds": 16
+    },
+    "A_d_LST_modis_kobs14": {
+      "mean_delta_nrmse": 0.0018811796347382274,
+      "standard_error": 0.0011160202282363195,
+      "lower_confidence_bound": 0.0007651594065019079,
+      "n_folds": 16
+    },
+    "s1_vv": {
+      "mean_delta_nrmse": 0.002064577298348698,
+      "standard_error": 0.0009440474459183551,
+      "lower_confidence_bound": 0.0011205298524303428,
+      "n_folds": 16
+    },
+    "A_grad_E_SAR_diff_kobs30": {
+      "mean_delta_nrmse": 0.0006767819981581893,
+      "standard_error": 0.00030966584181008706,
+      "lower_confidence_bound": 0.0003671161563481023,
+      "n_folds": 16
+    },
+    "A_d_G_API_kobs7": {
+      "mean_delta_nrmse": 0.002201144102618794,
+      "standard_error": 0.0012934466293062186,
+      "lower_confidence_bound": 0.0009076974733125754,
+      "n_folds": 16
+    },
+    "A_grad_E_SAR_ratio_kobs14": {
+      "mean_delta_nrmse": 0.0006868518991096431,
+      "standard_error": 0.0003215953866827647,
+      "lower_confidence_bound": 0.00036525651242687844,
+      "n_folds": 16
+    },
+    "A_d_LST_modis_kobs30": {
+      "mean_delta_nrmse": 0.004900913494154953,
+      "standard_error": 0.002131687663035757,
+      "lower_confidence_bound": 0.0027692258311191958,
+      "n_folds": 16
+    },
+    "H_corr_E_SAR_ratio__F_NDMI_kobs7": {
+      "mean_delta_nrmse": 0.0008032523947262768,
+      "standard_error": 0.0005097820020575579,
+      "lower_confidence_bound": 0.00029347039266871893,
+      "n_folds": 16
+    },
+    "A_grad_s2_b12_kobs7": {
+      "mean_delta_nrmse": 0.0010075073447149974,
+      "standard_error": 0.0008514523300897918,
+      "lower_confidence_bound": 0.00015605501462520556,
+      "n_folds": 16
+    },
+    "V_rollcv_SMAP_sm_interp_kobs30": {
+      "mean_delta_nrmse": 0.0023937371507673603,
+      "standard_error": 0.0012002317213539837,
+      "lower_confidence_bound": 0.0011935054294133767,
+      "n_folds": 16
+    },
+    "A_d_G_API_kobs5": {
+      "mean_delta_nrmse": 0.0008075823589702644,
+      "standard_error": 0.00046207715542001716,
+      "lower_confidence_bound": 0.0003455052035502472,
+      "n_folds": 16
+    },
+    "A_d_F_NDVI_kobs7": {
+      "mean_delta_nrmse": 0.00030248950289029145,
+      "standard_error": 0.00036688653712125104,
+      "lower_confidence_bound": -6.439703423095959e-05,
+      "n_folds": 16
+    },
+    "A_d_F_NDVI_kobs1": {
+      "mean_delta_nrmse": -3.7494734959078735e-05,
+      "standard_error": 3.732341775943513e-05,
+      "lower_confidence_bound": -7.481815271851387e-05,
+      "n_folds": 16
+    },
+    "latitude": {
+      "mean_delta_nrmse": 0.0,
+      "standard_error": 0.0,
+      "lower_confidence_bound": 0.0,
+      "n_folds": 16
+    },
+    "elev": {
+      "mean_delta_nrmse": 0.0,
+      "standard_error": 0.0,
+      "lower_confidence_bound": 0.0,
+      "n_folds": 16
+    },
+    "slope": {
+      "mean_delta_nrmse": 0.0,
+      "standard_error": 0.0,
+      "lower_confidence_bound": 0.0,
+      "n_folds": 16
+    },
+    "aspect": {
+      "mean_delta_nrmse": 0.0,
+      "standard_error": 0.0,
+      "lower_confidence_bound": 0.0,
+      "n_folds": 16
+    }
+  },
+  "selection_path": [
+    {
+      "n_features": 150,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "SMAP_sm_pm_interp",
+        "V_rollmin_G_API_kobs30",
+        "API_x_year",
+        "G_rain_sum_7d",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollmin_E_SAR_diff_kobs30",
+        "A_d_LST_modis_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "A_d_G_API_kobs14",
+        "A_d_G_API_kobs2",
+        "A_d_F_NDMI_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "SMAP_sm_pm_interp_rollmean30",
+        "V_rollmax_LST_modis_kobs30",
+        "V_ema_LST_modis_kobs30",
+        "C_lag_F_NDVI_kobs30",
+        "V_rollrng_s2_b11_kobs30",
+        "C_smm_G_API_alpha0.85_n5",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmin_LST_modis_kobs14",
+        "SMAP_sm_pm_interp_lag30",
+        "A_d_LST_modis_kobs14",
+        "A_grad_F_NDMI_kobs30",
+        "precip_mm",
+        "V_rollcv_F_NDMI_kobs30",
+        "V_rollmax_G_API_kobs30",
+        "V_rollcv_F_NDVI_kobs30",
+        "A_d_G_API_kobs30",
+        "G_API",
+        "D_sa_E_SAR_ratio",
+        "A_d_G_API_kobs1",
+        "V_rollcv_G_API_kobs7",
+        "V_rollrng_F_NDVI_kobs30",
+        "SMAP_sm_am_interp_lag30",
+        "A_d_s2_b11_kobs30",
+        "V_rollstd_F_NDMI_kobs30",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollcv_G_API_kobs30",
+        "V_rollstd_G_API_kobs30",
+        "V_rollmin_G_API_kobs7",
+        "V_rollmax_SMAP_sm_interp_kobs14",
+        "A_d_G_API_kobs5",
+        "G_DSLR",
+        "C_smm_s2_b12_alpha0.85_n5",
+        "C_lag_E_SAR_ratio_kobs2",
+        "V_ema_G_API_kobs30",
+        "C_lag_G_API_kobs2",
+        "A_d_s2_b12_kobs30",
+        "A_d_F_NDMI_kobs14",
+        "A_d_s2_b11_kobs14",
+        "V_rollcv_s2_b12_kobs30",
+        "V_rollmean_s2_b12_kobs7",
+        "SMAP_sm_am_interp_rollmean30",
+        "V_rollstd_E_SAR_ratio_kobs14",
+        "V_rollrng_LST_modis_kobs30",
+        "V_rollmax_SMAP_sm_interp_kobs30",
+        "V_rollcv_F_NDVI_kobs14",
+        "V_rollmin_SMAP_sm_interp_kobs30",
+        "C_lag_G_API_kobs30",
+        "A_d_F_NDVI_kobs30",
+        "V_rollmin_s2_b12_kobs30",
+        "A_d_G_API_kobs7",
+        "A_d_F_NDVI_kobs14",
+        "V_rollstd_G_API_kobs14",
+        "V_rollrng_F_NDMI_kobs14",
+        "V_rollmin_SMAP_sm_interp_kobs7",
+        "A_d_E_SAR_diff_kobs30",
+        "V_rollcv_G_API_kobs14",
+        "V_rollmean_E_SAR_diff_kobs14",
+        "V_rollmax_s2_b12_kobs7",
+        "s1_vv",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "D_z_LST_modis",
+        "V_rollrng_G_API_kobs7",
+        "V_rollmean_E_SAR_diff_kobs7",
+        "SMAP_sm_interp",
+        "D_sa_LST_modis",
+        "A_grad_F_NDMI_kobs7",
+        "V_rollcv_s2_b12_kobs14",
+        "A_grad_G_API_kobs30",
+        "H_corr_LST_modis__F_NDMI_kobs7",
+        "A_d_E_SAR_ratio_kobs30",
+        "A_grad_E_SAR_ratio_kobs14",
+        "V_rollstd_E_SAR_diff_kobs14",
+        "V_rollmax_E_SAR_diff_kobs7",
+        "C_lag_SMAP_sm_interp_kobs2",
+        "A_grad_F_NDMI_kobs14",
+        "SMAP_sm_interp_rollstd30",
+        "V_rollrng_s2_b11_kobs14",
+        "C_lag_SMAP_sm_interp_kobs6",
+        "V_rollmin_s2_b12_kobs14",
+        "V_rollrng_E_SAR_diff_kobs7",
+        "V_rollmean_s2_b11_kobs7",
+        "A_grad_s2_b11_kobs30",
+        "A_d_F_NDVI_kobs7",
+        "A_grad_E_SAR_diff_kobs30",
+        "SMAP_sm_interp_rollmean7",
+        "A_d_F_NDMI_kobs5",
+        "V_rollrng_s2_b12_kobs7",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "A_grad_s2_b12_kobs7",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_F_NDVI_kobs1",
+        "V_ema_E_SAR_diff_kobs14",
+        "E_rough_s1_vv_kobs14",
+        "A_grad_F_NDVI_kobs30",
+        "SMAP_sm_am_interp_lag1",
+        "A_grad_SMAP_sm_interp_kobs7",
+        "SMAP_sm_interp_lag30",
+        "A_grad_s2_b12_kobs30",
+        "V_rollrng_s2_b11_kobs7",
+        "E_dVV_1",
+        "A_d_F_NDMI_kobs2",
+        "A_d_E_SAR_diff_kobs14",
+        "D_fft_dom_LST_modis_kobs30",
+        "SMAP_sm_am_interp_rollmean7",
+        "SMAP_sm_pm_interp_diff1",
+        "A_pct_E_SAR_diff",
+        "A_pct_LST_modis",
+        "C_lag_SMAP_sm_interp_kobs30",
+        "SMAP_sm_interp_pctchg",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "J_bio_bio11",
+        "J_bio_bio12",
+        "J_bio_bio13",
+        "J_bio_bio14",
+        "J_bio_bio15"
+      ],
+      "mean_nrmse": 0.8001027782646544,
+      "standard_error": 0.07248876151847516,
+      "upper_confidence_bound": 0.8725915397831295,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.09307986134878145,
+          "nrmse": 1.1447627979704869
+        },
+        {
+          "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.09820598676931323,
+          "nrmse": 1.2078075596850189
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04577558282567895,
+          "nrmse": 1.0402533352867933
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04174510901604371,
+          "nrmse": 0.9486605348362632
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07046694133956044,
+          "nrmse": 0.8676932322771134
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07284332365714354,
+          "nrmse": 0.8969547670489121
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.06123306573172917,
+          "nrmse": 0.6793145886045151
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.059430270945544234,
+          "nrmse": 0.6593145317090949
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.10235069374382473,
+          "nrmse": 1.172949978484337
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.10068866837099517,
+          "nrmse": 1.1539029886302161
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.022287324120548554,
+          "nrmse": 0.37749168546336
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.020844226375559525,
+          "nrmse": 0.353049208784788
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.06139472684013135,
+          "nrmse": 0.5824818657169011
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.0644988332179661,
+          "nrmse": 0.6119320443788743
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.054337439908919746,
+          "nrmse": 0.5513308442163477
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.054575321187384354,
+          "nrmse": 0.5537444891414489
+        }
+      ]
+    },
+    {
+      "n_features": 125,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "API_x_year",
+        "C_lag_G_API_kobs1",
+        "V_ema_G_API_kobs14",
+        "G_rain_sum_3d",
+        "C_lag_E_SAR_diff_kobs30",
+        "G_rain_sum_7d",
+        "V_rollmin_G_API_kobs30",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "A_d_F_NDMI_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "V_rollmin_E_SAR_diff_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_s2_b12_kobs30",
+        "V_rollcv_G_API_kobs30",
+        "D_sa_E_SAR_ratio",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmin_G_API_kobs7",
+        "A_d_LST_modis_kobs30",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "A_d_G_API_kobs14",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "V_rollrng_F_NDVI_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "precip_mm",
+        "C_lag_E_SAR_ratio_kobs2",
+        "A_d_E_SAR_ratio_kobs30",
+        "A_d_G_API_kobs2",
+        "V_rollmax_SMAP_sm_interp_kobs14",
+        "A_d_LST_modis_kobs14",
+        "V_rollmin_s2_b12_kobs14",
+        "C_smm_s2_b12_alpha0.85_n5",
+        "V_rollcv_s2_b11_kobs30",
+        "G_API",
+        "D_z_LST_modis",
+        "A_grad_F_NDMI_kobs30",
+        "A_d_G_API_kobs5",
+        "SMAP_sm_pm_interp_rollmean30",
+        "V_rollcv_G_API_kobs7",
+        "V_rollmax_SMAP_sm_interp_kobs30",
+        "SMAP_sm_am_interp_rollmean30",
+        "A_d_s2_b11_kobs14",
+        "D_sa_LST_modis",
+        "A_grad_E_SAR_ratio_kobs14",
+        "A_d_G_API_kobs30",
+        "V_rollstd_F_NDMI_kobs30",
+        "A_d_s2_b12_kobs30",
+        "C_smm_G_API_alpha0.85_n5",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "V_rollrng_G_API_kobs7",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "H_corr_LST_modis__F_NDMI_kobs7",
+        "V_rollstd_G_API_kobs14",
+        "V_rollrng_s2_b11_kobs14",
+        "A_d_s2_b11_kobs30",
+        "V_rollrng_s2_b12_kobs7",
+        "A_d_G_API_kobs7",
+        "A_d_F_NDMI_kobs2",
+        "C_lag_G_API_kobs30",
+        "V_rollstd_G_API_kobs30",
+        "SMAP_sm_am_interp_rollmean7",
+        "V_ema_G_API_kobs30",
+        "A_grad_F_NDMI_kobs14",
+        "SMAP_sm_interp_rollstd30",
+        "SMAP_sm_pm_interp_diff1",
+        "A_d_F_NDVI_kobs7",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "J_bio_bio11",
+        "J_bio_bio12",
+        "J_bio_bio13",
+        "J_bio_bio14",
+        "J_bio_bio15",
+        "A_grad_s2_b11_kobs30",
+        "SMAP_sm_interp_pctchg",
+        "A_pct_LST_modis",
+        "E_dVV_1",
+        "SMAP_sm_am_interp_lag30",
+        "C_lag_SMAP_sm_interp_kobs30",
+        "V_rollrng_s2_b11_kobs30",
+        "A_pct_E_SAR_diff",
+        "D_fft_dom_LST_modis_kobs30",
+        "A_grad_E_SAR_diff_kobs30",
+        "SMAP_sm_interp_lag30",
+        "V_rollrng_s2_b11_kobs7",
+        "A_d_F_NDVI_kobs1",
+        "A_grad_G_API_kobs30",
+        "V_rollcv_s2_b12_kobs14",
+        "V_rollmean_E_SAR_diff_kobs7",
+        "A_d_E_SAR_diff_kobs14",
+        "s1_vv",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_F_NDVI_kobs30",
+        "A_grad_s2_b12_kobs7",
+        "V_rollstd_E_SAR_ratio_kobs14",
+        "SMAP_sm_interp_rollmean7",
+        "A_grad_s2_b12_kobs30",
+        "V_rollmax_E_SAR_diff_kobs7",
+        "V_rollrng_E_SAR_diff_kobs7",
+        "A_d_E_SAR_diff_kobs30",
+        "A_d_G_API_kobs1",
+        "V_rollrng_F_NDMI_kobs14",
+        "V_rollmax_s2_b12_kobs7",
+        "V_rollmean_s2_b12_kobs7",
+        "A_d_F_NDMI_kobs14",
+        "A_grad_F_NDVI_kobs30",
+        "A_d_F_NDMI_kobs5",
+        "A_d_F_NDVI_kobs14"
+      ],
+      "mean_nrmse": 0.7721759386666953,
+      "standard_error": 0.061002739699862356,
+      "upper_confidence_bound": 0.8331786783665577,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.08730780062619063,
+          "nrmse": 1.0737738612971823
+        },
+        {
+          "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.08221671602520957,
+          "nrmse": 1.011160056677459
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04248899573195762,
+          "nrmse": 0.9655654127108249
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04281194661053529,
+          "nrmse": 0.9729044941126627
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07532320217407011,
+          "nrmse": 0.9274907001418188
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07248862708647977,
+          "nrmse": 0.8925872181241786
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.05539914557833211,
+          "nrmse": 0.6145935588537057
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.057081376914354096,
+          "nrmse": 0.6332560947615763
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.09399279805858735,
+          "nrmse": 1.0771675933770057
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.09092910757562855,
+          "nrmse": 1.0420573703328557
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.023148059748250474,
+          "nrmse": 0.3920704003006423
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.024794446872104258,
+          "nrmse": 0.4199560920484339
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.06348638353602828,
+          "nrmse": 0.6023264380013876
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.0677839686821867,
+          "nrmse": 0.6430997347134972
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.0532218184818153,
+          "nrmse": 0.5400112733226448
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.05389037371351255,
+          "nrmse": 0.546794719891249
+        }
+      ]
+    },
+    {
+      "n_features": 100,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "V_rollmean_LST_modis_kobs30",
+        "V_ema_G_API_kobs14",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_G_API_kobs30",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "V_rollmin_s2_b12_kobs30",
+        "G_rain_sum_7d",
+        "A_d_F_NDMI_kobs30",
+        "API_x_year",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollcv_G_API_kobs30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "A_d_G_API_kobs14",
+        "D_sa_E_SAR_ratio",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollrng_F_NDVI_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "A_d_E_SAR_ratio_kobs30",
+        "V_rollmax_G_API_kobs7",
+        "V_rollrng_s2_b11_kobs30",
+        "SMAP_sm_pm_interp_rollmean30",
+        "precip_mm",
+        "V_rollmax_SMAP_sm_interp_kobs14",
+        "V_rollmin_G_API_kobs7",
+        "C_lag_E_SAR_ratio_kobs2",
+        "s1_vv",
+        "A_d_G_API_kobs2",
+        "A_d_G_API_kobs7",
+        "A_d_LST_modis_kobs30",
+        "A_d_LST_modis_kobs14",
+        "V_rollstd_E_SAR_ratio_kobs14",
+        "C_smm_s2_b12_alpha0.85_n5",
+        "A_d_F_NDVI_kobs7",
+        "V_ema_G_API_kobs30",
+        "V_rollstd_F_NDMI_kobs30",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "A_grad_E_SAR_diff_kobs30",
+        "V_rollmin_E_SAR_diff_kobs30",
+        "A_d_G_API_kobs5",
+        "A_grad_F_NDMI_kobs30",
+        "A_d_G_API_kobs30",
+        "V_rollrng_s2_b11_kobs14",
+        "A_grad_E_SAR_ratio_kobs14",
+        "C_lag_G_API_kobs30",
+        "A_grad_G_API_kobs30",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "V_rollcv_G_API_kobs7",
+        "A_d_s2_b12_kobs30",
+        "G_API",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_E_SAR_diff_kobs14",
+        "V_rollrng_s2_b12_kobs7",
+        "E_dVV_1",
+        "A_d_F_NDVI_kobs1",
+        "A_grad_s2_b12_kobs7",
+        "V_rollrng_s2_b11_kobs7",
+        "A_pct_LST_modis",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "J_bio_bio11",
+        "J_bio_bio12",
+        "J_bio_bio13",
+        "J_bio_bio14",
+        "J_bio_bio15",
+        "A_pct_E_SAR_diff",
+        "A_d_E_SAR_diff_kobs30",
+        "SMAP_sm_pm_interp_diff1",
+        "SMAP_sm_interp_pctchg",
+        "SMAP_sm_interp_lag30",
+        "D_fft_dom_LST_modis_kobs30",
+        "A_grad_s2_b11_kobs30",
+        "D_sa_LST_modis",
+        "A_d_F_NDVI_kobs14",
+        "C_lag_SMAP_sm_interp_kobs30",
+        "A_d_F_NDMI_kobs2",
+        "H_corr_LST_modis__F_NDMI_kobs7",
+        "A_d_F_NDVI_kobs30",
+        "SMAP_sm_am_interp_lag30",
+        "V_rollrng_G_API_kobs7"
+      ],
+      "mean_nrmse": 0.7672309217957596,
+      "standard_error": 0.06536869103107627,
+      "upper_confidence_bound": 0.8325996128268358,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.08562865855382239,
+          "nrmse": 1.0531225695021564
+        },
+        {
+          "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.0916330943099942,
+          "nrmse": 1.1269694207637078
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04325388655988877,
+          "nrmse": 0.9829476105064432
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04383018959080144,
+          "nrmse": 0.9960441373671888
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07092858814538251,
+          "nrmse": 0.8733777107218912
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.06880793166054437,
+          "nrmse": 0.847265050729856
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.05508323241285234,
+          "nrmse": 0.6110888442117367
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.05621783975958701,
+          "nrmse": 0.6236760846800078
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.09528442401616638,
+          "nrmse": 1.0919697660222063
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.09046860548670617,
+          "nrmse": 1.0367799667751871
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.022248939679219072,
+          "nrmse": 0.37684154875898657
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.022113049313325136,
+          "nrmse": 0.3745399048746838
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.05991052980063039,
+          "nrmse": 0.5684005609346324
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.069955388645216,
+          "nrmse": 0.6637010602086613
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.05196044838396619,
+          "nrmse": 0.5272128742430766
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.051422797441347035,
+          "nrmse": 0.5217576384317318
+        }
+      ]
+    },
+    {
+      "n_features": 80,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "V_rollmin_s2_b12_kobs30",
+        "V_rollmean_LST_modis_kobs30",
+        "C_lag_E_SAR_diff_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "V_ema_G_API_kobs14",
+        "A_d_F_NDMI_kobs30",
+        "G_rain_sum_7d",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "V_rollrng_F_NDVI_kobs30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "V_rollmin_G_API_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "API_x_year",
+        "V_rollcv_G_API_kobs30",
+        "A_d_E_SAR_ratio_kobs30",
+        "precip_mm",
+        "D_sa_E_SAR_ratio",
+        "A_d_G_API_kobs14",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmin_G_API_kobs7",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "s1_vv",
+        "V_rollstd_F_NDMI_kobs30",
+        "C_lag_E_SAR_ratio_kobs2",
+        "A_d_LST_modis_kobs30",
+        "D_sa_LST_modis",
+        "A_d_LST_modis_kobs14",
+        "V_rollcv_G_API_kobs7",
+        "A_grad_E_SAR_diff_kobs30",
+        "A_grad_E_SAR_ratio_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "A_d_G_API_kobs2",
+        "SMAP_sm_pm_interp_rollmean30",
+        "A_d_G_API_kobs7",
+        "V_rollrng_s2_b11_kobs30",
+        "A_d_G_API_kobs5",
+        "A_grad_F_NDMI_kobs30",
+        "V_rollstd_E_SAR_ratio_kobs14",
+        "V_rollrng_s2_b11_kobs14",
+        "C_smm_s2_b12_alpha0.85_n5",
+        "A_d_s2_b12_kobs30",
+        "A_grad_G_API_kobs30",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "A_d_E_SAR_diff_kobs30",
+        "A_d_F_NDMI_kobs2",
+        "A_d_F_NDVI_kobs7",
+        "A_grad_s2_b12_kobs7",
+        "C_lag_SMAP_sm_interp_kobs30",
+        "V_rollrng_s2_b11_kobs7",
+        "E_dVV_1",
+        "A_pct_E_SAR_diff",
+        "SMAP_sm_interp_pctchg",
+        "SMAP_sm_pm_interp_diff1",
+        "D_fft_dom_LST_modis_kobs30",
+        "A_d_F_NDVI_kobs1",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "J_bio_bio11",
+        "J_bio_bio12"
+      ],
+      "mean_nrmse": 0.7357025115543363,
+      "standard_error": 0.06025151889845118,
+      "upper_confidence_bound": 0.7959540304527875,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07128847103274627,
+          "nrmse": 0.8767566730325066
+        },
+        {
+          "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07938693129802557,
+          "nrmse": 0.976357337431813
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.040617894093011156,
+          "nrmse": 0.9230444965274759
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04113855361369847,
+          "nrmse": 0.9348765207095899
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07221358977941404,
+          "nrmse": 0.8892005519027135
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.06675653757898074,
+          "nrmse": 0.8220052519154183
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.054140532530806626,
+          "nrmse": 0.6006306093528935
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.05374927752927766,
+          "nrmse": 0.5962900585862938
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.09088303721819933,
+          "nrmse": 1.041529399072684
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.09704083911145957,
+          "nrmse": 1.112098472266154
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.022733234304616726,
+          "nrmse": 0.38504429187042416
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.019041207830406894,
+          "nrmse": 0.3225105714028406
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.06034826157949064,
+          "nrmse": 0.5725535368717682
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.0707039628573585,
+          "nrmse": 0.6708031506675328
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.05016398236735805,
+          "nrmse": 0.5089851637141535
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.05307820400168266,
+          "nrmse": 0.5385540995451178
+        }
+      ]
+    },
+    {
+      "n_features": 65,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_rollmin_G_API_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "C_lag_G_API_kobs1",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollmin_s2_b12_kobs30",
+        "API_x_year",
+        "G_rain_sum_3d",
+        "V_rollmin_LST_modis_kobs14",
+        "V_rollmax_G_API_kobs14",
+        "G_rain_sum_7d",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "A_d_F_NDMI_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "V_rollrng_F_NDVI_kobs30",
+        "V_rollcv_s2_b11_kobs30",
+        "SMAP_sm_pm_interp_rollmean30",
+        "A_d_G_API_kobs14",
+        "A_d_E_SAR_ratio_kobs30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "V_rollmin_G_API_kobs7",
+        "precip_mm",
+        "V_rollmax_G_API_kobs7",
+        "D_sa_E_SAR_ratio",
+        "A_d_LST_modis_kobs14",
+        "A_d_G_API_kobs2",
+        "V_rollcv_G_API_kobs30",
+        "V_rollcv_G_API_kobs7",
+        "D_sa_LST_modis",
+        "A_d_LST_modis_kobs30",
+        "A_d_s2_b12_kobs30",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "A_d_G_API_kobs7",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "A_grad_E_SAR_ratio_kobs14",
+        "A_d_F_NDVI_kobs7",
+        "V_rollrng_s2_b11_kobs30",
+        "V_rollstd_F_NDMI_kobs30",
+        "A_grad_E_SAR_diff_kobs30",
+        "s1_vv",
+        "A_grad_F_NDMI_kobs30",
+        "A_grad_G_API_kobs30",
+        "A_d_F_NDVI_kobs1",
+        "A_d_G_API_kobs5",
+        "E_dVV_1",
+        "A_grad_s2_b12_kobs7",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09"
+      ],
+      "mean_nrmse": 0.7514659336360148,
+      "standard_error": 0.06283800027105545,
+      "upper_confidence_bound": 0.8143039339070702,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.08029512619598782,
+          "nrmse": 0.9875269687293717
+        },
+        {
+          "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.08144563338020903,
+          "nrmse": 1.0016767300655973
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04076836739902327,
+          "nrmse": 0.9264640129768202
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.042002368268621214,
+          "nrmse": 0.9545067694226421
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07440324855415449,
+          "nrmse": 0.9161628701716895
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07122835064141883,
+          "nrmse": 0.8770688300490073
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.05334370559541688,
+          "nrmse": 0.5917906769514231
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.054652370644311006,
+          "nrmse": 0.606308899233571
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.09257108431949228,
+          "nrmse": 1.0608746007388092
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.09711187850923356,
+          "nrmse": 1.1129125914190647
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.022120327708216536,
+          "nrmse": 0.37466318273164684
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.021802295135722797,
+          "nrmse": 0.3692765041347209
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.0626498809436923,
+          "nrmse": 0.5943901279021562
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.06520887282168512,
+          "nrmse": 0.6186685381201708
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.050919132499272476,
+          "nrmse": 0.5166472390794326
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.05070912332866168,
+          "nrmse": 0.5145163964501128
+        }
+      ]
+    },
+    {
+      "n_features": 50,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_rollmin_G_API_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "C_lag_G_API_kobs1",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "V_rollmin_s2_b12_kobs30",
+        "G_rain_sum_3d",
+        "G_rain_sum_7d",
+        "V_rollmax_G_API_kobs14",
+        "API_x_year",
+        "A_d_F_NDMI_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmean_LST_modis_kobs30",
+        "A_d_E_SAR_ratio_kobs30",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollmax_G_API_kobs7",
+        "SMAP_sm_pm_interp_lag30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "V_rollrng_F_NDVI_kobs30",
+        "V_rollrng_s2_b11_kobs30",
+        "A_d_G_API_kobs14",
+        "V_rollcv_G_API_kobs30",
+        "V_rollmin_G_API_kobs7",
+        "D_sa_LST_modis",
+        "D_sa_E_SAR_ratio",
+        "precip_mm",
+        "A_d_G_API_kobs2",
+        "V_rollcv_G_API_kobs7",
+        "A_d_s2_b12_kobs30",
+        "A_d_LST_modis_kobs14",
+        "s1_vv",
+        "A_grad_E_SAR_diff_kobs30",
+        "A_d_G_API_kobs7",
+        "A_grad_E_SAR_ratio_kobs14",
+        "A_d_LST_modis_kobs30",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "A_grad_s2_b12_kobs7",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "A_d_G_API_kobs5",
+        "A_d_F_NDVI_kobs7",
+        "A_d_F_NDVI_kobs1",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect"
+      ],
+      "mean_nrmse": 0.691201870560351,
+      "standard_error": 0.0516063536128172,
+      "upper_confidence_bound": 0.7428082241731682,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.05550400626921224,
+          "nrmse": 0.6826280206545093
+        },
+        {
+          "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.05685604980200418,
+          "nrmse": 0.6992564203442889
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04186359331770831,
+          "nrmse": 0.9513530989146955
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04085102080450142,
+          "nrmse": 0.9283423174224213
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.0754595174306506,
+          "nrmse": 0.929169215248939
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07162311919492834,
+          "nrmse": 0.8819298045100021
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.05558209175852073,
+          "nrmse": 0.6166231487108603
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.05556793754226624,
+          "nrmse": 0.6164661230013513
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.07897902728767173,
+          "nrmse": 0.9051081626242293
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.07877515781500335,
+          "nrmse": 0.9027717965007275
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.022107388879457842,
+          "nrmse": 0.3744440312422342
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.01855475750641651,
+          "nrmse": 0.31427131613360787
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.06191305564365716,
+          "nrmse": 0.5873995051310921
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.0681820137437454,
+          "nrmse": 0.6468761833114337
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.052046473471201525,
+          "nrmse": 0.5280857214741707
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.048736869100582905,
+          "nrmse": 0.49450506374105313
+        }
+      ]
+    },
+    {
+      "n_features": 40,
+      "features": [
+        "SMAP_sm_pm_interp",
+        "V_rollmin_LST_modis_kobs30",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "C_lag_G_API_kobs1",
+        "V_rollmin_G_API_kobs30",
+        "G_rain_sum_3d",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmin_s2_b12_kobs30",
+        "A_d_F_NDMI_kobs30",
+        "API_x_year",
+        "G_rain_sum_7d",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "V_rollrng_F_NDVI_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "A_d_E_SAR_ratio_kobs30",
+        "A_d_LST_modis_kobs30",
+        "A_d_G_API_kobs14",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "precip_mm",
+        "V_rollmin_G_API_kobs7",
+        "D_sa_E_SAR_ratio",
+        "V_rollrng_s2_b11_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "A_d_G_API_kobs2",
+        "V_rollcv_G_API_kobs7",
+        "s1_vv",
+        "A_d_G_API_kobs7",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollcv_G_API_kobs30",
+        "A_d_LST_modis_kobs14",
+        "A_grad_E_SAR_diff_kobs30",
+        "A_grad_E_SAR_ratio_kobs14",
+        "A_d_G_API_kobs5"
+      ],
+      "mean_nrmse": 0.6954645224966978,
+      "standard_error": 0.051523564056726874,
+      "upper_confidence_bound": 0.7469880865534246,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.05612115071921463,
+          "nrmse": 0.6902181050948956
+        },
+        {
+          "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.05664755444999287,
+          "nrmse": 0.6966921951824362
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.041127357257830524,
+          "nrmse": 0.9346220827359865
+        },
+        {
+          "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 2730,
+          "n_validation": 364,
+          "rmse": 0.04337834863198557,
+          "nrmse": 0.9857760198378644
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07531485856689328,
+          "nrmse": 0.9273879613065226
+        },
+        {
+          "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 2717,
+          "n_validation": 365,
+          "rmse": 0.07307111428447108,
+          "nrmse": 0.8997596622515552
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.057219823179188466,
+          "nrmse": 0.6347920062224173
+        },
+        {
+          "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2019,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 2177,
+          "n_validation": 598,
+          "rmse": 0.0581628787815001,
+          "nrmse": 0.6452541874125967
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.07774896427982148,
+          "nrmse": 0.8910115080162639
+        },
+        {
+          "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 366,
+          "rmse": 0.07708600211139136,
+          "nrmse": 0.8834138901325752
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.02258612774596625,
+          "nrmse": 0.38255267365428836
+        },
+        {
+          "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 4058,
+          "n_validation": 366,
+          "rmse": 0.018783662418400796,
+          "nrmse": 0.31814839444809795
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.06276149884624381,
+          "nrmse": 0.595449101652376
+        },
+        {
+          "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 4044,
+          "n_validation": 302,
+          "rmse": 0.06288855598115249,
+          "nrmse": 0.596654554967397
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.053356254272002565,
+          "nrmse": 0.5413753161966018
+        },
+        {
+          "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
+          "validation_year": 2020,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 3271,
+          "n_validation": 695,
+          "rmse": 0.049704661753819795,
+          "nrmse": 0.5043247008352896
+        }
+      ]
+    }
+  ],
+  "baseline_required": null,
+  "folds": [
+    {
+      "fold_id": "year_2019_stations_0",
+      "fold_family": "station_time",
+      "validation_year": 2019,
+      "held_out_stations": [
+        "SourdoughGulch_WA_985"
+      ],
+      "n_train": 2717,
+      "n_validation": 365
+    },
+    {
+      "fold_id": "year_2019_stations_1",
+      "fold_family": "station_time",
+      "validation_year": 2019,
+      "held_out_stations": [
+        "Quinault"
+      ],
+      "n_train": 2730,
+      "n_validation": 364
+    },
+    {
+      "fold_id": "year_2019_stations_2",
+      "fold_family": "station_time",
+      "validation_year": 2019,
+      "held_out_stations": [
+        "Touchet_WA_824"
+      ],
+      "n_train": 2717,
+      "n_validation": 365
+    },
+    {
+      "fold_id": "year_2019_stations_3",
+      "fold_family": "station_time",
+      "validation_year": 2019,
+      "held_out_stations": [
+        "Darrington",
+        "Spokane"
+      ],
+      "n_train": 2177,
+      "n_validation": 598
+    },
+    {
+      "fold_id": "year_2020_stations_0",
+      "fold_family": "station_time",
+      "validation_year": 2020,
+      "held_out_stations": [
+        "SourdoughGulch_WA_985"
+      ],
+      "n_train": 4044,
+      "n_validation": 366
+    },
+    {
+      "fold_id": "year_2020_stations_1",
+      "fold_family": "station_time",
+      "validation_year": 2020,
+      "held_out_stations": [
+        "Quinault"
+      ],
+      "n_train": 4058,
+      "n_validation": 366
+    },
+    {
+      "fold_id": "year_2020_stations_2",
+      "fold_family": "station_time",
+      "validation_year": 2020,
+      "held_out_stations": [
+        "Touchet_WA_824"
+      ],
+      "n_train": 4044,
+      "n_validation": 302
+    },
+    {
+      "fold_id": "year_2020_stations_3",
+      "fold_family": "station_time",
+      "validation_year": 2020,
+      "held_out_stations": [
+        "Darrington",
+        "Spokane"
+      ],
+      "n_train": 3271,
+      "n_validation": 695
+    }
+  ],
+  "stopping_reason": "minimum_grouped_oof_upper_confidence_bound",
+  "required_features": [],
+  "config": {
+    "station_col": "station_id",
+    "time_col": "date",
+    "candidate_sizes": [
+      150,
+      125,
+      100,
+      80,
+      65,
+      50,
+      40
+    ],
+    "n_station_folds": 4,
+    "min_train_years": 2,
+    "max_validation_years": 2,
+    "min_train_rows": 100,
+    "min_validation_rows": 20,
+    "confidence_z": 1.0,
+    "permutation_repeats": 1,
+    "permutation_batch_size": 16,
+    "parallel_workers": 16,
+    "train_weight_betas": [
+      0.0,
+      0.2
+    ],
+    "random_state": 42,
+    "model_params": {
+      "objective": "reg:squarederror",
+      "max_depth": 6,
+      "min_child_weight": 5,
+      "n_estimators": 160,
+      "learning_rate": 0.04,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8,
+      "reg_lambda": 1.5,
+      "reg_alpha": 0.03,
+      "tree_method": "hist",
+      "n_jobs": 1,
+      "verbosity": 0,
+      "device": "cuda"
+    }
+  }
+}

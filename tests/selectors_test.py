@@ -16,6 +16,13 @@ from Modeling.Src.soilmoist_fl.Selectors.family_coverage import (
     infer_coverage_family,
 )
 from Modeling.Src.soilmoist_fl.Selectors.stability import stability_bootstrap
+from Modeling.Src.soilmoist_fl.Selectors import grouped_oof as grouped_oof_module
+from Modeling.Src.soilmoist_fl.Selectors.grouped_oof import (
+    build_forward_time_folds,
+    build_station_time_folds,
+    evaluate_forward_station_time_candidates,
+    select_grouped_oof,
+)
 from Modeling.Src.soilmoist_fl import select_features
 
 
@@ -284,3 +291,423 @@ def test_select_features_xgb_path():
     res = select_features(X_train=X, y_train=y, config=config, verbose=False)
     assert len(res["selected_features"]) > 0
 
+
+def _grouped_oof_fixture(seed=42, station_effect=False):
+    rng = np.random.default_rng(seed)
+    stations = [f"station_{idx}" for idx in range(8)]
+    station_offsets = dict(
+        zip(stations, rng.permutation(np.linspace(-4.0, 4.0, len(stations))))
+    )
+    rows = []
+    for year in range(2017, 2023):
+        for station_index, station in enumerate(stations):
+            for day in range(12):
+                main = rng.normal()
+                interaction_a = rng.normal()
+                interaction_b = rng.normal()
+                offset = station_offsets[station] if station_effect else 0.0
+                target = (
+                    1.8 * main
+                    + 1.5 * interaction_a * interaction_b
+                    + offset
+                    + rng.normal(scale=0.08)
+                )
+                rows.append(
+                    {
+                        "station_id": station,
+                        "date": f"{year}-01-{day + 1:02d}",
+                        "main": main,
+                        "interaction_a": interaction_a,
+                        "interaction_b": interaction_b,
+                        "station_proxy": float(station_index),
+                        "noise": rng.normal(),
+                        "constant": 1.0,
+                        "target": target,
+                    }
+                )
+    return pd.DataFrame(rows)
+
+
+def _fast_grouped_config(candidate_sizes):
+    return {
+        "candidate_sizes": candidate_sizes,
+        "n_station_folds": 4,
+        "min_train_years": 2,
+        "max_validation_years": 2,
+        "min_train_rows": 40,
+        "min_validation_rows": 10,
+        "confidence_z": 1.0,
+        "permutation_repeats": 1,
+        "train_weight_betas": [0.0],
+        "parallel_workers": 2,
+        "random_state": 7,
+        "model_params": {
+            "n_estimators": 35,
+            "max_depth": 3,
+            "learning_rate": 0.08,
+            "n_jobs": 1,
+        },
+    }
+
+
+def test_grouped_oof_folds_exclude_station_and_future_time():
+    df = _grouped_oof_fixture()
+    context = df[["station_id", "date"]]
+    folds = build_station_time_folds(
+        context,
+        n_station_folds=4,
+        min_train_years=2,
+        max_validation_years=2,
+        min_train_rows=40,
+        min_validation_rows=10,
+    )
+    dates = pd.to_datetime(context["date"])
+    for fold in folds:
+        train_stations = set(context.iloc[fold.train_index]["station_id"])
+        validation_stations = set(context.iloc[fold.validation_index]["station_id"])
+        assert train_stations.isdisjoint(validation_stations)
+        assert dates.iloc[fold.train_index].dt.year.max() < fold.validation_year
+        assert set(dates.iloc[fold.validation_index].dt.year) == {
+            fold.validation_year
+        }
+
+
+def test_forward_time_folds_keep_stations_and_exclude_future_rows():
+    df = _grouped_oof_fixture()
+    context = df[["station_id", "date"]]
+    folds = build_forward_time_folds(
+        context,
+        min_train_years=2,
+        max_validation_years=2,
+        min_train_rows=40,
+        min_validation_rows=10,
+    )
+    dates = pd.to_datetime(context["date"])
+    expected_stations = set(context["station_id"])
+    for fold in folds:
+        assert fold.fold_family == "forward_time"
+        assert not fold.held_out_stations
+        assert set(context.iloc[fold.train_index]["station_id"]) == expected_stations
+        assert set(context.iloc[fold.validation_index]["station_id"]) == expected_stations
+        assert dates.iloc[fold.train_index].max() < dates.iloc[fold.validation_index].min()
+
+
+def test_grouped_oof_is_invariant_to_feature_renaming():
+    df = _grouped_oof_fixture()
+    features = ["main", "interaction_a", "interaction_b", "noise"]
+    config = _fast_grouped_config([3])
+    original = select_grouped_oof(
+        df[features],
+        df["target"],
+        df[["station_id", "date"]],
+        config=config,
+    )
+    renamed_columns = ["feature_0", "feature_1", "feature_2", "feature_3"]
+    renamed = df[features].copy()
+    renamed.columns = renamed_columns
+    renamed_out = select_grouped_oof(
+        renamed,
+        df["target"],
+        df[["station_id", "date"]],
+        config=config,
+    )
+    selected_positions = [features.index(feature) for feature in original["selected"]]
+    renamed_positions = [
+        renamed_columns.index(feature) for feature in renamed_out["selected"]
+    ]
+    assert selected_positions == renamed_positions
+
+
+def test_grouped_oof_tied_importance_is_invariant_to_feature_renaming():
+    df = _grouped_oof_fixture()
+    features = ["z_constant", "a_constant", "y_constant", "b_constant"]
+    tied = pd.DataFrame(
+        np.ones((len(df), len(features))),
+        columns=features,
+    )
+    config = _fast_grouped_config([2])
+    original = select_grouped_oof(
+        tied,
+        df["target"],
+        df[["station_id", "date"]],
+        config=config,
+    )
+
+    renamed_columns = ["a", "z", "b", "y"]
+    renamed = tied.copy()
+    renamed.columns = renamed_columns
+    renamed_out = select_grouped_oof(
+        renamed,
+        df["target"],
+        df[["station_id", "date"]],
+        config=config,
+    )
+
+    selected_positions = [features.index(feature) for feature in original["selected"]]
+    renamed_positions = [
+        renamed_columns.index(feature) for feature in renamed_out["selected"]
+    ]
+    assert selected_positions == [0, 1]
+    assert renamed_positions == selected_positions
+
+
+def test_grouped_oof_rejects_non_generalizing_station_proxy():
+    df = _grouped_oof_fixture(station_effect=True)
+    features = ["main", "station_proxy", "noise"]
+
+    pooled = select_xgb_importance(
+        df[features],
+        df["target"],
+        k=3,
+        random_state=7,
+        params={"n_estimators": 80, "max_depth": 4},
+    )
+    grouped = select_grouped_oof(
+        df[features],
+        df["target"],
+        df[["station_id", "date"]],
+        config=_fast_grouped_config([1]),
+    )
+
+    assert pooled["scores"]["station_proxy"] > pooled["scores"]["noise"]
+    assert grouped["selected"] == ["main"]
+
+
+def test_grouped_oof_preserves_interaction_pair_without_univariate_filter():
+    df = _grouped_oof_fixture()
+    features = ["interaction_a", "interaction_b", "noise"]
+    out = select_grouped_oof(
+        df[features],
+        df["target"] - 1.8 * df["main"],
+        df[["station_id", "date"]],
+        config=_fast_grouped_config([2]),
+    )
+    assert set(out["selected"]) == {"interaction_a", "interaction_b"}
+
+
+def test_grouped_oof_regime_delta_requires_positive_paired_lcb():
+    df = _grouped_oof_fixture()
+    features = ["main", "constant"]
+    out = select_grouped_oof(
+        df[features],
+        1.8 * df["main"],
+        df[["station_id", "date"]],
+        config=_fast_grouped_config([2]),
+        required_features=["main"],
+    )
+    assert out["selected"] == ["main"]
+    assert out["stopping_reason"] == "no_regime_delta_with_positive_paired_lcb"
+
+
+def test_grouped_oof_progressive_elimination_reaches_requested_size():
+    df = _grouped_oof_fixture()
+    features = ["main", "interaction_a", "interaction_b", "noise", "constant"]
+    config = _fast_grouped_config([2])
+    config["progressive_elimination"] = True
+    out = select_grouped_oof(
+        df[features],
+        df["target"],
+        df[["station_id", "date"]],
+        config=config,
+    )
+    assert len(out["selected"]) == 2
+    assert out["selection_path"][0]["n_features"] == 2
+    assert out["config"]["progressive_elimination"] is True
+
+
+def test_grouped_oof_returns_importance_for_winning_checkpoint(monkeypatch):
+    df = _grouped_oof_fixture()
+    features = ["main", "interaction_a", "interaction_b", "noise"]
+
+    def fake_fold_rows(
+        X,
+        y,
+        years,
+        active_features,
+        folds,
+        config,
+        *,
+        collect_importance,
+        feature_positions,
+    ):
+        del X, y, years, folds, config, feature_positions
+        nrmse = {4: 0.4, 3: 0.1, 2: 0.3}[len(active_features)]
+        rows = [
+            {"fold_id": "fold_0", "nrmse": nrmse},
+            {"fold_id": "fold_1", "nrmse": nrmse},
+        ]
+        deltas = {
+            feature: [float(len(active_features) - index)] * 2
+            for index, feature in enumerate(active_features)
+        }
+        if not collect_importance:
+            deltas = {feature: [] for feature in active_features}
+        return rows, deltas
+
+    monkeypatch.setattr(grouped_oof_module, "_fold_rows", fake_fold_rows)
+    out = select_grouped_oof(
+        df[features],
+        df["target"],
+        df[["station_id", "date"]],
+        config=_fast_grouped_config([3, 2]),
+    )
+
+    assert len(out["selected"]) == 3
+    assert set(out["ranked"]) == set(out["selected"])
+    assert set(out["scores"]) == set(out["selected"])
+    assert set(out["importance_detail"]) == set(out["selected"])
+    assert all(out["scores"][feature] != 0.0 for feature in out["selected"])
+
+
+def test_select_features_grouped_oof_stage():
+    df = _grouped_oof_fixture()
+    features = ["main", "interaction_a", "interaction_b", "noise"]
+    config = {
+        "selection": {
+            "stages": [
+                {
+                    "kind": "grouped_oof",
+                    **_fast_grouped_config([3]),
+                }
+            ],
+            "bypass": {"enabled": False},
+        },
+        "models": [],
+        "logging": {
+            "level": "WARNING",
+            "console": False,
+            "log_to_file": False,
+        },
+    }
+    result = select_features(
+        X_train=df[features],
+        y_train=df["target"],
+        config=config,
+        selection_context=df[["station_id", "date"]],
+        verbose=False,
+    )
+    assert len(result["selected_features"]) == 3
+    assert result["selection_diagnostics"]["folds"]
+
+
+def test_outer_selection_uses_strict_future_and_held_out_stations():
+    rng = np.random.default_rng(12)
+    rows = []
+    for year in range(2017, 2023):
+        for station in ["a", "b", "c", "d"]:
+            for day in range(15):
+                stable = rng.normal()
+                spurious = rng.normal()
+                if year <= 2020:
+                    target = stable + 4.0 * spurious + rng.normal(scale=0.05)
+                else:
+                    target = stable + rng.normal(scale=0.05)
+                rows.append(
+                    {
+                        "station_id": station,
+                        "date": f"{year}-02-{day + 1:02d}",
+                        "stable": stable,
+                        "spurious": spurious,
+                        "target": target,
+                    }
+                )
+    frame = pd.DataFrame(rows)
+    inner = frame[pd.to_datetime(frame["date"]).dt.year <= 2020].reset_index(
+        drop=True
+    )
+    outer = frame[pd.to_datetime(frame["date"]).dt.year >= 2021].reset_index(
+        drop=True
+    )
+    config = _fast_grouped_config([2, 1])
+    result = evaluate_forward_station_time_candidates(
+        inner[["stable", "spurious"]],
+        inner["target"],
+        inner[["station_id", "date"]],
+        outer[["stable", "spurious"]],
+        outer["target"],
+        outer[["station_id", "date"]],
+        [["stable", "spurious"], ["stable"]],
+        config=config,
+    )
+    assert result["selected"] == ["stable"]
+    assert all(fold["validation_year"] >= 2021 for fold in result["folds"])
+    for fold in result["folds"]:
+        assert fold["held_out_stations"]
+
+
+@pytest.mark.parametrize(
+    "outer_station_names",
+    [("outer_c",), ("outer_c", "outer_d")],
+)
+def test_outer_selection_scores_stations_absent_from_training(
+    outer_station_names,
+):
+    rng = np.random.default_rng(19)
+    inner_rows = []
+    outer_rows = []
+    for year in (2019, 2020):
+        for station in ("train_a", "train_b"):
+            for day in range(12):
+                signal = rng.normal()
+                inner_rows.append(
+                    {
+                        "station_id": station,
+                        "date": f"{year}-03-{day + 1:02d}",
+                        "signal": signal,
+                        "target": 2.0 * signal,
+                    }
+                )
+    for year in (2021, 2022):
+        for station in outer_station_names:
+            for day in range(12):
+                signal = rng.normal()
+                outer_rows.append(
+                    {
+                        "station_id": station,
+                        "date": f"{year}-03-{day + 1:02d}",
+                        "signal": signal,
+                        "target": 2.0 * signal,
+                    }
+                )
+    inner = pd.DataFrame(inner_rows)
+    outer = pd.DataFrame(outer_rows)
+
+    result = evaluate_forward_station_time_candidates(
+        inner[["signal"]],
+        inner["target"],
+        inner[["station_id", "date"]],
+        outer[["signal"]],
+        outer["target"],
+        outer[["station_id", "date"]],
+        [["signal"]],
+        config=_fast_grouped_config([1]),
+    )
+
+    held_out = {
+        station
+        for fold in result["folds"]
+        for station in fold["held_out_stations"]
+    }
+    assert held_out == set(outer_station_names)
+    assert sum(fold["n_validation"] for fold in result["folds"]) == len(outer)
+
+
+def test_outer_regime_delta_can_remain_empty():
+    df = _grouped_oof_fixture()
+    years = pd.to_datetime(df["date"]).dt.year
+    inner = df[years <= 2020].reset_index(drop=True)
+    outer = df[years >= 2021].reset_index(drop=True)
+    config = _fast_grouped_config([2, 1])
+    result = evaluate_forward_station_time_candidates(
+        inner[["main", "constant"]],
+        1.8 * inner["main"],
+        inner[["station_id", "date"]],
+        outer[["main", "constant"]],
+        1.8 * outer["main"],
+        outer[["station_id", "date"]],
+        [["main", "constant"], ["main"]],
+        config=config,
+        required_features=["main"],
+    )
+    assert result["selected"] == ["main"]
+    assert result["stopping_reason"] == "no_outer_delta_with_positive_paired_lcb"

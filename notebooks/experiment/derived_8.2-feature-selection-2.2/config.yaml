@@ -1,0 +1,101 @@
+experiment:
+  name: derived_8.2-feature-selection-2.2
+  seed: 42
+
+data:
+  target: soil_moisture_5cm
+  station_col: station_id
+  time_col: date
+
+selection:
+  bypass:
+    enabled: false
+  stages:
+    - kind: grouped_oof
+      station_col: station_id
+      time_col: date
+      candidate_sizes: [100, 80, 65, 50, 40]
+      n_station_folds: 4
+      min_train_years: 2
+      max_validation_years: 4
+      min_train_rows: 100
+      min_validation_rows: 20
+      confidence_z: 1.0
+      permutation_repeats: 1
+      permutation_batch_size: 16
+      parallel_workers: 16
+      train_weight_betas: [0.0, 0.2]
+      random_state: 42
+      model_params:
+        objective: reg:squarederror
+        max_depth: 6
+        min_child_weight: 5
+        n_estimators: 160
+        learning_rate: 0.04
+        subsample: 0.9
+        colsample_bytree: 0.8
+        reg_lambda: 1.5
+        reg_alpha: 0.03
+        tree_method: hist
+        n_jobs: 1
+        verbosity: 0
+
+regime_delta:
+  additions: [0, 5, 10, 15]
+  router:
+    kind: clustering_dynamic_k2
+    columns:
+      - SMAP_sm_pm_interp_lag1
+      - G_API
+      - LST_modis
+    n_clusters: 2
+    n_init: 10
+  selection:
+    station_col: station_id
+    time_col: date
+    n_station_folds: 4
+    min_train_years: 2
+    max_validation_years: 4
+    min_train_rows: 100
+    min_validation_rows: 20
+    confidence_z: 1.0
+    permutation_repeats: 1
+    permutation_batch_size: 16
+    parallel_workers: 16
+    train_weight_betas: [0.0, 0.2]
+    random_state: 42
+    model_params:
+      objective: reg:squarederror
+      max_depth: 6
+      min_child_weight: 5
+      n_estimators: 160
+      learning_rate: 0.04
+      subsample: 0.9
+      colsample_bytree: 0.8
+      reg_lambda: 1.5
+      reg_alpha: 0.03
+      tree_method: hist
+      n_jobs: 1
+      verbosity: 0
+
+evaluation:
+  temporal_betas: [0.0, 0.2]
+  xgb_params:
+    objective: reg:squarederror
+    max_depth: 8
+    min_child_weight: 10
+    reg_lambda: 1.5
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    n_estimators: 1500
+    learning_rate: 0.01
+    tree_method: hist
+    n_jobs: 1
+    random_state: 42
+    verbosity: 0
+
+logging:
+  level: INFO
+  console: true
+  log_to_file: true

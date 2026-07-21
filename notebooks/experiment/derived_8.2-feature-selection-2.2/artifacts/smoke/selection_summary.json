@@ -1,0 +1,30 @@
+{
+  "created": "2026-07-20T20:00:45.750988+00:00",
+  "device": "cuda",
+  "smoke": true,
+  "datasets": [
+    {
+      "dataset": "derived_8.0",
+      "global_n_features": 12,
+      "global_stopping_reason": "minimum_grouped_oof_upper_confidence_bound",
+      "regimes": {}
+    },
+    {
+      "dataset": "derived_8.2",
+      "global_n_features": 12,
+      "global_stopping_reason": "minimum_grouped_oof_upper_confidence_bound",
+      "regimes": {
+        "0": {
+          "n_features": 12,
+          "n_delta": 0,
+          "stopping_reason": "no_regime_delta_with_positive_paired_lcb"
+        },
+        "1": {
+          "n_features": 15,
+          "n_delta": 3,
+          "stopping_reason": "positive_paired_lcb"
+        }
+      }
+    }
+  ]
+}

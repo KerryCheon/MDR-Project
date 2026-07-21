@@ -69,7 +69,7 @@ Output per station: processed final CSV under `src/pipeline/data/processed/`.
 ## Important Notes
 
 - This is a team project with many contributors, so ensure configs are well-documented and never hard-code paths.
-- This is a research project, so make sure to show all the works and ensure full reproducibility. Don't just randomly define random constants, include the code used to generate/select these constants. Things in `/scratch` are tracked, so they don't considered reproducible. The rule of thumb is: if you can't provide the code to generate it, it's not reproducible. Save and run whatever search scripts in respective experiment directory instead of your generic scratch directory.
+- This is a research project, so make sure to show all the works and ensure full reproducibility. Don't just randomly define random constants, include the code used to generate/select these constants. Things in `/scratch` or `python - <<'PY'` are not tracked, so they don't considered reproducible. The rule of thumb is: if you can't provide the code to generate it, it's not reproducible. Save and run whatever search scripts in respective experiment directory instead of your generic scratch directory.
 - This is a large project with many moving parts, so only make changes you are confident about. If unsure, ask the team first.
 - Do not modify existing versioned notebooks (e.g. in `archive/v9/`, `archive/v10/`) — create new versions for new experiments to preserve history.
 - When the user asks to read, edit, execute, or work with .ipynb files, use the notebook-cli skill, which provides the `nb` command-line tool. Do not use the built-in Read/Write tools for `.ipynb` files. Never read or write the notebook file directly.

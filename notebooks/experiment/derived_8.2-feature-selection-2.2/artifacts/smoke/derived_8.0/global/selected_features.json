@@ -1,0 +1,196 @@
+{
+  "version": "2.2",
+  "dataset": "derived_8.0",
+  "scope": "global",
+  "created": "2026-07-20T19:59:56.127950+00:00",
+  "git_commit": "6e906625aa860958d9e7e1d4ddafd1d49cd1c4bf",
+  "device": "cuda",
+  "split_hashes": {
+    "train": "bdc93b1f16eb358533ae998cb526a4610fd7aea0c47dcb8670c6d0a832b972c8",
+    "val": "8b9faa0dcfcc2d79b86c27dbc0918f845fe8f23a2de00538bd5ea1b6555e5d23"
+  },
+  "n_features": 12,
+  "features": [
+    "V_rollmin_LST_modis_kobs30",
+    "V_rollmax_G_API_kobs7",
+    "V_ema_LST_modis_kobs14",
+    "V_rollmin_G_API_kobs30",
+    "API_x_year",
+    "C_lag_LST_modis_kobs5",
+    "V_ema_G_API_kobs7",
+    "V_rollmax_G_API_kobs14",
+    "V_rollstd_F_NDVI_kobs30",
+    "LST_modis",
+    "V_ema_LST_modis_kobs30",
+    "V_rollmin_s2_b12_kobs14"
+  ],
+  "stopping_reason": "minimum_grouped_oof_upper_confidence_bound",
+  "scores": {
+    "V_rollmin_LST_modis_kobs30": 0.048200964128539144,
+    "V_rollmax_G_API_kobs7": 0.005506077301153047,
+    "V_ema_LST_modis_kobs14": -0.00021247804119672864,
+    "V_rollmin_G_API_kobs30": 0.0,
+    "API_x_year": 0.024864021667163283,
+    "C_lag_LST_modis_kobs5": -0.0034169613535637283,
+    "V_ema_G_API_kobs7": 0.015201674596337034,
+    "V_rollmax_G_API_kobs14": 0.007485229661154947,
+    "V_rollstd_F_NDVI_kobs30": 0.0012022470475810954,
+    "LST_modis": -0.0002234293924591171,
+    "V_ema_LST_modis_kobs30": 4.336808689942018e-19,
+    "V_rollmin_s2_b12_kobs14": -0.021413624286403254
+  },
+  "selection_path": [
+    {
+      "n_features": 12,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "V_rollmax_G_API_kobs7",
+        "V_ema_LST_modis_kobs14",
+        "V_rollmin_G_API_kobs30",
+        "API_x_year",
+        "C_lag_LST_modis_kobs5",
+        "V_ema_G_API_kobs7",
+        "V_rollmax_G_API_kobs14",
+        "V_rollstd_F_NDVI_kobs30",
+        "LST_modis",
+        "V_ema_LST_modis_kobs30",
+        "V_rollmin_s2_b12_kobs14"
+      ],
+      "mean_nrmse": 0.7274457267431254,
+      "standard_error": 0.03618400463386773,
+      "upper_confidence_bound": 0.7636297313769931,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985",
+            "Spokane",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 3510,
+          "n_validation": 641,
+          "rmse": 0.07531530386266018,
+          "nrmse": 0.6912617221092576
+        },
+        {
+          "fold_id": "year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4739,
+          "n_validation": 698,
+          "rmse": 0.08014748336155862,
+          "nrmse": 0.7636297313769931
+        }
+      ]
+    },
+    {
+      "n_features": 8,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "API_x_year",
+        "V_ema_G_API_kobs7",
+        "V_rollmax_G_API_kobs14",
+        "V_rollmax_G_API_kobs7",
+        "V_rollstd_F_NDVI_kobs30",
+        "V_ema_LST_modis_kobs30",
+        "V_rollmin_G_API_kobs30"
+      ],
+      "mean_nrmse": 0.7234844176376054,
+      "standard_error": 0.04348333468624316,
+      "upper_confidence_bound": 0.7669677523238485,
+      "fold_metrics": [
+        {
+          "fold_id": "year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985",
+            "Spokane",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 3510,
+          "n_validation": 641,
+          "rmse": 0.07408841912025489,
+          "nrmse": 0.6800010829513623
+        },
+        {
+          "fold_id": "year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 4739,
+          "n_validation": 698,
+          "rmse": 0.08049782851878058,
+          "nrmse": 0.7669677523238486
+        }
+      ]
+    }
+  ],
+  "baseline_required": null,
+  "folds": [
+    {
+      "fold_id": "year_2022_stations_0",
+      "validation_year": 2022,
+      "held_out_stations": [
+        "SourdoughGulch_WA_985",
+        "Spokane",
+        "Touchet_WA_824"
+      ],
+      "n_train": 3510,
+      "n_validation": 641
+    },
+    {
+      "fold_id": "year_2022_stations_1",
+      "validation_year": 2022,
+      "held_out_stations": [
+        "Darrington",
+        "Quinault"
+      ],
+      "n_train": 4739,
+      "n_validation": 698
+    }
+  ],
+  "config": {
+    "station_col": "station_id",
+    "time_col": "date",
+    "candidate_sizes": [
+      12,
+      8
+    ],
+    "n_station_folds": 2,
+    "min_train_years": 2,
+    "max_validation_years": 1,
+    "min_train_rows": 100,
+    "min_validation_rows": 20,
+    "confidence_z": 1.0,
+    "permutation_repeats": 1,
+    "train_weight_betas": [
+      0.0
+    ],
+    "random_state": 42,
+    "model_params": {
+      "objective": "reg:squarederror",
+      "max_depth": 3,
+      "min_child_weight": 5,
+      "n_estimators": 20,
+      "learning_rate": 0.04,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8,
+      "reg_lambda": 1.5,
+      "reg_alpha": 0.03,
+      "tree_method": "hist",
+      "n_jobs": 1,
+      "verbosity": 0,
+      "device": "cuda"
+    }
+  }
+}

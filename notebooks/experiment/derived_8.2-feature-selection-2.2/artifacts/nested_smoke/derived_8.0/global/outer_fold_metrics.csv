@@ -1,0 +1,5 @@
+n_features,candidate_mean_nrmse,candidate_ucb,fold_id,validation_year,held_out_stations,beta,n_train,n_validation,rmse,nrmse
+12,0.927287721223774,1.0415458532683877,outer_year_2022_stations_0_beta_0,2022,"['Darrington', 'SourdoughGulch_WA_985', 'Spokane']",0.0,2844,977,0.12046413379846459,1.0415458532683877
+12,0.927287721223774,1.0415458532683877,outer_year_2022_stations_1_beta_0,2022,"['Quinault', 'Touchet_WA_824']",0.0,4024,362,0.06367008244200098,0.8130295891791602
+8,0.9257817752899802,1.037918158918333,outer_year_2022_stations_0_beta_0,2022,"['Darrington', 'SourdoughGulch_WA_985', 'Spokane']",0.0,2844,977,0.12004455836048115,1.037918158918333
+8,0.9257817752899802,1.037918158918333,outer_year_2022_stations_1_beta_0,2022,"['Quinault', 'Touchet_WA_824']",0.0,4024,362,0.06371830724875893,0.8136453916616272

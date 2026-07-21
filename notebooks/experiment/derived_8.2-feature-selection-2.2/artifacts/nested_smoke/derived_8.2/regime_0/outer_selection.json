@@ -1,0 +1,285 @@
+{
+  "kind": "forward_station_time_outer_selection",
+  "selected": [
+    "C_lag_LST_modis_kobs30",
+    "V_rollmin_G_API_kobs30",
+    "latitude",
+    "aspect",
+    "DOY",
+    "V_rollmax_F_NDVI_kobs30",
+    "D_sin_DOY",
+    "V_rollmax_E_SAR_diff_kobs30",
+    "V_rollmax_LST_modis_kobs30",
+    "longitude",
+    "V_rollmean_G_API_kobs7",
+    "V_rollmax_F_NDVI_kobs14",
+    "V_rollmean_G_API_kobs30",
+    "V_rollmin_F_NDVI_kobs30",
+    "V_rollmax_G_API_kobs14"
+  ],
+  "candidate_summaries": [
+    {
+      "n_features": 15,
+      "features": [
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_G_API_kobs30",
+        "latitude",
+        "aspect",
+        "DOY",
+        "V_rollmax_F_NDVI_kobs30",
+        "D_sin_DOY",
+        "V_rollmax_E_SAR_diff_kobs30",
+        "V_rollmax_LST_modis_kobs30",
+        "longitude",
+        "V_rollmean_G_API_kobs7",
+        "V_rollmax_F_NDVI_kobs14",
+        "V_rollmean_G_API_kobs30",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollmax_G_API_kobs14"
+      ],
+      "mean_nrmse": 1.0001578848179657,
+      "standard_error": 0.0009597413966460077,
+      "upper_confidence_bound": 1.0011176262146118,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "Darrington",
+            "HartsPass_WA_515",
+            "MartenRidge_WA_999",
+            "SourdoughGulch_WA_985",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4159,
+          "n_validation": 837,
+          "rmse": 0.13310319826733563,
+          "nrmse": 1.0011176262146118
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BurntMountain_WA",
+            "CayusePass_WA",
+            "Paradise_WA",
+            "Quinault",
+            "RainyPass_WA_711",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4209,
+          "n_validation": 862,
+          "rmse": 0.10958188002542925,
+          "nrmse": 0.9991981434213197
+        }
+      ],
+      "paired_improvement_vs_required": {
+        "mean_delta_nrmse": 0.0028794654705871503,
+        "standard_error": 2.3846793014703493e-06,
+        "lower_confidence_bound": 0.00287708079128568,
+        "n_pairs": 2
+      }
+    },
+    {
+      "n_features": 12,
+      "features": [
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_G_API_kobs30",
+        "latitude",
+        "aspect",
+        "DOY",
+        "V_rollmax_F_NDVI_kobs30",
+        "D_sin_DOY",
+        "V_rollmax_E_SAR_diff_kobs30",
+        "V_rollmax_LST_modis_kobs30",
+        "longitude",
+        "V_rollmean_G_API_kobs7",
+        "V_rollmax_F_NDVI_kobs14"
+      ],
+      "mean_nrmse": 1.0030373502885528,
+      "standard_error": 0.0009621260759474781,
+      "upper_confidence_bound": 1.0039994763645002,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "Darrington",
+            "HartsPass_WA_515",
+            "MartenRidge_WA_999",
+            "SourdoughGulch_WA_985",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 4159,
+          "n_validation": 837,
+          "rmse": 0.1334863535148641,
+          "nrmse": 1.0039994763645004
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BurntMountain_WA",
+            "CayusePass_WA",
+            "Paradise_WA",
+            "Quinault",
+            "RainyPass_WA_711",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4209,
+          "n_validation": 862,
+          "rmse": 0.10989740895647249,
+          "nrmse": 1.0020752242126054
+        }
+      ],
+      "paired_improvement_vs_required": {
+        "mean_delta_nrmse": 0.0,
+        "standard_error": 0.0,
+        "lower_confidence_bound": 0.0,
+        "n_pairs": 2
+      }
+    }
+  ],
+  "baseline_required": {
+    "n_features": 12,
+    "features": [
+      "C_lag_LST_modis_kobs30",
+      "V_rollmin_G_API_kobs30",
+      "latitude",
+      "aspect",
+      "DOY",
+      "V_rollmax_F_NDVI_kobs30",
+      "D_sin_DOY",
+      "V_rollmax_E_SAR_diff_kobs30",
+      "V_rollmax_LST_modis_kobs30",
+      "longitude",
+      "V_rollmean_G_API_kobs7",
+      "V_rollmax_F_NDVI_kobs14"
+    ],
+    "mean_nrmse": 1.0030373502885528,
+    "standard_error": 0.0009621260759474781,
+    "upper_confidence_bound": 1.0039994763645002,
+    "fold_metrics": [
+      {
+        "fold_id": "outer_year_2022_stations_0_beta_0",
+        "validation_year": 2022,
+        "held_out_stations": [
+          "BeaverPass_WA_990",
+          "Darrington",
+          "HartsPass_WA_515",
+          "MartenRidge_WA_999",
+          "SourdoughGulch_WA_985",
+          "Touchet_WA_824"
+        ],
+        "beta": 0.0,
+        "n_train": 4159,
+        "n_validation": 837,
+        "rmse": 0.1334863535148641,
+        "nrmse": 1.0039994763645004
+      },
+      {
+        "fold_id": "outer_year_2022_stations_1_beta_0",
+        "validation_year": 2022,
+        "held_out_stations": [
+          "BurntMountain_WA",
+          "CayusePass_WA",
+          "Paradise_WA",
+          "Quinault",
+          "RainyPass_WA_711",
+          "Spokane"
+        ],
+        "beta": 0.0,
+        "n_train": 4209,
+        "n_validation": 862,
+        "rmse": 0.10989740895647249,
+        "nrmse": 1.0020752242126054
+      }
+    ],
+    "paired_improvement_vs_required": {
+      "mean_delta_nrmse": 0.0,
+      "standard_error": 0.0,
+      "lower_confidence_bound": 0.0,
+      "n_pairs": 2
+    }
+  },
+  "folds": [
+    {
+      "fold_id": "outer_year_2022_stations_0",
+      "validation_year": 2022,
+      "held_out_stations": [
+        "BeaverPass_WA_990",
+        "Darrington",
+        "HartsPass_WA_515",
+        "MartenRidge_WA_999",
+        "SourdoughGulch_WA_985",
+        "Touchet_WA_824"
+      ],
+      "n_train": 4159,
+      "n_validation": 837
+    },
+    {
+      "fold_id": "outer_year_2022_stations_1",
+      "validation_year": 2022,
+      "held_out_stations": [
+        "BurntMountain_WA",
+        "CayusePass_WA",
+        "Paradise_WA",
+        "Quinault",
+        "RainyPass_WA_711",
+        "Spokane"
+      ],
+      "n_train": 4209,
+      "n_validation": 862
+    }
+  ],
+  "stopping_reason": "outer_positive_paired_lcb",
+  "required_features": [
+    "C_lag_LST_modis_kobs30",
+    "V_rollmin_G_API_kobs30",
+    "latitude",
+    "aspect",
+    "DOY",
+    "V_rollmax_F_NDVI_kobs30",
+    "D_sin_DOY",
+    "V_rollmax_E_SAR_diff_kobs30",
+    "V_rollmax_LST_modis_kobs30",
+    "longitude",
+    "V_rollmean_G_API_kobs7",
+    "V_rollmax_F_NDVI_kobs14"
+  ],
+  "config": {
+    "station_col": "station_id",
+    "time_col": "date",
+    "n_station_folds": 2,
+    "max_validation_years": 1,
+    "min_train_rows": 40,
+    "min_validation_rows": 8,
+    "confidence_z": 1.0,
+    "parallel_workers": 16,
+    "train_weight_betas": [
+      0.0
+    ],
+    "random_state": 42,
+    "model_params": {
+      "objective": "reg:squarederror",
+      "max_depth": 3,
+      "min_child_weight": 10,
+      "n_estimators": 20,
+      "learning_rate": 0.01,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8,
+      "reg_lambda": 1.5,
+      "reg_alpha": 0.03,
+      "tree_method": "hist",
+      "n_jobs": 1,
+      "verbosity": 0,
+      "device": "cuda"
+    }
+  }
+}

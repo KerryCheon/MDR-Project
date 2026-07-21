@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "source_tree_sha256": "28fb2c8b92610181836b4360dca2a0409ec87f71762e68a46409a398a7ef84d9",
+  "files": {
+    "metrics_summary.csv": "4678377f2033f4157d3b9af0a04bc83d9a110dd7bbe9b98628d7fb5c51619d02",
+    "metrics_by_year.csv": "83d8c74afa0d234cbed57463d9133388f24ed42a5f10a60c0c1ac8e2d0a73e4b",
+    "metrics_by_station.csv": "ad042bcc6f56dfb3ac2ef7ce3beefd73bfcbf50d2737383e32187e0ff75811df",
+    "evaluation_manifest.json": "00d0d830e4a9c022c6344498bd7a1d2b69a60ecda57f7f8cdf23e3c626202ee9"
+  }
+}
