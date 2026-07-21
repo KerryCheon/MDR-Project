@@ -1,7 +1,10 @@
 {
-  "created": "2026-07-20T20:59:04.612566+00:00",
-  "device": "cuda",
+  "created": "2026-07-21T03:59:36.824403+00:00",
+  "device": "cpu",
+  "parallel_workers": 16,
   "artifact_set": "final",
   "final_test": false,
+  "retrospective_test": false,
+  "unbiased_sota_eligible": false,
   "gates": {}
 }

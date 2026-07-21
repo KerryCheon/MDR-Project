@@ -16,32 +16,32 @@
 Add `run_all.py` without a shebang. It becomes the canonical entry point and calls the existing saved scripts in this order:
 
 1. `run_selection.py` for the global and regime selections.
-2. `run_eval.py` for development validation.
-3. `run_eval.py` for retrospective 2023-2025 evaluation of the final selection.
+2. `run_eval.py --artifact-set final` for development validation.
+3. `run_eval.py --artifact-set final --retrospective-test` for retrospective 2023-2025 evaluation of the final selection.
 4. `run_nested_selection.py`.
 5. `run_locked_outer_selection.py`.
 6. `run_crossed_candidate_selection.py`.
 7. `run_crossed_candidate_selection.py --progressive --dataset derived_8.0`.
-8. `run_candidate_diagnostics.py` for nested candidates.
-9. `run_candidate_diagnostics.py` for crossed candidates.
-10. `run_candidate_diagnostics.py` for progressive candidates.
-11. `run_eval.py` for nested retrospective evaluation.
-12. `run_eval.py` for crossed retrospective evaluation.
+8. `run_candidate_diagnostics.py --artifact-set nested`.
+9. `run_candidate_diagnostics.py --artifact-set crossed_candidates_locked_outer`.
+10. `run_candidate_diagnostics.py --artifact-set progressive_crossed_locked_outer`.
+11. `run_eval.py --artifact-set nested --retrospective-test`.
+12. `run_eval.py --artifact-set crossed_candidates_locked_outer --retrospective-test`.
 13. `generate_results.py`.
 
 Default runtime:
 
 ```text
-device: cpu
-workers: 16
+device: cuda
+workers: 4
 XGBoost n_jobs per fit: 1
 ```
 
 CLI:
 
 ```text
---device {cpu,cuda}   default: cpu
---workers INTEGER     default: 16
+--device {cpu,cuda}   default: cuda
+--workers INTEGER     default: 4
 --restart             discard an incomplete run and begin again
 ```
 
@@ -49,7 +49,7 @@ The runner must use `sys.executable` and saved script paths. It must not use inl
 
 ### Evaluation interface
 
-Extend `run_eval.py` so the existing `final` artifact set can be evaluated retrospectively without claiming a new unbiased final result.
+Extend `run_eval.py` so `--artifact-set final --retrospective-test` writes `artifacts/final/retrospective_test_eval/` without claiming a new unbiased final result. Historical thresholds may be displayed for context but are never a new pass/fail verdict.
 
 The clean rerun must label every 2023-2025 result:
 
@@ -67,7 +67,7 @@ The previous one-shot-final interpretation is removed because the test period ha
 Add `generate_results.py`. It owns all calculations used in `RESULTS.md`, including:
 
 - selecting rows from evaluation summaries;
-- selecting the best diagnostic candidate;
+- selecting the outer-period diagnostic candidate deterministically (outer R², lower outer RMSE, fewer features, then candidate index) and reporting any retrospective ceiling only as descriptive;
 - calculating differences between global and MoE models;
 - feature counts;
 - pass/fail comparisons;
@@ -106,7 +106,7 @@ This removes and replaces:
 
 No backup or additional artifact version is created. Git history remains the only historical copy.
 
-The clean run recreates only the full artifact sets needed by the final experiment. Smoke artifacts are not regenerated unless their smoke runners are invoked separately.
+The clean run recreates only the full artifact sets needed by the final experiment. Smoke artifacts are intentionally absent after a completed clean run unless their smoke runners are invoked separately.
 
 ### Automatic resume
 
@@ -143,6 +143,8 @@ Behavior:
 - If a stage fails, stop immediately and retain previous completed stages for the next VM session.
 - Write `run_state.json` atomically.
 
+The journal records hashes of the saved runner and direct configuration files for each completed stage. If they change before resume, require `--restart`; this is limited resume safety, not repository-wide source provenance.
+
 Completion markers continue to store hashes of required output files so partial artifacts cannot be reused. They do not store Git or source hashes.
 
 ## 3. Notebook workflow
@@ -163,7 +165,7 @@ Running all cells must:
 
 Remove `RUN_SMOKE = False` and `RUN_FULL = False`. A new user must not need to discover or change hidden flags before anything runs.
 
-Include a prominent note that the full run is long-running, defaults to 16 CPU workers, and can be resumed by running the notebook again.
+Include a prominent note that the full run is long-running, defaults to four CUDA workers, and can be resumed by running the notebook again.
 
 ### Analysis notebooks
 
@@ -256,8 +258,8 @@ Update tests to cover:
 4. a completed run starts clean when executed again;
 5. `--restart` clears an incomplete run;
 6. only the known experiment artifact directory can be deleted;
-7. default device is CPU;
-8. default worker count is 16;
+7. default device is CUDA;
+8. default worker count is 4;
 9. each XGBoost fit uses one internal worker;
 10. every runner supports `--help` without performing work;
 11. master-runner stages execute in the required order;

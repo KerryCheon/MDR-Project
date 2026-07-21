@@ -18,9 +18,9 @@ import yaml
 from artifact_state import (
     artifact_is_complete,
     atomic_write_json,
-    capture_source_state,
     write_completion_marker,
 )
+from runtime import add_runtime_arguments, validate_workers
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -35,7 +35,6 @@ from run_nested_selection import (  # noqa: E402
     NESTED_REQUIRED_FILES,
     _load_inner_outer,
     _prepare_xy,
-    _probe_device,
     _write_nested_artifact,
 )
 
@@ -97,17 +96,20 @@ def main(argv=None) -> None:
         choices=("derived_8.0", "derived_8.2"),
         help="Limit the run; may be repeated. Defaults to both datasets.",
     )
+    add_runtime_arguments(parser)
     args = parser.parse_args(argv)
     with open(EXP_DIR / "nested_config.yaml", encoding="utf-8") as stream:
         config = yaml.safe_load(stream)
-    device = _probe_device()
+    workers = validate_workers(args.workers)
+    device = args.device
     inner_config = json.loads(json.dumps(config["inner_selection"]))
     inner_config["fold_strategy"] = "forward_time"
     inner_config["progressive_elimination"] = bool(args.progressive)
     inner_config["model_params"]["device"] = device
+    inner_config["parallel_workers"] = workers
     outer_config = json.loads(json.dumps(config["outer_selection"]))
     outer_config["model_params"]["device"] = device
-    source_state = capture_source_state(PROJECT_ROOT, EXP_DIR)
+    outer_config["parallel_workers"] = workers
     artifact_name = (
         "progressive_crossed_locked_outer"
         if args.progressive
@@ -124,7 +126,6 @@ def main(argv=None) -> None:
         if artifact_is_complete(
             scope_dir,
             CROSSED_REQUIRED_FILES,
-            expected_source_tree_sha256=source_state["source_tree_sha256"],
         ):
             with open(selected_path, encoding="utf-8") as stream:
                 selected_payload = json.load(stream)
@@ -159,7 +160,6 @@ def main(argv=None) -> None:
             scope_dir,
             [temporal_path.name],
             marker_name=TEMPORAL_COMPLETION_MARKER,
-            expected_source_tree_sha256=source_state["source_tree_sha256"],
         ):
             with open(temporal_path, encoding="utf-8") as stream:
                 temporal_inner = json.load(stream)
@@ -175,7 +175,6 @@ def main(argv=None) -> None:
             write_completion_marker(
                 scope_dir,
                 [temporal_path.name],
-                source_state=source_state,
                 marker_name=TEMPORAL_COMPLETION_MARKER,
             )
             print(f"Saved forward-time inner result for {dataset}", flush=True)
@@ -245,7 +244,6 @@ def main(argv=None) -> None:
             outer_result=outer_result,
             split_hashes=hashes,
             device=device,
-            source_state=source_state,
             write_completion=False,
         )
         sources = []
@@ -256,7 +254,6 @@ def main(argv=None) -> None:
             sources.append("forward_time")
         source_manifest = {
             "created": datetime.now(timezone.utc).isoformat(),
-            "source_state": source_state,
             "station_time_inner": str(station_path.relative_to(PROJECT_ROOT)),
             "forward_time_inner": "forward_time_inner_selection.json",
             "n_unique_candidates": len(candidates),
@@ -266,7 +263,6 @@ def main(argv=None) -> None:
         write_completion_marker(
             scope_dir,
             CROSSED_REQUIRED_FILES,
-            source_state=source_state,
         )
         summary = {
             "dataset": dataset,
@@ -283,7 +279,6 @@ def main(argv=None) -> None:
             "device": device,
             "inner_parallel_workers": inner_config["parallel_workers"],
             "outer_parallel_workers": outer_config["parallel_workers"],
-            "source_state": source_state,
             "datasets": summaries,
         },
     )

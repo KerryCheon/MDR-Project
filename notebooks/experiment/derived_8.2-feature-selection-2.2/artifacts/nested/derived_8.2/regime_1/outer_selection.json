@@ -2,1089 +2,139 @@
   "kind": "forward_station_time_outer_selection",
   "selected": [
     "V_rollmin_G_API_kobs30",
-    "V_rollmax_LST_modis_kobs30",
-    "C_lag_F_NDVI_kobs30",
+    "D_sin_DOY",
     "V_rollmean_LST_modis_kobs30",
+    "V_rollmax_LST_modis_kobs30",
     "latitude",
     "K_aspect_cos",
-    "V_rollmax_E_SAR_ratio_kobs30",
-    "J_elev_m",
     "V_rollmin_F_NDVI_kobs30",
-    "A_d_LST_modis_kobs30",
-    "A_d_E_SAR_ratio_kobs30",
-    "V_ema_G_API_kobs30",
-    "V_rollmin_LST_modis_kobs7",
-    "V_ema_G_API_kobs7",
-    "G_rain_sum_3d",
-    "G_API",
-    "V_rollmean_SMAP_sm_interp_kobs7",
-    "G_rain_sum_7d",
-    "V_rollmax_G_API_kobs7",
-    "K_slope_sin",
-    "V_rollmean_E_SAR_diff_kobs7",
-    "C_lag_G_API_kobs1",
-    "A_d_G_API_kobs14",
-    "A_grad_E_SAR_diff_kobs30",
     "elev",
-    "V_rollstd_F_NDVI_kobs14",
-    "SMAP_sm_pm_interp_lag30",
-    "V_rollcv_G_API_kobs7",
-    "J_bio_bio02",
+    "V_ema_G_API_kobs7",
+    "A_d_LST_modis_kobs30",
+    "C_lag_F_NDVI_kobs30",
+    "C_lag_G_API_kobs1",
+    "G_rain_sum_3d",
+    "A_d_E_SAR_ratio_kobs30",
+    "G_API",
+    "G_rain_sum_7d",
+    "V_rollrng_LST_modis_kobs30",
+    "J_bio_bio17",
     "precip_mm",
-    "A_grad_E_SAR_diff_kobs14",
+    "V_rollcv_G_API_kobs7",
+    "A_d_G_API_kobs1",
+    "V_rollmean_E_SAR_ratio_kobs14",
+    "A_grad_G_API_kobs14",
+    "A_d_G_API_kobs30",
+    "V_rollcv_SMAP_sm_interp_kobs14",
+    "A_d_E_SAR_ratio_kobs5",
+    "A_d_G_API_kobs14",
+    "A_d_s2_b12_kobs5",
+    "A_d_E_SAR_diff_kobs2",
+    "A_d_LST_modis_kobs2",
     "A_d_G_API_kobs2",
-    "SMAP_sm_interp_rollmean7",
     "A_d_E_SAR_ratio_kobs2",
-    "H_corr_LST_modis__F_NDMI_kobs7",
-    "A_d_s2_b11_kobs2",
-    "J_bio_bio14",
-    "J_bio_bio19",
-    "J_bio_bio18",
+    "A_d_SMAP_sm_interp_kobs1",
     "SMAP_sm_am_interp_mask",
     "SMAP_sm_pm_interp_mask",
     "SMAP_sm_interp_mask",
-    "J_bio_bio17",
     "year",
     "year_frac",
     "sin_year",
     "cos_year",
     "G_DSLR_isnan",
-    "A_pct_s2_b12",
     "SMAP_sm_interp_diff1",
-    "A_pct_SMAP_sm_interp",
-    "J_bio_bio13",
-    "SMAP_sm_pm_interp_diff1",
-    "A_d_SMAP_sm_interp_kobs1",
-    "A_d_F_NDVI_kobs2",
-    "A_d_F_NDVI_kobs1",
-    "A_d_s2_b12_kobs1",
-    "J_bio_bio12",
-    "A_d_F_NDMI_kobs2",
-    "J_soil_texture_usda_b60",
     "SMAP_sm_interp_pctchg",
-    "A_pct_F_NDMI",
-    "SMAP_sm_pm_interp_rollrange7",
+    "A_pct_SMAP_sm_interp",
+    "SMAP_sm_pm_interp_diff1",
+    "SMAP_sm_pm_interp_pctchg",
+    "SMAP_sm_am_interp_rollstd7",
     "A_pct_s2_b11",
-    "A_d_s2_b11_kobs1"
+    "A_d_SMAP_sm_interp_kobs2",
+    "J_bio_bio18",
+    "aspect",
+    "J_bio_bio09",
+    "C_lag_E_SAR_diff_kobs12",
+    "V_rollmean_s2_b11_kobs14",
+    "V_rollmin_s2_b12_kobs30",
+    "E_rough_s1_vh_kobs14",
+    "V_rollmin_E_SAR_ratio_kobs14",
+    "API_x_year",
+    "V_rollmax_G_API_kobs7",
+    "J_elev_m"
   ],
   "candidate_summaries": [
-    {
-      "n_features": 80,
-      "features": [
-        "V_rollmin_G_API_kobs30",
-        "V_rollmax_LST_modis_kobs30",
-        "C_lag_F_NDVI_kobs30",
-        "V_rollmean_LST_modis_kobs30",
-        "latitude",
-        "K_aspect_cos",
-        "V_rollmax_E_SAR_ratio_kobs30",
-        "J_elev_m",
-        "V_rollmin_F_NDVI_kobs30",
-        "A_d_LST_modis_kobs30",
-        "A_d_E_SAR_ratio_kobs30",
-        "V_ema_G_API_kobs30",
-        "V_rollmin_LST_modis_kobs7",
-        "V_ema_G_API_kobs7",
-        "G_rain_sum_3d",
-        "G_API",
-        "V_rollmean_SMAP_sm_interp_kobs7",
-        "G_rain_sum_7d",
-        "V_rollmax_G_API_kobs7",
-        "K_slope_sin",
-        "V_rollmean_E_SAR_diff_kobs7",
-        "C_lag_G_API_kobs1",
-        "A_d_G_API_kobs14",
-        "A_grad_E_SAR_diff_kobs30",
-        "elev",
-        "V_rollstd_F_NDVI_kobs14",
-        "SMAP_sm_pm_interp_lag30",
-        "V_rollcv_G_API_kobs7",
-        "J_bio_bio02",
-        "precip_mm",
-        "A_grad_E_SAR_diff_kobs14",
-        "A_d_G_API_kobs2",
-        "SMAP_sm_interp_rollmean7",
-        "A_d_E_SAR_ratio_kobs2",
-        "H_corr_LST_modis__F_NDMI_kobs7",
-        "A_d_s2_b11_kobs2",
-        "J_bio_bio14",
-        "J_bio_bio19",
-        "J_bio_bio18",
-        "SMAP_sm_am_interp_mask",
-        "SMAP_sm_pm_interp_mask",
-        "SMAP_sm_interp_mask",
-        "J_bio_bio17",
-        "year",
-        "year_frac",
-        "sin_year",
-        "cos_year",
-        "G_DSLR_isnan",
-        "A_pct_s2_b12",
-        "SMAP_sm_interp_diff1",
-        "A_pct_SMAP_sm_interp",
-        "J_bio_bio13",
-        "SMAP_sm_pm_interp_diff1",
-        "A_d_SMAP_sm_interp_kobs1",
-        "A_d_F_NDVI_kobs2",
-        "A_d_F_NDVI_kobs1",
-        "A_d_s2_b12_kobs1",
-        "J_bio_bio12",
-        "A_d_F_NDMI_kobs2",
-        "J_soil_texture_usda_b60",
-        "SMAP_sm_interp_pctchg",
-        "A_pct_F_NDMI",
-        "SMAP_sm_pm_interp_rollrange7",
-        "A_pct_s2_b11",
-        "A_d_s2_b11_kobs1",
-        "aspect",
-        "J_bio_bio09",
-        "J_bio_bio10",
-        "C_lag_E_SAR_diff_kobs12",
-        "C_smm_SMAP_sm_interp_alpha0.85_n5",
-        "V_rollmin_E_SAR_ratio_kobs14",
-        "V_rollmin_s2_b12_kobs30",
-        "V_rollcv_G_API_kobs30",
-        "V_rollmean_s2_b12_kobs14",
-        "V_rollmean_s2_b11_kobs14",
-        "V_rollstd_G_API_kobs30",
-        "C_lag_F_NDVI_kobs1",
-        "SMAP_sm_am_interp_rollmean7",
-        "V_rollmin_E_SAR_diff_kobs14",
-        "C_lag_SMAP_sm_interp_kobs2"
-      ],
-      "mean_nrmse": 0.7661329775131334,
-      "standard_error": 0.05606751716461219,
-      "upper_confidence_bound": 0.8222004946777456,
-      "fold_metrics": [
-        {
-          "fold_id": "outer_year_2021_stations_0_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.0,
-          "n_train": 5534,
-          "n_validation": 347,
-          "rmse": 0.10670980341942667,
-          "nrmse": 0.8162071838922781
-        },
-        {
-          "fold_id": "outer_year_2021_stations_0_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.2,
-          "n_train": 5534,
-          "n_validation": 347,
-          "rmse": 0.14147550996745362,
-          "nrmse": 1.0821248271481414
-        },
-        {
-          "fold_id": "outer_year_2021_stations_1_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.0,
-          "n_train": 5454,
-          "n_validation": 482,
-          "rmse": 0.04756968377490416,
-          "nrmse": 0.6209380470988544
-        },
-        {
-          "fold_id": "outer_year_2021_stations_1_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.2,
-          "n_train": 5454,
-          "n_validation": 482,
-          "rmse": 0.047536924344073965,
-          "nrmse": 0.6205104306971977
-        },
-        {
-          "fold_id": "outer_year_2021_stations_2_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.0,
-          "n_train": 5369,
-          "n_validation": 373,
-          "rmse": 0.034401501407873535,
-          "nrmse": 0.38693394990984875
-        },
-        {
-          "fold_id": "outer_year_2021_stations_2_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.2,
-          "n_train": 5369,
-          "n_validation": 373,
-          "rmse": 0.037127361681660344,
-          "nrmse": 0.4175933060272906
-        },
-        {
-          "fold_id": "outer_year_2021_stations_3_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.0,
-          "n_train": 5651,
-          "n_validation": 458,
-          "rmse": 0.05384200207527184,
-          "nrmse": 0.9277123871553989
-        },
-        {
-          "fold_id": "outer_year_2021_stations_3_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.2,
-          "n_train": 5651,
-          "n_validation": 458,
-          "rmse": 0.051729765977969834,
-          "nrmse": 0.8913179828514064
-        },
-        {
-          "fold_id": "outer_year_2022_stations_0_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.0,
-          "n_train": 5534,
-          "n_validation": 367,
-          "rmse": 0.1116682741389657,
-          "nrmse": 0.9262817998517265
-        },
-        {
-          "fold_id": "outer_year_2022_stations_0_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.2,
-          "n_train": 5534,
-          "n_validation": 367,
-          "rmse": 0.1396102869120419,
-          "nrmse": 1.1580591608120638
-        },
-        {
-          "fold_id": "outer_year_2022_stations_1_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.0,
-          "n_train": 5454,
-          "n_validation": 488,
-          "rmse": 0.055622636075654125,
-          "nrmse": 0.6543227561059944
-        },
-        {
-          "fold_id": "outer_year_2022_stations_1_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.2,
-          "n_train": 5454,
-          "n_validation": 488,
-          "rmse": 0.05567211533273408,
-          "nrmse": 0.6549048105742256
-        },
-        {
-          "fold_id": "outer_year_2022_stations_2_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.0,
-          "n_train": 5369,
-          "n_validation": 497,
-          "rmse": 0.06123605075270066,
-          "nrmse": 0.6129467846307626
-        },
-        {
-          "fold_id": "outer_year_2022_stations_2_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.2,
-          "n_train": 5369,
-          "n_validation": 497,
-          "rmse": 0.06236506891617356,
-          "nrmse": 0.6242477755435367
-        },
-        {
-          "fold_id": "outer_year_2022_stations_3_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.0,
-          "n_train": 5651,
-          "n_validation": 446,
-          "rmse": 0.11729895125010623,
-          "nrmse": 0.9309521883979801
-        },
-        {
-          "fold_id": "outer_year_2022_stations_3_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.2,
-          "n_train": 5651,
-          "n_validation": 446,
-          "rmse": 0.11756632861538092,
-          "nrmse": 0.9330742495134272
-        }
-      ],
-      "paired_improvement_vs_required": {
-        "mean_delta_nrmse": 0.029493902122584036,
-        "standard_error": 0.038196260025697135,
-        "lower_confidence_bound": -0.008702357903113099,
-        "n_pairs": 16
-      }
-    },
-    {
-      "n_features": 75,
-      "features": [
-        "V_rollmin_G_API_kobs30",
-        "V_rollmax_LST_modis_kobs30",
-        "C_lag_F_NDVI_kobs30",
-        "V_rollmean_LST_modis_kobs30",
-        "latitude",
-        "K_aspect_cos",
-        "V_rollmax_E_SAR_ratio_kobs30",
-        "J_elev_m",
-        "V_rollmin_F_NDVI_kobs30",
-        "A_d_LST_modis_kobs30",
-        "A_d_E_SAR_ratio_kobs30",
-        "V_ema_G_API_kobs30",
-        "V_rollmin_LST_modis_kobs7",
-        "V_ema_G_API_kobs7",
-        "G_rain_sum_3d",
-        "G_API",
-        "V_rollmean_SMAP_sm_interp_kobs7",
-        "G_rain_sum_7d",
-        "V_rollmax_G_API_kobs7",
-        "K_slope_sin",
-        "V_rollmean_E_SAR_diff_kobs7",
-        "C_lag_G_API_kobs1",
-        "A_d_G_API_kobs14",
-        "A_grad_E_SAR_diff_kobs30",
-        "elev",
-        "V_rollstd_F_NDVI_kobs14",
-        "SMAP_sm_pm_interp_lag30",
-        "V_rollcv_G_API_kobs7",
-        "J_bio_bio02",
-        "precip_mm",
-        "A_grad_E_SAR_diff_kobs14",
-        "A_d_G_API_kobs2",
-        "SMAP_sm_interp_rollmean7",
-        "A_d_E_SAR_ratio_kobs2",
-        "H_corr_LST_modis__F_NDMI_kobs7",
-        "A_d_s2_b11_kobs2",
-        "J_bio_bio14",
-        "J_bio_bio19",
-        "J_bio_bio18",
-        "SMAP_sm_am_interp_mask",
-        "SMAP_sm_pm_interp_mask",
-        "SMAP_sm_interp_mask",
-        "J_bio_bio17",
-        "year",
-        "year_frac",
-        "sin_year",
-        "cos_year",
-        "G_DSLR_isnan",
-        "A_pct_s2_b12",
-        "SMAP_sm_interp_diff1",
-        "A_pct_SMAP_sm_interp",
-        "J_bio_bio13",
-        "SMAP_sm_pm_interp_diff1",
-        "A_d_SMAP_sm_interp_kobs1",
-        "A_d_F_NDVI_kobs2",
-        "A_d_F_NDVI_kobs1",
-        "A_d_s2_b12_kobs1",
-        "J_bio_bio12",
-        "A_d_F_NDMI_kobs2",
-        "J_soil_texture_usda_b60",
-        "SMAP_sm_interp_pctchg",
-        "A_pct_F_NDMI",
-        "SMAP_sm_pm_interp_rollrange7",
-        "A_pct_s2_b11",
-        "A_d_s2_b11_kobs1",
-        "aspect",
-        "V_rollmin_s2_b12_kobs30",
-        "C_lag_E_SAR_diff_kobs12",
-        "V_rollmin_E_SAR_diff_kobs14",
-        "V_rollstd_G_API_kobs30",
-        "V_rollmean_s2_b11_kobs14",
-        "V_rollmean_s2_b12_kobs14",
-        "V_rollmin_E_SAR_ratio_kobs14",
-        "C_smm_SMAP_sm_interp_alpha0.85_n5",
-        "SMAP_sm_am_interp_rollmean7"
-      ],
-      "mean_nrmse": 0.7767188557996689,
-      "standard_error": 0.04876334961737422,
-      "upper_confidence_bound": 0.8254822054170432,
-      "fold_metrics": [
-        {
-          "fold_id": "outer_year_2021_stations_0_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.0,
-          "n_train": 5534,
-          "n_validation": 347,
-          "rmse": 0.10829682791466616,
-          "nrmse": 0.828346094775059
-        },
-        {
-          "fold_id": "outer_year_2021_stations_0_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.2,
-          "n_train": 5534,
-          "n_validation": 347,
-          "rmse": 0.14007050493881001,
-          "nrmse": 1.071378155698694
-        },
-        {
-          "fold_id": "outer_year_2021_stations_1_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.0,
-          "n_train": 5454,
-          "n_validation": 482,
-          "rmse": 0.04831953654492411,
-          "nrmse": 0.6307260481465613
-        },
-        {
-          "fold_id": "outer_year_2021_stations_1_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.2,
-          "n_train": 5454,
-          "n_validation": 482,
-          "rmse": 0.05102739714476033,
-          "nrmse": 0.6660723767165503
-        },
-        {
-          "fold_id": "outer_year_2021_stations_2_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.0,
-          "n_train": 5369,
-          "n_validation": 373,
-          "rmse": 0.04259154556986588,
-          "nrmse": 0.47905220079556443
-        },
-        {
-          "fold_id": "outer_year_2021_stations_2_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.2,
-          "n_train": 5369,
-          "n_validation": 373,
-          "rmse": 0.0474684582294468,
-          "nrmse": 0.5339057101341161
-        },
-        {
-          "fold_id": "outer_year_2021_stations_3_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.0,
-          "n_train": 5651,
-          "n_validation": 458,
-          "rmse": 0.04435773307079813,
-          "nrmse": 0.7642958443183848
-        },
-        {
-          "fold_id": "outer_year_2021_stations_3_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.2,
-          "n_train": 5651,
-          "n_validation": 458,
-          "rmse": 0.043607095135190975,
-          "nrmse": 0.7513621478678336
-        },
-        {
-          "fold_id": "outer_year_2022_stations_0_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.0,
-          "n_train": 5534,
-          "n_validation": 367,
-          "rmse": 0.11145243504678769,
-          "nrmse": 0.9244914272116677
-        },
-        {
-          "fold_id": "outer_year_2022_stations_0_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.2,
-          "n_train": 5534,
-          "n_validation": 367,
-          "rmse": 0.14189330284725954,
-          "nrmse": 1.1769966444068396
-        },
-        {
-          "fold_id": "outer_year_2022_stations_1_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.0,
-          "n_train": 5454,
-          "n_validation": 488,
-          "rmse": 0.05715737181715566,
-          "nrmse": 0.6723767821486976
-        },
-        {
-          "fold_id": "outer_year_2022_stations_1_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.2,
-          "n_train": 5454,
-          "n_validation": 488,
-          "rmse": 0.0568567688883748,
-          "nrmse": 0.668840607836752
-        },
-        {
-          "fold_id": "outer_year_2022_stations_2_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.0,
-          "n_train": 5369,
-          "n_validation": 497,
-          "rmse": 0.06530425325921348,
-          "nrmse": 0.6536677588762133
-        },
-        {
-          "fold_id": "outer_year_2022_stations_2_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.2,
-          "n_train": 5369,
-          "n_validation": 497,
-          "rmse": 0.0677940798958836,
-          "nrmse": 0.6785898629713679
-        },
-        {
-          "fold_id": "outer_year_2022_stations_3_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.0,
-          "n_train": 5651,
-          "n_validation": 446,
-          "rmse": 0.12153942151887238,
-          "nrmse": 0.9646070082789111
-        },
-        {
-          "fold_id": "outer_year_2022_stations_3_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.2,
-          "n_train": 5651,
-          "n_validation": 446,
-          "rmse": 0.12131086132102004,
-          "nrmse": 0.9627930226114891
-        }
-      ],
-      "paired_improvement_vs_required": {
-        "mean_delta_nrmse": 0.018908023836048483,
-        "standard_error": 0.03916505322005743,
-        "lower_confidence_bound": -0.020257029384008945,
-        "n_pairs": 16
-      }
-    },
-    {
-      "n_features": 70,
-      "features": [
-        "V_rollmin_G_API_kobs30",
-        "V_rollmax_LST_modis_kobs30",
-        "C_lag_F_NDVI_kobs30",
-        "V_rollmean_LST_modis_kobs30",
-        "latitude",
-        "K_aspect_cos",
-        "V_rollmax_E_SAR_ratio_kobs30",
-        "J_elev_m",
-        "V_rollmin_F_NDVI_kobs30",
-        "A_d_LST_modis_kobs30",
-        "A_d_E_SAR_ratio_kobs30",
-        "V_ema_G_API_kobs30",
-        "V_rollmin_LST_modis_kobs7",
-        "V_ema_G_API_kobs7",
-        "G_rain_sum_3d",
-        "G_API",
-        "V_rollmean_SMAP_sm_interp_kobs7",
-        "G_rain_sum_7d",
-        "V_rollmax_G_API_kobs7",
-        "K_slope_sin",
-        "V_rollmean_E_SAR_diff_kobs7",
-        "C_lag_G_API_kobs1",
-        "A_d_G_API_kobs14",
-        "A_grad_E_SAR_diff_kobs30",
-        "elev",
-        "V_rollstd_F_NDVI_kobs14",
-        "SMAP_sm_pm_interp_lag30",
-        "V_rollcv_G_API_kobs7",
-        "J_bio_bio02",
-        "precip_mm",
-        "A_grad_E_SAR_diff_kobs14",
-        "A_d_G_API_kobs2",
-        "SMAP_sm_interp_rollmean7",
-        "A_d_E_SAR_ratio_kobs2",
-        "H_corr_LST_modis__F_NDMI_kobs7",
-        "A_d_s2_b11_kobs2",
-        "J_bio_bio14",
-        "J_bio_bio19",
-        "J_bio_bio18",
-        "SMAP_sm_am_interp_mask",
-        "SMAP_sm_pm_interp_mask",
-        "SMAP_sm_interp_mask",
-        "J_bio_bio17",
-        "year",
-        "year_frac",
-        "sin_year",
-        "cos_year",
-        "G_DSLR_isnan",
-        "A_pct_s2_b12",
-        "SMAP_sm_interp_diff1",
-        "A_pct_SMAP_sm_interp",
-        "J_bio_bio13",
-        "SMAP_sm_pm_interp_diff1",
-        "A_d_SMAP_sm_interp_kobs1",
-        "A_d_F_NDVI_kobs2",
-        "A_d_F_NDVI_kobs1",
-        "A_d_s2_b12_kobs1",
-        "J_bio_bio12",
-        "A_d_F_NDMI_kobs2",
-        "J_soil_texture_usda_b60",
-        "SMAP_sm_interp_pctchg",
-        "A_pct_F_NDMI",
-        "SMAP_sm_pm_interp_rollrange7",
-        "A_pct_s2_b11",
-        "A_d_s2_b11_kobs1",
-        "aspect",
-        "V_rollmin_s2_b12_kobs30",
-        "C_lag_E_SAR_diff_kobs12",
-        "V_rollmin_E_SAR_diff_kobs14",
-        "V_rollstd_G_API_kobs30"
-      ],
-      "mean_nrmse": 0.7864139067240374,
-      "standard_error": 0.04693137016088173,
-      "upper_confidence_bound": 0.8333452768849192,
-      "fold_metrics": [
-        {
-          "fold_id": "outer_year_2021_stations_0_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.0,
-          "n_train": 5534,
-          "n_validation": 347,
-          "rmse": 0.10903070127074449,
-          "nrmse": 0.833959381334532
-        },
-        {
-          "fold_id": "outer_year_2021_stations_0_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.2,
-          "n_train": 5534,
-          "n_validation": 347,
-          "rmse": 0.13932850974763342,
-          "nrmse": 1.065702746448136
-        },
-        {
-          "fold_id": "outer_year_2021_stations_1_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.0,
-          "n_train": 5454,
-          "n_validation": 482,
-          "rmse": 0.05152294736625125,
-          "nrmse": 0.6725409079817153
-        },
-        {
-          "fold_id": "outer_year_2021_stations_1_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.2,
-          "n_train": 5454,
-          "n_validation": 482,
-          "rmse": 0.05283150233941132,
-          "nrmse": 0.6896217776675501
-        },
-        {
-          "fold_id": "outer_year_2021_stations_2_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.0,
-          "n_train": 5369,
-          "n_validation": 373,
-          "rmse": 0.04417600327852698,
-          "nrmse": 0.4968735299407229
-        },
-        {
-          "fold_id": "outer_year_2021_stations_2_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.2,
-          "n_train": 5369,
-          "n_validation": 373,
-          "rmse": 0.047121501269629607,
-          "nrmse": 0.5300032808383979
-        },
-        {
-          "fold_id": "outer_year_2021_stations_3_beta_0",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.0,
-          "n_train": 5651,
-          "n_validation": 458,
-          "rmse": 0.045665588902015185,
-          "nrmse": 0.7868305571534917
-        },
-        {
-          "fold_id": "outer_year_2021_stations_3_beta_0.2",
-          "validation_year": 2021,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.2,
-          "n_train": 5651,
-          "n_validation": 458,
-          "rmse": 0.04478105859040595,
-          "nrmse": 0.7715898585303775
-        },
-        {
-          "fold_id": "outer_year_2022_stations_0_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.0,
-          "n_train": 5534,
-          "n_validation": 367,
-          "rmse": 0.1134046023945324,
-          "nrmse": 0.9406845411325513
-        },
-        {
-          "fold_id": "outer_year_2022_stations_0_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "BeaverPass_WA_990",
-            "BurntMountain_WA",
-            "Touchet_WA_824"
-          ],
-          "beta": 0.2,
-          "n_train": 5534,
-          "n_validation": 367,
-          "rmse": 0.1414090219896959,
-          "nrmse": 1.172979563030445
-        },
-        {
-          "fold_id": "outer_year_2022_stations_1_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.0,
-          "n_train": 5454,
-          "n_validation": 488,
-          "rmse": 0.05903272460481246,
-          "nrmse": 0.6944376928006425
-        },
-        {
-          "fold_id": "outer_year_2022_stations_1_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Quinault",
-            "RainyPass_WA_711",
-            "SourdoughGulch_WA_985"
-          ],
-          "beta": 0.2,
-          "n_train": 5454,
-          "n_validation": 488,
-          "rmse": 0.058396481426774775,
-          "nrmse": 0.6869531789555774
-        },
-        {
-          "fold_id": "outer_year_2022_stations_2_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.0,
-          "n_train": 5369,
-          "n_validation": 497,
-          "rmse": 0.0662161670699139,
-          "nrmse": 0.6627956276930077
-        },
-        {
-          "fold_id": "outer_year_2022_stations_2_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "Darrington",
-            "HartsPass_WA_515",
-            "Paradise_WA"
-          ],
-          "beta": 0.2,
-          "n_train": 5369,
-          "n_validation": 497,
-          "rmse": 0.06698203789143724,
-          "nrmse": 0.670461668394931
-        },
-        {
-          "fold_id": "outer_year_2022_stations_3_beta_0",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.0,
-          "n_train": 5651,
-          "n_validation": 446,
-          "rmse": 0.12034989956786664,
-          "nrmse": 0.9551662754195436
-        },
-        {
-          "fold_id": "outer_year_2022_stations_3_beta_0.2",
-          "validation_year": 2022,
-          "held_out_stations": [
-            "CayusePass_WA",
-            "MartenRidge_WA_999",
-            "Spokane"
-          ],
-          "beta": 0.2,
-          "n_train": 5651,
-          "n_validation": 446,
-          "rmse": 0.11995371427841817,
-          "nrmse": 0.9520219202629768
-        }
-      ],
-      "paired_improvement_vs_required": {
-        "mean_delta_nrmse": 0.009212972911679957,
-        "standard_error": 0.04017735301146654,
-        "lower_confidence_bound": -0.030964380099786585,
-        "n_pairs": 16
-      }
-    },
     {
       "n_features": 65,
       "features": [
         "V_rollmin_G_API_kobs30",
-        "V_rollmax_LST_modis_kobs30",
-        "C_lag_F_NDVI_kobs30",
+        "D_sin_DOY",
         "V_rollmean_LST_modis_kobs30",
+        "V_rollmax_LST_modis_kobs30",
         "latitude",
         "K_aspect_cos",
-        "V_rollmax_E_SAR_ratio_kobs30",
-        "J_elev_m",
         "V_rollmin_F_NDVI_kobs30",
-        "A_d_LST_modis_kobs30",
-        "A_d_E_SAR_ratio_kobs30",
-        "V_ema_G_API_kobs30",
-        "V_rollmin_LST_modis_kobs7",
-        "V_ema_G_API_kobs7",
-        "G_rain_sum_3d",
-        "G_API",
-        "V_rollmean_SMAP_sm_interp_kobs7",
-        "G_rain_sum_7d",
-        "V_rollmax_G_API_kobs7",
-        "K_slope_sin",
-        "V_rollmean_E_SAR_diff_kobs7",
-        "C_lag_G_API_kobs1",
-        "A_d_G_API_kobs14",
-        "A_grad_E_SAR_diff_kobs30",
         "elev",
-        "V_rollstd_F_NDVI_kobs14",
-        "SMAP_sm_pm_interp_lag30",
-        "V_rollcv_G_API_kobs7",
-        "J_bio_bio02",
+        "V_ema_G_API_kobs7",
+        "A_d_LST_modis_kobs30",
+        "C_lag_F_NDVI_kobs30",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "A_d_E_SAR_ratio_kobs30",
+        "G_API",
+        "G_rain_sum_7d",
+        "V_rollrng_LST_modis_kobs30",
+        "J_bio_bio17",
         "precip_mm",
-        "A_grad_E_SAR_diff_kobs14",
+        "V_rollcv_G_API_kobs7",
+        "A_d_G_API_kobs1",
+        "V_rollmean_E_SAR_ratio_kobs14",
+        "A_grad_G_API_kobs14",
+        "A_d_G_API_kobs30",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_E_SAR_ratio_kobs5",
+        "A_d_G_API_kobs14",
+        "A_d_s2_b12_kobs5",
+        "A_d_E_SAR_diff_kobs2",
+        "A_d_LST_modis_kobs2",
         "A_d_G_API_kobs2",
-        "SMAP_sm_interp_rollmean7",
         "A_d_E_SAR_ratio_kobs2",
-        "H_corr_LST_modis__F_NDMI_kobs7",
-        "A_d_s2_b11_kobs2",
-        "J_bio_bio14",
-        "J_bio_bio19",
-        "J_bio_bio18",
+        "A_d_SMAP_sm_interp_kobs1",
         "SMAP_sm_am_interp_mask",
         "SMAP_sm_pm_interp_mask",
         "SMAP_sm_interp_mask",
-        "J_bio_bio17",
         "year",
         "year_frac",
         "sin_year",
         "cos_year",
         "G_DSLR_isnan",
-        "A_pct_s2_b12",
         "SMAP_sm_interp_diff1",
-        "A_pct_SMAP_sm_interp",
-        "J_bio_bio13",
-        "SMAP_sm_pm_interp_diff1",
-        "A_d_SMAP_sm_interp_kobs1",
-        "A_d_F_NDVI_kobs2",
-        "A_d_F_NDVI_kobs1",
-        "A_d_s2_b12_kobs1",
-        "J_bio_bio12",
-        "A_d_F_NDMI_kobs2",
-        "J_soil_texture_usda_b60",
         "SMAP_sm_interp_pctchg",
-        "A_pct_F_NDMI",
-        "SMAP_sm_pm_interp_rollrange7",
+        "A_pct_SMAP_sm_interp",
+        "SMAP_sm_pm_interp_diff1",
+        "SMAP_sm_pm_interp_pctchg",
+        "SMAP_sm_am_interp_rollstd7",
         "A_pct_s2_b11",
-        "A_d_s2_b11_kobs1"
+        "A_d_SMAP_sm_interp_kobs2",
+        "J_bio_bio18",
+        "aspect",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "C_smm_SMAP_sm_interp_alpha0.85_n5",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "J_elev_m",
+        "C_lag_E_SAR_diff_kobs12",
+        "C_lag_SMAP_sm_interp_kobs2",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmean_s2_b11_kobs14",
+        "E_rough_s1_vh_kobs14",
+        "V_ema_s2_b12_kobs30",
+        "V_rollmin_s2_b12_kobs30",
+        "API_x_year",
+        "SMAP_sm_pm_interp_lag30"
       ],
-      "mean_nrmse": 0.7956268796357174,
-      "standard_error": 0.07364431401749374,
-      "upper_confidence_bound": 0.8692711936532111,
+      "mean_nrmse": 0.841027392992038,
+      "standard_error": 0.08949437085727915,
+      "upper_confidence_bound": 0.9305217638493172,
       "fold_metrics": [
         {
           "fold_id": "outer_year_2021_stations_0_beta_0",
@@ -1097,8 +147,8 @@
           "beta": 0.0,
           "n_train": 5534,
           "n_validation": 347,
-          "rmse": 0.15190200510841748,
-          "nrmse": 1.1618755151277929
+          "rmse": 0.10194093276534533,
+          "nrmse": 0.7797308118797172
         },
         {
           "fold_id": "outer_year_2021_stations_0_beta_0.2",
@@ -1111,8 +161,8 @@
           "beta": 0.2,
           "n_train": 5534,
           "n_validation": 347,
-          "rmse": 0.1514930187642887,
-          "nrmse": 1.1587472402974133
+          "rmse": 0.1242460494876956,
+          "nrmse": 0.9503392838565639
         },
         {
           "fold_id": "outer_year_2021_stations_1_beta_0",
@@ -1125,8 +175,8 @@
           "beta": 0.0,
           "n_train": 5454,
           "n_validation": 482,
-          "rmse": 0.04059035260662327,
-          "nrmse": 0.5298352286274227
+          "rmse": 0.05212523421074103,
+          "nrmse": 0.6804026969896151
         },
         {
           "fold_id": "outer_year_2021_stations_1_beta_0.2",
@@ -1139,8 +189,8 @@
           "beta": 0.2,
           "n_train": 5454,
           "n_validation": 482,
-          "rmse": 0.03589098039545341,
-          "nrmse": 0.468493239952403
+          "rmse": 0.050862939219855324,
+          "nrmse": 0.6639256695153072
         },
         {
           "fold_id": "outer_year_2021_stations_2_beta_0",
@@ -1153,8 +203,8 @@
           "beta": 0.0,
           "n_train": 5369,
           "n_validation": 373,
-          "rmse": 0.04466996471539689,
-          "nrmse": 0.5024294051801528
+          "rmse": 0.04116329593944423,
+          "nrmse": 0.46298783591787784
         },
         {
           "fold_id": "outer_year_2021_stations_2_beta_0.2",
@@ -1167,8 +217,8 @@
           "beta": 0.2,
           "n_train": 5369,
           "n_validation": 373,
-          "rmse": 0.04663291311780657,
-          "nrmse": 0.5245078421009254
+          "rmse": 0.038736544999563555,
+          "nrmse": 0.43569273866376323
         },
         {
           "fold_id": "outer_year_2021_stations_3_beta_0",
@@ -1181,8 +231,8 @@
           "beta": 0.0,
           "n_train": 5651,
           "n_validation": 458,
-          "rmse": 0.05056684179542047,
-          "nrmse": 0.8712804818690812
+          "rmse": 0.10034901912508101,
+          "nrmse": 1.729040980888556
         },
         {
           "fold_id": "outer_year_2021_stations_3_beta_0.2",
@@ -1195,8 +245,8 @@
           "beta": 0.2,
           "n_train": 5651,
           "n_validation": 458,
-          "rmse": 0.04919655380799644,
-          "nrmse": 0.8476700459472091
+          "rmse": 0.0894961004433042,
+          "nrmse": 1.5420422306600845
         },
         {
           "fold_id": "outer_year_2022_stations_0_beta_0",
@@ -1209,8 +259,8 @@
           "beta": 0.0,
           "n_train": 5534,
           "n_validation": 367,
-          "rmse": 0.15058761537515716,
-          "nrmse": 1.2491154580888024
+          "rmse": 0.10595037604602339,
+          "nrmse": 0.8788521697465075
         },
         {
           "fold_id": "outer_year_2022_stations_0_beta_0.2",
@@ -1223,8 +273,8 @@
           "beta": 0.2,
           "n_train": 5534,
           "n_validation": 367,
-          "rmse": 0.15028652005216905,
-          "nrmse": 1.2466178900028366
+          "rmse": 0.12674468813048537,
+          "nrmse": 1.0513397717336581
         },
         {
           "fold_id": "outer_year_2022_stations_1_beta_0",
@@ -1237,8 +287,8 @@
           "beta": 0.0,
           "n_train": 5454,
           "n_validation": 488,
-          "rmse": 0.04002060694800339,
-          "nrmse": 0.4707866380808586
+          "rmse": 0.05252759734964182,
+          "nrmse": 0.6179139410562243
         },
         {
           "fold_id": "outer_year_2022_stations_1_beta_0.2",
@@ -1251,8 +301,8 @@
           "beta": 0.2,
           "n_train": 5454,
           "n_validation": 488,
-          "rmse": 0.041495672313769015,
-          "nrmse": 0.4881387253543115
+          "rmse": 0.05290188744120642,
+          "nrmse": 0.6223169420927558
         },
         {
           "fold_id": "outer_year_2022_stations_2_beta_0",
@@ -1265,8 +315,8 @@
           "beta": 0.0,
           "n_train": 5369,
           "n_validation": 497,
-          "rmse": 0.06544319095731016,
-          "nrmse": 0.6550584660538575
+          "rmse": 0.06074450359248316,
+          "nrmse": 0.6080266069307594
         },
         {
           "fold_id": "outer_year_2022_stations_2_beta_0.2",
@@ -1279,8 +329,8 @@
           "beta": 0.2,
           "n_train": 5369,
           "n_validation": 497,
-          "rmse": 0.06655132675776251,
-          "nrmse": 0.666150433407607
+          "rmse": 0.06077661059493983,
+          "nrmse": 0.6083479843494213
         },
         {
           "fold_id": "outer_year_2022_stations_3_beta_0",
@@ -1293,8 +343,8 @@
           "beta": 0.0,
           "n_train": 5651,
           "n_validation": 446,
-          "rmse": 0.11939080151204337,
-          "nrmse": 0.9475543196054363
+          "rmse": 0.11611810301240637,
+          "nrmse": 0.9215802951343429
         },
         {
           "fold_id": "outer_year_2022_stations_3_beta_0.2",
@@ -1307,8 +357,893 @@
           "beta": 0.2,
           "n_train": 5651,
           "n_validation": 446,
-          "rmse": 0.11866187581208552,
-          "nrmse": 0.9417691444753674
+          "rmse": 0.1138901946696506,
+          "nrmse": 0.9038983284574522
+        }
+      ],
+      "paired_improvement_vs_required": {
+        "mean_delta_nrmse": 0.1407221343709884,
+        "standard_error": 0.09070078794640983,
+        "lower_confidence_bound": 0.050021346424578575,
+        "n_pairs": 16
+      }
+    },
+    {
+      "n_features": 60,
+      "features": [
+        "V_rollmin_G_API_kobs30",
+        "D_sin_DOY",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollmax_LST_modis_kobs30",
+        "latitude",
+        "K_aspect_cos",
+        "V_rollmin_F_NDVI_kobs30",
+        "elev",
+        "V_ema_G_API_kobs7",
+        "A_d_LST_modis_kobs30",
+        "C_lag_F_NDVI_kobs30",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "A_d_E_SAR_ratio_kobs30",
+        "G_API",
+        "G_rain_sum_7d",
+        "V_rollrng_LST_modis_kobs30",
+        "J_bio_bio17",
+        "precip_mm",
+        "V_rollcv_G_API_kobs7",
+        "A_d_G_API_kobs1",
+        "V_rollmean_E_SAR_ratio_kobs14",
+        "A_grad_G_API_kobs14",
+        "A_d_G_API_kobs30",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_E_SAR_ratio_kobs5",
+        "A_d_G_API_kobs14",
+        "A_d_s2_b12_kobs5",
+        "A_d_E_SAR_diff_kobs2",
+        "A_d_LST_modis_kobs2",
+        "A_d_G_API_kobs2",
+        "A_d_E_SAR_ratio_kobs2",
+        "A_d_SMAP_sm_interp_kobs1",
+        "SMAP_sm_am_interp_mask",
+        "SMAP_sm_pm_interp_mask",
+        "SMAP_sm_interp_mask",
+        "year",
+        "year_frac",
+        "sin_year",
+        "cos_year",
+        "G_DSLR_isnan",
+        "SMAP_sm_interp_diff1",
+        "SMAP_sm_interp_pctchg",
+        "A_pct_SMAP_sm_interp",
+        "SMAP_sm_pm_interp_diff1",
+        "SMAP_sm_pm_interp_pctchg",
+        "SMAP_sm_am_interp_rollstd7",
+        "A_pct_s2_b11",
+        "A_d_SMAP_sm_interp_kobs2",
+        "J_bio_bio18",
+        "aspect",
+        "J_bio_bio09",
+        "C_lag_E_SAR_diff_kobs12",
+        "V_rollmean_s2_b11_kobs14",
+        "V_rollmin_s2_b12_kobs30",
+        "E_rough_s1_vh_kobs14",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "API_x_year",
+        "V_rollmax_G_API_kobs7",
+        "J_elev_m"
+      ],
+      "mean_nrmse": 0.8168950124325864,
+      "standard_error": 0.07933690116712633,
+      "upper_confidence_bound": 0.8962319135997128,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 5534,
+          "n_validation": 347,
+          "rmse": 0.10062763897695925,
+          "nrmse": 0.7696856258678134
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 5534,
+          "n_validation": 347,
+          "rmse": 0.12430410899420101,
+          "nrmse": 0.9507833722606694
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5454,
+          "n_validation": 482,
+          "rmse": 0.05238205908960136,
+          "nrmse": 0.6837550913313675
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5454,
+          "n_validation": 482,
+          "rmse": 0.05207763797075527,
+          "nrmse": 0.6797814122981748
+        },
+        {
+          "fold_id": "outer_year_2021_stations_2_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.0,
+          "n_train": 5369,
+          "n_validation": 373,
+          "rmse": 0.036438913409639645,
+          "nrmse": 0.409849922794005
+        },
+        {
+          "fold_id": "outer_year_2021_stations_2_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.2,
+          "n_train": 5369,
+          "n_validation": 373,
+          "rmse": 0.03797824477106513,
+          "nrmse": 0.42716368933095467
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 5651,
+          "n_validation": 458,
+          "rmse": 0.09108321152924194,
+          "nrmse": 1.5693885877319798
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 5651,
+          "n_validation": 458,
+          "rmse": 0.08090727002719922,
+          "nrmse": 1.3940543390311975
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 5534,
+          "n_validation": 367,
+          "rmse": 0.10666144982365253,
+          "nrmse": 0.8847504851243382
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 5534,
+          "n_validation": 367,
+          "rmse": 0.12989098791365633,
+          "nrmse": 1.0774381443332195
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5454,
+          "n_validation": 488,
+          "rmse": 0.05193287726331621,
+          "nrmse": 0.6109178884875024
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5454,
+          "n_validation": 488,
+          "rmse": 0.05264958728621744,
+          "nrmse": 0.6193489825635846
+        },
+        {
+          "fold_id": "outer_year_2022_stations_2_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.0,
+          "n_train": 5369,
+          "n_validation": 497,
+          "rmse": 0.0632342039450949,
+          "nrmse": 0.63294744697628
+        },
+        {
+          "fold_id": "outer_year_2022_stations_2_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.2,
+          "n_train": 5369,
+          "n_validation": 497,
+          "rmse": 0.061039021506644475,
+          "nrmse": 0.6109746058020513
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 5651,
+          "n_validation": 446,
+          "rmse": 0.11132726337122957,
+          "nrmse": 0.8835574262110942
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 5651,
+          "n_validation": 446,
+          "rmse": 0.10910536760057156,
+          "nrmse": 0.865923178777152
+        }
+      ],
+      "paired_improvement_vs_required": {
+        "mean_delta_nrmse": 0.1648545149304398,
+        "standard_error": 0.0795122555447803,
+        "lower_confidence_bound": 0.0853422593856595,
+        "n_pairs": 16
+      }
+    },
+    {
+      "n_features": 55,
+      "features": [
+        "V_rollmin_G_API_kobs30",
+        "D_sin_DOY",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollmax_LST_modis_kobs30",
+        "latitude",
+        "K_aspect_cos",
+        "V_rollmin_F_NDVI_kobs30",
+        "elev",
+        "V_ema_G_API_kobs7",
+        "A_d_LST_modis_kobs30",
+        "C_lag_F_NDVI_kobs30",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "A_d_E_SAR_ratio_kobs30",
+        "G_API",
+        "G_rain_sum_7d",
+        "V_rollrng_LST_modis_kobs30",
+        "J_bio_bio17",
+        "precip_mm",
+        "V_rollcv_G_API_kobs7",
+        "A_d_G_API_kobs1",
+        "V_rollmean_E_SAR_ratio_kobs14",
+        "A_grad_G_API_kobs14",
+        "A_d_G_API_kobs30",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_E_SAR_ratio_kobs5",
+        "A_d_G_API_kobs14",
+        "A_d_s2_b12_kobs5",
+        "A_d_E_SAR_diff_kobs2",
+        "A_d_LST_modis_kobs2",
+        "A_d_G_API_kobs2",
+        "A_d_E_SAR_ratio_kobs2",
+        "A_d_SMAP_sm_interp_kobs1",
+        "SMAP_sm_am_interp_mask",
+        "SMAP_sm_pm_interp_mask",
+        "SMAP_sm_interp_mask",
+        "year",
+        "year_frac",
+        "sin_year",
+        "cos_year",
+        "G_DSLR_isnan",
+        "SMAP_sm_interp_diff1",
+        "SMAP_sm_interp_pctchg",
+        "A_pct_SMAP_sm_interp",
+        "SMAP_sm_pm_interp_diff1",
+        "SMAP_sm_pm_interp_pctchg",
+        "SMAP_sm_am_interp_rollstd7",
+        "A_pct_s2_b11",
+        "A_d_SMAP_sm_interp_kobs2",
+        "J_bio_bio18",
+        "aspect",
+        "J_bio_bio09",
+        "C_lag_E_SAR_diff_kobs12",
+        "V_rollmin_s2_b12_kobs30",
+        "V_rollmean_s2_b11_kobs14"
+      ],
+      "mean_nrmse": 0.8297617621982675,
+      "standard_error": 0.08348995229731576,
+      "upper_confidence_bound": 0.9132517144955832,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 5534,
+          "n_validation": 347,
+          "rmse": 0.1027225464894142,
+          "nrmse": 0.785709257309949
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 5534,
+          "n_validation": 347,
+          "rmse": 0.12338832529923202,
+          "nrmse": 0.9437786809692129
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5454,
+          "n_validation": 482,
+          "rmse": 0.04904250433281693,
+          "nrmse": 0.6401631133255898
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5454,
+          "n_validation": 482,
+          "rmse": 0.05399235434129843,
+          "nrmse": 0.7047746464239081
+        },
+        {
+          "fold_id": "outer_year_2021_stations_2_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.0,
+          "n_train": 5369,
+          "n_validation": 373,
+          "rmse": 0.03699355150230024,
+          "nrmse": 0.4160882641215876
+        },
+        {
+          "fold_id": "outer_year_2021_stations_2_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.2,
+          "n_train": 5369,
+          "n_validation": 373,
+          "rmse": 0.03966900373126163,
+          "nrmse": 0.4461806512669407
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 5651,
+          "n_validation": 458,
+          "rmse": 0.09550343079426589,
+          "nrmse": 1.6455501717750995
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 5651,
+          "n_validation": 458,
+          "rmse": 0.08447244894423028,
+          "nrmse": 1.4554833445709825
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 5534,
+          "n_validation": 367,
+          "rmse": 0.10838018626278781,
+          "nrmse": 0.8990073033172277
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 5534,
+          "n_validation": 367,
+          "rmse": 0.13103427787232713,
+          "nrmse": 1.0869216676421956
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5454,
+          "n_validation": 488,
+          "rmse": 0.05192408726231329,
+          "nrmse": 0.6108144863820254
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5454,
+          "n_validation": 488,
+          "rmse": 0.05338423753179289,
+          "nrmse": 0.6279911183445113
+        },
+        {
+          "fold_id": "outer_year_2022_stations_2_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.0,
+          "n_train": 5369,
+          "n_validation": 497,
+          "rmse": 0.06508279089582293,
+          "nrmse": 0.6514510149502348
+        },
+        {
+          "fold_id": "outer_year_2022_stations_2_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.2,
+          "n_train": 5369,
+          "n_validation": 497,
+          "rmse": 0.06357148894265024,
+          "nrmse": 0.6363235261357715
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 5651,
+          "n_validation": 446,
+          "rmse": 0.10976571230887522,
+          "nrmse": 0.8711640555688084
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 5651,
+          "n_validation": 446,
+          "rmse": 0.10770220785643325,
+          "nrmse": 0.8547868930682351
+        }
+      ],
+      "paired_improvement_vs_required": {
+        "mean_delta_nrmse": 0.15198776516475884,
+        "standard_error": 0.08277276835246182,
+        "lower_confidence_bound": 0.06921499681229702,
+        "n_pairs": 16
+      }
+    },
+    {
+      "n_features": 50,
+      "features": [
+        "V_rollmin_G_API_kobs30",
+        "D_sin_DOY",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollmax_LST_modis_kobs30",
+        "latitude",
+        "K_aspect_cos",
+        "V_rollmin_F_NDVI_kobs30",
+        "elev",
+        "V_ema_G_API_kobs7",
+        "A_d_LST_modis_kobs30",
+        "C_lag_F_NDVI_kobs30",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "A_d_E_SAR_ratio_kobs30",
+        "G_API",
+        "G_rain_sum_7d",
+        "V_rollrng_LST_modis_kobs30",
+        "J_bio_bio17",
+        "precip_mm",
+        "V_rollcv_G_API_kobs7",
+        "A_d_G_API_kobs1",
+        "V_rollmean_E_SAR_ratio_kobs14",
+        "A_grad_G_API_kobs14",
+        "A_d_G_API_kobs30",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_E_SAR_ratio_kobs5",
+        "A_d_G_API_kobs14",
+        "A_d_s2_b12_kobs5",
+        "A_d_E_SAR_diff_kobs2",
+        "A_d_LST_modis_kobs2",
+        "A_d_G_API_kobs2",
+        "A_d_E_SAR_ratio_kobs2",
+        "A_d_SMAP_sm_interp_kobs1",
+        "SMAP_sm_am_interp_mask",
+        "SMAP_sm_pm_interp_mask",
+        "SMAP_sm_interp_mask",
+        "year",
+        "year_frac",
+        "sin_year",
+        "cos_year",
+        "G_DSLR_isnan",
+        "SMAP_sm_interp_diff1",
+        "SMAP_sm_interp_pctchg",
+        "A_pct_SMAP_sm_interp",
+        "SMAP_sm_pm_interp_diff1",
+        "SMAP_sm_pm_interp_pctchg",
+        "SMAP_sm_am_interp_rollstd7",
+        "A_pct_s2_b11",
+        "A_d_SMAP_sm_interp_kobs2",
+        "J_bio_bio18"
+      ],
+      "mean_nrmse": 0.9817495273630263,
+      "standard_error": 0.034797193941610995,
+      "upper_confidence_bound": 1.0165467213046373,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 5534,
+          "n_validation": 347,
+          "rmse": 0.13352713126767585,
+          "nrmse": 1.0213288778804295
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 5534,
+          "n_validation": 347,
+          "rmse": 0.13534473295599095,
+          "nrmse": 1.0352314389190476
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5454,
+          "n_validation": 482,
+          "rmse": 0.05936663611099649,
+          "nrmse": 0.7749263851326654
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5454,
+          "n_validation": 482,
+          "rmse": 0.09038363127142353,
+          "nrmse": 1.1797983723614471
+        },
+        {
+          "fold_id": "outer_year_2021_stations_2_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.0,
+          "n_train": 5369,
+          "n_validation": 373,
+          "rmse": 0.07358446027737695,
+          "nrmse": 0.8276477683207545
+        },
+        {
+          "fold_id": "outer_year_2021_stations_2_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.2,
+          "n_train": 5369,
+          "n_validation": 373,
+          "rmse": 0.08312169072249598,
+          "nrmse": 0.9349186168682476
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 5651,
+          "n_validation": 458,
+          "rmse": 0.05703856741009553,
+          "nrmse": 0.9827900800933712
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 5651,
+          "n_validation": 458,
+          "rmse": 0.05540122417562205,
+          "nrmse": 0.9545782093957961
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.0,
+          "n_train": 5534,
+          "n_validation": 367,
+          "rmse": 0.13801833165982574,
+          "nrmse": 1.1448539851462243
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "BeaverPass_WA_990",
+            "BurntMountain_WA",
+            "Touchet_WA_824"
+          ],
+          "beta": 0.2,
+          "n_train": 5534,
+          "n_validation": 367,
+          "rmse": 0.13650946568806896,
+          "nrmse": 1.1323380301999284
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5454,
+          "n_validation": 488,
+          "rmse": 0.0574670131413811,
+          "nrmse": 0.676019280580378
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault",
+            "RainyPass_WA_711",
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5454,
+          "n_validation": 488,
+          "rmse": 0.09776437638351278,
+          "nrmse": 1.1500615705670074
+        },
+        {
+          "fold_id": "outer_year_2022_stations_2_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.0,
+          "n_train": 5369,
+          "n_validation": 497,
+          "rmse": 0.09494462167522834,
+          "nrmse": 0.9503552214501493
+        },
+        {
+          "fold_id": "outer_year_2022_stations_2_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "HartsPass_WA_515",
+            "Paradise_WA"
+          ],
+          "beta": 0.2,
+          "n_train": 5369,
+          "n_validation": 497,
+          "rmse": 0.10398169884807365,
+          "nrmse": 1.040812514620893
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 5651,
+          "n_validation": 446,
+          "rmse": 0.12060321058685383,
+          "nrmse": 0.9571766978909997
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "CayusePass_WA",
+            "MartenRidge_WA_999",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 5651,
+          "n_validation": 446,
+          "rmse": 0.11908853881773453,
+          "nrmse": 0.945155388381082
         }
       ],
       "paired_improvement_vs_required": {
@@ -1320,77 +1255,62 @@
     }
   ],
   "baseline_required": {
-    "n_features": 65,
+    "n_features": 50,
     "features": [
       "V_rollmin_G_API_kobs30",
-      "V_rollmax_LST_modis_kobs30",
-      "C_lag_F_NDVI_kobs30",
+      "D_sin_DOY",
       "V_rollmean_LST_modis_kobs30",
+      "V_rollmax_LST_modis_kobs30",
       "latitude",
       "K_aspect_cos",
-      "V_rollmax_E_SAR_ratio_kobs30",
-      "J_elev_m",
       "V_rollmin_F_NDVI_kobs30",
-      "A_d_LST_modis_kobs30",
-      "A_d_E_SAR_ratio_kobs30",
-      "V_ema_G_API_kobs30",
-      "V_rollmin_LST_modis_kobs7",
-      "V_ema_G_API_kobs7",
-      "G_rain_sum_3d",
-      "G_API",
-      "V_rollmean_SMAP_sm_interp_kobs7",
-      "G_rain_sum_7d",
-      "V_rollmax_G_API_kobs7",
-      "K_slope_sin",
-      "V_rollmean_E_SAR_diff_kobs7",
-      "C_lag_G_API_kobs1",
-      "A_d_G_API_kobs14",
-      "A_grad_E_SAR_diff_kobs30",
       "elev",
-      "V_rollstd_F_NDVI_kobs14",
-      "SMAP_sm_pm_interp_lag30",
-      "V_rollcv_G_API_kobs7",
-      "J_bio_bio02",
+      "V_ema_G_API_kobs7",
+      "A_d_LST_modis_kobs30",
+      "C_lag_F_NDVI_kobs30",
+      "C_lag_G_API_kobs1",
+      "G_rain_sum_3d",
+      "A_d_E_SAR_ratio_kobs30",
+      "G_API",
+      "G_rain_sum_7d",
+      "V_rollrng_LST_modis_kobs30",
+      "J_bio_bio17",
       "precip_mm",
-      "A_grad_E_SAR_diff_kobs14",
+      "V_rollcv_G_API_kobs7",
+      "A_d_G_API_kobs1",
+      "V_rollmean_E_SAR_ratio_kobs14",
+      "A_grad_G_API_kobs14",
+      "A_d_G_API_kobs30",
+      "V_rollcv_SMAP_sm_interp_kobs14",
+      "A_d_E_SAR_ratio_kobs5",
+      "A_d_G_API_kobs14",
+      "A_d_s2_b12_kobs5",
+      "A_d_E_SAR_diff_kobs2",
+      "A_d_LST_modis_kobs2",
       "A_d_G_API_kobs2",
-      "SMAP_sm_interp_rollmean7",
       "A_d_E_SAR_ratio_kobs2",
-      "H_corr_LST_modis__F_NDMI_kobs7",
-      "A_d_s2_b11_kobs2",
-      "J_bio_bio14",
-      "J_bio_bio19",
-      "J_bio_bio18",
+      "A_d_SMAP_sm_interp_kobs1",
       "SMAP_sm_am_interp_mask",
       "SMAP_sm_pm_interp_mask",
       "SMAP_sm_interp_mask",
-      "J_bio_bio17",
       "year",
       "year_frac",
       "sin_year",
       "cos_year",
       "G_DSLR_isnan",
-      "A_pct_s2_b12",
       "SMAP_sm_interp_diff1",
-      "A_pct_SMAP_sm_interp",
-      "J_bio_bio13",
-      "SMAP_sm_pm_interp_diff1",
-      "A_d_SMAP_sm_interp_kobs1",
-      "A_d_F_NDVI_kobs2",
-      "A_d_F_NDVI_kobs1",
-      "A_d_s2_b12_kobs1",
-      "J_bio_bio12",
-      "A_d_F_NDMI_kobs2",
-      "J_soil_texture_usda_b60",
       "SMAP_sm_interp_pctchg",
-      "A_pct_F_NDMI",
-      "SMAP_sm_pm_interp_rollrange7",
+      "A_pct_SMAP_sm_interp",
+      "SMAP_sm_pm_interp_diff1",
+      "SMAP_sm_pm_interp_pctchg",
+      "SMAP_sm_am_interp_rollstd7",
       "A_pct_s2_b11",
-      "A_d_s2_b11_kobs1"
+      "A_d_SMAP_sm_interp_kobs2",
+      "J_bio_bio18"
     ],
-    "mean_nrmse": 0.7956268796357174,
-    "standard_error": 0.07364431401749374,
-    "upper_confidence_bound": 0.8692711936532111,
+    "mean_nrmse": 0.9817495273630263,
+    "standard_error": 0.034797193941610995,
+    "upper_confidence_bound": 1.0165467213046373,
     "fold_metrics": [
       {
         "fold_id": "outer_year_2021_stations_0_beta_0",
@@ -1403,8 +1323,8 @@
         "beta": 0.0,
         "n_train": 5534,
         "n_validation": 347,
-        "rmse": 0.15190200510841748,
-        "nrmse": 1.1618755151277929
+        "rmse": 0.13352713126767585,
+        "nrmse": 1.0213288778804295
       },
       {
         "fold_id": "outer_year_2021_stations_0_beta_0.2",
@@ -1417,8 +1337,8 @@
         "beta": 0.2,
         "n_train": 5534,
         "n_validation": 347,
-        "rmse": 0.1514930187642887,
-        "nrmse": 1.1587472402974133
+        "rmse": 0.13534473295599095,
+        "nrmse": 1.0352314389190476
       },
       {
         "fold_id": "outer_year_2021_stations_1_beta_0",
@@ -1431,8 +1351,8 @@
         "beta": 0.0,
         "n_train": 5454,
         "n_validation": 482,
-        "rmse": 0.04059035260662327,
-        "nrmse": 0.5298352286274227
+        "rmse": 0.05936663611099649,
+        "nrmse": 0.7749263851326654
       },
       {
         "fold_id": "outer_year_2021_stations_1_beta_0.2",
@@ -1445,8 +1365,8 @@
         "beta": 0.2,
         "n_train": 5454,
         "n_validation": 482,
-        "rmse": 0.03589098039545341,
-        "nrmse": 0.468493239952403
+        "rmse": 0.09038363127142353,
+        "nrmse": 1.1797983723614471
       },
       {
         "fold_id": "outer_year_2021_stations_2_beta_0",
@@ -1459,8 +1379,8 @@
         "beta": 0.0,
         "n_train": 5369,
         "n_validation": 373,
-        "rmse": 0.04466996471539689,
-        "nrmse": 0.5024294051801528
+        "rmse": 0.07358446027737695,
+        "nrmse": 0.8276477683207545
       },
       {
         "fold_id": "outer_year_2021_stations_2_beta_0.2",
@@ -1473,8 +1393,8 @@
         "beta": 0.2,
         "n_train": 5369,
         "n_validation": 373,
-        "rmse": 0.04663291311780657,
-        "nrmse": 0.5245078421009254
+        "rmse": 0.08312169072249598,
+        "nrmse": 0.9349186168682476
       },
       {
         "fold_id": "outer_year_2021_stations_3_beta_0",
@@ -1487,8 +1407,8 @@
         "beta": 0.0,
         "n_train": 5651,
         "n_validation": 458,
-        "rmse": 0.05056684179542047,
-        "nrmse": 0.8712804818690812
+        "rmse": 0.05703856741009553,
+        "nrmse": 0.9827900800933712
       },
       {
         "fold_id": "outer_year_2021_stations_3_beta_0.2",
@@ -1501,8 +1421,8 @@
         "beta": 0.2,
         "n_train": 5651,
         "n_validation": 458,
-        "rmse": 0.04919655380799644,
-        "nrmse": 0.8476700459472091
+        "rmse": 0.05540122417562205,
+        "nrmse": 0.9545782093957961
       },
       {
         "fold_id": "outer_year_2022_stations_0_beta_0",
@@ -1515,8 +1435,8 @@
         "beta": 0.0,
         "n_train": 5534,
         "n_validation": 367,
-        "rmse": 0.15058761537515716,
-        "nrmse": 1.2491154580888024
+        "rmse": 0.13801833165982574,
+        "nrmse": 1.1448539851462243
       },
       {
         "fold_id": "outer_year_2022_stations_0_beta_0.2",
@@ -1529,8 +1449,8 @@
         "beta": 0.2,
         "n_train": 5534,
         "n_validation": 367,
-        "rmse": 0.15028652005216905,
-        "nrmse": 1.2466178900028366
+        "rmse": 0.13650946568806896,
+        "nrmse": 1.1323380301999284
       },
       {
         "fold_id": "outer_year_2022_stations_1_beta_0",
@@ -1543,8 +1463,8 @@
         "beta": 0.0,
         "n_train": 5454,
         "n_validation": 488,
-        "rmse": 0.04002060694800339,
-        "nrmse": 0.4707866380808586
+        "rmse": 0.0574670131413811,
+        "nrmse": 0.676019280580378
       },
       {
         "fold_id": "outer_year_2022_stations_1_beta_0.2",
@@ -1557,8 +1477,8 @@
         "beta": 0.2,
         "n_train": 5454,
         "n_validation": 488,
-        "rmse": 0.041495672313769015,
-        "nrmse": 0.4881387253543115
+        "rmse": 0.09776437638351278,
+        "nrmse": 1.1500615705670074
       },
       {
         "fold_id": "outer_year_2022_stations_2_beta_0",
@@ -1571,8 +1491,8 @@
         "beta": 0.0,
         "n_train": 5369,
         "n_validation": 497,
-        "rmse": 0.06544319095731016,
-        "nrmse": 0.6550584660538575
+        "rmse": 0.09494462167522834,
+        "nrmse": 0.9503552214501493
       },
       {
         "fold_id": "outer_year_2022_stations_2_beta_0.2",
@@ -1585,8 +1505,8 @@
         "beta": 0.2,
         "n_train": 5369,
         "n_validation": 497,
-        "rmse": 0.06655132675776251,
-        "nrmse": 0.666150433407607
+        "rmse": 0.10398169884807365,
+        "nrmse": 1.040812514620893
       },
       {
         "fold_id": "outer_year_2022_stations_3_beta_0",
@@ -1599,8 +1519,8 @@
         "beta": 0.0,
         "n_train": 5651,
         "n_validation": 446,
-        "rmse": 0.11939080151204337,
-        "nrmse": 0.9475543196054363
+        "rmse": 0.12060321058685383,
+        "nrmse": 0.9571766978909997
       },
       {
         "fold_id": "outer_year_2022_stations_3_beta_0.2",
@@ -1613,8 +1533,8 @@
         "beta": 0.2,
         "n_train": 5651,
         "n_validation": 446,
-        "rmse": 0.11866187581208552,
-        "nrmse": 0.9417691444753674
+        "rmse": 0.11908853881773453,
+        "nrmse": 0.945155388381082
       }
     ],
     "paired_improvement_vs_required": {
@@ -1714,73 +1634,58 @@
       "n_validation": 446
     }
   ],
-  "stopping_reason": "no_outer_delta_with_positive_paired_lcb",
+  "stopping_reason": "outer_positive_paired_lcb",
   "required_features": [
     "V_rollmin_G_API_kobs30",
-    "V_rollmax_LST_modis_kobs30",
-    "C_lag_F_NDVI_kobs30",
+    "D_sin_DOY",
     "V_rollmean_LST_modis_kobs30",
+    "V_rollmax_LST_modis_kobs30",
     "latitude",
     "K_aspect_cos",
-    "V_rollmax_E_SAR_ratio_kobs30",
-    "J_elev_m",
     "V_rollmin_F_NDVI_kobs30",
-    "A_d_LST_modis_kobs30",
-    "A_d_E_SAR_ratio_kobs30",
-    "V_ema_G_API_kobs30",
-    "V_rollmin_LST_modis_kobs7",
-    "V_ema_G_API_kobs7",
-    "G_rain_sum_3d",
-    "G_API",
-    "V_rollmean_SMAP_sm_interp_kobs7",
-    "G_rain_sum_7d",
-    "V_rollmax_G_API_kobs7",
-    "K_slope_sin",
-    "V_rollmean_E_SAR_diff_kobs7",
-    "C_lag_G_API_kobs1",
-    "A_d_G_API_kobs14",
-    "A_grad_E_SAR_diff_kobs30",
     "elev",
-    "V_rollstd_F_NDVI_kobs14",
-    "SMAP_sm_pm_interp_lag30",
-    "V_rollcv_G_API_kobs7",
-    "J_bio_bio02",
+    "V_ema_G_API_kobs7",
+    "A_d_LST_modis_kobs30",
+    "C_lag_F_NDVI_kobs30",
+    "C_lag_G_API_kobs1",
+    "G_rain_sum_3d",
+    "A_d_E_SAR_ratio_kobs30",
+    "G_API",
+    "G_rain_sum_7d",
+    "V_rollrng_LST_modis_kobs30",
+    "J_bio_bio17",
     "precip_mm",
-    "A_grad_E_SAR_diff_kobs14",
+    "V_rollcv_G_API_kobs7",
+    "A_d_G_API_kobs1",
+    "V_rollmean_E_SAR_ratio_kobs14",
+    "A_grad_G_API_kobs14",
+    "A_d_G_API_kobs30",
+    "V_rollcv_SMAP_sm_interp_kobs14",
+    "A_d_E_SAR_ratio_kobs5",
+    "A_d_G_API_kobs14",
+    "A_d_s2_b12_kobs5",
+    "A_d_E_SAR_diff_kobs2",
+    "A_d_LST_modis_kobs2",
     "A_d_G_API_kobs2",
-    "SMAP_sm_interp_rollmean7",
     "A_d_E_SAR_ratio_kobs2",
-    "H_corr_LST_modis__F_NDMI_kobs7",
-    "A_d_s2_b11_kobs2",
-    "J_bio_bio14",
-    "J_bio_bio19",
-    "J_bio_bio18",
+    "A_d_SMAP_sm_interp_kobs1",
     "SMAP_sm_am_interp_mask",
     "SMAP_sm_pm_interp_mask",
     "SMAP_sm_interp_mask",
-    "J_bio_bio17",
     "year",
     "year_frac",
     "sin_year",
     "cos_year",
     "G_DSLR_isnan",
-    "A_pct_s2_b12",
     "SMAP_sm_interp_diff1",
-    "A_pct_SMAP_sm_interp",
-    "J_bio_bio13",
-    "SMAP_sm_pm_interp_diff1",
-    "A_d_SMAP_sm_interp_kobs1",
-    "A_d_F_NDVI_kobs2",
-    "A_d_F_NDVI_kobs1",
-    "A_d_s2_b12_kobs1",
-    "J_bio_bio12",
-    "A_d_F_NDMI_kobs2",
-    "J_soil_texture_usda_b60",
     "SMAP_sm_interp_pctchg",
-    "A_pct_F_NDMI",
-    "SMAP_sm_pm_interp_rollrange7",
+    "A_pct_SMAP_sm_interp",
+    "SMAP_sm_pm_interp_diff1",
+    "SMAP_sm_pm_interp_pctchg",
+    "SMAP_sm_am_interp_rollstd7",
     "A_pct_s2_b11",
-    "A_d_s2_b11_kobs1"
+    "A_d_SMAP_sm_interp_kobs2",
+    "J_bio_bio18"
   ],
   "config": {
     "station_col": "station_id",
@@ -1809,7 +1714,7 @@
       "tree_method": "hist",
       "n_jobs": 1,
       "verbosity": 0,
-      "device": "cuda"
+      "device": "cpu"
     }
   }
 }

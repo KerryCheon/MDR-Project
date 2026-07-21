@@ -1,0 +1,272 @@
+{
+  "status": "complete",
+  "device": "cpu",
+  "workers": 16,
+  "stages": [
+    {
+      "name": "selection",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_selection.py",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_selection.py": "aa3c969774647791e7eb4f306117c913347681381dcff63645ec71bbf599ba14",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T03:53:14.969368+00:00",
+      "completed": "2026-07-21T03:58:10.529045+00:00"
+    },
+    {
+      "name": "validation",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_eval.py",
+        "--artifact-set",
+        "final",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_eval.py": "9993f4d13e762eea4e9214727219e70fe1e17a75c826cf947735f94d4801f223",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T03:58:10.534575+00:00",
+      "completed": "2026-07-21T03:59:37.178748+00:00",
+      "compatibility_note": "serial revision-retrospective safety fix does not affect this final evaluation stage"
+    },
+    {
+      "name": "final_retrospective",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_eval.py",
+        "--artifact-set",
+        "final",
+        "--retrospective-test",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_eval.py": "9993f4d13e762eea4e9214727219e70fe1e17a75c826cf947735f94d4801f223",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T03:59:37.184214+00:00",
+      "completed": "2026-07-21T04:01:15.748893+00:00",
+      "compatibility_note": "serial revision-retrospective safety fix does not affect this final evaluation stage"
+    },
+    {
+      "name": "nested_selection",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_nested_selection.py",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_nested_selection.py": "70a4077abe7a31a29962ebc9d708599018a3a76c36efd96a5aee19779807d5f8",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:01:15.753658+00:00",
+      "completed": "2026-07-21T04:11:50.410531+00:00"
+    },
+    {
+      "name": "nested_locked_outer",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_locked_outer_selection.py",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_locked_outer_selection.py": "5c34d1e39c4a0e6a4a5481d175a8e992dc397ac8ad30e4b54b387d99a4a96478",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:11:50.420546+00:00",
+      "completed": "2026-07-21T04:18:22.380458+00:00"
+    },
+    {
+      "name": "crossed_selection",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_crossed_candidate_selection.py",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_crossed_candidate_selection.py": "b34d624e6057369fcce44ad6c732a7424f9cbf0ea879fadcfc22ff7fb7346fa3",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:18:22.387267+00:00",
+      "completed": "2026-07-21T04:26:58.596243+00:00"
+    },
+    {
+      "name": "progressive_selection",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_crossed_candidate_selection.py",
+        "--progressive",
+        "--dataset",
+        "derived_8.0",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_crossed_candidate_selection.py": "b34d624e6057369fcce44ad6c732a7424f9cbf0ea879fadcfc22ff7fb7346fa3",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:26:58.603423+00:00",
+      "completed": "2026-07-21T04:30:46.060158+00:00"
+    },
+    {
+      "name": "nested_diagnostics",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_candidate_diagnostics.py",
+        "--artifact-set",
+        "nested",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_candidate_diagnostics.py": "fc33db0978d43a2b62c138887098880bab246e64732de3b716c8b39f97120203",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:30:46.065716+00:00",
+      "completed": "2026-07-21T04:32:58.162085+00:00"
+    },
+    {
+      "name": "crossed_diagnostics",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_candidate_diagnostics.py",
+        "--artifact-set",
+        "crossed_candidates_locked_outer",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_candidate_diagnostics.py": "fc33db0978d43a2b62c138887098880bab246e64732de3b716c8b39f97120203",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:32:58.166747+00:00",
+      "completed": "2026-07-21T04:37:16.923704+00:00"
+    },
+    {
+      "name": "progressive_diagnostics",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_candidate_diagnostics.py",
+        "--artifact-set",
+        "progressive_crossed_locked_outer",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_candidate_diagnostics.py": "fc33db0978d43a2b62c138887098880bab246e64732de3b716c8b39f97120203",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:37:16.928188+00:00",
+      "completed": "2026-07-21T04:39:17.239393+00:00"
+    },
+    {
+      "name": "nested_retrospective",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_eval.py",
+        "--artifact-set",
+        "nested",
+        "--retrospective-test",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_eval.py": "9993f4d13e762eea4e9214727219e70fe1e17a75c826cf947735f94d4801f223",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:52:54.625351+00:00",
+      "completed": "2026-07-21T04:58:15.831216+00:00"
+    },
+    {
+      "name": "crossed_retrospective",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/run_eval.py",
+        "--artifact-set",
+        "crossed_candidates_locked_outer",
+        "--retrospective-test",
+        "--device",
+        "cpu",
+        "--workers",
+        "16"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "run_eval.py": "9993f4d13e762eea4e9214727219e70fe1e17a75c826cf947735f94d4801f223",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T04:58:15.837497+00:00",
+      "completed": "2026-07-21T05:02:07.158966+00:00"
+    },
+    {
+      "name": "report",
+      "command": [
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+        "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.2-feature-selection-2.2/generate_results.py"
+      ],
+      "status": "complete",
+      "fingerprint": {
+        "generate_results.py": "a4c783f78b80d5d526804bdfb2d57ecac683264610fd9e0daef886d0aa34fa54",
+        "config.yaml": "7369c9bad91e159abbe0e659ed7ef06cee1b994bd31838c28973eebe3cf4b2b1",
+        "nested_config.yaml": "a750b4f1def5cae1264acf3e5b0f2ab582be3fad96622abf90c8de991228aff4"
+      },
+      "started": "2026-07-21T05:03:21.843871+00:00",
+      "completed": "2026-07-21T05:03:22.446526+00:00"
+    }
+  ]
+}

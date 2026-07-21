@@ -70,7 +70,6 @@ def test_crossed_candidate_diagnostics_load_outer_union(tmp_path):
     module.write_completion_marker(
         global_dir,
         ["outer_selection.json"],
-        source_state={"source_tree_sha256": "test-source"},
     )
 
     candidates = module._candidate_sets(
@@ -93,7 +92,6 @@ def test_nested_candidate_diagnostics_keep_inner_path(tmp_path):
     module.write_completion_marker(
         global_dir,
         ["inner_selection.json"],
-        source_state={"source_tree_sha256": "test-source"},
     )
 
     candidates = module._candidate_sets(
@@ -105,14 +103,10 @@ def test_nested_candidate_diagnostics_keep_inner_path(tmp_path):
     assert candidates == [["large", "small"], ["large"]]
 
 
-def test_evaluation_device_can_be_forced_to_cpu(monkeypatch):
+def test_evaluation_defaults_are_cuda_and_four_workers():
     module = _load_eval_module()
-    monkeypatch.setenv("XGB_DEVICE", "cpu")
-    assert module._probe_device() == "cpu"
-
-
-def test_evaluation_rejects_unknown_device(monkeypatch):
-    module = _load_eval_module()
-    monkeypatch.setenv("XGB_DEVICE", "tpu")
-    with pytest.raises(ValueError, match="XGB_DEVICE"):
-        module._probe_device()
+    parser = module.argparse.ArgumentParser()
+    module.add_runtime_arguments(parser)
+    args = parser.parse_args([])
+    assert args.device == "cuda"
+    assert args.workers == 4

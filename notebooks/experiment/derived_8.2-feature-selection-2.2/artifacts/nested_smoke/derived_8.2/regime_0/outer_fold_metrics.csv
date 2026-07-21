@@ -1,5 +1,0 @@
-n_features,candidate_mean_nrmse,candidate_ucb,fold_id,validation_year,held_out_stations,beta,n_train,n_validation,rmse,nrmse
-15,1.0001578848179657,1.0011176262146118,outer_year_2022_stations_0_beta_0,2022,"['BeaverPass_WA_990', 'Darrington', 'HartsPass_WA_515', 'MartenRidge_WA_999', 'SourdoughGulch_WA_985', 'Touchet_WA_824']",0.0,4159,837,0.13310319826733563,1.0011176262146118
-15,1.0001578848179657,1.0011176262146118,outer_year_2022_stations_1_beta_0,2022,"['BurntMountain_WA', 'CayusePass_WA', 'Paradise_WA', 'Quinault', 'RainyPass_WA_711', 'Spokane']",0.0,4209,862,0.10958188002542925,0.9991981434213197
-12,1.0030373502885528,1.0039994763645002,outer_year_2022_stations_0_beta_0,2022,"['BeaverPass_WA_990', 'Darrington', 'HartsPass_WA_515', 'MartenRidge_WA_999', 'SourdoughGulch_WA_985', 'Touchet_WA_824']",0.0,4159,837,0.1334863535148641,1.0039994763645004
-12,1.0030373502885528,1.0039994763645002,outer_year_2022_stations_1_beta_0,2022,"['BurntMountain_WA', 'CayusePass_WA', 'Paradise_WA', 'Quinault', 'RainyPass_WA_711', 'Spokane']",0.0,4209,862,0.10989740895647249,1.0020752242126054

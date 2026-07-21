@@ -1,6 +1,7 @@
 {
-  "created": "2026-07-20T20:53:28.390142+00:00",
-  "device": "cuda",
+  "created": "2026-07-21T03:58:08.473041+00:00",
+  "device": "cpu",
+  "workers": 16,
   "smoke": false,
   "datasets": [
     {

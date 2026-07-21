@@ -1,0 +1,10 @@
+{
+  "created": "2026-07-21T04:01:15.423905+00:00",
+  "device": "cpu",
+  "parallel_workers": 16,
+  "artifact_set": "final",
+  "final_test": false,
+  "retrospective_test": true,
+  "unbiased_sota_eligible": false,
+  "gates": {}
+}

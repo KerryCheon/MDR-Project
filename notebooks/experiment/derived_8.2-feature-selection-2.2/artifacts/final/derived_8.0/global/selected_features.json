@@ -2,9 +2,8 @@
   "version": "2.2",
   "dataset": "derived_8.0",
   "scope": "global",
-  "created": "2026-07-20T20:15:32.418575+00:00",
-  "git_commit": "6e906625aa860958d9e7e1d4ddafd1d49cd1c4bf",
-  "device": "cuda",
+  "created": "2026-07-21T03:54:46.245712+00:00",
+  "device": "cpu",
   "split_hashes": {
     "train": "bdc93b1f16eb358533ae998cb526a4610fd7aea0c47dcb8670c6d0a832b972c8",
     "val": "8b9faa0dcfcc2d79b86c27dbc0918f845fe8f23a2de00538bd5ea1b6555e5d23"
@@ -69,51 +68,51 @@
     "C_lag_G_API_kobs1": 0.02615408401583619,
     "V_ema_LST_modis_kobs30": 0.0215913715374744,
     "V_rollmin_G_API_kobs30": 0.011319515587091197,
-    "V_rollcv_F_NDMI_kobs30": 0.0062370384430013494,
     "SMAP_sm_pm_interp": 0.010240722266746553,
     "G_rain_sum_3d": 0.008243093191567429,
     "SMAP_sm_pm_interp_lag30": 0.006350655799206446,
+    "V_rollcv_F_NDMI_kobs30": 0.0062370384430013494,
     "G_rain_sum_7d": 0.005715810709701534,
-    "SMAP_sm_pm_interp_rollmean30": 0.003988086033919972,
-    "V_rollmin_LST_modis_kobs14": 0.0023759021240857717,
-    "precip_mm": 0.0023697003843326583,
     "C_lag_LST_modis_kobs30": 0.00564808213022968,
-    "V_rollrng_F_NDVI_kobs30": 0.0008636210920304034,
+    "V_ema_SMAP_sm_interp_kobs7": 0.004959610370683421,
+    "V_rollmin_SMAP_sm_interp_kobs30": 0.004588871017479129,
+    "SMAP_sm_pm_interp_rollmean30": 0.003988086033919972,
     "V_rollcv_F_NDVI_kobs30": 0.003468707442605258,
     "A_d_G_API_kobs14": 0.0027278534753989343,
-    "A_d_LST_modis_kobs30": 0.0020780812488075313,
-    "A_d_E_SAR_ratio_kobs30": 0.0010855240573817333,
-    "V_rollmin_SMAP_sm_interp_kobs30": 0.004588871017479129,
-    "V_ema_E_SAR_ratio_kobs30": 0.0015147771490547552,
-    "A_d_F_NDMI_kobs30": 0.0018588128721972437,
-    "V_ema_SMAP_sm_interp_kobs7": 0.004959610370683421,
-    "V_rollcv_G_API_kobs14": 0.0009846913016124015,
+    "V_rollmin_LST_modis_kobs14": 0.0023759021240857717,
+    "precip_mm": 0.0023697003843326583,
     "V_rollmax_SMAP_sm_interp_kobs14": 0.0021863093227984676,
-    "V_ema_SMAP_sm_interp_kobs30": 0.0015539373072301207,
-    "C_lag_SMAP_sm_interp_kobs12": 0.00023343404342396497,
-    "SMAP_sm_am_interp_rollmean30": 0.00012996430402970537,
-    "A_d_F_NDVI_kobs30": 0.0005258753969580297,
-    "V_rollcv_G_API_kobs7": 0.0006076375176205115,
+    "A_d_LST_modis_kobs30": 0.0020780812488075313,
+    "A_d_F_NDMI_kobs30": 0.0018588128721972437,
     "V_rollrng_F_NDMI_kobs30": 0.0017766939123008752,
+    "V_ema_SMAP_sm_interp_kobs30": 0.0015539373072301207,
+    "V_ema_E_SAR_ratio_kobs30": 0.0015147771490547552,
+    "A_d_E_SAR_ratio_kobs30": 0.0010855240573817333,
+    "V_rollcv_G_API_kobs14": 0.0009846913016124015,
+    "V_rollrng_F_NDVI_kobs30": 0.0008636210920304034,
+    "V_rollcv_G_API_kobs7": 0.0006076375176205115,
+    "A_d_F_NDVI_kobs30": 0.0005258753969580297,
     "A_d_G_API_kobs2": 0.0005080547689974189,
     "A_pct_G_API": 0.00030882334508984175,
-    "C_lag_F_NDMI_kobs30": -0.0003313773704751242,
-    "V_rollmax_SMAP_sm_interp_kobs30": -0.0014160714349447901,
-    "A_d_G_API_kobs1": -0.00013380742603609649,
+    "C_lag_SMAP_sm_interp_kobs12": 0.00023343404342396497,
+    "SMAP_sm_am_interp_rollmean30": 0.00012996430402970537,
     "V_rollcv_SMAP_sm_interp_kobs14": 0.00011337209328765656,
-    "SMAP_sm_interp_lag30": -0.0005474867261374577,
-    "C_lag_E_SAR_ratio_kobs30": -0.0001905248304096787,
-    "A_d_s2_b12_kobs7": -0.0003710515712654357,
+    "A_d_G_API_kobs5": 0.00010968395714176289,
+    "G_DSLR": -5.367919918234602e-05,
+    "A_d_G_API_kobs1": -0.00013380742603609649,
+    "V_rollcv_F_NDMI_kobs7": -0.00013449459280087382,
     "V_rollmean_F_NDMI_kobs30": -0.0001447865314182853,
+    "C_lag_E_SAR_ratio_kobs30": -0.0001905248304096787,
+    "A_d_F_NDMI_kobs5": -0.00021134139775140907,
     "SMAP_sm_interp_rollmean30": -0.00025185005890642387,
     "V_rollcv_SMAP_sm_interp_kobs30": -0.00030510068140511375,
-    "A_d_G_API_kobs5": 0.00010968395714176289,
-    "V_rollcv_F_NDMI_kobs7": -0.00013449459280087382,
-    "C_lag_F_NDMI_kobs6": -0.0005343748503398434,
-    "A_d_F_NDMI_kobs5": -0.00021134139775140907,
+    "C_lag_F_NDMI_kobs30": -0.0003313773704751242,
     "V_rollstd_F_NDMI_kobs7": -0.00034181997207152667,
-    "G_DSLR": -5.367919918234602e-05,
-    "SMAP_sm_am_interp_lag30": -0.00041718507882334936
+    "A_d_s2_b12_kobs7": -0.0003710515712654357,
+    "SMAP_sm_am_interp_lag30": -0.00041718507882334936,
+    "C_lag_F_NDMI_kobs6": -0.0005343748503398434,
+    "SMAP_sm_interp_lag30": -0.0005474867261374577,
+    "V_rollmax_SMAP_sm_interp_kobs30": -0.0014160714349447901
   },
   "selection_path": [
     {
@@ -226,6 +225,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -238,6 +238,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -250,6 +251,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -262,6 +264,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -274,6 +277,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -286,6 +290,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -298,6 +303,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -311,6 +317,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -324,6 +331,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -336,6 +344,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -348,6 +357,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -360,6 +370,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -372,6 +383,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -384,6 +396,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -396,6 +409,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -409,6 +423,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -422,6 +437,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -434,6 +450,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -446,6 +463,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -458,6 +476,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -470,6 +489,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -482,6 +502,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -494,6 +515,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -507,6 +529,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -520,6 +543,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -532,6 +556,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -544,6 +569,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -556,6 +582,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -568,6 +595,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -580,6 +608,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -592,6 +621,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -605,6 +635,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -708,6 +739,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -720,6 +752,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -732,6 +765,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -744,6 +778,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -756,6 +791,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -768,6 +804,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -780,6 +817,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -793,6 +831,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -806,6 +845,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -818,6 +858,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -830,6 +871,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -842,6 +884,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -854,6 +897,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -866,6 +910,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -878,6 +923,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -891,6 +937,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -904,6 +951,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -916,6 +964,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -928,6 +977,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -940,6 +990,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -952,6 +1003,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -964,6 +1016,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -976,6 +1029,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -989,6 +1043,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -1002,6 +1057,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1014,6 +1070,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1026,6 +1083,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -1038,6 +1096,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -1050,6 +1109,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -1062,6 +1122,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -1074,6 +1135,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -1087,6 +1149,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -1175,6 +1238,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1187,6 +1251,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1199,6 +1264,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -1211,6 +1277,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -1223,6 +1290,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -1235,6 +1303,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -1247,6 +1316,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -1260,6 +1330,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -1273,6 +1344,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1285,6 +1357,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1297,6 +1370,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -1309,6 +1383,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -1321,6 +1396,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -1333,6 +1409,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -1345,6 +1422,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -1358,6 +1436,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -1371,6 +1450,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1383,6 +1463,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1395,6 +1476,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -1407,6 +1489,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -1419,6 +1502,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -1431,6 +1515,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -1443,6 +1528,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -1456,6 +1542,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -1469,6 +1556,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1481,6 +1569,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1493,6 +1582,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -1505,6 +1595,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -1517,6 +1608,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -1529,6 +1621,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -1541,6 +1634,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -1554,6 +1648,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -1627,6 +1722,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1639,6 +1735,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1651,6 +1748,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -1663,6 +1761,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -1675,6 +1774,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -1687,6 +1787,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -1699,6 +1800,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -1712,6 +1814,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -1725,6 +1828,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1737,6 +1841,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1749,6 +1854,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -1761,6 +1867,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -1773,6 +1880,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -1785,6 +1893,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -1797,6 +1906,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -1810,6 +1920,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -1823,6 +1934,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1835,6 +1947,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1847,6 +1960,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -1859,6 +1973,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -1871,6 +1986,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -1883,6 +1999,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -1895,6 +2012,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -1908,6 +2026,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -1921,6 +2040,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1933,6 +2053,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -1945,6 +2066,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -1957,6 +2079,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -1969,6 +2092,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -1981,6 +2105,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -1993,6 +2118,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -2006,6 +2132,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -2069,6 +2196,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -2081,6 +2209,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -2093,6 +2222,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -2105,6 +2235,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Quinault"
@@ -2117,6 +2248,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -2129,6 +2261,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington"
@@ -2141,6 +2274,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -2154,6 +2288,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Spokane",
@@ -2167,6 +2302,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -2179,6 +2315,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -2191,6 +2328,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -2203,6 +2341,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Quinault"
@@ -2215,6 +2354,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -2227,6 +2367,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington"
@@ -2239,6 +2380,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -2252,6 +2394,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Spokane",
@@ -2265,6 +2408,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -2277,6 +2421,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -2289,6 +2434,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -2301,6 +2447,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Quinault"
@@ -2313,6 +2460,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -2325,6 +2473,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington"
@@ -2337,6 +2486,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -2350,6 +2500,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Spokane",
@@ -2363,6 +2514,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -2375,6 +2527,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "SourdoughGulch_WA_985"
@@ -2387,6 +2540,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -2399,6 +2553,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Quinault"
@@ -2411,6 +2566,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -2423,6 +2579,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington"
@@ -2435,6 +2592,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -2448,6 +2606,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Spokane",
@@ -2466,6 +2625,7 @@
   "folds": [
     {
       "fold_id": "year_2019_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "SourdoughGulch_WA_985"
@@ -2475,6 +2635,7 @@
     },
     {
       "fold_id": "year_2019_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "Quinault"
@@ -2484,6 +2645,7 @@
     },
     {
       "fold_id": "year_2019_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "Darrington"
@@ -2493,6 +2655,7 @@
     },
     {
       "fold_id": "year_2019_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "Spokane",
@@ -2503,6 +2666,7 @@
     },
     {
       "fold_id": "year_2020_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "SourdoughGulch_WA_985"
@@ -2512,6 +2676,7 @@
     },
     {
       "fold_id": "year_2020_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "Quinault"
@@ -2521,6 +2686,7 @@
     },
     {
       "fold_id": "year_2020_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "Darrington"
@@ -2530,6 +2696,7 @@
     },
     {
       "fold_id": "year_2020_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "Spokane",
@@ -2540,6 +2707,7 @@
     },
     {
       "fold_id": "year_2021_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "SourdoughGulch_WA_985"
@@ -2549,6 +2717,7 @@
     },
     {
       "fold_id": "year_2021_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "Quinault"
@@ -2558,6 +2727,7 @@
     },
     {
       "fold_id": "year_2021_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "Darrington"
@@ -2567,6 +2737,7 @@
     },
     {
       "fold_id": "year_2021_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "Spokane",
@@ -2577,6 +2748,7 @@
     },
     {
       "fold_id": "year_2022_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "SourdoughGulch_WA_985"
@@ -2586,6 +2758,7 @@
     },
     {
       "fold_id": "year_2022_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "Quinault"
@@ -2595,6 +2768,7 @@
     },
     {
       "fold_id": "year_2022_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "Darrington"
@@ -2604,6 +2778,7 @@
     },
     {
       "fold_id": "year_2022_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "Spokane",
@@ -2631,6 +2806,7 @@
     "confidence_z": 1.0,
     "permutation_repeats": 1,
     "permutation_batch_size": 16,
+    "parallel_workers": 16,
     "train_weight_betas": [
       0.0,
       0.2
@@ -2649,7 +2825,7 @@
       "tree_method": "hist",
       "n_jobs": 1,
       "verbosity": 0,
-      "device": "cuda"
+      "device": "cpu"
     }
   }
 }

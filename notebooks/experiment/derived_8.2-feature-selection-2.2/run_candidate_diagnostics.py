@@ -24,10 +24,10 @@ from artifact_state import (
     artifact_is_complete,
     atomic_write_csv,
     atomic_write_json,
-    capture_source_state,
     invalidate_completion,
     write_completion_marker,
 )
+from runtime import add_runtime_arguments, validate_workers
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -35,20 +35,6 @@ EXP_DIR = Path(__file__).resolve().parent
 TARGET = "soil_moisture_5cm"
 SEED = 42
 DIAGNOSTIC_REQUIRED_FILES = ("global_candidates.csv", "manifest.json")
-
-
-def _probe_device() -> str:
-    requested = os.environ.get("XGB_DEVICE", "").strip().lower()
-    if requested == "cpu":
-        return "cpu"
-    if requested not in {"", "cuda"}:
-        raise ValueError("XGB_DEVICE must be 'cpu' or 'cuda'")
-    try:
-        model = xgb.XGBRegressor(n_estimators=1, device="cuda", verbosity=0)
-        model.fit(np.asarray([[0.0], [1.0]]), np.asarray([0.0, 1.0]))
-        return "cuda"
-    except Exception:
-        return "cpu"
 
 
 def _weights(dates: pd.Series, beta: float) -> np.ndarray | None:
@@ -137,15 +123,15 @@ def main(argv=None) -> None:
         ),
         default="nested",
     )
+    add_runtime_arguments(parser)
     args = parser.parse_args(argv)
     random.seed(SEED)
     np.random.seed(SEED)
     os.environ["PYTHONHASHSEED"] = str(SEED)
     with open(EXP_DIR / "config.yaml", encoding="utf-8") as stream:
         base_config = yaml.safe_load(stream)
-    source_state = capture_source_state(PROJECT_ROOT, EXP_DIR)
     params = dict(base_config["evaluation"]["xgb_params"])
-    params["device"] = _probe_device()
+    params["device"] = args.device
 
     tasks = []
     candidate_counts = {}
@@ -203,7 +189,7 @@ def main(argv=None) -> None:
             "retrospective_test_Bias": retrospective["Bias"],
         }
 
-    parallel_workers = max(1, int(os.environ.get("XGB_PARALLEL_WORKERS", "16")))
+    parallel_workers = validate_workers(args.workers)
     with ThreadPoolExecutor(max_workers=parallel_workers) as executor:
         rows = list(executor.map(_run_task, tasks))
 
@@ -219,7 +205,6 @@ def main(argv=None) -> None:
         "parallel_workers": parallel_workers,
         "artifact_set": args.artifact_set,
         "candidate_counts": candidate_counts,
-        "source_state": source_state,
         "outer_period": "2021-2022",
         "retrospective_test_period": "2023-2025",
         "unbiased_sota_eligible": False,
@@ -229,7 +214,6 @@ def main(argv=None) -> None:
     write_completion_marker(
         output_dir,
         DIAGNOSTIC_REQUIRED_FILES,
-        source_state=source_state,
     )
     print(results.to_string(index=False))
 

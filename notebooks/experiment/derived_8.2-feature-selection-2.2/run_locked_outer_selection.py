@@ -7,6 +7,7 @@ importance search. Outputs go to ``artifacts/nested_locked_outer``.
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -16,8 +17,8 @@ import yaml
 from artifact_state import (
     artifact_is_complete,
     atomic_write_json,
-    capture_source_state,
 )
+from runtime import add_runtime_arguments, validate_workers
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -31,18 +32,21 @@ from run_nested_selection import (  # noqa: E402
     NESTED_REQUIRED_FILES,
     _load_inner_outer,
     _prepare_xy,
-    _probe_device,
     _write_nested_artifact,
 )
 
 
-def main() -> None:
+def main(argv=None) -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    add_runtime_arguments(parser)
+    args = parser.parse_args(argv)
+    workers = validate_workers(args.workers)
     with open(EXP_DIR / "nested_config.yaml", encoding="utf-8") as stream:
         config = yaml.safe_load(stream)
-    device = _probe_device()
+    device = args.device
     outer_config = json.loads(json.dumps(config["outer_selection"]))
     outer_config["model_params"]["device"] = device
-    source_state = capture_source_state(PROJECT_ROOT, EXP_DIR)
+    outer_config["parallel_workers"] = workers
     output_root = EXP_DIR / "artifacts/nested_locked_outer"
     summaries = []
 
@@ -52,7 +56,6 @@ def main() -> None:
         if artifact_is_complete(
             scope_dir,
             NESTED_REQUIRED_FILES,
-            expected_source_tree_sha256=source_state["source_tree_sha256"],
         ):
             with open(selected_path, encoding="utf-8") as stream:
                 selected_payload = json.load(stream)
@@ -121,7 +124,6 @@ def main() -> None:
             outer_result=outer_result,
             split_hashes=hashes,
             device=device,
-            source_state=source_state,
         )
         summaries.append(
             {
@@ -139,7 +141,6 @@ def main() -> None:
             "device": device,
             "parallel_workers": outer_config["parallel_workers"],
             "model_params": outer_config["model_params"],
-            "source_state": source_state,
             "datasets": summaries,
         },
     )

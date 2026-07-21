@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,11 +17,11 @@ from sklearn.preprocessing import StandardScaler
 from artifact_state import (
     atomic_write_csv,
     atomic_write_json,
-    capture_source_state,
     invalidate_completion,
     sha256_file,
     write_completion_marker,
 )
+from runtime import add_runtime_arguments, validate_workers
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -54,26 +53,11 @@ def _load_development_data(dataset: str) -> tuple[pd.DataFrame, dict]:
     return development, hashes
 
 
-def _probe_device() -> str:
-    import xgboost as xgb
-
-    requested = os.environ.get("XGB_DEVICE", "").strip().lower()
-    if requested == "cpu":
-        return "cpu"
-    if requested not in {"", "cuda"}:
-        raise ValueError("XGB_DEVICE must be 'cpu' or 'cuda'")
-    try:
-        model = xgb.XGBRegressor(n_estimators=1, device="cuda", verbosity=0)
-        model.fit(np.asarray([[0.0], [1.0]]), np.asarray([0.0, 1.0]))
-        return "cuda"
-    except Exception:
-        return "cpu"
-
-
-def _selection_config(config: dict, smoke: bool, device: str) -> dict:
+def _selection_config(config: dict, smoke: bool, device: str, workers: int) -> dict:
     stage = json.loads(json.dumps(config["selection"]["stages"][0]))
     stage.pop("kind", None)
     stage["model_params"]["device"] = device
+    stage["parallel_workers"] = workers
     if smoke:
         stage.update(
             {
@@ -114,7 +98,6 @@ def _write_selection(
     split_hashes: dict,
     config: dict,
     device: str,
-    source_state: dict,
 ) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     invalidate_completion(out_dir)
@@ -123,8 +106,6 @@ def _write_selection(
         "dataset": dataset,
         "scope": scope,
         "created": datetime.now(timezone.utc).isoformat(),
-        "git_commit": source_state["git_commit"],
-        "source_state": source_state,
         "device": device,
         "split_hashes": split_hashes,
         "n_features": len(result["selected"]),
@@ -155,7 +136,6 @@ def _write_selection(
     write_completion_marker(
         out_dir,
         SELECTION_REQUIRED_FILES,
-        source_state=source_state,
     )
 
 
@@ -178,7 +158,7 @@ def run_dataset(
     config: dict,
     smoke: bool,
     device: str,
-    source_state: dict,
+    workers: int,
 ) -> dict:
     from Modeling.Src.soilmoist_fl.Selectors.grouped_oof import select_grouped_oof
 
@@ -186,7 +166,7 @@ def run_dataset(
     station_col = config["data"]["station_col"]
     time_col = config["data"]["time_col"]
     X, y, context = _prepare_xy(development, station_col, time_col)
-    grouped_config = _selection_config(config, smoke, device)
+    grouped_config = _selection_config(config, smoke, device, workers)
     result = select_grouped_oof(
         X,
         y,
@@ -204,7 +184,6 @@ def run_dataset(
         split_hashes=hashes,
         config=grouped_config,
         device=device,
-        source_state=source_state,
     )
 
     summary = {
@@ -218,6 +197,7 @@ def run_dataset(
 
     delta_config = json.loads(json.dumps(config["regime_delta"]["selection"]))
     delta_config["model_params"]["device"] = device
+    delta_config["parallel_workers"] = workers
     additions = list(config["regime_delta"]["additions"])
     if smoke:
         delta_config.update(
@@ -256,7 +236,6 @@ def run_dataset(
             split_hashes=hashes,
             config=delta_config,
             device=device,
-            source_state=source_state,
         )
         summary["regimes"][str(int(regime))] = {
             "n_features": len(regime_result["selected"]),
@@ -279,14 +258,14 @@ def main(argv=None) -> None:
         action="store_true",
         help="Use a small, isolated configuration and write under artifacts/smoke.",
     )
+    add_runtime_arguments(parser)
     args = parser.parse_args(argv)
 
     config = _load_config()
-    device = _probe_device()
-    source_state = capture_source_state(PROJECT_ROOT, EXP_DIR)
+    workers = validate_workers(args.workers)
     datasets = args.dataset or list(DATASETS)
     summaries = [
-        run_dataset(dataset, config, args.smoke, device, source_state)
+        run_dataset(dataset, config, args.smoke, args.device, workers)
         for dataset in datasets
     ]
     root = EXP_DIR / "artifacts" / ("smoke" if args.smoke else "final")
@@ -295,9 +274,9 @@ def main(argv=None) -> None:
         root / "selection_summary.json",
         {
             "created": datetime.now(timezone.utc).isoformat(),
-            "device": device,
+            "device": args.device,
+            "workers": workers,
             "smoke": args.smoke,
-            "source_state": source_state,
             "datasets": summaries,
         },
     )

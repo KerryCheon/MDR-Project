@@ -1,8 +1,7 @@
 {
   "version": 1,
-  "source_tree_sha256": "9de909c043799f1f0904ea85d84c7092e1ee4cac916f6ea847b1cbeba88a9bce",
   "files": {
-    "global_candidates.csv": "b38b481e994d736aa2c8198a69ba263aff0a2e7d5a0e02bd268568969d55a582",
-    "manifest.json": "74abbfae847aa65cf5823b13fd9dc6b39fa99905a0347acddd3a9509f55f78ff"
+    "global_candidates.csv": "f9169a37200b1d4073ff643c9681d3057d76a76c3ccb5d694969c1b37d95b818",
+    "manifest.json": "f8660a7a47601873549fdbe11175e7efe0cd49c4a64d3a83da82b8f2c3ef1981"
   }
 }

@@ -28,53 +28,19 @@ The selector chooses the size minimizing the upper confidence bound of grouped O
 The nested revision uses 2017–2020 for importance/candidate generation and 2021–2022 only for locked-model outer selection. 
 A crossed arm creates two candidate paths—pure forward time and future held-out stations—before outer labels are seen. This tests the fundamental assumption that one joint-shift permutation score can represent both temporal and spatial generalization.
 
-All independent XGBoost fits default to 16 parallel workers, with `n_jobs: 1` inside each fit to avoid nested oversubscription. Selection configs can lower `parallel_workers`; evaluation scripts can override the default with `XGB_PARALLEL_WORKERS`. 
-Set `XGB_DEVICE=cpu` for multi-core evaluation; running 16 concurrent fits against one GPU can stall because they contend for the same device.
+All independent XGBoost fits default to four CUDA workers, with `n_jobs: 1` inside each fit to avoid nested oversubscription. This is conservative relative to the successful six-worker H100 sweep in `derived_8.2-hyperparameters-1.5`. Every saved runner accepts `--device {cpu,cuda}` and `--workers`.
 
 ## Reproduction
 
 From the repository root:
 
 ```bash
-# Fast wiring check; writes only under artifacts/smoke
-PYTHONPATH=. notebooks/.venv/bin/python \
-  notebooks/experiment/derived_8.2-feature-selection-2.2/run_selection.py --smoke
-
-# Full frozen selection on both datasets
-PYTHONPATH=. notebooks/.venv/bin/python \
-  notebooks/experiment/derived_8.2-feature-selection-2.2/run_selection.py
-
-# Development evaluation on 2021-2022 only
-PYTHONPATH=. notebooks/.venv/bin/python \
-  notebooks/experiment/derived_8.2-feature-selection-2.2/run_eval.py
-
-# One-shot final evaluation after the design and lists are frozen
-PYTHONPATH=. notebooks/.venv/bin/python \
-  notebooks/experiment/derived_8.2-feature-selection-2.2/run_eval.py \
-  --confirm-final
-
-# Nested inner/outer revision (does not read test.csv)
-PYTHONPATH=. notebooks/.venv/bin/python \
-  notebooks/experiment/derived_8.2-feature-selection-2.2/run_nested_selection.py
-
-# Re-score saved candidates with the locked final learner
-PYTHONPATH=. notebooks/.venv/bin/python \
-  notebooks/experiment/derived_8.2-feature-selection-2.2/run_locked_outer_selection.py
-
-# Union forward-time and station/time candidate paths; fully resumable
-PYTHONPATH=. notebooks/.venv/bin/python \
-  notebooks/experiment/derived_8.2-feature-selection-2.2/run_crossed_candidate_selection.py
-
-# Diagnose one-shot batch pruning without hard-coded features
-PYTHONPATH=. notebooks/.venv/bin/python \
-  notebooks/experiment/derived_8.2-feature-selection-2.2/run_crossed_candidate_selection.py \
-  --progressive --dataset derived_8.0
+cd notebooks
+nb execute experiment/derived_8.2-feature-selection-2.2/pipeline.ipynb \
+  --uv --timeout 86400
 ```
 
-The notebooks are thin, narrative front ends around these scripts. 
-JSON and CSV artifacts contain the exact config, split hashes, fold membership, importance uncertainty, selection path, and stopping reason. 
-Each active artifact also records whether Git was dirty, hashes the tracked diff and all runtime source files (including untracked experiment code), and writes a hash-verified `completion.json` last. 
-Resumable runners reject missing, altered, or source-incompatible checkpoints.
+`pipeline.ipynb` invokes `run_all.py` unconditionally. Its journal resumes an interrupted run, but a completed run starts a new clean rebuild. JSON and CSV artifacts contain configuration, split hashes, fold membership, importance uncertainty, selection path, stopping reason, and hash-verified completion markers. `RESULTS.md` is generated only after every required stage completes.
 
 ## Final gates
 

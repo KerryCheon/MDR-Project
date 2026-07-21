@@ -24,10 +24,10 @@ from artifact_state import (
     artifact_is_complete,
     atomic_write_csv,
     atomic_write_json,
-    capture_source_state,
     invalidate_completion,
     write_completion_marker,
 )
+from runtime import add_runtime_arguments, validate_workers
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -62,20 +62,6 @@ HAND_MDR_V25 = [
 def _load_config() -> dict:
     with open(CONFIG_PATH, encoding="utf-8") as stream:
         return yaml.safe_load(stream)
-
-
-def _probe_device() -> str:
-    requested = os.environ.get("XGB_DEVICE", "").strip().lower()
-    if requested == "cpu":
-        return "cpu"
-    if requested not in {"", "cuda"}:
-        raise ValueError("XGB_DEVICE must be 'cpu' or 'cuda'")
-    try:
-        model = xgb.XGBRegressor(n_estimators=1, device="cuda", verbosity=0)
-        model.fit(np.asarray([[0.0], [1.0]]), np.asarray([0.0, 1.0]))
-        return "cuda"
-    except Exception:
-        return "cpu"
 
 
 def _metrics(y_true, prediction) -> dict:
@@ -304,7 +290,7 @@ def main(argv=None) -> None:
         "--retrospective-test",
         action="store_true",
         help=(
-            "Evaluate nested-revision artifacts on the already-consumed test split; "
+            "Evaluate an artifact set on the already-consumed test split; "
             "diagnostic only, never an unbiased SOTA claim."
         ),
     )
@@ -321,26 +307,25 @@ def main(argv=None) -> None:
         default="final",
         help="Selection artifact tree to evaluate.",
     )
+    add_runtime_arguments(parser)
     args = parser.parse_args(argv)
 
     if args.confirm_final and args.retrospective_test:
         parser.error("--confirm-final and --retrospective-test are mutually exclusive")
     if args.confirm_final and args.artifact_set != "final":
         parser.error("--confirm-final is reserved for the frozen original final artifacts")
-    retrospective_sets = {
-        "nested",
-        "nested_locked_outer",
-        "crossed_candidates_locked_outer",
-    }
-    if args.retrospective_test and args.artifact_set not in retrospective_sets:
-        parser.error("--retrospective-test requires a completed revision artifact set")
-
     random.seed(SEED)
     np.random.seed(SEED)
     os.environ["PYTHONHASHSEED"] = str(SEED)
     config = _load_config()
-    device = _probe_device()
-    source_state = capture_source_state(PROJECT_ROOT, EXP_DIR)
+    device = args.device
+    parallel_workers = validate_workers(args.workers)
+    serial_revision_retro = bool(
+        args.retrospective_test
+        and args.artifact_set
+        in {"nested", "nested_locked_outer", "crossed_candidates_locked_outer"}
+    )
+    task_workers = 1 if serial_revision_retro else parallel_workers
     params = dict(config["evaluation"]["xgb_params"])
     params["device"] = device
     artifact_root = EXP_DIR / "artifacts" / args.artifact_set
@@ -358,7 +343,6 @@ def main(argv=None) -> None:
     overall_rows = []
     year_rows = []
     station_rows = []
-    parallel_workers = max(1, int(os.environ.get("XGB_PARALLEL_WORKERS", "16")))
     for dataset in ("derived_8.0", "derived_8.2"):
         split_dir = PROJECT_ROOT / "data/splits" / dataset
         train = pd.read_csv(split_dir / "train.csv")
@@ -474,11 +458,23 @@ def main(argv=None) -> None:
                 metadata,
             )
 
-        with ThreadPoolExecutor(max_workers=parallel_workers) as executor:
-            for overall, years, stations in executor.map(_run_eval_task, tasks):
+        if task_workers == 1:
+            task_results = (_run_eval_task(task) for task in tasks)
+        else:
+            executor = ThreadPoolExecutor(max_workers=task_workers)
+            task_results = executor.map(_run_eval_task, tasks)
+        try:
+            for task_index, (overall, years, stations) in enumerate(task_results, start=1):
                 overall_rows.append(overall)
                 year_rows.extend(years)
                 station_rows.extend(stations)
+                print(
+                    f"{dataset}: completed evaluation task {task_index}/{len(tasks)}",
+                    flush=True,
+                )
+        finally:
+            if task_workers != 1:
+                executor.shutdown(wait=True)
 
     summary = pd.DataFrame(overall_rows)
     atomic_write_csv(summary, output_root / "metrics_summary.csv")
@@ -526,20 +522,19 @@ def main(argv=None) -> None:
             "created": datetime.now(timezone.utc).isoformat(),
             "device": device,
             "parallel_workers": parallel_workers,
+            "task_workers": task_workers,
             "artifact_set": args.artifact_set,
             "final_test": args.confirm_final,
             "retrospective_test": args.retrospective_test,
             "unbiased_sota_eligible": bool(
                 args.confirm_final and args.artifact_set == "final"
             ),
-            "source_state": source_state,
             "gates": gates,
         },
     )
     write_completion_marker(
         output_root,
         EVALUATION_REQUIRED_FILES,
-        source_state=source_state,
     )
     print(summary.sort_values(["dataset", "beta", "R2"]).to_string(index=False))
     if gates:

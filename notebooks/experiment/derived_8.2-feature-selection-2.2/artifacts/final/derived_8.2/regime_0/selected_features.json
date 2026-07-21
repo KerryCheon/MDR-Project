@@ -2,9 +2,8 @@
   "version": "2.2",
   "dataset": "derived_8.2",
   "scope": "clustering_dynamic_k2_regime_0",
-  "created": "2026-07-20T20:41:42.667530+00:00",
-  "git_commit": "6e906625aa860958d9e7e1d4ddafd1d49cd1c4bf",
-  "device": "cuda",
+  "created": "2026-07-21T03:57:04.821307+00:00",
+  "device": "cpu",
   "split_hashes": {
     "train": "29b8748deadf8a0fa6e9c356d5c93e65cd359cda135d9abecc1e4289954cea20",
     "val": "261950f21dabb6a7ba8a7d4eba6ff4990ad26469bc978967576751616e1836cf"
@@ -114,106 +113,106 @@
   ],
   "stopping_reason": "no_regime_delta_with_positive_paired_lcb",
   "scores": {
-    "V_rollmin_G_API_kobs30": 0.023913411051264172,
-    "aspect": 0.004288092858610079,
-    "V_rollmean_LST_modis_kobs30": -0.0037640659401501995,
-    "J_bio_bio09": 0.007390624765214918,
-    "V_rollmax_F_NDVI_kobs30": 0.015577960586864129,
-    "latitude": 0.0041669684729345674,
-    "V_rollmax_LST_modis_kobs30": -0.0008858337263542345,
-    "V_rollmin_LST_modis_kobs30": 0.004716654882491605,
-    "V_ema_LST_modis_kobs30": -0.00010762238414543414,
-    "elev": -0.007006115994561206,
-    "D_cos_DOY": -7.420443407743309e-06,
-    "V_ema_G_API_kobs30": 0.003243839525237038,
-    "G_rain_sum_3d": 0.002233777059924477,
-    "C_lag_G_API_kobs1": 0.003777085392349309,
-    "C_lag_LST_modis_kobs30": -0.001190285632315235,
-    "SMAP_sm_pm_interp": -3.3894559376906257e-05,
-    "V_rollmin_F_NDVI_kobs30": 0.004828218791689763,
-    "J_bio_bio10": 0.00041944932267141396,
-    "G_rain_sum_7d": 0.0009782229957157281,
-    "V_rollrng_F_NDVI_kobs30": 0.00030896330984555204,
-    "s2_b8": -0.0025533426354179575,
-    "V_rollmax_E_SAR_ratio_kobs30": 0.008128492902658825,
-    "C_lag_F_NDMI_kobs30": -0.001465966622500368,
-    "V_rollmean_E_SAR_ratio_kobs30": 0.000952730821919824,
-    "V_rollmean_E_SAR_diff_kobs30": 0.0008020734138595228,
-    "C_lag_E_SAR_diff_kobs30": 0.0008134019990777239,
-    "J_bio_bio04": -0.013847616242809876,
-    "G_API": 2.1779967524219416e-05,
-    "V_ema_E_SAR_ratio_kobs30": -1.2707640042288197e-05,
-    "V_ema_E_SAR_ratio_kobs14": -0.0004894929327818823,
-    "J_bio_bio01": -0.0020488524648755472,
-    "V_rollmax_G_API_kobs7": 0.0012830384941382084,
-    "C_lag_E_SAR_ratio_kobs30": -0.0008766256007332921,
-    "V_rollmin_E_SAR_diff_kobs30": 0.0011907744390280608,
-    "C_lag_G_API_kobs30": 9.484960791759207e-05,
-    "V_rollmin_SMAP_sm_interp_kobs30": 0.0028868174065282875,
-    "A_d_E_SAR_ratio_kobs30": 0.0015585725559041533,
-    "V_rollstd_F_NDVI_kobs30": -0.000479683457315099,
-    "SMAP_sm_pm_interp_lag1": 0.0004317759920417054,
-    "V_rollmax_G_API_kobs14": -0.0005839004699450397,
-    "A_d_G_API_kobs14": 0.000111000261748801,
-    "V_rollmax_E_SAR_ratio_kobs14": 0.0007947394881787935,
-    "DOY": 0.050933210843312926,
-    "V_rollmin_s2_b12_kobs30": 0.0006269152043869948,
-    "V_rollmin_E_SAR_diff_kobs7": -0.0005267846194726931,
-    "F_NDVI": -0.00019316850241098601,
-    "V_rollcv_F_NDVI_kobs30": 0.0009873561738677668,
-    "V_rollmin_E_SAR_ratio_kobs30": -0.0038226611924357355,
-    "V_rollmin_E_SAR_ratio_kobs14": -0.0009315376015427306,
-    "V_ema_LST_modis_kobs14": 0.0006885765398787702,
-    "K_aspect_cos": 0.006490537470106084,
-    "A_pct_G_API": -8.17437402509881e-05,
-    "V_ema_F_NDVI_kobs7": -0.0003423772655441837,
-    "C_lag_LST_modis_kobs6": 0.0004213961810061361,
-    "C_lag_LST_modis_kobs5": 9.998811246004179e-06,
-    "A_d_LST_modis_kobs30": 0.0016011275578792855,
-    "precip_mm": -2.9819602006798016e-05,
-    "J_bio_bio12": -0.0023220028357507413,
-    "A_d_G_API_kobs2": -3.6722219911676615e-05,
-    "A_grad_E_SAR_ratio_kobs30": 0.0002868780724659952,
-    "longitude": -6.420630035172831e-05,
-    "V_rollmin_SMAP_sm_interp_kobs7": -0.0009300344367155816,
-    "V_rollmin_s2_b11_kobs7": -0.0005367598016232447,
-    "V_rollmin_s2_b12_kobs14": -0.0003659147309937518,
-    "D_sa_LST_modis": -0.0006417827031739088,
-    "J_bio_bio15": -0.00656706085637322,
-    "A_d_G_API_kobs1": 0.0002873074649251786,
-    "C_smm_SMAP_sm_interp_alpha0.85_n5": -0.0009837271448504457,
-    "SMAP_sm_interp": -0.0021752895760002167,
-    "lia_std_desc_deg": -0.0024931411377210207,
-    "A_d_s2_b11_kobs7": -8.178521111345256e-05,
-    "V_ema_G_API_kobs7": 0.0017420161031802637,
-    "LST_modis": -0.0015378978376504172,
-    "A_grad_LST_modis_kobs30": 0.00020491818897607335,
-    "V_rollcv_F_NDMI_kobs14": -0.00044356312487010526,
-    "A_d_E_SAR_ratio_kobs7": 0.00024887881355442924,
-    "C_lag_E_SAR_ratio_kobs5": -0.0011771200676124515,
-    "V_rollrng_SMAP_sm_interp_kobs14": -0.0006509824162542915,
-    "V_rollcv_G_API_kobs14": 0.00021756045646342627,
-    "A_d_LST_modis_kobs5": -0.00017306174832402733,
-    "V_rollmax_F_NDVI_kobs7": -0.0018690120176388814,
-    "SMAP_sm_am_interp_lag7": 0.0002873349446344364,
-    "A_d_LST_modis_kobs14": 0.00031245483481426615,
-    "J_bio_bio13": -0.0008063346062534818,
-    "V_rollstd_F_NDVI_kobs14": -0.00045153862688641645,
-    "A_grad_F_NDMI_kobs7": 3.1083832560252145e-05,
-    "D_z_LST_modis": -0.0002538788987502867,
-    "C_lag_E_SAR_diff_kobs5": 0.0004605588275771509,
-    "SMAP_sm_am_interp_ema02": 8.424980135495624e-05,
-    "A_grad_G_API_kobs30": -0.0005547680396899393,
-    "C_lag_F_NDMI_kobs2": -0.00031973063723338233,
-    "G_DSLR": -0.00026617545487720476,
-    "V_rollmin_s2_b12_kobs7": -0.0001388679499513612,
-    "V_ema_E_SAR_diff_kobs7": -0.0006403426460249004,
-    "V_rollmean_s2_b12_kobs7": 0.00023666071273083727,
-    "E_rough_s1_vh_kobs7": -0.0001914241012220506,
-    "C_lag_F_NDVI_kobs1": -0.0009058040922150748,
-    "A_grad_E_SAR_ratio_kobs7": -1.6596321948757172e-05,
-    "V_ema_SMAP_sm_interp_kobs7": -0.0003700654809526759,
-    "A_d_E_SAR_diff_kobs1": -6.959822188719207e-06
+    "DOY": 0.08890278052066529,
+    "V_rollmin_G_API_kobs30": 0.028883434426146545,
+    "V_rollmax_F_NDVI_kobs30": 0.014417210571553665,
+    "J_bio_bio09": 0.010277657062704492,
+    "V_ema_G_API_kobs30": 0.009973272661738322,
+    "V_rollmax_E_SAR_ratio_kobs30": 0.009184043332676922,
+    "K_aspect_cos": 0.007955931855462907,
+    "V_ema_G_API_kobs7": 0.006797196888291883,
+    "V_rollmin_LST_modis_kobs30": 0.006662224982327783,
+    "V_rollmin_F_NDVI_kobs30": 0.005620303183230566,
+    "aspect": 0.004368805226790557,
+    "C_lag_G_API_kobs1": 0.004353161341537765,
+    "V_rollmin_SMAP_sm_interp_kobs30": 0.003916343623151887,
+    "latitude": 0.0029391726076900947,
+    "G_rain_sum_3d": 0.00236031959583859,
+    "V_rollmax_G_API_kobs7": 0.0020072970257095646,
+    "G_rain_sum_7d": 0.0018873696030064435,
+    "A_d_E_SAR_ratio_kobs30": 0.0017848118492779313,
+    "A_d_LST_modis_kobs30": 0.0015651421373029503,
+    "V_rollmin_E_SAR_diff_kobs30": 0.0015286120651185854,
+    "SMAP_sm_am_interp_lag7": 0.001403456372142438,
+    "G_API": 0.0010261874621620465,
+    "C_lag_E_SAR_diff_kobs30": 0.000939393248196325,
+    "V_rollmax_E_SAR_ratio_kobs14": 0.0008750323605827041,
+    "J_bio_bio10": 0.0007674992114202007,
+    "V_rollmean_E_SAR_diff_kobs30": 0.0006516963069263355,
+    "V_ema_LST_modis_kobs30": 0.0005922386633902769,
+    "D_cos_DOY": 0.0005841775790696323,
+    "V_rollmin_s2_b12_kobs30": 0.0005423193979197443,
+    "A_d_LST_modis_kobs14": 0.0005343064217652499,
+    "V_rollcv_F_NDVI_kobs30": 0.0005004863477177883,
+    "SMAP_sm_pm_interp_lag1": 0.00038120403170674075,
+    "V_rollmean_E_SAR_ratio_kobs30": 0.00036809557873799105,
+    "A_grad_E_SAR_ratio_kobs30": 0.0003445391066045181,
+    "V_rollmin_s2_b12_kobs7": 0.00034326512799377404,
+    "V_ema_F_NDVI_kobs7": 0.00030897513954098745,
+    "A_d_G_API_kobs14": 0.00023269865450745592,
+    "V_rollmin_s2_b12_kobs14": 0.00020569120320076983,
+    "A_d_G_API_kobs1": 0.00020453911003629995,
+    "V_ema_LST_modis_kobs14": 0.0001959734483399915,
+    "A_d_E_SAR_ratio_kobs7": 0.00015627349998122093,
+    "V_rollcv_G_API_kobs14": 0.0001386783131554518,
+    "V_rollmax_G_API_kobs14": 9.195502330630297e-05,
+    "A_d_G_API_kobs2": 7.265580903341538e-05,
+    "V_ema_E_SAR_ratio_kobs30": 5.664643250213473e-05,
+    "C_lag_LST_modis_kobs30": 3.497102139536461e-05,
+    "C_lag_E_SAR_diff_kobs5": 1.4659007143626981e-05,
+    "A_d_E_SAR_diff_kobs1": -2.7548039309089772e-06,
+    "A_grad_E_SAR_ratio_kobs7": -6.4931416322605465e-06,
+    "C_lag_LST_modis_kobs5": -2.1703201255619787e-05,
+    "F_NDVI": -2.6962302120766613e-05,
+    "V_ema_SMAP_sm_interp_kobs7": -3.830128914871899e-05,
+    "J_bio_bio13": -5.5434917714048016e-05,
+    "A_d_s2_b11_kobs7": -6.200693272591806e-05,
+    "precip_mm": -7.139088669253589e-05,
+    "A_grad_F_NDMI_kobs7": -7.458713553630051e-05,
+    "A_pct_G_API": -7.688417810676389e-05,
+    "C_lag_LST_modis_kobs6": -8.649626727224159e-05,
+    "A_grad_LST_modis_kobs30": -9.907731885533755e-05,
+    "E_rough_s1_vh_kobs7": -0.00012663977009550058,
+    "longitude": -0.00014748528650161729,
+    "V_rollmin_s2_b11_kobs7": -0.00015862158505867605,
+    "V_rollcv_F_NDMI_kobs14": -0.00016240812519680364,
+    "SMAP_sm_am_interp_ema02": -0.000176988545980012,
+    "V_rollstd_F_NDVI_kobs14": -0.00018718878208275486,
+    "A_d_LST_modis_kobs5": -0.00018772588300886259,
+    "C_lag_G_API_kobs30": -0.00019549595677546182,
+    "G_DSLR": -0.00023618965032944585,
+    "C_lag_F_NDMI_kobs2": -0.0003388348264602596,
+    "SMAP_sm_pm_interp": -0.00040327185345194006,
+    "V_rollrng_F_NDVI_kobs30": -0.0004619303087346719,
+    "V_ema_E_SAR_diff_kobs7": -0.0004625566259998834,
+    "V_rollmin_E_SAR_diff_kobs7": -0.00048510778306410924,
+    "A_grad_G_API_kobs30": -0.0005266581760747615,
+    "D_z_LST_modis": -0.0005475725332181701,
+    "V_rollmean_s2_b12_kobs7": -0.0005617513566422885,
+    "V_ema_E_SAR_ratio_kobs14": -0.0005629400089366824,
+    "C_lag_F_NDMI_kobs30": -0.0005946753749429936,
+    "D_sa_LST_modis": -0.0006824437629853425,
+    "V_rollstd_F_NDVI_kobs30": -0.0007675436124786971,
+    "V_rollmin_E_SAR_ratio_kobs14": -0.0008838608536002362,
+    "V_rollmin_SMAP_sm_interp_kobs7": -0.0008903040773505953,
+    "V_rollrng_SMAP_sm_interp_kobs14": -0.0008997344514282298,
+    "C_smm_SMAP_sm_interp_alpha0.85_n5": -0.00104694787678853,
+    "V_rollmax_F_NDVI_kobs7": -0.001129992585037504,
+    "C_lag_E_SAR_ratio_kobs5": -0.0011718508385842943,
+    "C_lag_E_SAR_ratio_kobs30": -0.001504532869127584,
+    "C_lag_F_NDVI_kobs1": -0.0015332138929247431,
+    "SMAP_sm_interp": -0.0016609117680484054,
+    "LST_modis": -0.0016814119588323567,
+    "lia_std_desc_deg": -0.0019170714034051563,
+    "V_rollmin_E_SAR_ratio_kobs30": -0.0021437442612169426,
+    "J_bio_bio01": -0.002206648179659188,
+    "V_rollmean_LST_modis_kobs30": -0.002389456466883328,
+    "J_bio_bio12": -0.002473269142190299,
+    "s2_b8": -0.002779135032309303,
+    "V_rollmax_LST_modis_kobs30": -0.00398307321314448,
+    "elev": -0.00488564832162988,
+    "J_bio_bio15": -0.006806302634495285,
+    "J_bio_bio04": -0.014171770716642945
   },
   "selection_path": [
     {
@@ -341,6 +340,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -355,6 +355,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -369,6 +370,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -383,6 +385,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -397,6 +400,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington",
@@ -411,6 +415,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington",
@@ -425,6 +430,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -439,6 +445,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -453,6 +460,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -467,6 +475,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -481,6 +490,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -495,6 +505,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -509,6 +520,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington",
@@ -523,6 +535,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington",
@@ -537,6 +550,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -551,6 +565,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -565,6 +580,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -579,6 +595,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -593,6 +610,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -607,6 +625,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -621,6 +640,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington",
@@ -635,6 +655,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington",
@@ -649,6 +670,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -663,6 +685,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -677,6 +700,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -691,6 +715,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -705,6 +730,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -719,6 +745,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -733,6 +760,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington",
@@ -747,6 +775,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington",
@@ -761,6 +790,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -775,6 +805,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -915,6 +946,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -929,6 +961,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -943,6 +976,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -957,6 +991,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -971,6 +1006,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington",
@@ -985,6 +1021,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington",
@@ -999,6 +1036,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -1013,6 +1051,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -1027,6 +1066,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1041,6 +1081,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1055,6 +1096,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1069,6 +1111,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1083,6 +1126,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington",
@@ -1097,6 +1141,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington",
@@ -1111,6 +1156,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -1125,6 +1171,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -1139,6 +1186,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1153,6 +1201,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1167,6 +1216,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1181,6 +1231,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1195,6 +1246,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington",
@@ -1209,6 +1261,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington",
@@ -1223,6 +1276,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -1237,6 +1291,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -1251,6 +1306,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1265,6 +1321,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1279,6 +1336,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1293,6 +1351,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1307,6 +1366,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington",
@@ -1321,6 +1381,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington",
@@ -1335,6 +1396,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -1349,6 +1411,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -1484,6 +1547,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1498,6 +1562,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1512,6 +1577,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1526,6 +1592,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1540,6 +1607,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington",
@@ -1554,6 +1622,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington",
@@ -1568,6 +1637,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -1582,6 +1652,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -1596,6 +1667,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1610,6 +1682,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1624,6 +1697,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1638,6 +1712,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1652,6 +1727,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington",
@@ -1666,6 +1742,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington",
@@ -1680,6 +1757,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -1694,6 +1772,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -1708,6 +1787,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1722,6 +1802,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1736,6 +1817,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1750,6 +1832,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1764,6 +1847,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington",
@@ -1778,6 +1862,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington",
@@ -1792,6 +1877,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -1806,6 +1892,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -1820,6 +1907,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1834,6 +1922,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -1848,6 +1937,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1862,6 +1952,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1876,6 +1967,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington",
@@ -1890,6 +1982,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington",
@@ -1904,6 +1997,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -1918,6 +2012,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -2048,6 +2143,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -2062,6 +2158,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -2076,6 +2173,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2090,6 +2188,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2104,6 +2203,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington",
@@ -2118,6 +2218,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Darrington",
@@ -2132,6 +2233,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -2146,6 +2248,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -2160,6 +2263,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -2174,6 +2278,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -2188,6 +2293,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2202,6 +2308,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2216,6 +2323,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington",
@@ -2230,6 +2338,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Darrington",
@@ -2244,6 +2353,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -2258,6 +2368,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -2272,6 +2383,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -2286,6 +2398,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -2300,6 +2413,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2314,6 +2428,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2328,6 +2443,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington",
@@ -2342,6 +2458,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Darrington",
@@ -2356,6 +2473,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -2370,6 +2488,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -2384,6 +2503,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -2398,6 +2518,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BurntMountain_WA",
@@ -2412,6 +2533,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2426,6 +2548,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2440,6 +2563,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington",
@@ -2454,6 +2578,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Darrington",
@@ -2468,6 +2593,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -2482,6 +2608,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -2613,6 +2740,7 @@
     "fold_metrics": [
       {
         "fold_id": "year_2019_stations_0_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "BurntMountain_WA",
@@ -2627,6 +2755,7 @@
       },
       {
         "fold_id": "year_2019_stations_0_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "BurntMountain_WA",
@@ -2641,6 +2770,7 @@
       },
       {
         "fold_id": "year_2019_stations_1_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2655,6 +2785,7 @@
       },
       {
         "fold_id": "year_2019_stations_1_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2669,6 +2800,7 @@
       },
       {
         "fold_id": "year_2019_stations_2_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "Darrington",
@@ -2683,6 +2815,7 @@
       },
       {
         "fold_id": "year_2019_stations_2_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "Darrington",
@@ -2697,6 +2830,7 @@
       },
       {
         "fold_id": "year_2019_stations_3_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "Paradise_WA",
@@ -2711,6 +2845,7 @@
       },
       {
         "fold_id": "year_2019_stations_3_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "Paradise_WA",
@@ -2725,6 +2860,7 @@
       },
       {
         "fold_id": "year_2020_stations_0_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "BurntMountain_WA",
@@ -2739,6 +2875,7 @@
       },
       {
         "fold_id": "year_2020_stations_0_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "BurntMountain_WA",
@@ -2753,6 +2890,7 @@
       },
       {
         "fold_id": "year_2020_stations_1_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2767,6 +2905,7 @@
       },
       {
         "fold_id": "year_2020_stations_1_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2781,6 +2920,7 @@
       },
       {
         "fold_id": "year_2020_stations_2_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "Darrington",
@@ -2795,6 +2935,7 @@
       },
       {
         "fold_id": "year_2020_stations_2_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "Darrington",
@@ -2809,6 +2950,7 @@
       },
       {
         "fold_id": "year_2020_stations_3_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "Paradise_WA",
@@ -2823,6 +2965,7 @@
       },
       {
         "fold_id": "year_2020_stations_3_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "Paradise_WA",
@@ -2837,6 +2980,7 @@
       },
       {
         "fold_id": "year_2021_stations_0_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "BurntMountain_WA",
@@ -2851,6 +2995,7 @@
       },
       {
         "fold_id": "year_2021_stations_0_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "BurntMountain_WA",
@@ -2865,6 +3010,7 @@
       },
       {
         "fold_id": "year_2021_stations_1_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2879,6 +3025,7 @@
       },
       {
         "fold_id": "year_2021_stations_1_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2893,6 +3040,7 @@
       },
       {
         "fold_id": "year_2021_stations_2_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "Darrington",
@@ -2907,6 +3055,7 @@
       },
       {
         "fold_id": "year_2021_stations_2_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "Darrington",
@@ -2921,6 +3070,7 @@
       },
       {
         "fold_id": "year_2021_stations_3_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "Paradise_WA",
@@ -2935,6 +3085,7 @@
       },
       {
         "fold_id": "year_2021_stations_3_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "Paradise_WA",
@@ -2949,6 +3100,7 @@
       },
       {
         "fold_id": "year_2022_stations_0_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "BurntMountain_WA",
@@ -2963,6 +3115,7 @@
       },
       {
         "fold_id": "year_2022_stations_0_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "BurntMountain_WA",
@@ -2977,6 +3130,7 @@
       },
       {
         "fold_id": "year_2022_stations_1_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2991,6 +3145,7 @@
       },
       {
         "fold_id": "year_2022_stations_1_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -3005,6 +3160,7 @@
       },
       {
         "fold_id": "year_2022_stations_2_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "Darrington",
@@ -3019,6 +3175,7 @@
       },
       {
         "fold_id": "year_2022_stations_2_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "Darrington",
@@ -3033,6 +3190,7 @@
       },
       {
         "fold_id": "year_2022_stations_3_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "Paradise_WA",
@@ -3047,6 +3205,7 @@
       },
       {
         "fold_id": "year_2022_stations_3_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "Paradise_WA",
@@ -3059,11 +3218,18 @@
         "rmse": 0.06257424953173646,
         "nrmse": 0.6149017337803346
       }
-    ]
+    ],
+    "paired_improvement_vs_required": {
+      "mean_delta_nrmse": 0.0,
+      "standard_error": 0.0,
+      "lower_confidence_bound": 0.0,
+      "n_pairs": 32
+    }
   },
   "folds": [
     {
       "fold_id": "year_2019_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "BurntMountain_WA",
@@ -3075,6 +3241,7 @@
     },
     {
       "fold_id": "year_2019_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "BeaverPass_WA_990",
@@ -3086,6 +3253,7 @@
     },
     {
       "fold_id": "year_2019_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "Darrington",
@@ -3097,6 +3265,7 @@
     },
     {
       "fold_id": "year_2019_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "Paradise_WA",
@@ -3108,6 +3277,7 @@
     },
     {
       "fold_id": "year_2020_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "BurntMountain_WA",
@@ -3119,6 +3289,7 @@
     },
     {
       "fold_id": "year_2020_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "BeaverPass_WA_990",
@@ -3130,6 +3301,7 @@
     },
     {
       "fold_id": "year_2020_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "Darrington",
@@ -3141,6 +3313,7 @@
     },
     {
       "fold_id": "year_2020_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "Paradise_WA",
@@ -3152,6 +3325,7 @@
     },
     {
       "fold_id": "year_2021_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "BurntMountain_WA",
@@ -3163,6 +3337,7 @@
     },
     {
       "fold_id": "year_2021_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "BeaverPass_WA_990",
@@ -3174,6 +3349,7 @@
     },
     {
       "fold_id": "year_2021_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "Darrington",
@@ -3185,6 +3361,7 @@
     },
     {
       "fold_id": "year_2021_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "Paradise_WA",
@@ -3196,6 +3373,7 @@
     },
     {
       "fold_id": "year_2022_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "BurntMountain_WA",
@@ -3207,6 +3385,7 @@
     },
     {
       "fold_id": "year_2022_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "BeaverPass_WA_990",
@@ -3218,6 +3397,7 @@
     },
     {
       "fold_id": "year_2022_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "Darrington",
@@ -3229,6 +3409,7 @@
     },
     {
       "fold_id": "year_2022_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "Paradise_WA",
@@ -3250,6 +3431,7 @@
     "confidence_z": 1.0,
     "permutation_repeats": 1,
     "permutation_batch_size": 16,
+    "parallel_workers": 16,
     "train_weight_betas": [
       0.0,
       0.2
@@ -3268,7 +3450,7 @@
       "tree_method": "hist",
       "n_jobs": 1,
       "verbosity": 0,
-      "device": "cuda"
+      "device": "cpu"
     },
     "candidate_sizes": [
       100,

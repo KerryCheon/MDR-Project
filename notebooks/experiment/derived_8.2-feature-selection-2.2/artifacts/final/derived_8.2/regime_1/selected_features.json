@@ -2,9 +2,8 @@
   "version": "2.2",
   "dataset": "derived_8.2",
   "scope": "clustering_dynamic_k2_regime_1",
-  "created": "2026-07-20T20:53:28.348053+00:00",
-  "git_commit": "6e906625aa860958d9e7e1d4ddafd1d49cd1c4bf",
-  "device": "cuda",
+  "created": "2026-07-21T03:58:08.447224+00:00",
+  "device": "cpu",
   "split_hashes": {
     "train": "29b8748deadf8a0fa6e9c356d5c93e65cd359cda135d9abecc1e4289954cea20",
     "val": "261950f21dabb6a7ba8a7d4eba6ff4990ad26469bc978967576751616e1836cf"
@@ -114,106 +113,106 @@
   ],
   "stopping_reason": "no_regime_delta_with_positive_paired_lcb",
   "scores": {
-    "V_rollmin_G_API_kobs30": -0.0028737348847238725,
-    "aspect": 0.049112149102683314,
-    "V_rollmean_LST_modis_kobs30": -0.0032102181922281847,
-    "J_bio_bio09": 0.08608433896430845,
-    "V_rollmax_F_NDVI_kobs30": -0.008981161666723856,
-    "latitude": -0.0022143930800439353,
-    "V_rollmax_LST_modis_kobs30": 0.0014708809556076116,
-    "V_rollmin_LST_modis_kobs30": -0.0007403139055362049,
-    "V_ema_LST_modis_kobs30": -0.0018557765777468612,
-    "elev": 0.003388713170192994,
-    "D_cos_DOY": 0.0034151642533174543,
-    "V_ema_G_API_kobs30": -0.005336348818403919,
-    "G_rain_sum_3d": -0.0012440210082014735,
-    "C_lag_G_API_kobs1": -0.003027750892399525,
-    "C_lag_LST_modis_kobs30": -2.3791897345005976e-05,
-    "SMAP_sm_pm_interp": -0.0010157367680378548,
-    "V_rollmin_F_NDVI_kobs30": 0.0067027599536899195,
-    "J_bio_bio10": -0.012648911921872577,
-    "G_rain_sum_7d": -0.00014964182022630268,
-    "V_rollrng_F_NDVI_kobs30": -0.0024564048366321053,
-    "s2_b8": 0.0003235814461424382,
-    "V_rollmax_E_SAR_ratio_kobs30": -0.0019466698975594882,
-    "C_lag_F_NDMI_kobs30": -0.0018007879623098118,
-    "V_rollmean_E_SAR_ratio_kobs30": -0.004936252287473372,
-    "V_rollmean_E_SAR_diff_kobs30": -0.0014235115720988372,
-    "C_lag_E_SAR_diff_kobs30": 0.0006949803003418055,
-    "J_bio_bio04": -0.006603977333681015,
-    "G_API": -0.002153359495814724,
-    "V_ema_E_SAR_ratio_kobs30": -0.0038655325378150174,
-    "V_ema_E_SAR_ratio_kobs14": -0.0005394084817280985,
-    "J_bio_bio01": -0.00012181015313610612,
-    "V_rollmax_G_API_kobs7": -0.004230634752594643,
-    "C_lag_E_SAR_ratio_kobs30": -0.00028668700619363863,
-    "V_rollmin_E_SAR_diff_kobs30": -1.8112674069973482e-05,
-    "C_lag_G_API_kobs30": -0.0005306540586489156,
-    "V_rollmin_SMAP_sm_interp_kobs30": 0.00149971748896357,
-    "A_d_E_SAR_ratio_kobs30": -0.0001537393041281348,
-    "V_rollstd_F_NDVI_kobs30": -0.0032857806732719645,
-    "SMAP_sm_pm_interp_lag1": -0.0021098470147656975,
-    "V_rollmax_G_API_kobs14": -0.001995668005134967,
-    "A_d_G_API_kobs14": -0.0021421982689216316,
-    "V_rollmax_E_SAR_ratio_kobs14": -0.00046452451878489364,
-    "DOY": -0.001176154082585975,
-    "V_rollmin_s2_b12_kobs30": -0.0021540772293909246,
-    "V_rollmin_E_SAR_diff_kobs7": -0.00030529214020989695,
-    "F_NDVI": 0.00023949796394097934,
-    "V_rollcv_F_NDVI_kobs30": 0.001208335848518012,
-    "V_rollmin_E_SAR_ratio_kobs30": -0.0006019966312191489,
-    "V_rollmin_E_SAR_ratio_kobs14": 0.0016544114644027272,
-    "V_ema_LST_modis_kobs14": -0.0005337043185257211,
-    "K_aspect_cos": 0.042987713386880635,
-    "A_pct_G_API": -0.00014332627640088576,
-    "V_ema_F_NDVI_kobs7": -0.0007159236493818494,
-    "C_lag_LST_modis_kobs6": 0.00014885897480849128,
-    "C_lag_LST_modis_kobs5": -0.0013950176002679546,
-    "A_d_LST_modis_kobs30": 0.0005288237815813984,
-    "precip_mm": 0.0006360837720549694,
-    "J_bio_bio12": -0.0005140973090152392,
-    "A_d_G_API_kobs2": 0.00016002519306191254,
-    "A_grad_E_SAR_ratio_kobs30": -1.662734519699637e-05,
-    "longitude": -7.130795759337666e-07,
-    "V_rollmin_SMAP_sm_interp_kobs7": -0.0006731909556785649,
-    "V_rollmin_s2_b11_kobs7": -0.00011695063392988634,
-    "V_rollmin_s2_b12_kobs14": -0.0009339369908793861,
-    "D_sa_LST_modis": -6.733964769669928e-05,
-    "J_bio_bio15": -7.939052613918366e-05,
-    "A_d_G_API_kobs1": -0.0007118367567718912,
-    "C_smm_SMAP_sm_interp_alpha0.85_n5": -0.0005928527656050044,
-    "SMAP_sm_interp": -0.0007657801017309676,
-    "lia_std_desc_deg": -2.904517840655026e-05,
-    "A_d_s2_b11_kobs7": -0.00011992978951395639,
-    "V_ema_G_API_kobs7": -0.0022184096053077854,
-    "LST_modis": 0.00016149406988163686,
-    "A_grad_LST_modis_kobs30": 8.747995090207638e-06,
-    "V_rollcv_F_NDMI_kobs14": -8.26583584700825e-05,
-    "A_d_E_SAR_ratio_kobs7": 4.3245000182804235e-05,
-    "C_lag_E_SAR_ratio_kobs5": -0.0021468154172050572,
-    "V_rollrng_SMAP_sm_interp_kobs14": -0.0006801668181287603,
-    "V_rollcv_G_API_kobs14": -0.0008598631550677921,
-    "A_d_LST_modis_kobs5": -0.00043354824263175097,
-    "V_rollmax_F_NDVI_kobs7": -0.0010215616272158446,
-    "SMAP_sm_am_interp_lag7": -0.0027561816692320746,
-    "A_d_LST_modis_kobs14": -0.0005255764579235574,
+    "J_bio_bio09": 0.08363950022282907,
+    "aspect": 0.05128500292880553,
+    "K_aspect_cos": 0.04576338836491674,
+    "V_rollmin_F_NDVI_kobs30": 0.006650266000368214,
+    "D_cos_DOY": 0.0029398351150173247,
+    "elev": 0.0029164651615934006,
+    "V_rollstd_F_NDVI_kobs14": 0.0019536467568385426,
+    "C_lag_F_NDMI_kobs2": 0.0015079912114503934,
+    "V_rollcv_F_NDVI_kobs30": 0.0010731532633906737,
+    "C_smm_SMAP_sm_interp_alpha0.85_n5": 0.0009823487161418347,
+    "C_lag_LST_modis_kobs6": 0.0007616103551400245,
+    "precip_mm": 0.0007570316441207932,
+    "A_d_G_API_kobs2": 0.0006727763606746452,
+    "C_lag_F_NDVI_kobs1": 0.0006636891331994114,
+    "V_rollmin_SMAP_sm_interp_kobs30": 0.0006017125993227422,
+    "V_rollmin_E_SAR_ratio_kobs14": 0.00044728279888114745,
+    "C_lag_E_SAR_diff_kobs30": 0.00037736105125157665,
+    "V_rollmax_LST_modis_kobs30": 0.0003753339843891967,
+    "DOY": 0.0003581427196148344,
+    "A_d_LST_modis_kobs30": 0.0003140511311601231,
+    "s2_b8": 0.0003034475878597568,
+    "V_rollmin_E_SAR_diff_kobs30": 0.00026732258910671346,
+    "V_rollmin_s2_b11_kobs7": 0.00025344158895722335,
+    "V_rollmax_E_SAR_ratio_kobs14": 5.2634034096235897e-05,
+    "A_grad_F_NDMI_kobs7": 1.1780584038887943e-05,
+    "LST_modis": 7.761411679769493e-06,
+    "A_d_E_SAR_ratio_kobs30": 7.455345011466623e-06,
+    "J_bio_bio01": 1.7355714005975965e-06,
     "J_bio_bio13": 0.0,
-    "V_rollstd_F_NDVI_kobs14": 0.0014303926817007793,
-    "A_grad_F_NDMI_kobs7": 0.00022254588550261973,
-    "D_z_LST_modis": -0.0001782495703050283,
-    "C_lag_E_SAR_diff_kobs5": 0.00013875340305392057,
-    "SMAP_sm_am_interp_ema02": -0.00095598667318992,
-    "A_grad_G_API_kobs30": -0.0003742773808670446,
-    "C_lag_F_NDMI_kobs2": -0.0002285719486320491,
-    "G_DSLR": 6.588186517390443e-05,
-    "V_rollmin_s2_b12_kobs7": 0.00018541592471637205,
-    "V_ema_E_SAR_diff_kobs7": -0.0017466460960382981,
-    "V_rollmean_s2_b12_kobs7": 0.0002184712333194468,
-    "E_rough_s1_vh_kobs7": -0.000730516021266849,
-    "C_lag_F_NDVI_kobs1": 0.0008976116644257645,
-    "A_grad_E_SAR_ratio_kobs7": 0.0001219577373666499,
-    "V_ema_SMAP_sm_interp_kobs7": -0.0010613182845064235,
-    "A_d_E_SAR_diff_kobs1": -0.00014030637839339223
+    "A_grad_E_SAR_ratio_kobs30": -1.088121531600116e-05,
+    "longitude": -1.2741386916707907e-05,
+    "G_DSLR": -6.182951617757852e-05,
+    "A_grad_E_SAR_ratio_kobs7": -7.058348110173228e-05,
+    "G_rain_sum_7d": -8.942076024607946e-05,
+    "A_pct_G_API": -0.0001177733885865286,
+    "C_lag_E_SAR_diff_kobs5": -0.00012422073994483292,
+    "F_NDVI": -0.0001311460792174185,
+    "G_rain_sum_3d": -0.0001554570435049116,
+    "A_d_E_SAR_ratio_kobs7": -0.00015563202222115358,
+    "A_d_E_SAR_diff_kobs1": -0.00016628830154613217,
+    "V_rollcv_F_NDMI_kobs14": -0.00019404127093572237,
+    "A_grad_LST_modis_kobs30": -0.00019709349324581024,
+    "D_z_LST_modis": -0.00020310558265336834,
+    "lia_std_desc_deg": -0.00022467832433527388,
+    "A_d_s2_b11_kobs7": -0.0002392223370889831,
+    "V_rollmin_E_SAR_diff_kobs7": -0.0002551457379200928,
+    "A_d_LST_modis_kobs5": -0.00026054189588329516,
+    "V_rollmin_E_SAR_ratio_kobs30": -0.00026911981799934573,
+    "J_bio_bio15": -0.00028453787756641175,
+    "C_lag_LST_modis_kobs30": -0.00031289957400594786,
+    "SMAP_sm_interp": -0.0003639786532146276,
+    "C_lag_E_SAR_ratio_kobs30": -0.000490601118424625,
+    "V_rollmin_s2_b12_kobs7": -0.0005184392971027888,
+    "V_rollmean_s2_b12_kobs7": -0.0005263095751033556,
+    "D_sa_LST_modis": -0.000552117901769595,
+    "J_bio_bio12": -0.0005580386618112489,
+    "A_d_LST_modis_kobs14": -0.0005659794719434684,
+    "V_ema_E_SAR_ratio_kobs14": -0.0005877467314983045,
+    "V_rollmin_s2_b12_kobs30": -0.0006058012809050501,
+    "V_ema_SMAP_sm_interp_kobs7": -0.0006342786639013402,
+    "V_ema_LST_modis_kobs14": -0.0006592293090025058,
+    "V_rollcv_G_API_kobs14": -0.0006595601563422498,
+    "A_grad_G_API_kobs30": -0.0007226016079881241,
+    "C_lag_LST_modis_kobs5": -0.0007626953225900786,
+    "V_rollmin_SMAP_sm_interp_kobs7": -0.0007993500177175131,
+    "C_lag_E_SAR_ratio_kobs5": -0.0008525280090095926,
+    "A_d_G_API_kobs1": -0.0008533042979376082,
+    "C_lag_F_NDMI_kobs30": -0.0008817711476070166,
+    "V_rollmax_F_NDVI_kobs7": -0.0009289817094510137,
+    "E_rough_s1_vh_kobs7": -0.0009496230599340438,
+    "C_lag_G_API_kobs30": -0.0009651806655158223,
+    "V_rollmin_s2_b12_kobs14": -0.0012555515668106838,
+    "V_ema_F_NDVI_kobs7": -0.0012611871961452907,
+    "V_ema_LST_modis_kobs30": -0.0014072680340238245,
+    "G_API": -0.0016253045403586794,
+    "V_rollmin_LST_modis_kobs30": -0.0016361818952458952,
+    "A_d_G_API_kobs14": -0.0016462449944664903,
+    "V_ema_E_SAR_diff_kobs7": -0.0016562810373472422,
+    "SMAP_sm_pm_interp_lag1": -0.0016954766473389381,
+    "SMAP_sm_pm_interp": -0.001774127313952078,
+    "V_rollrng_SMAP_sm_interp_kobs14": -0.0018216388179873443,
+    "V_rollmax_G_API_kobs14": -0.0019085792603334762,
+    "V_ema_G_API_kobs7": -0.0020702016295744796,
+    "V_rollmin_G_API_kobs30": -0.002187552712671616,
+    "V_rollmean_E_SAR_diff_kobs30": -0.002459958319381649,
+    "V_rollmax_E_SAR_ratio_kobs30": -0.002522678068129787,
+    "SMAP_sm_am_interp_ema02": -0.0025730796457403902,
+    "V_rollmax_G_API_kobs7": -0.002762729711601437,
+    "V_rollmean_E_SAR_ratio_kobs30": -0.002767111336910163,
+    "SMAP_sm_am_interp_lag7": -0.0032258067615595983,
+    "C_lag_G_API_kobs1": -0.0034784390660748876,
+    "V_rollmean_LST_modis_kobs30": -0.0038498685206978613,
+    "V_rollstd_F_NDVI_kobs30": -0.004300866066574423,
+    "latitude": -0.004674637861012348,
+    "V_ema_E_SAR_ratio_kobs30": -0.0047815010303087985,
+    "V_rollrng_F_NDVI_kobs30": -0.0050794816451290425,
+    "V_ema_G_API_kobs30": -0.005592252122834901,
+    "J_bio_bio04": -0.0062913833873172054,
+    "V_rollmax_F_NDVI_kobs30": -0.008399647098030106,
+    "J_bio_bio10": -0.01003925645066622
   },
   "selection_path": [
     {
@@ -341,6 +340,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -355,6 +355,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -369,6 +370,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -383,6 +385,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -397,6 +400,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -411,6 +415,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -425,6 +430,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "CayusePass_WA",
@@ -439,6 +445,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "CayusePass_WA",
@@ -453,6 +460,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -467,6 +475,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -481,6 +490,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -495,6 +505,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -509,6 +520,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -523,6 +535,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -537,6 +550,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "CayusePass_WA",
@@ -551,6 +565,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "CayusePass_WA",
@@ -565,6 +580,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -579,6 +595,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -593,6 +610,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -607,6 +625,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -621,6 +640,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -635,6 +655,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -649,6 +670,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "CayusePass_WA",
@@ -663,6 +685,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "CayusePass_WA",
@@ -677,6 +700,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -691,6 +715,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -705,6 +730,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -719,6 +745,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -733,6 +760,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -747,6 +775,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -761,6 +790,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "CayusePass_WA",
@@ -775,6 +805,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "CayusePass_WA",
@@ -915,6 +946,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -929,6 +961,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -943,6 +976,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -957,6 +991,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -971,6 +1006,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -985,6 +1021,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -999,6 +1036,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1013,6 +1051,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1027,6 +1066,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1041,6 +1081,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1055,6 +1096,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1069,6 +1111,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1083,6 +1126,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -1097,6 +1141,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -1111,6 +1156,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1125,6 +1171,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1139,6 +1186,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1153,6 +1201,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1167,6 +1216,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1181,6 +1231,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1195,6 +1246,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -1209,6 +1261,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -1223,6 +1276,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1237,6 +1291,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1251,6 +1306,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1265,6 +1321,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1279,6 +1336,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1293,6 +1351,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1307,6 +1366,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -1321,6 +1381,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -1335,6 +1396,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1349,6 +1411,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1484,6 +1547,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1498,6 +1562,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1512,6 +1577,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1526,6 +1592,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1540,6 +1607,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -1554,6 +1622,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -1568,6 +1637,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1582,6 +1652,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1596,6 +1667,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1610,6 +1682,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1624,6 +1697,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1638,6 +1712,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1652,6 +1727,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -1666,6 +1742,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -1680,6 +1757,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1694,6 +1772,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1708,6 +1787,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1722,6 +1802,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1736,6 +1817,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1750,6 +1832,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1764,6 +1847,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -1778,6 +1862,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -1792,6 +1877,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1806,6 +1892,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1820,6 +1907,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1834,6 +1922,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -1848,6 +1937,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1862,6 +1952,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -1876,6 +1967,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -1890,6 +1982,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -1904,6 +1997,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "CayusePass_WA",
@@ -1918,6 +2012,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2048,6 +2143,7 @@
       "fold_metrics": [
         {
           "fold_id": "year_2019_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2062,6 +2158,7 @@
         },
         {
           "fold_id": "year_2019_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2076,6 +2173,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -2090,6 +2188,7 @@
         },
         {
           "fold_id": "year_2019_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -2104,6 +2203,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -2118,6 +2218,7 @@
         },
         {
           "fold_id": "year_2019_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "Paradise_WA",
@@ -2132,6 +2233,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2146,6 +2248,7 @@
         },
         {
           "fold_id": "year_2019_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2019,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2160,6 +2263,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2174,6 +2278,7 @@
         },
         {
           "fold_id": "year_2020_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2188,6 +2293,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -2202,6 +2308,7 @@
         },
         {
           "fold_id": "year_2020_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -2216,6 +2323,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -2230,6 +2338,7 @@
         },
         {
           "fold_id": "year_2020_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "Paradise_WA",
@@ -2244,6 +2353,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2258,6 +2368,7 @@
         },
         {
           "fold_id": "year_2020_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2020,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2272,6 +2383,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2286,6 +2398,7 @@
         },
         {
           "fold_id": "year_2021_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2300,6 +2413,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -2314,6 +2428,7 @@
         },
         {
           "fold_id": "year_2021_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -2328,6 +2443,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -2342,6 +2458,7 @@
         },
         {
           "fold_id": "year_2021_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "Paradise_WA",
@@ -2356,6 +2473,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2370,6 +2488,7 @@
         },
         {
           "fold_id": "year_2021_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2021,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2384,6 +2503,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2398,6 +2518,7 @@
         },
         {
           "fold_id": "year_2022_stations_0_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "BeaverPass_WA_990",
@@ -2412,6 +2533,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -2426,6 +2548,7 @@
         },
         {
           "fold_id": "year_2022_stations_1_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "HartsPass_WA_515",
@@ -2440,6 +2563,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -2454,6 +2578,7 @@
         },
         {
           "fold_id": "year_2022_stations_2_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "Paradise_WA",
@@ -2468,6 +2593,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2482,6 +2608,7 @@
         },
         {
           "fold_id": "year_2022_stations_3_beta_0.2",
+          "fold_family": "station_time",
           "validation_year": 2022,
           "held_out_stations": [
             "CayusePass_WA",
@@ -2613,6 +2740,7 @@
     "fold_metrics": [
       {
         "fold_id": "year_2019_stations_0_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2627,6 +2755,7 @@
       },
       {
         "fold_id": "year_2019_stations_0_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2641,6 +2770,7 @@
       },
       {
         "fold_id": "year_2019_stations_1_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "HartsPass_WA_515",
@@ -2655,6 +2785,7 @@
       },
       {
         "fold_id": "year_2019_stations_1_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "HartsPass_WA_515",
@@ -2669,6 +2800,7 @@
       },
       {
         "fold_id": "year_2019_stations_2_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "Paradise_WA",
@@ -2683,6 +2815,7 @@
       },
       {
         "fold_id": "year_2019_stations_2_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "Paradise_WA",
@@ -2697,6 +2830,7 @@
       },
       {
         "fold_id": "year_2019_stations_3_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "CayusePass_WA",
@@ -2711,6 +2845,7 @@
       },
       {
         "fold_id": "year_2019_stations_3_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2019,
         "held_out_stations": [
           "CayusePass_WA",
@@ -2725,6 +2860,7 @@
       },
       {
         "fold_id": "year_2020_stations_0_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2739,6 +2875,7 @@
       },
       {
         "fold_id": "year_2020_stations_0_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2753,6 +2890,7 @@
       },
       {
         "fold_id": "year_2020_stations_1_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "HartsPass_WA_515",
@@ -2767,6 +2905,7 @@
       },
       {
         "fold_id": "year_2020_stations_1_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "HartsPass_WA_515",
@@ -2781,6 +2920,7 @@
       },
       {
         "fold_id": "year_2020_stations_2_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "Paradise_WA",
@@ -2795,6 +2935,7 @@
       },
       {
         "fold_id": "year_2020_stations_2_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "Paradise_WA",
@@ -2809,6 +2950,7 @@
       },
       {
         "fold_id": "year_2020_stations_3_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "CayusePass_WA",
@@ -2823,6 +2965,7 @@
       },
       {
         "fold_id": "year_2020_stations_3_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2020,
         "held_out_stations": [
           "CayusePass_WA",
@@ -2837,6 +2980,7 @@
       },
       {
         "fold_id": "year_2021_stations_0_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2851,6 +2995,7 @@
       },
       {
         "fold_id": "year_2021_stations_0_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2865,6 +3010,7 @@
       },
       {
         "fold_id": "year_2021_stations_1_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "HartsPass_WA_515",
@@ -2879,6 +3025,7 @@
       },
       {
         "fold_id": "year_2021_stations_1_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "HartsPass_WA_515",
@@ -2893,6 +3040,7 @@
       },
       {
         "fold_id": "year_2021_stations_2_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "Paradise_WA",
@@ -2907,6 +3055,7 @@
       },
       {
         "fold_id": "year_2021_stations_2_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "Paradise_WA",
@@ -2921,6 +3070,7 @@
       },
       {
         "fold_id": "year_2021_stations_3_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "CayusePass_WA",
@@ -2935,6 +3085,7 @@
       },
       {
         "fold_id": "year_2021_stations_3_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2021,
         "held_out_stations": [
           "CayusePass_WA",
@@ -2949,6 +3100,7 @@
       },
       {
         "fold_id": "year_2022_stations_0_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2963,6 +3115,7 @@
       },
       {
         "fold_id": "year_2022_stations_0_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "BeaverPass_WA_990",
@@ -2977,6 +3130,7 @@
       },
       {
         "fold_id": "year_2022_stations_1_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "HartsPass_WA_515",
@@ -2991,6 +3145,7 @@
       },
       {
         "fold_id": "year_2022_stations_1_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "HartsPass_WA_515",
@@ -3005,6 +3160,7 @@
       },
       {
         "fold_id": "year_2022_stations_2_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "Paradise_WA",
@@ -3019,6 +3175,7 @@
       },
       {
         "fold_id": "year_2022_stations_2_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "Paradise_WA",
@@ -3033,6 +3190,7 @@
       },
       {
         "fold_id": "year_2022_stations_3_beta_0",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "CayusePass_WA",
@@ -3047,6 +3205,7 @@
       },
       {
         "fold_id": "year_2022_stations_3_beta_0.2",
+        "fold_family": "station_time",
         "validation_year": 2022,
         "held_out_stations": [
           "CayusePass_WA",
@@ -3059,11 +3218,18 @@
         "rmse": 0.11657368176398746,
         "nrmse": 0.9257431386587434
       }
-    ]
+    ],
+    "paired_improvement_vs_required": {
+      "mean_delta_nrmse": 0.0,
+      "standard_error": 0.0,
+      "lower_confidence_bound": 0.0,
+      "n_pairs": 32
+    }
   },
   "folds": [
     {
       "fold_id": "year_2019_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "BeaverPass_WA_990",
@@ -3075,6 +3241,7 @@
     },
     {
       "fold_id": "year_2019_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "HartsPass_WA_515",
@@ -3086,6 +3253,7 @@
     },
     {
       "fold_id": "year_2019_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "Paradise_WA",
@@ -3097,6 +3265,7 @@
     },
     {
       "fold_id": "year_2019_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2019,
       "held_out_stations": [
         "CayusePass_WA",
@@ -3108,6 +3277,7 @@
     },
     {
       "fold_id": "year_2020_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "BeaverPass_WA_990",
@@ -3119,6 +3289,7 @@
     },
     {
       "fold_id": "year_2020_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "HartsPass_WA_515",
@@ -3130,6 +3301,7 @@
     },
     {
       "fold_id": "year_2020_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "Paradise_WA",
@@ -3141,6 +3313,7 @@
     },
     {
       "fold_id": "year_2020_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2020,
       "held_out_stations": [
         "CayusePass_WA",
@@ -3152,6 +3325,7 @@
     },
     {
       "fold_id": "year_2021_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "BeaverPass_WA_990",
@@ -3163,6 +3337,7 @@
     },
     {
       "fold_id": "year_2021_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "HartsPass_WA_515",
@@ -3174,6 +3349,7 @@
     },
     {
       "fold_id": "year_2021_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "Paradise_WA",
@@ -3185,6 +3361,7 @@
     },
     {
       "fold_id": "year_2021_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2021,
       "held_out_stations": [
         "CayusePass_WA",
@@ -3196,6 +3373,7 @@
     },
     {
       "fold_id": "year_2022_stations_0",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "BeaverPass_WA_990",
@@ -3207,6 +3385,7 @@
     },
     {
       "fold_id": "year_2022_stations_1",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "HartsPass_WA_515",
@@ -3218,6 +3397,7 @@
     },
     {
       "fold_id": "year_2022_stations_2",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "Paradise_WA",
@@ -3229,6 +3409,7 @@
     },
     {
       "fold_id": "year_2022_stations_3",
+      "fold_family": "station_time",
       "validation_year": 2022,
       "held_out_stations": [
         "CayusePass_WA",
@@ -3250,6 +3431,7 @@
     "confidence_z": 1.0,
     "permutation_repeats": 1,
     "permutation_batch_size": 16,
+    "parallel_workers": 16,
     "train_weight_betas": [
       0.0,
       0.2
@@ -3268,7 +3450,7 @@
       "tree_method": "hist",
       "n_jobs": 1,
       "verbosity": 0,
-      "device": "cuda"
+      "device": "cpu"
     },
     "candidate_sizes": [
       100,
