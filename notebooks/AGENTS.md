@@ -15,7 +15,7 @@ The full version history (v1–v24) is in `notebooks/training/archive/`, organiz
 ### Experiments
 New experiments live it `notebooks/experiment/`. Each experiment should have its own subdirectory (e.g. `derived_8.1-data-exploration/`).
 
-For simplicity, you don't need to use Jupyter notebook for short-running experiments (i.e. less than 5 minutes). In that case, you can just write regular Python scripts to run analysis and generate figures, then present findings in a Markdown file. 
+For reproducibility, must use Jupyter notebook for experiments (i.e. less than 5 minutes). Also, summarize the findings in a Markdown file. 
 
 ## Working with Notebooks (.ipynb files)
 
