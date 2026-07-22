@@ -1,0 +1,4 @@
+router_feature,in_nested_global,in_regime_0_expert,in_regime_1_expert
+SMAP_sm_pm_interp_lag1,False,False,False
+G_API,True,True,True
+LST_modis,False,False,False

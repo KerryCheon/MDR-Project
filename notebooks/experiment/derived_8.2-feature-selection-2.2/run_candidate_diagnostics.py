@@ -28,6 +28,7 @@ from artifact_state import (
     write_completion_marker,
 )
 from runtime import add_runtime_arguments, validate_workers
+from split_provenance import read_hashed_csv
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -135,14 +136,20 @@ def main(argv=None) -> None:
 
     tasks = []
     candidate_counts = {}
+    split_hashes = {}
     for dataset in ("derived_8.0", "derived_8.2"):
         global_dir = EXP_DIR / "artifacts" / args.artifact_set / dataset / "global"
         if not global_dir.exists():
             continue
         split_dir = PROJECT_ROOT / "data/splits" / dataset
-        train = pd.read_csv(split_dir / "train.csv")
-        val = pd.read_csv(split_dir / "val.csv")
-        test = pd.read_csv(split_dir / "test.csv")
+        train, train_hash = read_hashed_csv(split_dir / "train.csv")
+        val, val_hash = read_hashed_csv(split_dir / "val.csv")
+        test, test_hash = read_hashed_csv(split_dir / "test.csv")
+        split_hashes[dataset] = {
+            "train": train_hash,
+            "val": val_hash,
+            "test": test_hash,
+        }
         trainval = pd.concat([train, val], ignore_index=True)
         candidate_sets = _candidate_sets(dataset, args.artifact_set)
         candidate_counts[dataset] = len(candidate_sets)
@@ -205,6 +212,7 @@ def main(argv=None) -> None:
         "parallel_workers": parallel_workers,
         "artifact_set": args.artifact_set,
         "candidate_counts": candidate_counts,
+        "split_hashes": split_hashes,
         "outer_period": "2021-2022",
         "retrospective_test_period": "2023-2025",
         "unbiased_sota_eligible": False,

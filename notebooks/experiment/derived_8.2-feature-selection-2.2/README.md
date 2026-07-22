@@ -2,7 +2,7 @@
 
 This experiment replaces pooled-row feature importance with predictive utility measured on future-time and held-out-station folds. It runs the same name-agnostic selection algorithm on `derived_8.0` and `derived_8.2`, then evaluates a global model and, for `derived_8.2`, a K=2 shared-backbone mixture of experts (MoE).
 
-> **Frozen original plus diagnostic revisions:** all four original final gates failed. The original protocol is preserved under `artifacts/final`; nested, locked-outer, crossed-fold, and progressive-elimination diagnostics live in separate artifact trees. Because the original run consumed 2023–2025, every current test-period result is retrospective and cannot support a new unbiased SOTA claim. See [`RESULTS.md`](RESULTS.md).
+> **Frozen original plus diagnostic revisions:** the original final gates failed. The original protocol is preserved under `artifacts/final`; nested, locked-outer, crossed-fold, and progressive-elimination diagnostics live in separate artifact trees. Because the original run consumed 2023–2025, every current test-period result is retrospective and cannot support a new unbiased SOTA claim. See [`RESULTS.md`](RESULTS.md).
 
 ## Why 2.2 exists
 
@@ -41,7 +41,7 @@ flowchart TD
     OF --> E[run_eval.py]
     AN --> E
     AC --> E
-    E --> R[generate_results.py<br/>RESULTS.md]
+    E --> R[generate_results.py<br/>evidence CSVs + Markdown reports]
     A --> O
     A --> N
     A --> T
@@ -159,7 +159,7 @@ The original arm fits its router on the combined development pool during selecti
 | `artifacts/progressive_crossed_locked_outer` | `run_crossed_candidate_selection.py --progressive` | Whether bridge refits repair the large initial pruning step; canonical run covers `derived_8.0` only |
 | `*/candidate_diagnostics` | `run_candidate_diagnostics.py` | Direct locked-model outer metrics and descriptive retrospective ceilings for every candidate |
 | `*/validation_eval` and `*/retrospective_test_eval` | `run_eval.py` | Overall, per-year, and per-station metrics for selected global/MoE models and baselines |
-| `artifacts/report` | `generate_results.py` | Verification marker for generated [`RESULTS.md`](RESULTS.md) |
+| `artifacts/report` | `generate_results.py` | Normalized evidence CSVs, manifest, and completion marker for generated [`RESULTS.md`](RESULTS.md) and the protected evidence block in [`CONTINUATION.md`](CONTINUATION.md) |
 
 Global and regime selection directories contain the selected feature payload, full selection details, fold metrics, configuration, split hashes, stopping reason, and a completion marker. Nested directories separate `inner_selection.json` from `outer_selection.json` so candidate generation and candidate choice can be audited independently.
 
@@ -210,7 +210,8 @@ The journal is lightweight resume protection, not full source-tree provenance. G
 | `run_crossed_candidate_selection.py` | Forward-time path, candidate union, and progressive arm |
 | `run_candidate_diagnostics.py` | Locked-model candidate tables for outer and retrospective periods |
 | `run_eval.py` | Global/baseline/MoE fits and overall/year/station metrics |
-| `generate_results.py` | Validated table construction and generation of `RESULTS.md` |
+| `generate_results.py` | Registered evidence builders and generation/checking of both Markdown reports |
+| `split_provenance.py` | Stable split reads and SHA-256 validation shared by evaluation, diagnostics, and reporting |
 | `artifact_state.py` | Atomic writes and hash-verified completion markers |
 | `runtime.py` | Shared `--device` and `--workers` CLI options |
 | `analysis.ipynb`, `eval.ipynb`, `nested_analysis.ipynb` | Read-only artifact views; they do not own experiment calculations |
@@ -240,7 +241,20 @@ uv run python experiment/derived_8.2-feature-selection-2.2/run_all.py \
   --device cuda --workers 4 --restart
 ```
 
-All numeric statements in [`RESULTS.md`](RESULTS.md) are generated from completed CSV/JSON artifacts. The analysis notebooks import the same report functions rather than independently filtering or rounding results.
+All result values in [`RESULTS.md`](RESULTS.md) and the protected evidence block in [`CONTINUATION.md`](CONTINUATION.md) are generated from completed CSV/JSON artifacts. The analysis notebooks import the same report functions rather than independently filtering or rounding results.
+
+The report can also be rebuilt directly, without rerunning model fits:
+
+```bash
+cd notebooks
+uv run python experiment/derived_8.2-feature-selection-2.2/generate_results.py
+
+# Read-only verification: recompute every evidence table and Markdown block in
+# memory, then fail if any tracked output, manifest hash, or completion input is stale.
+uv run python experiment/derived_8.2-feature-selection-2.2/generate_results.py --check
+```
+
+This tracked command is the sole owner of report calculations. The reproducible chain is producer scripts → completed artifacts → registered report builders → normalized evidence CSVs → generated Markdown. Inline Python snippets and notebook-only cells are not accepted as sources for report values. The report manifest records each evidence builder, both Markdown hashes, generator hashes, and all six split hashes; the completion marker directly guards those outputs, generators, and live split files.
 
 ## Historical final gates
 

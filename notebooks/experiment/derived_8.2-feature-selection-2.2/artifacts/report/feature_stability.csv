@@ -1,0 +1,17 @@
+dataset,set_a,set_b,n_a,n_b,intersection,union,jaccard
+derived_8.0,crossed,hand_mdr_v25,125,38,17,146,0.11643835616438356
+derived_8.0,nested,crossed,40,125,19,146,0.13013698630136986
+derived_8.0,nested,hand_mdr_v25,40,38,9,69,0.13043478260869565
+derived_8.0,original,crossed,50,125,21,154,0.13636363636363635
+derived_8.0,original,hand_mdr_v25,50,38,8,80,0.1
+derived_8.0,original,nested,50,40,14,76,0.18421052631578946
+derived_8.2,V3,2.1_c1,47,50,18,79,0.22784810126582278
+derived_8.2,crossed,2.1_c1,80,50,13,117,0.1111111111111111
+derived_8.2,crossed,V3,80,47,15,112,0.13392857142857142
+derived_8.2,nested,2.1_c1,50,50,5,95,0.05263157894736842
+derived_8.2,nested,V3,50,47,9,88,0.10227272727272728
+derived_8.2,nested,crossed,50,80,30,100,0.3
+derived_8.2,original,2.1_c1,100,50,16,134,0.11940298507462686
+derived_8.2,original,V3,100,47,16,131,0.12213740458015267
+derived_8.2,original,crossed,100,80,37,143,0.25874125874125875
+derived_8.2,original,nested,100,50,18,132,0.13636363636363635

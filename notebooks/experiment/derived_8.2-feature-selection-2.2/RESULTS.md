@@ -69,15 +69,15 @@ Source: `run_eval.py`; artifacts: final, nested, and crossed `retrospective_test
 
 ## Candidate diagnostics
 
-Source: `run_candidate_diagnostics.py`; each outer-selected row is chosen by outer R², lower outer RMSE, fewer features, then candidate index. Retrospective ceilings are descriptive only.
+Source: `artifacts/report/candidate_ceiling.csv`, built from `run_candidate_diagnostics.py` outputs; each full-training diagnostic row is chosen by pooled 2021–2022 R², lower RMSE, fewer features, then candidate index after fitting on all development stations. It is not the held-station selector result. Retrospective ceilings are descriptive only.
 
-| artifact_set                     | dataset     |   outer_selected_n_features |   outer_selected_retrospective_R2 |   retrospective_ceiling_n_features |   retrospective_ceiling_R2 |
-|:---------------------------------|:------------|----------------------------:|----------------------------------:|-----------------------------------:|---------------------------:|
-| crossed_candidates_locked_outer  | derived_8.0 |                         100 |                            0.7808 |                                150 |                     0.7958 |
-| crossed_candidates_locked_outer  | derived_8.2 |                          80 |                            0.6197 |                                100 |                     0.6757 |
-| nested                           | derived_8.0 |                         100 |                            0.7808 |                                100 |                     0.7808 |
-| nested                           | derived_8.2 |                         100 |                            0.6757 |                                100 |                     0.6757 |
-| progressive_crossed_locked_outer | derived_8.0 |                         100 |                            0.7808 |                                150 |                     0.8169 |
+| artifact_set                     | dataset     |   full_train_diagnostic_n_features |   full_train_diagnostic_retrospective_R2 |   retrospective_ceiling_n_features |   retrospective_ceiling_R2 |
+|:---------------------------------|:------------|-----------------------------------:|-----------------------------------------:|-----------------------------------:|---------------------------:|
+| crossed_candidates_locked_outer  | derived_8.0 |                                100 |                                   0.7808 |                                150 |                     0.7958 |
+| crossed_candidates_locked_outer  | derived_8.2 |                                 80 |                                   0.6197 |                                100 |                     0.6757 |
+| nested                           | derived_8.0 |                                100 |                                   0.7808 |                                100 |                     0.7808 |
+| nested                           | derived_8.2 |                                100 |                                   0.6757 |                                100 |                     0.6757 |
+| progressive_crossed_locked_outer | derived_8.0 |                                100 |                                   0.7808 |                                150 |                     0.8169 |
 
 ## MoE ablation
 

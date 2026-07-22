@@ -32,5 +32,7 @@ The original final result remains immutable. Subsequent artifacts follow these r
 6. The already-consumed 2023–2025 split is diagnostic only and every manifest sets `unbiased_sota_eligible` to false.
 7. Dirty runs record the parent commit, dirty status, tracked-diff hash, and a per-file content hash manifest covering runtime source and environment locks.
 8. Artifact files are atomically replaced and a hash-bearing completion marker is written last; restart reuse requires every recorded file to verify.
+9. Every reported value is owned by a tracked producer and a registered builder in `generate_results.py`; the builder writes normalized evidence before rendering the Markdown reports. Inline scripts and notebook-only calculations are not report sources.
+10. `generate_results.py --check` is the read-only reproducibility gate. It rebuilds expected evidence and Markdown in memory and verifies the manifest, generator hashes, split hashes, and completion marker.
 
 No path uses feature names, hand lists, family quotas, or bypasses for selection.

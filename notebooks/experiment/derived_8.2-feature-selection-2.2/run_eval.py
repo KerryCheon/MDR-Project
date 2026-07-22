@@ -28,6 +28,7 @@ from artifact_state import (
     write_completion_marker,
 )
 from runtime import add_runtime_arguments, validate_workers
+from split_provenance import read_hashed_csv
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -343,17 +344,21 @@ def main(argv=None) -> None:
     overall_rows = []
     year_rows = []
     station_rows = []
+    split_hashes = {}
     for dataset in ("derived_8.0", "derived_8.2"):
         split_dir = PROJECT_ROOT / "data/splits" / dataset
-        train = pd.read_csv(split_dir / "train.csv")
-        val = pd.read_csv(split_dir / "val.csv")
-        test = pd.read_csv(split_dir / "test.csv")
+        train, train_hash = read_hashed_csv(split_dir / "train.csv")
+        val, val_hash = read_hashed_csv(split_dir / "val.csv")
+        dataset_hashes = {"train": train_hash, "val": val_hash}
         if uses_test:
+            test, test_hash = read_hashed_csv(split_dir / "test.csv")
+            dataset_hashes["test"] = test_hash
             fit_frame = pd.concat([train, val], ignore_index=True)
             score_frame = test
         else:
             fit_frame = train
             score_frame = val
+        split_hashes[dataset] = dataset_hashes
 
         selected_path = artifact_root / dataset / "global" / "selected_features.json"
         if not artifact_is_complete(selected_path.parent, [selected_path.name]):
@@ -526,6 +531,7 @@ def main(argv=None) -> None:
             "artifact_set": args.artifact_set,
             "final_test": args.confirm_final,
             "retrospective_test": args.retrospective_test,
+            "split_hashes": split_hashes,
             "unbiased_sota_eligible": bool(
                 args.confirm_final and args.artifact_set == "final"
             ),

@@ -1,0 +1,4 @@
+feature_set,router_feature_count,available_router_feature_count,unavailable_router_feature_count,unavailable_router_features
+nested_global,3,1,2,SMAP_sm_pm_interp_lag1; LST_modis
+regime_0_expert,3,1,2,SMAP_sm_pm_interp_lag1; LST_modis
+regime_1_expert,3,1,2,SMAP_sm_pm_interp_lag1; LST_modis

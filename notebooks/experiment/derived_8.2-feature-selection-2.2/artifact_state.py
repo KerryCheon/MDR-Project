@@ -5,12 +5,24 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import stat
 import tempfile
 from pathlib import Path
 from typing import Iterable
 
 
 COMPLETION_MARKER = "completion.json"
+DEFAULT_SHARED_FILE_MODE = 0o664
+
+
+def _replacement_mode(path: Path) -> int:
+    """Preserve a readable target mode and repair owner-only legacy outputs."""
+    if not path.exists():
+        return DEFAULT_SHARED_FILE_MODE
+    mode = stat.S_IMODE(path.stat().st_mode)
+    if mode & stat.S_IRGRP:
+        return mode
+    return mode | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH
 
 
 def sha256_file(path: Path) -> str:
@@ -35,6 +47,7 @@ def atomic_write_json(path: Path, payload: dict) -> None:
             stream.write("\n")
             stream.flush()
             os.fsync(stream.fileno())
+        os.chmod(temporary_path, _replacement_mode(path))
         os.replace(temporary_path, path)
     finally:
         temporary_path.unlink(missing_ok=True)
@@ -51,6 +64,26 @@ def atomic_write_csv(frame, path: Path, *, index: bool = False) -> None:
     temporary_path = Path(temporary_name)
     try:
         frame.to_csv(temporary_path, index=index)
+        os.chmod(temporary_path, _replacement_mode(path))
+        os.replace(temporary_path, path)
+    finally:
+        temporary_path.unlink(missing_ok=True)
+
+
+def atomic_write_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        dir=path.parent,
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+    )
+    temporary_path = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.chmod(temporary_path, _replacement_mode(path))
         os.replace(temporary_path, path)
     finally:
         temporary_path.unlink(missing_ok=True)
@@ -76,10 +109,7 @@ def write_completion_marker(
         raise FileNotFoundError(f"cannot complete artifact; missing files: {missing}")
     payload = {
         "version": 1,
-        "files": {
-            name: sha256_file(artifact_dir / name)
-            for name in names
-        },
+        "files": {name: sha256_file(artifact_dir / name) for name in names},
     }
     atomic_write_json(artifact_dir / marker_name, payload)
 

@@ -1,10 +1,21 @@
 {
-  "created": "2026-07-21T03:59:36.824403+00:00",
+  "created": "2026-07-22T01:38:51.211831+00:00",
   "device": "cpu",
   "parallel_workers": 16,
+  "task_workers": 16,
   "artifact_set": "final",
   "final_test": false,
   "retrospective_test": false,
+  "split_hashes": {
+    "derived_8.0": {
+      "train": "bdc93b1f16eb358533ae998cb526a4610fd7aea0c47dcb8670c6d0a832b972c8",
+      "val": "8b9faa0dcfcc2d79b86c27dbc0918f845fe8f23a2de00538bd5ea1b6555e5d23"
+    },
+    "derived_8.2": {
+      "train": "29b8748deadf8a0fa6e9c356d5c93e65cd359cda135d9abecc1e4289954cea20",
+      "val": "261950f21dabb6a7ba8a7d4eba6ff4990ad26469bc978967576751616e1836cf"
+    }
+  },
   "unbiased_sota_eligible": false,
   "gates": {}
 }

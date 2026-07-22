@@ -5,6 +5,13 @@
   "candidate_counts": {
     "derived_8.0": 14
   },
+  "split_hashes": {
+    "derived_8.0": {
+      "train": "bdc93b1f16eb358533ae998cb526a4610fd7aea0c47dcb8670c6d0a832b972c8",
+      "val": "8b9faa0dcfcc2d79b86c27dbc0918f845fe8f23a2de00538bd5ea1b6555e5d23",
+      "test": "b7996d3882913c7a92f980cfa1a2e2a3e38f204b3b3ec250eb64101525bb1d11"
+    }
+  },
   "outer_period": "2021-2022",
   "retrospective_test_period": "2023-2025",
   "unbiased_sota_eligible": false,

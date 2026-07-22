@@ -1,0 +1,6 @@
+artifact_set,dataset,full_train_diagnostic_n_features,full_train_diagnostic_retrospective_R2,retrospective_ceiling_n_features,retrospective_ceiling_R2
+crossed_candidates_locked_outer,derived_8.0,100,0.7808088884358227,150,0.7957701087418093
+crossed_candidates_locked_outer,derived_8.2,80,0.6197269734923037,100,0.675725896955466
+nested,derived_8.0,100,0.7808088884358227,100,0.7808088884358227
+nested,derived_8.2,100,0.675725896955466,100,0.675725896955466
+progressive_crossed_locked_outer,derived_8.0,100,0.7808088884358227,150,0.8169242683446329
