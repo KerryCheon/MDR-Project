@@ -1,0 +1,36 @@
+{
+  "source": "derived_8.2 splits with Touchet_WA_824, BurntMountain_WA, and HartsPass_WA_515 filtered out",
+  "derived_features": "350+ lags, rolling means, and GEE remote-sensing features fully populated",
+  "train_years": [
+    2017,
+    2018,
+    2019,
+    2020
+  ],
+  "val_years": [
+    2021,
+    2022
+  ],
+  "test_years": [
+    2023,
+    2024,
+    2025
+  ],
+  "lia_csv": "data/splits/derived_8.3/LIA/stations_lia.csv",
+  "stations": [
+    "BeaverPass_WA_990",
+    "CayusePass_WA",
+    "Darrington",
+    "MartenRidge_WA_999",
+    "Paradise_WA",
+    "Quinault",
+    "RainyPass_WA_711",
+    "SourdoughGulch_WA_985",
+    "Spokane"
+  ],
+  "rows": {
+    "train": 12678,
+    "val": 6219,
+    "test": 8396
+  }
+}
