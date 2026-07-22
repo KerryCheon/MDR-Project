@@ -1,0 +1,216 @@
+{
+  "created": "2026-07-22T05:54:35.737138+00:00",
+  "build": {
+    "command": "cd notebooks && uv run python experiment/derived_8.3-feature-selection-2.0/generate_results.py",
+    "check_command": "cd notebooks && uv run python experiment/derived_8.3-feature-selection-2.0/generate_results.py --check",
+    "generators": [
+      {
+        "path": "generate_results.py",
+        "sha256": "a5f25214f24f4caeaa939c623f0322177fa4120cce98b76fdf2a2cbc1aebf21e"
+      },
+      {
+        "path": "data_loading.py",
+        "sha256": "358657ebafecf2401ec3b699ad9934d8d063aade9724c75aafa06e14fa022295"
+      },
+      {
+        "path": "split_provenance.py",
+        "sha256": "2e7e4195ec0bda166589dac70fc0ddb5338c3f7ca6d6f410e5d11ef44b20002c"
+      }
+    ]
+  },
+  "feature_sources": [
+    {
+      "source": "data/splits/derived_8.3/dataset_metadata.py::OVERALL_SELECTED_FEATURES_V0",
+      "path": "data/splits/derived_8.3/dataset_metadata.py",
+      "sha256": "dca8e6bd8c5f852c173f140ca63311e321b714229035595bbbefb834a1e8a81d"
+    }
+  ],
+  "split_inputs": [
+    {
+      "dataset": "derived_8.0",
+      "split": "train",
+      "path": "data/splits/derived_8.0/train.csv",
+      "sha256": "bdc93b1f16eb358533ae998cb526a4610fd7aea0c47dcb8670c6d0a832b972c8"
+    },
+    {
+      "dataset": "derived_8.0",
+      "split": "val",
+      "path": "data/splits/derived_8.0/val.csv",
+      "sha256": "8b9faa0dcfcc2d79b86c27dbc0918f845fe8f23a2de00538bd5ea1b6555e5d23"
+    },
+    {
+      "dataset": "derived_8.0",
+      "split": "test",
+      "path": "data/splits/derived_8.0/test.csv",
+      "sha256": "b7996d3882913c7a92f980cfa1a2e2a3e38f204b3b3ec250eb64101525bb1d11"
+    },
+    {
+      "dataset": "derived_8.3",
+      "split": "train",
+      "path": "data/splits/derived_8.3/train.csv",
+      "sha256": "3bb8a7f03cba34bdec00a59203781fc3fb85743a8ff662fcf8d2998034a76066"
+    },
+    {
+      "dataset": "derived_8.3",
+      "split": "val",
+      "path": "data/splits/derived_8.3/val.csv",
+      "sha256": "2695ccd9fc7d4af2ecaa064f33115796674409bcc9cdc479a1b54a2d5e6d7270"
+    },
+    {
+      "dataset": "derived_8.3",
+      "split": "test",
+      "path": "data/splits/derived_8.3/test.csv",
+      "sha256": "208f1c014cc2945bbeec5d22f3640de174ec123d78e601052aaf972b74153b47"
+    }
+  ],
+  "markdown_outputs": {
+    "RESULTS.md": {
+      "path": "RESULTS.md",
+      "sha256": "5bf4e7ff2e37b62f5be87432469f11665734983d93062f47867c15f62faf0cd7"
+    },
+    "CONTINUATION.md": {
+      "path": "CONTINUATION.md",
+      "sha256": "0353d4413e88062369fe437d27ff438ee493d92e164f15d6f06a4e069b765b57"
+    }
+  },
+  "generated_evidence": [
+    {
+      "key": "selected_arm_errors",
+      "builder": "build_selected_arm_error_table",
+      "path": "artifacts/report/selected_arm_errors.csv",
+      "sha256": "d9c7add5ab451746f59d25a6bca761a3d9fb0580c1a6c3f783548a3ab823c0c8"
+    },
+    {
+      "key": "candidate_transfer",
+      "builder": "build_candidate_transfer_table",
+      "path": "artifacts/report/candidate_transfer.csv",
+      "sha256": "103e126d15f5d2e7468448984094c2feebf242be3f1a2f3be4c8b567d021bf32"
+    },
+    {
+      "key": "candidate_ceiling",
+      "builder": "build_candidate_ceiling_table",
+      "path": "artifacts/report/candidate_ceiling.csv",
+      "sha256": "a4b12501be5e2a91f98245eba066e1a5e6bfb2e1473e850b12ae4a6a194891f8"
+    },
+    {
+      "key": "candidate_rank_summary",
+      "builder": "build_candidate_rank_summary",
+      "path": "artifacts/report/candidate_rank_summary.csv",
+      "sha256": "a7cd702857bccf8f36b824176e2afb5adf63509faad5efb2523e026d0a7e110a"
+    },
+    {
+      "key": "candidate_winner_alignment",
+      "builder": "build_candidate_winner_alignment_table",
+      "path": "artifacts/report/candidate_winner_alignment.csv",
+      "sha256": "c384592d2f6810da8c4a9706224a7367702737e472da19ab5cb27625ae6afd56"
+    },
+    {
+      "key": "candidate_alignment_summary",
+      "builder": "build_candidate_alignment_summary_table",
+      "path": "artifacts/report/candidate_alignment_summary.csv",
+      "sha256": "bca8ebc5dbdcab2ab824c82dce3658219fe96aa91b7a045151f3faf5b6cf0a63"
+    },
+    {
+      "key": "pruning_path_sensitivity",
+      "builder": "build_pruning_path_sensitivity_table",
+      "path": "artifacts/report/pruning_path_sensitivity.csv",
+      "sha256": "4b26899e1245333c655bbdb25981e1d9e988f6585e3f37a173a8f77ab27bb11b"
+    },
+    {
+      "key": "feature_stability",
+      "builder": "build_feature_stability_table",
+      "path": "artifacts/report/feature_stability.csv",
+      "sha256": "5a6abe8e4463de8c19b7f28ee2b4710279ff4bcd9e1bfb83f70487e2b4b416d7"
+    },
+    {
+      "key": "progressive_path_overlap",
+      "builder": "build_progressive_path_overlap_table",
+      "path": "artifacts/report/progressive_path_overlap.csv",
+      "sha256": "c950dcb87102cc4b8d8758ca64ec097b848beddb950c8ed5307948571e6694df"
+    },
+    {
+      "key": "importance_lcb_counts",
+      "builder": "build_importance_lcb_count_table",
+      "path": "artifacts/report/importance_lcb_counts.csv",
+      "sha256": "953ca14382620bf3774d72b618c31b94639b78fbfe2a8bbb074cfe99ff2cd97f"
+    },
+    {
+      "key": "locked_outer_equivalence",
+      "builder": "build_locked_outer_equivalence_table",
+      "path": "artifacts/report/locked_outer_equivalence.csv",
+      "sha256": "f975fd48b5a929cbe2e14fcfe4df9d189c6804539fc972bf65014a3b3cf815fc"
+    },
+    {
+      "key": "target_shift",
+      "builder": "build_target_shift_table",
+      "path": "artifacts/report/target_shift.csv",
+      "sha256": "72e5e02ffe76cacd51ad336d5d39ec91ad708fbf7bc4726d0c2a3f7312da6a4f"
+    },
+    {
+      "key": "model_year_errors",
+      "builder": "build_model_year_error_table",
+      "path": "artifacts/report/model_year_errors.csv",
+      "sha256": "d4377be6c13305adfb90514a634d9f91f5df3f0c1f4b396020698878027c1e63"
+    },
+    {
+      "key": "station_coverage",
+      "builder": "build_station_coverage_table",
+      "path": "artifacts/report/station_coverage.csv",
+      "sha256": "6e4edbaf7d318422acc334933c1191cccf105df1214f7aa2d7df6dce6ec20358"
+    },
+    {
+      "key": "station_errors",
+      "builder": "build_station_coverage_error_table",
+      "path": "artifacts/report/station_errors.csv",
+      "sha256": "9b6a1c85df617e2d464769a7aa5fdb03002c45c4a566ebf70eea20e38dacc5ac"
+    },
+    {
+      "key": "station_diagnostic_selection",
+      "builder": "build_station_diagnostic_selection_table",
+      "path": "artifacts/report/station_diagnostic_selection.csv",
+      "sha256": "8e6d74af236e6718e8ff8dadf5b2a47b1fbc6bb0f07dc6a3daa3162e7362959e"
+    },
+    {
+      "key": "outer_fold_coverage",
+      "builder": "build_outer_fold_coverage_table",
+      "path": "artifacts/report/outer_fold_coverage.csv",
+      "sha256": "c10f37dca676244479418ae61286637ff5f1d60e9d043820c33858e61c0cb7d6"
+    },
+    {
+      "key": "beta_effects",
+      "builder": "build_beta_effect_table",
+      "path": "artifacts/report/beta_effects.csv",
+      "sha256": "8819c523b07419aed9b8c7e864e1007f5361df666e807af100ec9734ecaf5368"
+    },
+    {
+      "key": "moe_errors",
+      "builder": "build_moe_error_table",
+      "path": "artifacts/report/moe_errors.csv",
+      "sha256": "78c2040055544fc1155724fdf584aa4982409deeb855f8f064a4724dc4b98c6f"
+    },
+    {
+      "key": "moe_regime_selection",
+      "builder": "build_moe_regime_selection_table",
+      "path": "artifacts/report/moe_regime_selection.csv",
+      "sha256": "d4f2f5a9bd33e96170d4d8768615003f41ec0d07a7dfa467b79c3bbb4c47bf48"
+    },
+    {
+      "key": "moe_population_summary",
+      "builder": "build_moe_population_table",
+      "path": "artifacts/report/moe_population_summary.csv",
+      "sha256": "0639fbcfabb3276abcbce974d28ea69744cd275feaf04d5683c792182217596f"
+    },
+    {
+      "key": "router_feature_coverage",
+      "builder": "build_router_feature_coverage_table",
+      "path": "artifacts/report/router_feature_coverage.csv",
+      "sha256": "c824e2d7566933b492534083f33a282460fdd1d0109347df51147639550016b7"
+    },
+    {
+      "key": "router_feature_summary",
+      "builder": "build_router_feature_summary_table",
+      "path": "artifacts/report/router_feature_summary.csv",
+      "sha256": "981474e6c8c036a5a1fdf02c24c2f23b4d44bc0f4fe3a0b95b5e4bba059c67d6"
+    }
+  ]
+}

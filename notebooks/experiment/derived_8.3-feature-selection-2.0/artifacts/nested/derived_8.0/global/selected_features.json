@@ -1,0 +1,1913 @@
+{
+  "version": "2.0-nested",
+  "dataset": "derived_8.0",
+  "scope": "2.0_global",
+  "created": "2026-07-22T05:07:56.539873+00:00",
+  "device": "cuda",
+  "split_hashes": {
+    "train": "bdc93b1f16eb358533ae998cb526a4610fd7aea0c47dcb8670c6d0a832b972c8",
+    "val": "8b9faa0dcfcc2d79b86c27dbc0918f845fe8f23a2de00538bd5ea1b6555e5d23"
+  },
+  "n_features": 40,
+  "features": [
+    "SMAP_sm_pm_interp",
+    "V_rollmin_LST_modis_kobs30",
+    "C_lag_E_SAR_diff_kobs30",
+    "V_ema_G_API_kobs14",
+    "V_rollmin_F_NDVI_kobs30",
+    "C_lag_LST_modis_kobs30",
+    "C_lag_G_API_kobs1",
+    "V_rollmin_G_API_kobs30",
+    "G_rain_sum_3d",
+    "V_rollmax_G_API_kobs7",
+    "V_rollmin_s2_b12_kobs30",
+    "A_d_F_NDMI_kobs30",
+    "API_x_year",
+    "G_rain_sum_7d",
+    "V_rollrng_F_NDMI_kobs30",
+    "V_rollmax_G_API_kobs14",
+    "V_rollcv_s2_b11_kobs30",
+    "V_rollmax_E_SAR_ratio_kobs30",
+    "V_rollrng_F_NDVI_kobs30",
+    "SMAP_sm_pm_interp_lag30",
+    "A_d_E_SAR_ratio_kobs30",
+    "A_d_LST_modis_kobs30",
+    "A_d_G_API_kobs14",
+    "V_rollmin_E_SAR_ratio_kobs14",
+    "precip_mm",
+    "V_rollmin_G_API_kobs7",
+    "D_sa_E_SAR_ratio",
+    "V_rollrng_s2_b11_kobs30",
+    "V_rollmin_LST_modis_kobs14",
+    "V_rollcv_SMAP_sm_interp_kobs30",
+    "A_d_G_API_kobs2",
+    "V_rollcv_G_API_kobs7",
+    "s1_vv",
+    "A_d_G_API_kobs7",
+    "V_rollmean_LST_modis_kobs30",
+    "V_rollcv_G_API_kobs30",
+    "A_d_LST_modis_kobs14",
+    "A_grad_E_SAR_diff_kobs30",
+    "A_grad_E_SAR_ratio_kobs14",
+    "A_d_G_API_kobs5"
+  ],
+  "inner_stopping_reason": "minimum_grouped_oof_upper_confidence_bound",
+  "outer_stopping_reason": "minimum_outer_upper_confidence_bound",
+  "inner_candidate_sizes": [
+    150,
+    125,
+    100,
+    80,
+    65,
+    50,
+    40
+  ],
+  "outer_candidate_summaries": [
+    {
+      "n_features": 150,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "SMAP_sm_pm_interp",
+        "V_rollmin_G_API_kobs30",
+        "API_x_year",
+        "G_rain_sum_7d",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollmin_E_SAR_diff_kobs30",
+        "A_d_LST_modis_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "A_d_G_API_kobs14",
+        "A_d_G_API_kobs2",
+        "A_d_F_NDMI_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "SMAP_sm_pm_interp_rollmean30",
+        "V_rollmax_LST_modis_kobs30",
+        "V_ema_LST_modis_kobs30",
+        "C_lag_F_NDVI_kobs30",
+        "V_rollrng_s2_b11_kobs30",
+        "C_smm_G_API_alpha0.85_n5",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmin_LST_modis_kobs14",
+        "SMAP_sm_pm_interp_lag30",
+        "A_d_LST_modis_kobs14",
+        "A_grad_F_NDMI_kobs30",
+        "precip_mm",
+        "V_rollcv_F_NDMI_kobs30",
+        "V_rollmax_G_API_kobs30",
+        "V_rollcv_F_NDVI_kobs30",
+        "A_d_G_API_kobs30",
+        "G_API",
+        "D_sa_E_SAR_ratio",
+        "A_d_G_API_kobs1",
+        "V_rollcv_G_API_kobs7",
+        "V_rollrng_F_NDVI_kobs30",
+        "SMAP_sm_am_interp_lag30",
+        "A_d_s2_b11_kobs30",
+        "V_rollstd_F_NDMI_kobs30",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollcv_G_API_kobs30",
+        "V_rollstd_G_API_kobs30",
+        "V_rollmin_G_API_kobs7",
+        "V_rollmax_SMAP_sm_interp_kobs14",
+        "A_d_G_API_kobs5",
+        "G_DSLR",
+        "C_smm_s2_b12_alpha0.85_n5",
+        "C_lag_E_SAR_ratio_kobs2",
+        "V_ema_G_API_kobs30",
+        "C_lag_G_API_kobs2",
+        "A_d_s2_b12_kobs30",
+        "A_d_F_NDMI_kobs14",
+        "A_d_s2_b11_kobs14",
+        "V_rollcv_s2_b12_kobs30",
+        "V_rollmean_s2_b12_kobs7",
+        "SMAP_sm_am_interp_rollmean30",
+        "V_rollstd_E_SAR_ratio_kobs14",
+        "V_rollrng_LST_modis_kobs30",
+        "V_rollmax_SMAP_sm_interp_kobs30",
+        "V_rollcv_F_NDVI_kobs14",
+        "V_rollmin_SMAP_sm_interp_kobs30",
+        "C_lag_G_API_kobs30",
+        "A_d_F_NDVI_kobs30",
+        "V_rollmin_s2_b12_kobs30",
+        "A_d_G_API_kobs7",
+        "A_d_F_NDVI_kobs14",
+        "V_rollstd_G_API_kobs14",
+        "V_rollrng_F_NDMI_kobs14",
+        "V_rollmin_SMAP_sm_interp_kobs7",
+        "A_d_E_SAR_diff_kobs30",
+        "V_rollcv_G_API_kobs14",
+        "V_rollmean_E_SAR_diff_kobs14",
+        "V_rollmax_s2_b12_kobs7",
+        "s1_vv",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "D_z_LST_modis",
+        "V_rollrng_G_API_kobs7",
+        "V_rollmean_E_SAR_diff_kobs7",
+        "SMAP_sm_interp",
+        "D_sa_LST_modis",
+        "A_grad_F_NDMI_kobs7",
+        "V_rollcv_s2_b12_kobs14",
+        "A_grad_G_API_kobs30",
+        "H_corr_LST_modis__F_NDMI_kobs7",
+        "A_d_E_SAR_ratio_kobs30",
+        "A_grad_E_SAR_ratio_kobs14",
+        "V_rollstd_E_SAR_diff_kobs14",
+        "V_rollmax_E_SAR_diff_kobs7",
+        "C_lag_SMAP_sm_interp_kobs2",
+        "A_grad_F_NDMI_kobs14",
+        "SMAP_sm_interp_rollstd30",
+        "V_rollrng_s2_b11_kobs14",
+        "C_lag_SMAP_sm_interp_kobs6",
+        "V_rollmin_s2_b12_kobs14",
+        "V_rollrng_E_SAR_diff_kobs7",
+        "V_rollmean_s2_b11_kobs7",
+        "A_grad_s2_b11_kobs30",
+        "A_d_F_NDVI_kobs7",
+        "A_grad_E_SAR_diff_kobs30",
+        "SMAP_sm_interp_rollmean7",
+        "A_d_F_NDMI_kobs5",
+        "V_rollrng_s2_b12_kobs7",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "A_grad_s2_b12_kobs7",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_F_NDVI_kobs1",
+        "V_ema_E_SAR_diff_kobs14",
+        "E_rough_s1_vv_kobs14",
+        "A_grad_F_NDVI_kobs30",
+        "SMAP_sm_am_interp_lag1",
+        "A_grad_SMAP_sm_interp_kobs7",
+        "SMAP_sm_interp_lag30",
+        "A_grad_s2_b12_kobs30",
+        "V_rollrng_s2_b11_kobs7",
+        "E_dVV_1",
+        "A_d_F_NDMI_kobs2",
+        "A_d_E_SAR_diff_kobs14",
+        "D_fft_dom_LST_modis_kobs30",
+        "SMAP_sm_am_interp_rollmean7",
+        "SMAP_sm_pm_interp_diff1",
+        "A_pct_E_SAR_diff",
+        "A_pct_LST_modis",
+        "C_lag_SMAP_sm_interp_kobs30",
+        "SMAP_sm_interp_pctchg",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "J_bio_bio11",
+        "J_bio_bio12",
+        "J_bio_bio13",
+        "J_bio_bio14",
+        "J_bio_bio15"
+      ],
+      "mean_nrmse": 0.5565914482956887,
+      "standard_error": 0.03472320565368192,
+      "upper_confidence_bound": 0.5913146539493707,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.06872655366259943,
+          "nrmse": 0.6263011792313564
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.07011406538136819,
+          "nrmse": 0.6389454947011587
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.029104148342771002,
+          "nrmse": 0.38175334290192625
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.028912611178768206,
+          "nrmse": 0.3792409879006096
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.05803987911418353,
+          "nrmse": 0.5263202960399636
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.0571037341107531,
+          "nrmse": 0.517831096495414
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.07144409079398704,
+          "nrmse": 0.7445336580713923
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.07315623029663082,
+          "nrmse": 0.7623762182168871
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.038731755709369105,
+          "nrmse": 0.49458179139725816
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.04106944031828617,
+          "nrmse": 0.5244326520263394
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06709987764879333,
+          "nrmse": 0.5468429484329644
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06576176057266347,
+          "nrmse": 0.5359377141329954
+        }
+      ]
+    },
+    {
+      "n_features": 125,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "API_x_year",
+        "C_lag_G_API_kobs1",
+        "V_ema_G_API_kobs14",
+        "G_rain_sum_3d",
+        "C_lag_E_SAR_diff_kobs30",
+        "G_rain_sum_7d",
+        "V_rollmin_G_API_kobs30",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "A_d_F_NDMI_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "V_rollmin_E_SAR_diff_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_s2_b12_kobs30",
+        "V_rollcv_G_API_kobs30",
+        "D_sa_E_SAR_ratio",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmin_G_API_kobs7",
+        "A_d_LST_modis_kobs30",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "A_d_G_API_kobs14",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "V_rollrng_F_NDVI_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "precip_mm",
+        "C_lag_E_SAR_ratio_kobs2",
+        "A_d_E_SAR_ratio_kobs30",
+        "A_d_G_API_kobs2",
+        "V_rollmax_SMAP_sm_interp_kobs14",
+        "A_d_LST_modis_kobs14",
+        "V_rollmin_s2_b12_kobs14",
+        "C_smm_s2_b12_alpha0.85_n5",
+        "V_rollcv_s2_b11_kobs30",
+        "G_API",
+        "D_z_LST_modis",
+        "A_grad_F_NDMI_kobs30",
+        "A_d_G_API_kobs5",
+        "SMAP_sm_pm_interp_rollmean30",
+        "V_rollcv_G_API_kobs7",
+        "V_rollmax_SMAP_sm_interp_kobs30",
+        "SMAP_sm_am_interp_rollmean30",
+        "A_d_s2_b11_kobs14",
+        "D_sa_LST_modis",
+        "A_grad_E_SAR_ratio_kobs14",
+        "A_d_G_API_kobs30",
+        "V_rollstd_F_NDMI_kobs30",
+        "A_d_s2_b12_kobs30",
+        "C_smm_G_API_alpha0.85_n5",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "V_rollrng_G_API_kobs7",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "H_corr_LST_modis__F_NDMI_kobs7",
+        "V_rollstd_G_API_kobs14",
+        "V_rollrng_s2_b11_kobs14",
+        "A_d_s2_b11_kobs30",
+        "V_rollrng_s2_b12_kobs7",
+        "A_d_G_API_kobs7",
+        "A_d_F_NDMI_kobs2",
+        "C_lag_G_API_kobs30",
+        "V_rollstd_G_API_kobs30",
+        "SMAP_sm_am_interp_rollmean7",
+        "V_ema_G_API_kobs30",
+        "A_grad_F_NDMI_kobs14",
+        "SMAP_sm_interp_rollstd30",
+        "SMAP_sm_pm_interp_diff1",
+        "A_d_F_NDVI_kobs7",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "J_bio_bio11",
+        "J_bio_bio12",
+        "J_bio_bio13",
+        "J_bio_bio14",
+        "J_bio_bio15",
+        "A_grad_s2_b11_kobs30",
+        "SMAP_sm_interp_pctchg",
+        "A_pct_LST_modis",
+        "E_dVV_1",
+        "SMAP_sm_am_interp_lag30",
+        "C_lag_SMAP_sm_interp_kobs30",
+        "V_rollrng_s2_b11_kobs30",
+        "A_pct_E_SAR_diff",
+        "D_fft_dom_LST_modis_kobs30",
+        "A_grad_E_SAR_diff_kobs30",
+        "SMAP_sm_interp_lag30",
+        "V_rollrng_s2_b11_kobs7",
+        "A_d_F_NDVI_kobs1",
+        "A_grad_G_API_kobs30",
+        "V_rollcv_s2_b12_kobs14",
+        "V_rollmean_E_SAR_diff_kobs7",
+        "A_d_E_SAR_diff_kobs14",
+        "s1_vv",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_F_NDVI_kobs30",
+        "A_grad_s2_b12_kobs7",
+        "V_rollstd_E_SAR_ratio_kobs14",
+        "SMAP_sm_interp_rollmean7",
+        "A_grad_s2_b12_kobs30",
+        "V_rollmax_E_SAR_diff_kobs7",
+        "V_rollrng_E_SAR_diff_kobs7",
+        "A_d_E_SAR_diff_kobs30",
+        "A_d_G_API_kobs1",
+        "V_rollrng_F_NDMI_kobs14",
+        "V_rollmax_s2_b12_kobs7",
+        "V_rollmean_s2_b12_kobs7",
+        "A_d_F_NDMI_kobs14",
+        "A_grad_F_NDVI_kobs30",
+        "A_d_F_NDMI_kobs5",
+        "A_d_F_NDVI_kobs14"
+      ],
+      "mean_nrmse": 0.5225237591756487,
+      "standard_error": 0.025870624418479007,
+      "upper_confidence_bound": 0.5483943835941277,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.058863509291277566,
+          "nrmse": 0.5364198161864976
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.06089689087774239,
+          "nrmse": 0.5549499070693069
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.030043728757480202,
+          "nrmse": 0.39407763289715325
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.029294151486359422,
+          "nrmse": 0.3842455764616404
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.053503765731804084,
+          "nrmse": 0.48518567317853595
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.05299069148442726,
+          "nrmse": 0.4805329862003534
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.0644239334618682,
+          "nrmse": 0.671375145440995
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.06467158548277376,
+          "nrmse": 0.673955978411286
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.03721275196904658,
+          "nrmse": 0.47518500503246863
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.041098585836203336,
+          "nrmse": 0.5248048231866359
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06686283457049595,
+          "nrmse": 0.5449111217235294
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.0668297440444596,
+          "nrmse": 0.5446414443193822
+        }
+      ]
+    },
+    {
+      "n_features": 100,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "V_rollmean_LST_modis_kobs30",
+        "V_ema_G_API_kobs14",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_G_API_kobs30",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "V_rollmin_s2_b12_kobs30",
+        "G_rain_sum_7d",
+        "A_d_F_NDMI_kobs30",
+        "API_x_year",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollcv_G_API_kobs30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "A_d_G_API_kobs14",
+        "D_sa_E_SAR_ratio",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollrng_F_NDVI_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "A_d_E_SAR_ratio_kobs30",
+        "V_rollmax_G_API_kobs7",
+        "V_rollrng_s2_b11_kobs30",
+        "SMAP_sm_pm_interp_rollmean30",
+        "precip_mm",
+        "V_rollmax_SMAP_sm_interp_kobs14",
+        "V_rollmin_G_API_kobs7",
+        "C_lag_E_SAR_ratio_kobs2",
+        "s1_vv",
+        "A_d_G_API_kobs2",
+        "A_d_G_API_kobs7",
+        "A_d_LST_modis_kobs30",
+        "A_d_LST_modis_kobs14",
+        "V_rollstd_E_SAR_ratio_kobs14",
+        "C_smm_s2_b12_alpha0.85_n5",
+        "A_d_F_NDVI_kobs7",
+        "V_ema_G_API_kobs30",
+        "V_rollstd_F_NDMI_kobs30",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "A_grad_E_SAR_diff_kobs30",
+        "V_rollmin_E_SAR_diff_kobs30",
+        "A_d_G_API_kobs5",
+        "A_grad_F_NDMI_kobs30",
+        "A_d_G_API_kobs30",
+        "V_rollrng_s2_b11_kobs14",
+        "A_grad_E_SAR_ratio_kobs14",
+        "C_lag_G_API_kobs30",
+        "A_grad_G_API_kobs30",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "V_rollcv_G_API_kobs7",
+        "A_d_s2_b12_kobs30",
+        "G_API",
+        "V_rollcv_SMAP_sm_interp_kobs14",
+        "A_d_E_SAR_diff_kobs14",
+        "V_rollrng_s2_b12_kobs7",
+        "E_dVV_1",
+        "A_d_F_NDVI_kobs1",
+        "A_grad_s2_b12_kobs7",
+        "V_rollrng_s2_b11_kobs7",
+        "A_pct_LST_modis",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "J_bio_bio11",
+        "J_bio_bio12",
+        "J_bio_bio13",
+        "J_bio_bio14",
+        "J_bio_bio15",
+        "A_pct_E_SAR_diff",
+        "A_d_E_SAR_diff_kobs30",
+        "SMAP_sm_pm_interp_diff1",
+        "SMAP_sm_interp_pctchg",
+        "SMAP_sm_interp_lag30",
+        "D_fft_dom_LST_modis_kobs30",
+        "A_grad_s2_b11_kobs30",
+        "D_sa_LST_modis",
+        "A_d_F_NDVI_kobs14",
+        "C_lag_SMAP_sm_interp_kobs30",
+        "A_d_F_NDMI_kobs2",
+        "H_corr_LST_modis__F_NDMI_kobs7",
+        "A_d_F_NDVI_kobs30",
+        "SMAP_sm_am_interp_lag30",
+        "V_rollrng_G_API_kobs7"
+      ],
+      "mean_nrmse": 0.5282047624553424,
+      "standard_error": 0.025061558041777524,
+      "upper_confidence_bound": 0.55326632049712,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.059203884388683105,
+          "nrmse": 0.5395216351127401
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.062092718713379645,
+          "nrmse": 0.565847418201527
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.0303788061423965,
+          "nrmse": 0.3984727765143484
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.029089344522537062,
+          "nrmse": 0.38155916412729013
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.055177267108743246,
+          "nrmse": 0.5003614067185919
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.05387945577487085,
+          "nrmse": 0.48859252546189713
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.06320514284210614,
+          "nrmse": 0.658673876120189
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.06426321763954598,
+          "nrmse": 0.6697002925906934
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.0378279683601945,
+          "nrmse": 0.4830409573191163
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.04270694165915327,
+          "nrmse": 0.5453425832119675
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06818639828577311,
+          "nrmse": 0.5556977506990602
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06768932549038287,
+          "nrmse": 0.5516467633866876
+        }
+      ]
+    },
+    {
+      "n_features": 80,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "C_lag_G_API_kobs1",
+        "G_rain_sum_3d",
+        "V_rollmin_s2_b12_kobs30",
+        "V_rollmean_LST_modis_kobs30",
+        "C_lag_E_SAR_diff_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "V_ema_G_API_kobs14",
+        "A_d_F_NDMI_kobs30",
+        "G_rain_sum_7d",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "V_rollrng_F_NDVI_kobs30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "V_rollmin_G_API_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "API_x_year",
+        "V_rollcv_G_API_kobs30",
+        "A_d_E_SAR_ratio_kobs30",
+        "precip_mm",
+        "D_sa_E_SAR_ratio",
+        "A_d_G_API_kobs14",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmin_G_API_kobs7",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "s1_vv",
+        "V_rollstd_F_NDMI_kobs30",
+        "C_lag_E_SAR_ratio_kobs2",
+        "A_d_LST_modis_kobs30",
+        "D_sa_LST_modis",
+        "A_d_LST_modis_kobs14",
+        "V_rollcv_G_API_kobs7",
+        "A_grad_E_SAR_diff_kobs30",
+        "A_grad_E_SAR_ratio_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "A_d_G_API_kobs2",
+        "SMAP_sm_pm_interp_rollmean30",
+        "A_d_G_API_kobs7",
+        "V_rollrng_s2_b11_kobs30",
+        "A_d_G_API_kobs5",
+        "A_grad_F_NDMI_kobs30",
+        "V_rollstd_E_SAR_ratio_kobs14",
+        "V_rollrng_s2_b11_kobs14",
+        "C_smm_s2_b12_alpha0.85_n5",
+        "A_d_s2_b12_kobs30",
+        "A_grad_G_API_kobs30",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "A_d_E_SAR_diff_kobs30",
+        "A_d_F_NDMI_kobs2",
+        "A_d_F_NDVI_kobs7",
+        "A_grad_s2_b12_kobs7",
+        "C_lag_SMAP_sm_interp_kobs30",
+        "V_rollrng_s2_b11_kobs7",
+        "E_dVV_1",
+        "A_pct_E_SAR_diff",
+        "SMAP_sm_interp_pctchg",
+        "SMAP_sm_pm_interp_diff1",
+        "D_fft_dom_LST_modis_kobs30",
+        "A_d_F_NDVI_kobs1",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09",
+        "J_bio_bio10",
+        "J_bio_bio11",
+        "J_bio_bio12"
+      ],
+      "mean_nrmse": 0.5310742165706387,
+      "standard_error": 0.024169286599006894,
+      "upper_confidence_bound": 0.5552435031696455,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.05994685426696908,
+          "nrmse": 0.5462922774060858
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.061016867789368275,
+          "nrmse": 0.5560432498491693
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.030932588920849685,
+          "nrmse": 0.405736635412612
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.029942169055773616,
+          "nrmse": 0.392745494427613
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.05679035200584844,
+          "nrmse": 0.5149892683464864
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.054246213600141355,
+          "nrmse": 0.49191837813625555
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.0653160872215538,
+          "nrmse": 0.6806724644337754
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.06258994588511575,
+          "nrmse": 0.6522627812944012
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.038404034963422484,
+          "nrmse": 0.49039698978835206
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.04219261640898687,
+          "nrmse": 0.5387749515895618
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06769389966698408,
+          "nrmse": 0.5516840414907157
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06765586448260985,
+          "nrmse": 0.5513740666726353
+        }
+      ]
+    },
+    {
+      "n_features": 65,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_rollmin_G_API_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "C_lag_G_API_kobs1",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollmin_s2_b12_kobs30",
+        "API_x_year",
+        "G_rain_sum_3d",
+        "V_rollmin_LST_modis_kobs14",
+        "V_rollmax_G_API_kobs14",
+        "G_rain_sum_7d",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "A_d_F_NDMI_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "V_rollrng_F_NDVI_kobs30",
+        "V_rollcv_s2_b11_kobs30",
+        "SMAP_sm_pm_interp_rollmean30",
+        "A_d_G_API_kobs14",
+        "A_d_E_SAR_ratio_kobs30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "V_rollmin_G_API_kobs7",
+        "precip_mm",
+        "V_rollmax_G_API_kobs7",
+        "D_sa_E_SAR_ratio",
+        "A_d_LST_modis_kobs14",
+        "A_d_G_API_kobs2",
+        "V_rollcv_G_API_kobs30",
+        "V_rollcv_G_API_kobs7",
+        "D_sa_LST_modis",
+        "A_d_LST_modis_kobs30",
+        "A_d_s2_b12_kobs30",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "A_d_G_API_kobs7",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "A_grad_E_SAR_ratio_kobs14",
+        "A_d_F_NDVI_kobs7",
+        "V_rollrng_s2_b11_kobs30",
+        "V_rollstd_F_NDMI_kobs30",
+        "A_grad_E_SAR_diff_kobs30",
+        "s1_vv",
+        "A_grad_F_NDMI_kobs30",
+        "A_grad_G_API_kobs30",
+        "A_d_F_NDVI_kobs1",
+        "A_d_G_API_kobs5",
+        "E_dVV_1",
+        "A_grad_s2_b12_kobs7",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect",
+        "J_aspect_deg",
+        "J_bio_bio01",
+        "J_bio_bio02",
+        "J_bio_bio03",
+        "J_bio_bio04",
+        "J_bio_bio05",
+        "J_bio_bio06",
+        "J_bio_bio07",
+        "J_bio_bio08",
+        "J_bio_bio09"
+      ],
+      "mean_nrmse": 0.5267721607021273,
+      "standard_error": 0.0218956364716413,
+      "upper_confidence_bound": 0.5486677971737686,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.059662361727932996,
+          "nrmse": 0.5436997130596244
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.059201962043509845,
+          "nrmse": 0.539504116890383
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.031318719362758506,
+          "nrmse": 0.41080143185533297
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.030549235021384676,
+          "nrmse": 0.40070825832658036
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.05646069478887545,
+          "nrmse": 0.5119998533670445
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.05460344468656039,
+          "nrmse": 0.4951578399343901
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.0638864966861835,
+          "nrmse": 0.6657744055598417
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.06026782426256555,
+          "nrmse": 0.6280634712197675
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.038177509030563835,
+          "nrmse": 0.48750438655828304
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.04235458332550145,
+          "nrmse": 0.5408431740661768
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06723716630431169,
+          "nrmse": 0.5479618078974036
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06739492229124572,
+          "nrmse": 0.5492474696907005
+        }
+      ]
+    },
+    {
+      "n_features": 50,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "SMAP_sm_pm_interp",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_rollmin_G_API_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "C_lag_G_API_kobs1",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "V_rollmin_s2_b12_kobs30",
+        "G_rain_sum_3d",
+        "G_rain_sum_7d",
+        "V_rollmax_G_API_kobs14",
+        "API_x_year",
+        "A_d_F_NDMI_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmean_LST_modis_kobs30",
+        "A_d_E_SAR_ratio_kobs30",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollmax_G_API_kobs7",
+        "SMAP_sm_pm_interp_lag30",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "V_rollrng_F_NDVI_kobs30",
+        "V_rollrng_s2_b11_kobs30",
+        "A_d_G_API_kobs14",
+        "V_rollcv_G_API_kobs30",
+        "V_rollmin_G_API_kobs7",
+        "D_sa_LST_modis",
+        "D_sa_E_SAR_ratio",
+        "precip_mm",
+        "A_d_G_API_kobs2",
+        "V_rollcv_G_API_kobs7",
+        "A_d_s2_b12_kobs30",
+        "A_d_LST_modis_kobs14",
+        "s1_vv",
+        "A_grad_E_SAR_diff_kobs30",
+        "A_d_G_API_kobs7",
+        "A_grad_E_SAR_ratio_kobs14",
+        "A_d_LST_modis_kobs30",
+        "H_corr_E_SAR_ratio__F_NDMI_kobs7",
+        "A_grad_s2_b12_kobs7",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "A_d_G_API_kobs5",
+        "A_d_F_NDVI_kobs7",
+        "A_d_F_NDVI_kobs1",
+        "latitude",
+        "elev",
+        "slope",
+        "aspect"
+      ],
+      "mean_nrmse": 0.4974241790278649,
+      "standard_error": 0.01669082725584591,
+      "upper_confidence_bound": 0.5141150062837108,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.04796866337428601,
+          "nrmse": 0.43713570427170173
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.048945847844678626,
+          "nrmse": 0.4460407308373874
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.03076530461638013,
+          "nrmse": 0.40354240036081956
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.030965962568901457,
+          "nrmse": 0.40617439093662
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.0571055221109823,
+          "nrmse": 0.5178473105334912
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.0577107847400406,
+          "nrmse": 0.523335985061589
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.05088981713005589,
+          "nrmse": 0.5303333177782364
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.050299153769076774,
+          "nrmse": 0.5241778926345865
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.04030216026218385,
+          "nrmse": 0.5146349359739613
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.044018437882454645,
+          "nrmse": 0.5620896203563288
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06839018230576155,
+          "nrmse": 0.5573585265192081
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06704789830248113,
+          "nrmse": 0.5464193330704483
+        }
+      ]
+    },
+    {
+      "n_features": 40,
+      "features": [
+        "SMAP_sm_pm_interp",
+        "V_rollmin_LST_modis_kobs30",
+        "C_lag_E_SAR_diff_kobs30",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_F_NDVI_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "C_lag_G_API_kobs1",
+        "V_rollmin_G_API_kobs30",
+        "G_rain_sum_3d",
+        "V_rollmax_G_API_kobs7",
+        "V_rollmin_s2_b12_kobs30",
+        "A_d_F_NDMI_kobs30",
+        "API_x_year",
+        "G_rain_sum_7d",
+        "V_rollrng_F_NDMI_kobs30",
+        "V_rollmax_G_API_kobs14",
+        "V_rollcv_s2_b11_kobs30",
+        "V_rollmax_E_SAR_ratio_kobs30",
+        "V_rollrng_F_NDVI_kobs30",
+        "SMAP_sm_pm_interp_lag30",
+        "A_d_E_SAR_ratio_kobs30",
+        "A_d_LST_modis_kobs30",
+        "A_d_G_API_kobs14",
+        "V_rollmin_E_SAR_ratio_kobs14",
+        "precip_mm",
+        "V_rollmin_G_API_kobs7",
+        "D_sa_E_SAR_ratio",
+        "V_rollrng_s2_b11_kobs30",
+        "V_rollmin_LST_modis_kobs14",
+        "V_rollcv_SMAP_sm_interp_kobs30",
+        "A_d_G_API_kobs2",
+        "V_rollcv_G_API_kobs7",
+        "s1_vv",
+        "A_d_G_API_kobs7",
+        "V_rollmean_LST_modis_kobs30",
+        "V_rollcv_G_API_kobs30",
+        "A_d_LST_modis_kobs14",
+        "A_grad_E_SAR_diff_kobs30",
+        "A_grad_E_SAR_ratio_kobs14",
+        "A_d_G_API_kobs5"
+      ],
+      "mean_nrmse": 0.485542201341997,
+      "standard_error": 0.01686675970337586,
+      "upper_confidence_bound": 0.5024089610453728,
+      "fold_metrics": [
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.04541022162627814,
+          "nrmse": 0.41382076996496303
+        },
+        {
+          "fold_id": "outer_year_2021_stations_0_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 365,
+          "rmse": 0.047056717033206207,
+          "nrmse": 0.4288251890723223
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.03137895176091745,
+          "nrmse": 0.4115914882788149
+        },
+        {
+          "fold_id": "outer_year_2021_stations_1_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 351,
+          "rmse": 0.030662763046688878,
+          "nrmse": 0.4021973829236139
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.057152563110303034,
+          "nrmse": 0.5182738902070946
+        },
+        {
+          "fold_id": "outer_year_2021_stations_3_beta_0.2",
+          "validation_year": 2021,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 665,
+          "rmse": 0.05688223756009196,
+          "nrmse": 0.5158225097806407
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.0,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.045812413040734856,
+          "nrmse": 0.4774206388132325
+        },
+        {
+          "fold_id": "outer_year_2022_stations_0_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "SourdoughGulch_WA_985"
+          ],
+          "beta": 0.2,
+          "n_train": 5407,
+          "n_validation": 364,
+          "rmse": 0.04668182734962018,
+          "nrmse": 0.48648098528248146
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.0,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.04021325588750294,
+          "nrmse": 0.513499679281167
+        },
+        {
+          "fold_id": "outer_year_2022_stations_1_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Quinault"
+          ],
+          "beta": 0.2,
+          "n_train": 5421,
+          "n_validation": 362,
+          "rmse": 0.04445895646208219,
+          "nrmse": 0.5677147841080269
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.0,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06725645790844247,
+          "nrmse": 0.5481190284178058
+        },
+        {
+          "fold_id": "outer_year_2022_stations_3_beta_0.2",
+          "validation_year": 2022,
+          "held_out_stations": [
+            "Darrington",
+            "Spokane"
+          ],
+          "beta": 0.2,
+          "n_train": 4305,
+          "n_validation": 613,
+          "rmse": 0.06659643759638596,
+          "nrmse": 0.5427400699738016
+        }
+      ]
+    }
+  ],
+  "outer_folds": [
+    {
+      "fold_id": "outer_year_2021_stations_0",
+      "validation_year": 2021,
+      "held_out_stations": [
+        "SourdoughGulch_WA_985"
+      ],
+      "n_train": 5407,
+      "n_validation": 365
+    },
+    {
+      "fold_id": "outer_year_2021_stations_1",
+      "validation_year": 2021,
+      "held_out_stations": [
+        "Quinault"
+      ],
+      "n_train": 5421,
+      "n_validation": 351
+    },
+    {
+      "fold_id": "outer_year_2021_stations_3",
+      "validation_year": 2021,
+      "held_out_stations": [
+        "Darrington",
+        "Spokane"
+      ],
+      "n_train": 4305,
+      "n_validation": 665
+    },
+    {
+      "fold_id": "outer_year_2022_stations_0",
+      "validation_year": 2022,
+      "held_out_stations": [
+        "SourdoughGulch_WA_985"
+      ],
+      "n_train": 5407,
+      "n_validation": 364
+    },
+    {
+      "fold_id": "outer_year_2022_stations_1",
+      "validation_year": 2022,
+      "held_out_stations": [
+        "Quinault"
+      ],
+      "n_train": 5421,
+      "n_validation": 362
+    },
+    {
+      "fold_id": "outer_year_2022_stations_3",
+      "validation_year": 2022,
+      "held_out_stations": [
+        "Darrington",
+        "Spokane"
+      ],
+      "n_train": 4305,
+      "n_validation": 613
+    }
+  ],
+  "inner_config": {
+    "station_col": "station_id",
+    "time_col": "date",
+    "candidate_sizes": [
+      150,
+      125,
+      100,
+      80,
+      65,
+      50,
+      40
+    ],
+    "n_station_folds": 4,
+    "min_train_years": 2,
+    "max_validation_years": 2,
+    "min_train_rows": 100,
+    "min_validation_rows": 20,
+    "confidence_z": 1.0,
+    "permutation_repeats": 1,
+    "permutation_batch_size": 16,
+    "parallel_workers": 4,
+    "train_weight_betas": [
+      0.0,
+      0.2
+    ],
+    "random_state": 42,
+    "model_params": {
+      "objective": "reg:squarederror",
+      "max_depth": 6,
+      "min_child_weight": 5,
+      "n_estimators": 160,
+      "learning_rate": 0.04,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8,
+      "reg_lambda": 1.5,
+      "reg_alpha": 0.03,
+      "tree_method": "hist",
+      "n_jobs": 1,
+      "verbosity": 0,
+      "device": "cuda"
+    }
+  },
+  "outer_config": {
+    "station_col": "station_id",
+    "time_col": "date",
+    "n_station_folds": 4,
+    "max_validation_years": 2,
+    "min_train_rows": 100,
+    "min_validation_rows": 20,
+    "confidence_z": 1.0,
+    "parallel_workers": 4,
+    "train_weight_betas": [
+      0.0,
+      0.2
+    ],
+    "random_state": 42,
+    "model_params": {
+      "objective": "reg:squarederror",
+      "max_depth": 8,
+      "min_child_weight": 10,
+      "n_estimators": 1500,
+      "learning_rate": 0.01,
+      "subsample": 0.9,
+      "colsample_bytree": 0.8,
+      "reg_lambda": 1.5,
+      "reg_alpha": 0.03,
+      "tree_method": "hist",
+      "n_jobs": 1,
+      "verbosity": 0,
+      "device": "cuda"
+    }
+  }
+}

@@ -1,0 +1,3 @@
+regime,shared_feature_count,delta_feature_count,selected_feature_count,outer_paired_mean_improvement,paired_improvement_lcb,outer_ucb,stopping_reason
+0,125,0,125,0.0,0.0,0.8196410472024366,no_outer_delta_with_positive_paired_lcb
+1,125,0,125,0.0,0.0,0.5776339396462102,no_outer_delta_with_positive_paired_lcb

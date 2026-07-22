@@ -1,0 +1,5 @@
+scope,comparison_count,selector_pooled_match_count,ucb_pooled_match_count,selector_full_train_match_count,selector_pooled_mismatches,ucb_pooled_mismatches
+all,10,7,7,0,crossed_candidates_locked_outer/derived_8.3/beta=0.2; progressive_crossed_locked_outer/derived_8.0/beta=0; progressive_crossed_locked_outer/derived_8.0/beta=0.2,crossed_candidates_locked_outer/derived_8.3/beta=0.2; progressive_crossed_locked_outer/derived_8.0/beta=0; progressive_crossed_locked_outer/derived_8.0/beta=0.2
+crossed_candidates_locked_outer,4,3,3,0,crossed_candidates_locked_outer/derived_8.3/beta=0.2,crossed_candidates_locked_outer/derived_8.3/beta=0.2
+nested,4,4,4,0,,
+progressive_crossed_locked_outer,2,0,0,0,progressive_crossed_locked_outer/derived_8.0/beta=0; progressive_crossed_locked_outer/derived_8.0/beta=0.2,progressive_crossed_locked_outer/derived_8.0/beta=0; progressive_crossed_locked_outer/derived_8.0/beta=0.2

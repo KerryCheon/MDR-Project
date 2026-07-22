@@ -1,0 +1,23 @@
+{
+  "device": "cuda",
+  "inner_parallel_workers": 4,
+  "outer_parallel_workers": 4,
+  "datasets": [
+    {
+      "dataset": "derived_8.0",
+      "n_features": 40,
+      "selected_sources": [
+        "station_time"
+      ],
+      "n_unique_candidates": 14
+    },
+    {
+      "dataset": "derived_8.3",
+      "n_features": 65,
+      "selected_sources": [
+        "forward_time"
+      ],
+      "n_unique_candidates": 14
+    }
+  ]
+}

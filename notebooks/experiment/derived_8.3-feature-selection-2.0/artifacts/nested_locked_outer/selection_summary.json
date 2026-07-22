@@ -1,0 +1,33 @@
+{
+  "device": "cuda",
+  "parallel_workers": 4,
+  "model_params": {
+    "objective": "reg:squarederror",
+    "max_depth": 8,
+    "min_child_weight": 10,
+    "n_estimators": 1500,
+    "learning_rate": 0.01,
+    "subsample": 0.9,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 1.5,
+    "reg_alpha": 0.03,
+    "tree_method": "hist",
+    "n_jobs": 1,
+    "verbosity": 0,
+    "device": "cuda"
+  },
+  "datasets": [
+    {
+      "dataset": "derived_8.0",
+      "n_features": 40,
+      "outer_stopping_reason": "minimum_outer_upper_confidence_bound",
+      "source_inner_selection": "notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/nested/derived_8.0/global/inner_selection.json"
+    },
+    {
+      "dataset": "derived_8.3",
+      "n_features": 125,
+      "outer_stopping_reason": "minimum_outer_upper_confidence_bound",
+      "source_inner_selection": "notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/nested/derived_8.3/global/inner_selection.json"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "files": {
+    "metrics_summary.csv": "2b47f5bcb51082cffb2a4308cdff8cf449f890dce0742b8486b0296b797873a7",
+    "metrics_by_year.csv": "85f4c21c2b965ae6cf355c3d803065fa04e1b671af11a54e5921433da5d28222",
+    "metrics_by_station.csv": "bd730dfebd8547d98992b1a544ef6b54e144a7c10809ccf2d831259e02a2fddf",
+    "evaluation_manifest.json": "cc426741560f7c89614ead54e18409937e0b9b1a8f95fdfdefbb8f2423839a23"
+  }
+}

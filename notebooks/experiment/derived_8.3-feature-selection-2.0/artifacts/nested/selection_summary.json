@@ -1,0 +1,38 @@
+{
+  "created": "2026-07-22T05:15:32.609094+00:00",
+  "device": "cuda",
+  "workers": 4,
+  "smoke": false,
+  "datasets": [
+    {
+      "dataset": "derived_8.0",
+      "global_n_features": 40,
+      "outer_stopping_reason": "minimum_outer_upper_confidence_bound",
+      "regimes": {}
+    },
+    {
+      "dataset": "derived_8.3",
+      "global_n_features": 125,
+      "outer_stopping_reason": "minimum_outer_upper_confidence_bound",
+      "regimes": {
+        "0": {
+          "n_features": 125,
+          "n_delta": 0,
+          "outer_stopping_reason": "no_outer_delta_with_positive_paired_lcb"
+        },
+        "1": {
+          "n_features": 125,
+          "n_delta": 0,
+          "outer_stopping_reason": "no_outer_delta_with_positive_paired_lcb"
+        }
+      },
+      "router": {
+        "kind": "clustering_v0_full_k2",
+        "feature_source": "data/splits/derived_8.3/dataset_metadata.py::OVERALL_SELECTED_FEATURES_V0",
+        "feature_count": 50,
+        "fit_scope": "inner_training_split",
+        "frozen_for_evaluation": true
+      }
+    }
+  ]
+}

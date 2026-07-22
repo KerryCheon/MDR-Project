@@ -1,0 +1,8 @@
+artifact_set,dataset,path_family,progressive_elimination,starting_predictor_count,first_saved_checkpoint,first_reduction_size,path_winner_feature_count,artifact_selected_feature_count
+crossed,derived_8.0,forward_time,False,496,150,150,40,40
+nested,derived_8.0,station_time,False,496,150,150,50,40
+original,derived_8.0,station_time,False,496,100,100,40,40
+progressive_crossed,derived_8.0,forward_time,True,496,150,346,80,80
+crossed,derived_8.3,forward_time,False,496,150,150,50,65
+nested,derived_8.3,station_time,False,496,150,150,125,125
+original,derived_8.3,station_time,False,496,100,100,40,40

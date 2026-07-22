@@ -1,0 +1,2 @@
+dataset,artifact_arm,model,beta,station,R2,RMSE,negative_R2,maximum_RMSE,selection_reason
+derived_8.3,nested,2.0_global,0.0,MartenRidge_WA_999,-0.5783995316148558,0.1350001906816136,True,True,negative_R2_and_maximum_RMSE

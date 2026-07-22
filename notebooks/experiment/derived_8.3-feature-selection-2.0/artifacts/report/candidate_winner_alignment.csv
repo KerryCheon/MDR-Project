@@ -1,0 +1,11 @@
+artifact_set,dataset,beta,selector_candidate_index,selector_feature_count,held_station_ucb_candidate_index,held_station_ucb_feature_count,held_station_pooled_candidate_index,held_station_pooled_feature_count,full_train_aggregate_candidate_index,full_train_aggregate_feature_count,selector_matches_held_station_pooled,held_station_ucb_matches_pooled,selector_matches_full_train_aggregate
+crossed_candidates_locked_outer,derived_8.0,0.0,6,40,6,40,6,40,7,150,True,True,False
+crossed_candidates_locked_outer,derived_8.0,0.2,6,40,6,40,6,40,4,65,True,True,False
+crossed_candidates_locked_outer,derived_8.3,0.0,11,65,11,65,11,65,10,80,True,True,False
+crossed_candidates_locked_outer,derived_8.3,0.2,11,65,12,50,13,40,10,80,False,False,False
+nested,derived_8.0,0.0,6,40,6,40,6,40,4,65,True,True,False
+nested,derived_8.0,0.2,6,40,6,40,6,40,4,65,True,True,False
+nested,derived_8.3,0.0,1,125,1,125,1,125,2,100,True,True,False
+nested,derived_8.3,0.2,1,125,1,125,1,125,3,80,True,True,False
+progressive_crossed_locked_outer,derived_8.0,0.0,10,80,10,80,13,40,9,100,False,False,False
+progressive_crossed_locked_outer,derived_8.0,0.2,10,80,7,150,13,40,9,100,False,False,False

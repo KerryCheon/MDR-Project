@@ -1,0 +1,8 @@
+artifact_set,dataset,path_family,checkpoint_stage,checkpoint_feature_count,positive_lcb_count,non_positive_lcb_count
+original,derived_8.0,station_time,combined-development selector winner,40,34,6
+original,derived_8.3,station_time,combined-development selector winner,40,39,1
+nested,derived_8.0,station_time,inner candidate-generator winner,50,43,7
+nested,derived_8.3,station_time,inner candidate-generator winner,125,51,74
+crossed,derived_8.0,forward_time,inner candidate-generator winner,40,35,5
+crossed,derived_8.3,forward_time,inner candidate-generator winner,50,49,1
+progressive_crossed,derived_8.0,forward_time,inner candidate-generator winner,80,50,30

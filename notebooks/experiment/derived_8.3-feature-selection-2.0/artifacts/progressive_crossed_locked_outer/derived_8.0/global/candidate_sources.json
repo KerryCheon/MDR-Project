@@ -1,0 +1,9 @@
+{
+  "created": "2026-07-22T05:31:06.752216+00:00",
+  "station_time_inner": "notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/nested/derived_8.0/global/inner_selection.json",
+  "forward_time_inner": "forward_time_inner_selection.json",
+  "n_unique_candidates": 14,
+  "selected_sources": [
+    "forward_time"
+  ]
+}
