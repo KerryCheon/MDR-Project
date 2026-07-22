@@ -1,0 +1,30 @@
+{
+  "with_drift": {
+    "8.3": {
+      "baseline": "8.3_V0",
+      "baseline_r2": 0.6338111374562742,
+      "best_v6": "v6_c0_baseline_bypass_on",
+      "best_v6_r2": 0.6095889817405993,
+      "delta": -0.024222155715674876,
+      "pass": false
+    }
+  },
+  "no_drift": {
+    "8.3": {
+      "baseline": "8.3_V0",
+      "baseline_r2": 0.6432506747176059,
+      "best_v6": "v6_c2b_xgb_softcorr",
+      "best_v6_r2": 0.6116548108969029,
+      "delta": -0.03159586382070301,
+      "pass": false
+    }
+  },
+  "meta": {
+    "protocol": "1.0-derived_8.3",
+    "device": "cuda",
+    "seed": 42,
+    "beta": 0.2,
+    "weights": "mean_normalized_exp",
+    "timestamp_utc": "2026-07-22T02:25:11.577821+00:00"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "version": "V6",
+  "variant": "c0_baseline_bypass_on",
+  "dataset": "derived_8.3",
+  "created": "2026-07-22T01:41:48.190122+00:00",
+  "config_path": "notebooks\\experiment\\derived_8.3-feature-selection-1.0\\configs\\config_c0_baseline_bypass_on.yaml",
+  "config_used": "notebooks\\experiment\\derived_8.3-feature-selection-1.0\\artifacts\\derived_8.3\\c0_baseline_bypass_on\\config_used.yaml",
+  "pipeline_stages": [
+    "mi",
+    "elasticnet",
+    "stability"
+  ],
+  "run_dir": "notebooks\\experiment\\derived_8.3-feature-selection-1.0\\artifacts\\derived_8.3\\c0_baseline_bypass_on\\run",
+  "n_features": 14,
+  "features": [
+    "C_lag_LST_modis_kobs30",
+    "D_sin_DOY",
+    "G_API",
+    "G_DSLR",
+    "J_aspect_deg",
+    "V_ema_LST_modis_kobs30",
+    "V_rollmean_LST_modis_kobs30",
+    "V_rollmin_LST_modis_kobs30",
+    "lia_std_asc_deg",
+    "V_rollmax_G_API_kobs7",
+    "V_rollrng_F_NDMI_kobs30",
+    "V_ema_G_API_kobs14",
+    "V_ema_G_API_kobs30",
+    "C_lag_LST_modis_kobs12"
+  ],
+  "family_counts": {
+    "calendar": 1,
+    "hydro": 5,
+    "satellite": 7,
+    "static": 1
+  },
+  "family_coverage": null,
+  "git_commit": "47a4f6a73cf764ba1551deb72fb7608019693387"
+}

@@ -1,0 +1,33 @@
+{
+  "version": "V6",
+  "variant": "c1_baseline_bypass_off",
+  "dataset": "derived_8.3",
+  "created": "2026-07-22T01:42:50.436098+00:00",
+  "config_path": "notebooks\\experiment\\derived_8.3-feature-selection-1.0\\configs\\config_c1_baseline_bypass_off.yaml",
+  "config_used": "notebooks\\experiment\\derived_8.3-feature-selection-1.0\\artifacts\\derived_8.3\\c1_baseline_bypass_off\\config_used.yaml",
+  "pipeline_stages": [
+    "mi",
+    "elasticnet",
+    "stability"
+  ],
+  "run_dir": "notebooks\\experiment\\derived_8.3-feature-selection-1.0\\artifacts\\derived_8.3\\c1_baseline_bypass_off\\run",
+  "n_features": 9,
+  "features": [
+    "C_lag_LST_modis_kobs30",
+    "J_aspect_deg",
+    "V_ema_G_API_kobs30",
+    "V_ema_LST_modis_kobs30",
+    "V_rollmean_LST_modis_kobs30",
+    "V_rollmin_LST_modis_kobs30",
+    "lia_std_asc_deg",
+    "V_rollrng_F_NDMI_kobs30",
+    "V_ema_G_API_kobs14"
+  ],
+  "family_counts": {
+    "hydro": 2,
+    "satellite": 6,
+    "static": 1
+  },
+  "family_coverage": null,
+  "git_commit": "47a4f6a73cf764ba1551deb72fb7608019693387"
+}

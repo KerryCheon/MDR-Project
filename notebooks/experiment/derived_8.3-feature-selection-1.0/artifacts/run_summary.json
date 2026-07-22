@@ -1,0 +1,13 @@
+[
+  {
+    "dataset": "derived_8.3",
+    "variant": "c2_xgb",
+    "n_features": 50,
+    "family_counts": {
+      "calendar": 7,
+      "hydro": 7,
+      "satellite": 26,
+      "static": 10
+    }
+  }
+]

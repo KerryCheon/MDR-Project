@@ -1,0 +1,11 @@
+[
+  "C_lag_LST_modis_kobs30",
+  "J_aspect_deg",
+  "V_ema_G_API_kobs30",
+  "V_ema_LST_modis_kobs30",
+  "V_rollmean_LST_modis_kobs30",
+  "V_rollmin_LST_modis_kobs30",
+  "lia_std_asc_deg",
+  "V_rollrng_F_NDMI_kobs30",
+  "V_ema_G_API_kobs14"
+]

@@ -1,0 +1,49 @@
+{
+  "stage": "stability",
+  "selected": [
+    "C_lag_LST_modis_kobs30",
+    "D_sin_DOY",
+    "G_API",
+    "G_DSLR",
+    "J_aspect_deg",
+    "V_ema_LST_modis_kobs30",
+    "V_rollmean_LST_modis_kobs30",
+    "V_rollmin_LST_modis_kobs30",
+    "lia_std_asc_deg",
+    "V_rollmax_G_API_kobs7",
+    "V_rollrng_F_NDMI_kobs30"
+  ],
+  "ranked": [
+    "C_lag_LST_modis_kobs30",
+    "D_sin_DOY",
+    "G_API",
+    "G_DSLR",
+    "J_aspect_deg",
+    "V_ema_LST_modis_kobs30",
+    "V_rollmean_LST_modis_kobs30",
+    "V_rollmin_LST_modis_kobs30",
+    "lia_std_asc_deg",
+    "V_rollmax_G_API_kobs7",
+    "V_rollrng_F_NDMI_kobs30",
+    "V_ema_G_API_kobs14",
+    "V_ema_G_API_kobs30",
+    "C_lag_LST_modis_kobs12"
+  ],
+  "scores": {
+    "C_lag_LST_modis_kobs30": 1.0,
+    "D_sin_DOY": 1.0,
+    "G_API": 1.0,
+    "G_DSLR": 1.0,
+    "J_aspect_deg": 1.0,
+    "V_ema_LST_modis_kobs30": 1.0,
+    "V_rollmean_LST_modis_kobs30": 1.0,
+    "V_rollmin_LST_modis_kobs30": 1.0,
+    "lia_std_asc_deg": 1.0,
+    "V_rollmax_G_API_kobs7": 0.84,
+    "V_rollrng_F_NDMI_kobs30": 0.64,
+    "V_ema_G_API_kobs14": 0.52,
+    "V_ema_G_API_kobs30": 0.4,
+    "C_lag_LST_modis_kobs12": 0.14
+  },
+  "extra": null
+}
