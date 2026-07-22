@@ -1,0 +1,22 @@
+{
+  "stage": "stability_fallback",
+  "selected": [
+    "C_lag_LST_modis_kobs30",
+    "J_aspect_deg",
+    "V_ema_G_API_kobs30",
+    "V_rollmin_LST_modis_kobs30"
+  ],
+  "ranked": [
+    "C_lag_LST_modis_kobs30",
+    "J_aspect_deg",
+    "V_ema_G_API_kobs30",
+    "V_rollmin_LST_modis_kobs30"
+  ],
+  "scores": {
+    "C_lag_LST_modis_kobs30": 1.0,
+    "J_aspect_deg": 1.0,
+    "V_ema_G_API_kobs30": 1.0,
+    "V_rollmin_LST_modis_kobs30": 1.0
+  },
+  "extra": null
+}
