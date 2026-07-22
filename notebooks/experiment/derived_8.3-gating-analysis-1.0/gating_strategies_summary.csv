@@ -1,0 +1,5 @@
+Strategy,K,Group Sizes,Top 20 Divergence,Max Drift,Drift Feature
+Univariate_G_API,2,"6339, 6339",0.1553,0.5233,V_ema_LST_modis_kobs30
+Clustering_Dynamic,2,"5723, 6955",0.1694,0.6669,V_ema_F_NDVI_kobs30
+Seasonal_Binary,2,"6526, 6152",0.1761,0.665,V_ema_LST_modis_kobs30
+Clustering_V0_Full,2,"10031, 2647",0.1343,1.0089,SMAP_sm_pm_interp_rollmean30
