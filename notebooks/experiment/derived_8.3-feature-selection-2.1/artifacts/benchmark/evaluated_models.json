@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "freezes": {
+    "9c89f8b4d9ba34def81d0ecd9e80a87a6d447b5dcbf3b447e45b3c88fb6ab63c": {
+      "status": "running",
+      "started": "2026-07-24T04:22:35.915052+00:00",
+      "challenger": "v0_union_selected_k__forward_time__k40"
+    },
+    "36cb85bbd01472ae63a8d16c6106ff8390efb19318e14ff1b77ca5c086ae6b97": {
+      "status": "complete",
+      "started": "2026-07-24T04:24:28.401525+00:00",
+      "challenger": "v0_union_selected_k__forward_time__k40",
+      "completed": "2026-07-24T04:26:21.333052+00:00",
+      "benchmark_claim_sha256": "7dffd1829719d03f1f7b9a363f4a5e5c4761cb1885644a045dbced2f69add033",
+      "completion_sha256": "62d3e952308b982bfc3636ebad030bdf4b05cc62bb9a36b1336154510c232954"
+    }
+  }
+}

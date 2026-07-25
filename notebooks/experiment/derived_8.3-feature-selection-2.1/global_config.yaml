@@ -1,0 +1,118 @@
+experiment:
+  name: derived_8.3-feature-selection-2.1
+  seed: 42
+  protocol_version: 2.1
+
+data:
+  split_dir: data/splits/derived_8.3
+  development_splits: [train, val]
+  benchmark_split: test
+  target: soil_moisture_5cm
+  station_col: station_id
+  time_col: date
+  development_years: [2017, 2018, 2019, 2020, 2021, 2022]
+  benchmark_years: [2023, 2024, 2025]
+  expected_development_rows: 18897
+  expected_predictor_count: 496
+  expected_stations:
+    - BeaverPass_WA_990
+    - CayusePass_WA
+    - Darrington
+    - MartenRidge_WA_999
+    - Paradise_WA
+    - Quinault
+    - RainyPass_WA_711
+    - SourdoughGulch_WA_985
+    - Spokane
+  expected_split_sha256:
+    train: 3bb8a7f03cba34bdec00a59203781fc3fb85743a8ff662fcf8d2998034a76066
+    val: 2695ccd9fc7d4af2ecaa064f33115796674409bcc9cdc479a1b54a2d5e6d7270
+    test: 208f1c014cc2945bbeec5d22f3640de174ec123d78e601052aaf972b74153b47
+
+features:
+  v0_source: data/splits/derived_8.3/dataset_metadata.py::OVERALL_SELECTED_FEATURES_V0
+  v0_count: 50
+  diagnostic_controls:
+    original_2_0:
+      source: notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/final/derived_8.3/global/selected_features.json
+      promotable: false
+    crossed_2_0:
+      source: notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/crossed_candidates_locked_outer/derived_8.3/global/selected_features.json
+      promotable: false
+    nested_2_0:
+      source: notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/nested/derived_8.3/global/selected_features.json
+      promotable: false
+
+learner:
+  objective: reg:squarederror
+  max_depth: 8
+  min_child_weight: 10
+  reg_lambda: 1.5
+  reg_alpha: 0.03
+  subsample: 0.9
+  colsample_bytree: 0.8
+  n_estimators: 1500
+  learning_rate: 0.01
+  tree_method: hist
+  n_jobs: 1
+
+folds:
+  outer_origins: [2020, 2021, 2022]
+  station_partitions: 5
+  partition_seeds: [42, 43, 44, 45, 46]
+  station_time_learner_seeds: [42, 43, 44]
+  forward_time_learner_seeds: [42, 43, 44]
+  minimum_prior_years: 2
+  inner_max_validation_years: 2
+  minimum_train_rows: 100
+  minimum_validation_rows: 20
+
+ranking:
+  endpoint_counts: [150, 125, 100, 80, 65, 50, 40]
+  path_sources: [station_time, forward_time]
+  list_forms: [selected_k, v0_union_selected_k]
+  screen_permutation_repeats: 1
+  permutation_repeats: 3
+  permutation_batch_size: 16
+  confidence_level: 0.95
+  metric: station_year_macro_rmse
+  direct_method: direct
+  progressive_method: progressive
+
+bootstrap:
+  replicates: 2000
+  seed: 42
+  confidence_level: 0.95
+
+decision:
+  path_source_order: [station_time, forward_time]
+  reference_candidate: V0
+  r2_zero_variance_epsilon: 1.0e-15
+
+beta:
+  candidates: [0.0, 0.2]
+  default: 0.0
+
+diagnostics:
+  correlation_threshold: 0.95
+  transition_months: [3, 4, 5, 9, 10, 11]
+  input_distance_quantiles: [0.01, 0.99]
+
+runtime:
+  canonical_device: cuda
+  canonical_workers: 4
+  canonical_seed: 42
+  smoke:
+    origins: [2020]
+    station_partitions: 2
+    predictor_limit: 64
+    endpoint_counts: [16, 8]
+    learner_seeds: [42]
+    partition_seeds: [42]
+    permutation_repeats: 1
+    bootstrap_replicates: 50
+    n_estimators: 8
+    max_depth: 2
+    minimum_train_rows: 20
+    minimum_validation_rows: 8
+    row_limit_per_station_year: 24

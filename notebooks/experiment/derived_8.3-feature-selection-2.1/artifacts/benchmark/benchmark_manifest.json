@@ -1,0 +1,27 @@
+{
+  "freeze_path": "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.3-feature-selection-2.1/development_freeze.json",
+  "freeze_file_sha256": "9002dfd387b8966ca5113f8a809faabd259bc1141cf90484c9eb5d8a6cb87b8a",
+  "freeze_payload_sha256": "36cb85bbd01472ae63a8d16c6106ff8390efb19318e14ff1b77ca5c086ae6b97",
+  "development_split_hashes": {
+    "train": "3bb8a7f03cba34bdec00a59203781fc3fb85743a8ff662fcf8d2998034a76066",
+    "val": "2695ccd9fc7d4af2ecaa064f33115796674409bcc9cdc479a1b54a2d5e6d7270"
+  },
+  "benchmark_split_sha256": "208f1c014cc2945bbeec5d22f3640de174ec123d78e601052aaf972b74153b47",
+  "benchmark_rows": 8396,
+  "benchmark_years": [
+    2023,
+    2024,
+    2025
+  ],
+  "models": [
+    "V0_1_3_lite",
+    "challenger_2_1"
+  ],
+  "historical_comparator": "historical_model16",
+  "learner_seed": 42,
+  "device": "cuda",
+  "workers": 4,
+  "retrospective_test": true,
+  "benchmark_reused": true,
+  "selection_artifacts_rewritten": false
+}

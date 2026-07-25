@@ -1,0 +1,276 @@
+{
+  "version": 1,
+  "command": [
+    "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+    "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.3-feature-selection-2.1/run_all.py",
+    "--restart",
+    "13_development_freeze",
+    "--device",
+    "cuda",
+    "--workers",
+    "8",
+    "--allow-worker-resume"
+  ],
+  "fingerprint": {
+    "git_revision": "8ee25612d78d890b986c847534e664ace72c8351",
+    "runtime_inputs": {
+      "data/splits/derived_8.3/dataset_metadata.py": "dca8e6bd8c5f852c173f140ca63311e321b714229035595bbbefb834a1e8a81d",
+      "notebooks/experiment/derived_8.3-eval-1.0/selected_features.json": "81be16590d941ab4730514388069d8cf085fa5c3fb3f0c9d784e732eacccdf9a",
+      "notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/crossed_candidates_locked_outer/derived_8.3/global/selected_features.json": "27dea73ac463807a080a75574740483b75c901890bbc052802f65ad76bf27db9",
+      "notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/final/derived_8.3/global/selected_features.json": "98b7a54de5ca84a5631c716a85830dc773c47c38558021db15485187c1ac4795",
+      "notebooks/experiment/derived_8.3-feature-selection-2.0/artifacts/nested/derived_8.3/global/selected_features.json": "face592a1c8bbf13649d1fb06fd5ce216e2a7bdf3ffa0e84190c46e930257a0d",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/benchmark_registry.yaml": "91ad250ac64186f13d6bc6d50c2cb028284d60bd97cc9496eaee20674122d8e2",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/__init__.py": "22dad89b269a2b265e6485e914d881b521772d8e685a5066ff311bccb4e5ce7d",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/artifacts.py": "b0188442a24d548d76f12344f530f62e563b0e235ced0f26ccf16dddf7bfe302",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/benchmark.py": "e758723c5df6bfc11b3baa3cab2c10b3bf4916f37413f876980cdf3707b7b874",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/bootstrap.py": "a818dc27a936c419b0d0c18877b37bf0fa0c171c903d10679ed287ae9cbc4a59",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/constants.py": "e6af6146af73e099139dc8bf44828cce85fab2dbbd06a495a7b04b09895878dc",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/data.py": "eb3fe62fc162c713a0807242fc468bb143f95123c821cbde5bd666fb41415890",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/decision.py": "f4cde8a22e00fa26088ef96b2f1bfc25ff301108afef7a6af938ddf25fbf4a26",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/diagnostics.py": "ec08f06e625b51e6670c4587ef4f0b96cb0767753d757a8de8001fb5818111a0",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/folds.py": "2588f430c40aeb9ab1ebc77e49f5063b947700a228d1b822cbcdce99df5f0986",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/freeze.py": "06bbcb9ca28baa8d7d3c90a7a71e14e2d91c39c0b71afee089f580d716b6d482",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/global_pipeline.py": "1b6a1832b164fa14175b6830fa6cf5e42437749ba710a83e78a75e68da385c7f",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/ledger.py": "623680f7e9686864377821a44d74b9a3b77d05e6cf0927170c29e53c7991d66c",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/metrics.py": "06d8d0f61cd0b1645da78e56b990c1d5095a076c7c5a1fefe05c3e3282a9dbfa",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/modeling.py": "7d0489564b1f3ae623bc80f5bffdca86fdb8503c7a29aef805ffb21b080ce88a",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/moe.py": "063d94fe7d73bc998c867ffb78d9bafc16a321ab534e17bbccbe5af2e7222633",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/ranking.py": "0de2503946cc3a3b38e003cf6619d8b2a2cea9764a7fb4dc7c9d3c02d2ee5d35",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/router.py": "eec7c9974d785244167f06e37414bcbba85bb0489e2462488b6e8f29b3f54d7a",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/state.py": "0cbe25d7b8a5d941c152cf263e3bf272c331038d8ff3b048c22bcfa60670b99f",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/generate_results.py": "a7236685477e472c58e8f871a3b3f4100d53447747785a2c0f9f808729d8a744",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/global_config.yaml": "13db8b350bf390ae73be01fd3cd755e180dc2e9e002726c40ffd79116fa50de3",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/moe_config.yaml": "addad17d9c3a6961a1d907d2a97c41fd2a1be7f96d2261f3024cebc27c163e6f",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/preflight.py": "a1e34d42ba833aa25aa3d398c00bf28225bafc113aa883cdb93cf005346e9ebd",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/run_all.py": "1aff4333c3c9acff079673ce9e8615941d961a40c544a335bf2db88bcd210996",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/run_benchmark.py": "22df22d5658e50de646ccac2f51f87171a91ddbdbb55292a36abe3e067ed2970",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/run_global_selection.py": "2304562ee47e6d06246531da7cbf14e279a708e7f89510f3d91356c17f0f4865",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/run_moe_diagnostics.py": "c302dfbb79b59e249df3f57a1e373c6371c229986054643e82973052493f5f67",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/run_station_diagnostics.py": "cade14d6765cfe9941b40f4485eaf00369e3db1bd88691f3ffbce5295da6540d"
+    },
+    "split_hashes": {
+      "data/splits/derived_8.3/train.csv": "3bb8a7f03cba34bdec00a59203781fc3fb85743a8ff662fcf8d2998034a76066",
+      "data/splits/derived_8.3/val.csv": "2695ccd9fc7d4af2ecaa064f33115796674409bcc9cdc479a1b54a2d5e6d7270"
+    },
+    "device": "cuda",
+    "workers": 8,
+    "smoke": false,
+    "fingerprint_sha256": "c06e18066655d5cc161f8488417f220f91e92e7041cc45fff7130f66dc1d026a"
+  },
+  "environment": {
+    "python": "3.12.13 (main, Apr 16 2026, 22:51:04) [GCC 8.5.0 20210514 (Red Hat 8.5.0-28)]",
+    "executable": "/scratch/user/u.rp352032/MDR-Project/notebooks/.venv/bin/python3",
+    "platform": "Linux-4.18.0-553.125.1.el8_10.x86_64-x86_64-with-glibc2.28",
+    "packages": {
+      "numpy": "2.4.4",
+      "pandas": "3.0.3",
+      "scikit-learn": "1.8.0",
+      "xgboost": "3.2.0",
+      "pyyaml": "6.0.3"
+    },
+    "device": "cuda",
+    "workers": 8
+  },
+  "started": "2026-07-24T04:24:08.656523+00:00",
+  "completed": "2026-07-24T04:24:19.599439+00:00",
+  "status": "complete",
+  "failure": null,
+  "stages": [
+    {
+      "name": "01_preflight",
+      "command": [
+        "01_preflight",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:10.330913+00:00",
+      "completed": "2026-07-24T04:24:15.747243+00:00",
+      "failure": null
+    },
+    {
+      "name": "02_fold_manifests",
+      "command": [
+        "02_fold_manifests",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:15.751262+00:00",
+      "completed": "2026-07-24T04:24:15.757083+00:00",
+      "failure": null
+    },
+    {
+      "name": "03_control_ledgers",
+      "command": [
+        "03_control_ledgers",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:15.760676+00:00",
+      "completed": "2026-07-24T04:24:15.797981+00:00",
+      "failure": null
+    },
+    {
+      "name": "04_path_screen",
+      "command": [
+        "04_path_screen",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:15.801456+00:00",
+      "completed": "2026-07-24T04:24:15.878229+00:00",
+      "failure": null
+    },
+    {
+      "name": "05_robust_candidate_generation",
+      "command": [
+        "05_robust_candidate_generation",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:15.882175+00:00",
+      "completed": "2026-07-24T04:24:15.987457+00:00",
+      "failure": null
+    },
+    {
+      "name": "06_candidate_oof",
+      "command": [
+        "06_candidate_oof",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:15.992448+00:00",
+      "completed": "2026-07-24T04:24:16.194845+00:00",
+      "failure": null
+    },
+    {
+      "name": "07_global_decision",
+      "command": [
+        "07_global_decision",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:16.198831+00:00",
+      "completed": "2026-07-24T04:24:16.206143+00:00",
+      "failure": null
+    },
+    {
+      "name": "08_beta_decision",
+      "command": [
+        "08_beta_decision",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:16.209371+00:00",
+      "completed": "2026-07-24T04:24:16.225618+00:00",
+      "failure": null
+    },
+    {
+      "name": "09_consensus",
+      "command": [
+        "09_consensus",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:16.228723+00:00",
+      "completed": "2026-07-24T04:24:16.238251+00:00",
+      "failure": null
+    },
+    {
+      "name": "10_station_temporal_diagnostics",
+      "command": [
+        "10_station_temporal_diagnostics",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:16.241532+00:00",
+      "completed": "2026-07-24T04:24:17.893733+00:00",
+      "failure": null
+    },
+    {
+      "name": "11_moe_causal_matrix",
+      "command": [
+        "11_moe_causal_matrix",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:17.897912+00:00",
+      "completed": "2026-07-24T04:24:17.957749+00:00",
+      "failure": null
+    },
+    {
+      "name": "12_regime_delta_moe_decision",
+      "command": [
+        "12_regime_delta_moe_decision",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:17.961354+00:00",
+      "completed": "2026-07-24T04:24:18.009751+00:00",
+      "failure": null
+    },
+    {
+      "name": "13_development_freeze",
+      "command": [
+        "13_development_freeze",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:18.013933+00:00",
+      "completed": "2026-07-24T04:24:18.226507+00:00",
+      "failure": null
+    },
+    {
+      "name": "14_development_report",
+      "command": [
+        "14_development_report",
+        "--device",
+        "cuda",
+        "--workers",
+        "8"
+      ],
+      "status": "complete",
+      "started": "2026-07-24T04:24:18.229954+00:00",
+      "completed": "2026-07-24T04:24:19.596260+00:00",
+      "failure": null
+    }
+  ]
+}

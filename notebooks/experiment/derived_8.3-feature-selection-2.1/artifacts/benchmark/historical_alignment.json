@@ -1,0 +1,16 @@
+{
+  "expected_label_count": 8396,
+  "observed_label_count": 8396,
+  "prediction_count": 8396,
+  "count_verified": true,
+  "labels_exact_after_historical_dtype_cast": true,
+  "model_identity_verified": true,
+  "registry_metrics_verified": true,
+  "registry_source_hashes_verified": true,
+  "alignment_verified": true,
+  "ordered_station_date_key_hash": "a3b4220bea5ae8b6ce92ceea8ab229896517d0e2fe08fe2868a9e25959d99305",
+  "labels_sha256": "d8d41252ead17f9751ef080689cb9e193d1ab4a4c43e7f7d9eaa9a4f108d5356",
+  "predictions_sha256": "26bcb4010e70de99120283d2a5d2fa950cb0126b7af931c485d961d4c1c43771",
+  "metadata_sha256": "8b0f46fcc7f5244aa1bd901e12d76cf6e04240a3db7347632db21d8b48b2f7bb",
+  "metrics_sha256": "85a060193a377b5684d81f91ddb681a86df8c337ead464d26aae0132bb30edb9"
+}

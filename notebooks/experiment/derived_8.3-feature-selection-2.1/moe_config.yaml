@@ -1,0 +1,65 @@
+experiment:
+  name: derived_8.3-feature-selection-2.1-moe
+  seed: 42
+
+router:
+  kind: clustering_v0_full_k2
+  feature_source: data/splits/derived_8.3/dataset_metadata.py::OVERALL_SELECTED_FEATURES_V0
+  feature_count: 50
+  numeric_coercion: true
+  infinity_to_missing: true
+  imputation: mean
+  scaler: StandardScaler
+  n_clusters: 2
+  n_init: 10
+  random_state: 42
+  reference_years: [2017, 2018, 2019]
+  alignment: centroid_distance
+  alignment_target_free: true
+
+causal_arms:
+  - id: v0_single_global
+    backbone: V0
+    kind: single_global
+  - id: selected_2_1_single_global
+    backbone: selected_2_1
+    kind: single_global
+  - id: union_2_1_v0_single_global
+    backbone: union_2_1_v0
+    kind: single_global
+  - id: v0_shared_hard_experts
+    backbone: V0
+    kind: shared_hard_experts
+  - id: selected_2_1_shared_hard_experts
+    backbone: selected_2_1
+    kind: shared_hard_experts
+  - id: union_2_1_v0_shared_hard_experts
+    backbone: union_2_1_v0
+    kind: shared_hard_experts
+  - id: strongest_shared_plus_regime_deltas
+    backbone: strongest_shared
+    kind: shared_plus_regime_deltas
+  - id: eval_1_0_saved_specialists
+    backbone: historical_specialists
+    kind: saved_specialist_lists
+
+historical_specialists:
+  source: notebooks/experiment/derived_8.3-eval-1.0/selected_features.json
+  strategy: Clustering_V0_Full_k2
+
+regime_delta:
+  additions: [0, 5, 10, 15]
+  minimum_origins: 3
+  minimum_stations: 5
+  confidence_level: 0.95
+  one_standard_error_rule: true
+  minimum_rank_jaccard_for_stability: 0.5
+  unused_predictors_only: true
+  standalone_expert_lists_prohibited: true
+
+promotion:
+  require_global_gate: true
+  comparison: strongest_corresponding_single_global
+  require_upper_delta_rmse_below_zero: true
+  require_no_fold_family_regression: true
+  apply_global_robustness_guards: true

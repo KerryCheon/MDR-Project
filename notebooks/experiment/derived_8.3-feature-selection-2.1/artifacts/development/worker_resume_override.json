@@ -1,0 +1,29 @@
+{
+  "applied": true,
+  "timestamp": "2026-07-24T01:53:53.876800+00:00",
+  "scope": "execution_concurrency_only",
+  "from_workers": 8,
+  "to_workers": 8,
+  "xgboost_n_jobs": 1,
+  "model_seeds_folds_and_parameters_unchanged": true,
+  "runtime_input_changes": [
+    "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/benchmark.py",
+    "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/moe.py",
+    "notebooks/experiment/derived_8.3-feature-selection-2.1/run_all.py"
+  ],
+  "old_fingerprint_sha256": "7e3ad510be395de0a5af5d4a90481e36ab3e61890c9b944e72a7bdbfa59fcc9a",
+  "new_fingerprint_sha256": "884e189cb4a6308e4224fb97739c21c05216de73475f61759e224ad873d5fecf",
+  "reused_completed_stages": [
+    "01_preflight",
+    "02_fold_manifests",
+    "03_control_ledgers",
+    "04_path_screen",
+    "05_robust_candidate_generation",
+    "06_candidate_oof",
+    "07_global_decision",
+    "08_beta_decision",
+    "09_consensus",
+    "10_station_temporal_diagnostics"
+  ],
+  "reused_completed_stage5_rank_units": 228
+}

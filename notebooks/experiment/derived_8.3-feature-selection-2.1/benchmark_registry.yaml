@@ -1,0 +1,29 @@
+registry_version: 1
+claim_scope: project_derived_8.3_2023_2025_benchmark
+historical_best:
+  experiment: derived_8.3-eval-1.0
+  model_id: 16
+  model_name: Clustering_V0_Full_k2 (Global-V0)
+  learner: historical_1.5
+  device: cuda
+  seed: 42
+  r2: 0.6618718115185884
+  rmse: 0.06042772002760553
+  sota_r2_margin: 0.003
+  sota_r2_threshold: 0.6648718115185884
+  expected_label_count: 8396
+  metrics_source: notebooks/experiment/derived_8.3-eval-1.0/metrics_summary.csv
+  predictions_source: notebooks/experiment/derived_8.3-eval-1.0/models/model_16_5fa48398_preds.npy
+  predictions_sha256: 26bcb4010e70de99120283d2a5d2fa950cb0126b7af931c485d961d4c1c43771
+  labels_source: notebooks/experiment/derived_8.3-eval-1.0/models/model_16_5fa48398_labels_te.npy
+  labels_sha256: d8d41252ead17f9751ef080689cb9e193d1ab4a4c43e7f7d9eaa9a4f108d5356
+  metadata_source: notebooks/experiment/derived_8.3-eval-1.0/models/model_16_5fa48398_meta.json
+  metadata_sha256: 8b0f46fcc7f5244aa1bd901e12d76cf6e04240a3db7347632db21d8b48b2f7bb
+  metrics_sha256: 85a060193a377b5684d81f91ddb681a86df8c337ead464d26aae0132bb30edb9
+
+mandatory_claim_fields:
+  retrospective_test: true
+  benchmark_reused: true
+  unbiased_sota_eligible: false
+  unbiased_generalization_claim_eligible: false
+  ece_external_confirmation_pending: true
