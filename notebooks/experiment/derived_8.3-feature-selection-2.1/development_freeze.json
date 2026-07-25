@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "created": "2026-07-24T04:24:18.027654+00:00",
-  "git_revision": "8ee25612d78d890b986c847534e664ace72c8351",
+  "created": "2026-07-25T01:46:32.880154+00:00",
+  "git_revision": "158ce5abd8f327fef08b19431c36b8f0739df8ee",
   "split_hashes": {
     "data/splits/derived_8.3/train.csv": "3bb8a7f03cba34bdec00a59203781fc3fb85743a8ff662fcf8d2998034a76066",
     "data/splits/derived_8.3/val.csv": "2695ccd9fc7d4af2ecaa064f33115796674409bcc9cdc479a1b54a2d5e6d7270"
@@ -39,7 +39,7 @@
     "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/ranking.py": "0de2503946cc3a3b38e003cf6619d8b2a2cea9764a7fb4dc7c9d3c02d2ee5d35",
     "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/router.py": "eec7c9974d785244167f06e37414bcbba85bb0489e2462488b6e8f29b3f54d7a",
     "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/state.py": "0cbe25d7b8a5d941c152cf263e3bf272c331038d8ff3b048c22bcfa60670b99f",
-    "notebooks/experiment/derived_8.3-feature-selection-2.1/generate_results.py": "a7236685477e472c58e8f871a3b3f4100d53447747785a2c0f9f808729d8a744",
+    "notebooks/experiment/derived_8.3-feature-selection-2.1/generate_results.py": "e8472e3f180366a503e41cc9c133475178c77846845450f547ac0cb9da0bf7f4",
     "notebooks/experiment/derived_8.3-feature-selection-2.1/global_config.yaml": "13db8b350bf390ae73be01fd3cd755e180dc2e9e002726c40ffd79116fa50de3",
     "notebooks/experiment/derived_8.3-feature-selection-2.1/moe_config.yaml": "addad17d9c3a6961a1d907d2a97c41fd2a1be7f96d2261f3024cebc27c163e6f",
     "notebooks/experiment/derived_8.3-feature-selection-2.1/preflight.py": "a1e34d42ba833aa25aa3d398c00bf28225bafc113aa883cdb93cf005346e9ebd",
@@ -3867,5 +3867,5 @@
   "unbiased_sota_eligible": false,
   "unbiased_generalization_claim_eligible": false,
   "ece_external_confirmation_pending": true,
-  "freeze_sha256": "36cb85bbd01472ae63a8d16c6106ff8390efb19318e14ff1b77ca5c086ae6b97"
+  "freeze_sha256": "2398c02801290b8cd322653b8bfe9bd6ee51d8753c58b172482aa9dc967fef84"
 }

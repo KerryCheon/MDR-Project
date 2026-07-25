@@ -12,7 +12,7 @@
     "--allow-worker-resume"
   ],
   "fingerprint": {
-    "git_revision": "8ee25612d78d890b986c847534e664ace72c8351",
+    "git_revision": "158ce5abd8f327fef08b19431c36b8f0739df8ee",
     "runtime_inputs": {
       "data/splits/derived_8.3/dataset_metadata.py": "dca8e6bd8c5f852c173f140ca63311e321b714229035595bbbefb834a1e8a81d",
       "notebooks/experiment/derived_8.3-eval-1.0/selected_features.json": "81be16590d941ab4730514388069d8cf085fa5c3fb3f0c9d784e732eacccdf9a",
@@ -38,7 +38,7 @@
       "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/ranking.py": "0de2503946cc3a3b38e003cf6619d8b2a2cea9764a7fb4dc7c9d3c02d2ee5d35",
       "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/router.py": "eec7c9974d785244167f06e37414bcbba85bb0489e2462488b6e8f29b3f54d7a",
       "notebooks/experiment/derived_8.3-feature-selection-2.1/fs21/state.py": "0cbe25d7b8a5d941c152cf263e3bf272c331038d8ff3b048c22bcfa60670b99f",
-      "notebooks/experiment/derived_8.3-feature-selection-2.1/generate_results.py": "a7236685477e472c58e8f871a3b3f4100d53447747785a2c0f9f808729d8a744",
+      "notebooks/experiment/derived_8.3-feature-selection-2.1/generate_results.py": "e8472e3f180366a503e41cc9c133475178c77846845450f547ac0cb9da0bf7f4",
       "notebooks/experiment/derived_8.3-feature-selection-2.1/global_config.yaml": "13db8b350bf390ae73be01fd3cd755e180dc2e9e002726c40ffd79116fa50de3",
       "notebooks/experiment/derived_8.3-feature-selection-2.1/moe_config.yaml": "addad17d9c3a6961a1d907d2a97c41fd2a1be7f96d2261f3024cebc27c163e6f",
       "notebooks/experiment/derived_8.3-feature-selection-2.1/preflight.py": "a1e34d42ba833aa25aa3d398c00bf28225bafc113aa883cdb93cf005346e9ebd",
@@ -55,7 +55,7 @@
     "device": "cuda",
     "workers": 8,
     "smoke": false,
-    "fingerprint_sha256": "c06e18066655d5cc161f8488417f220f91e92e7041cc45fff7130f66dc1d026a"
+    "fingerprint_sha256": "906a486d8087066780d4042638a44c36dcf80adae3ec815b927c07092518503a"
   },
   "environment": {
     "python": "3.12.13 (main, Apr 16 2026, 22:51:04) [GCC 8.5.0 20210514 (Red Hat 8.5.0-28)]",
@@ -71,8 +71,8 @@
     "device": "cuda",
     "workers": 8
   },
-  "started": "2026-07-24T04:24:08.656523+00:00",
-  "completed": "2026-07-24T04:24:19.599439+00:00",
+  "started": "2026-07-25T01:46:27.032696+00:00",
+  "completed": "2026-07-25T01:46:34.245953+00:00",
   "status": "complete",
   "failure": null,
   "stages": [
@@ -86,8 +86,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:10.330913+00:00",
-      "completed": "2026-07-24T04:24:15.747243+00:00",
+      "started": "2026-07-25T01:46:28.506554+00:00",
+      "completed": "2026-07-25T01:46:30.659256+00:00",
       "failure": null
     },
     {
@@ -100,8 +100,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:15.751262+00:00",
-      "completed": "2026-07-24T04:24:15.757083+00:00",
+      "started": "2026-07-25T01:46:30.664182+00:00",
+      "completed": "2026-07-25T01:46:30.669838+00:00",
       "failure": null
     },
     {
@@ -114,8 +114,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:15.760676+00:00",
-      "completed": "2026-07-24T04:24:15.797981+00:00",
+      "started": "2026-07-25T01:46:30.673196+00:00",
+      "completed": "2026-07-25T01:46:30.706451+00:00",
       "failure": null
     },
     {
@@ -128,8 +128,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:15.801456+00:00",
-      "completed": "2026-07-24T04:24:15.878229+00:00",
+      "started": "2026-07-25T01:46:30.709946+00:00",
+      "completed": "2026-07-25T01:46:30.796693+00:00",
       "failure": null
     },
     {
@@ -142,8 +142,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:15.882175+00:00",
-      "completed": "2026-07-24T04:24:15.987457+00:00",
+      "started": "2026-07-25T01:46:30.800394+00:00",
+      "completed": "2026-07-25T01:46:30.909379+00:00",
       "failure": null
     },
     {
@@ -156,8 +156,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:15.992448+00:00",
-      "completed": "2026-07-24T04:24:16.194845+00:00",
+      "started": "2026-07-25T01:46:30.913684+00:00",
+      "completed": "2026-07-25T01:46:31.156382+00:00",
       "failure": null
     },
     {
@@ -170,8 +170,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:16.198831+00:00",
-      "completed": "2026-07-24T04:24:16.206143+00:00",
+      "started": "2026-07-25T01:46:31.160371+00:00",
+      "completed": "2026-07-25T01:46:31.166526+00:00",
       "failure": null
     },
     {
@@ -184,8 +184,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:16.209371+00:00",
-      "completed": "2026-07-24T04:24:16.225618+00:00",
+      "started": "2026-07-25T01:46:31.169610+00:00",
+      "completed": "2026-07-25T01:46:31.186401+00:00",
       "failure": null
     },
     {
@@ -198,8 +198,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:16.228723+00:00",
-      "completed": "2026-07-24T04:24:16.238251+00:00",
+      "started": "2026-07-25T01:46:31.189869+00:00",
+      "completed": "2026-07-25T01:46:31.199308+00:00",
       "failure": null
     },
     {
@@ -212,8 +212,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:16.241532+00:00",
-      "completed": "2026-07-24T04:24:17.893733+00:00",
+      "started": "2026-07-25T01:46:31.202496+00:00",
+      "completed": "2026-07-25T01:46:32.733943+00:00",
       "failure": null
     },
     {
@@ -226,8 +226,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:17.897912+00:00",
-      "completed": "2026-07-24T04:24:17.957749+00:00",
+      "started": "2026-07-25T01:46:32.738551+00:00",
+      "completed": "2026-07-25T01:46:32.798525+00:00",
       "failure": null
     },
     {
@@ -240,8 +240,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:17.961354+00:00",
-      "completed": "2026-07-24T04:24:18.009751+00:00",
+      "started": "2026-07-25T01:46:32.802126+00:00",
+      "completed": "2026-07-25T01:46:32.860843+00:00",
       "failure": null
     },
     {
@@ -254,8 +254,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:18.013933+00:00",
-      "completed": "2026-07-24T04:24:18.226507+00:00",
+      "started": "2026-07-25T01:46:32.864667+00:00",
+      "completed": "2026-07-25T01:46:33.072103+00:00",
       "failure": null
     },
     {
@@ -268,8 +268,8 @@
         "8"
       ],
       "status": "complete",
-      "started": "2026-07-24T04:24:18.229954+00:00",
-      "completed": "2026-07-24T04:24:19.596260+00:00",
+      "started": "2026-07-25T01:46:33.075237+00:00",
+      "completed": "2026-07-25T01:46:34.242855+00:00",
       "failure": null
     }
   ]

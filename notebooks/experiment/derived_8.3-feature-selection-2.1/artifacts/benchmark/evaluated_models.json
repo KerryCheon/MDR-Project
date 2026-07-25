@@ -13,6 +13,30 @@
       "completed": "2026-07-24T04:26:21.333052+00:00",
       "benchmark_claim_sha256": "7dffd1829719d03f1f7b9a363f4a5e5c4761cb1885644a045dbced2f69add033",
       "completion_sha256": "62d3e952308b982bfc3636ebad030bdf4b05cc62bb9a36b1336154510c232954"
+    },
+    "b9a01a06c27b956d8c568c20c276a0bbd4ffe51513cd38e3279fd44a432fb04c": {
+      "status": "complete",
+      "started": "2026-07-25T01:38:59.855812+00:00",
+      "challenger": "v0_union_selected_k__forward_time__k40",
+      "completed": "2026-07-25T01:40:50.990368+00:00",
+      "benchmark_claim_sha256": "998c57c11a58115a89c3843f7d84a5cb91950c750c1bc12726342a85578b7349",
+      "completion_sha256": "d82231d4f2d7d07870119cfd29ba31c083b95657e16a271ca4a266fe08e1a63d"
+    },
+    "a3adeb302eccce3696bac7fc02c915306c2447a9c12767c5ad93865d18974d30": {
+      "status": "complete",
+      "started": "2026-07-25T01:45:40.552502+00:00",
+      "challenger": "v0_union_selected_k__forward_time__k40",
+      "completed": "2026-07-25T01:47:33.129834+00:00",
+      "benchmark_claim_sha256": "7deec4df39c8f88f70fcbb849f0ae0254559e5dfe04090249decfd2e077c26ae",
+      "completion_sha256": "1a1a9fda4cd3d88ce0fc19da079e1966ca7976d076b62cdfd76016b55ccfd284"
+    },
+    "2398c02801290b8cd322653b8bfe9bd6ee51d8753c58b172482aa9dc967fef84": {
+      "status": "complete",
+      "started": "2026-07-25T01:46:37.507058+00:00",
+      "challenger": "v0_union_selected_k__forward_time__k40",
+      "completed": "2026-07-25T01:49:30.745296+00:00",
+      "benchmark_claim_sha256": "5021b3072407518c602979b9d6e35dd252493d148e251f484560d9ccce4cf05b",
+      "completion_sha256": "526eb2fcc2ffe1652c30b4a687cbfdcfd5f576def89261b313272b297caafdc6"
     }
   }
 }

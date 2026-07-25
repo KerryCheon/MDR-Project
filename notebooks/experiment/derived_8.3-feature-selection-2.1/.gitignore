@@ -1,3 +1,4 @@
 artifacts/development/stages/*
+artifacts/benchmark/model_units/*
 artifacts/smoke/*
 artifacts/**/*.csv.gz

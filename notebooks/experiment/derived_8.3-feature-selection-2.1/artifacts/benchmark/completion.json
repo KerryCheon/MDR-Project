@@ -1,14 +1,14 @@
 {
   "version": 1,
   "files": {
-    "benchmark_predictions.csv.gz": "ebf63fe293fd5372f1c1083e4250da51d442004cfaaec8767b9712bf56d78687",
-    "metrics_overall.csv": "38ea9204c5ad7f0451e4560b6c58b8cca7dab38e45bb62dfd16950325a21b08c",
-    "metrics_by_station.csv": "cd3f867ef2ebfb76c9cbd53cb4cad8b07625a19e8084b7c8519a5b6b5a98e11d",
-    "metrics_by_month.csv": "95b93ff15c4e8699aaceaa63c5b1b37ba34fa37cd8c838cc04e79d5aa67e0e41",
-    "metrics_by_station_year.csv": "0d8220b7d45fe1ffaeed3e8e72efa224d1170ebae0eecc50c29eb38ab62d9f38",
+    "benchmark_predictions.csv.gz": "5e8e1f55c4939f69ba2c04cc00b9579ed1d4f427bf9bcb6cfac5c68017ba7aea",
+    "metrics_overall.csv": "2d2e74d81d4dea9158feb760ce35669640a8f04015991e901a5c4d4796d147e6",
+    "metrics_by_station.csv": "dfca63499edbb28d2d383bfa73b9096e50aa609609edfc27d30a3f84a46cdc2d",
+    "metrics_by_month.csv": "f4d3228516cc132291acd39f141a56c0a119dde64b67e5869840f0fd218f3be4",
+    "metrics_by_station_year.csv": "f714acc30fe63cb446d930ed29099f01bfeedac0605bacaf8cd65552e68b3c2a",
     "historical_alignment.json": "02045eb3c272f0cfcdc81e524670544ffc9cc458456d027425c400fd8e7bf3d1",
-    "paired_bootstrap_intervals.json": "d1bc34d1f1d06cbdfb79a087e7dc3d10e1552a53252afab6708b345624251851",
-    "benchmark_claim.json": "7dffd1829719d03f1f7b9a363f4a5e5c4761cb1885644a045dbced2f69add033",
-    "benchmark_manifest.json": "883d6327569fd47592756ce6bad6544b5b1926fad0aad216366f8e6d3710d86f"
+    "paired_bootstrap_intervals.json": "ef84d132a0c59bd369ce00f03cfdb7166455becde840a04645108bb346e34097",
+    "benchmark_claim.json": "5021b3072407518c602979b9d6e35dd252493d148e251f484560d9ccce4cf05b",
+    "benchmark_manifest.json": "f8879ba665e66c0e2805b61bc9136fe76bc2584e654496f607032368b53ec0e8"
   }
 }

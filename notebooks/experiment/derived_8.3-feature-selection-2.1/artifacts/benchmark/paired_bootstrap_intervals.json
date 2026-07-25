@@ -5,28 +5,28 @@
   "seed": 42,
   "comparisons": {
     "station_year_macro_rmse": {
-      "candidate": 0.06068896513707585,
+      "candidate": 0.06068896513707546,
       "reference": 0.05582714514861095,
-      "delta": 0.004861819988464897,
-      "ci_lower": -0.0014476465633180737,
-      "ci_upper": 0.01262228343340197,
-      "bootstrap_standard_error": 0.0035667966021067803
+      "delta": 0.004861819988464508,
+      "ci_lower": -0.0014476465633185371,
+      "ci_upper": 0.01262228343340165,
+      "bootstrap_standard_error": 0.003566796602106813
     },
     "worst_station_rmse": {
-      "candidate": 0.12437761725503528,
+      "candidate": 0.1243776172550351,
       "reference": 0.11735709757025854,
-      "delta": 0.007020519684776738,
-      "ci_lower": 6.323496040978871e-05,
-      "ci_upper": 0.021375992279979578,
-      "bootstrap_standard_error": 0.008016950692146097
+      "delta": 0.007020519684776558,
+      "ci_lower": 6.32349604096083e-05,
+      "ci_upper": 0.02137599227997941,
+      "bootstrap_standard_error": 0.008016950692146101
     },
     "p90_month_rmse": {
-      "candidate": 0.08056369746778512,
+      "candidate": 0.08056369746778487,
       "reference": 0.07583195990279686,
-      "delta": 0.004731737564988264,
-      "ci_lower": -0.003026694290463747,
-      "ci_upper": 0.023760932680261245,
-      "bootstrap_standard_error": 0.006480677321519964
+      "delta": 0.0047317375649880145,
+      "ci_lower": -0.00302669429046401,
+      "ci_upper": 0.02376093268026101,
+      "bootstrap_standard_error": 0.006480677321519966
     }
   }
 }
