@@ -1,0 +1,4 @@
+models/
+artifacts/
+*.npy
+all_models_loss_curves.csv
