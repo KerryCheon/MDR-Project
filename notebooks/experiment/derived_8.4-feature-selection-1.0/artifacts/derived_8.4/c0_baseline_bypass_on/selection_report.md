@@ -1,0 +1,56 @@
+# Selection report: derived_8.4 / c0_baseline_bypass_on
+
+- Created: 2026-07-26T21:00:56.126550+00:00
+- Git commit: 52818e419e482e6b4b2768408cbddd295e074b3f
+- n_features: 46
+- stages: ['mi', 'elasticnet', 'stability']
+- family_counts: {'calendar': 10, 'hydro': 6, 'other': 1, 'satellite': 24, 'static': 5}
+
+## Features
+
+1. `A_d_E_SAR_diff_kobs30` (satellite)
+2. `C_lag_F_NDVI_kobs30` (satellite)
+3. `DOY` (calendar)
+4. `D_cos_DOY` (calendar)
+5. `D_z_LST_modis` (calendar)
+6. `G_DSLR` (hydro)
+7. `G_rain_sum_3d` (hydro)
+8. `J_aspect_deg` (static)
+9. `J_bio_bio02` (static)
+10. `J_bio_bio13` (static)
+11. `J_soil_texture_usda_b0` (static)
+12. `SMAP_sm_pm_interp_rollrange30` (satellite)
+13. `SMAP_sm_pm_interp_rollrange7` (satellite)
+14. `SMAP_x_year` (calendar)
+15. `V_ema_F_NDVI_kobs30` (satellite)
+16. `V_ema_LST_modis_kobs30` (satellite)
+17. `V_rollmin_LST_modis_kobs30` (satellite)
+18. `V_rollrng_F_NDVI_kobs30` (satellite)
+19. `V_rollrng_G_API_kobs14` (hydro)
+20. `cos_year` (calendar)
+21. `s2_b4` (satellite)
+22. `s2_b8` (satellite)
+23. `year` (other)
+24. `A_d_E_SAR_ratio_kobs30` (satellite)
+25. `C_lag_LST_modis_kobs30` (satellite)
+26. `D_sin_DOY` (calendar)
+27. `D_fft_ent_LST_modis_kobs30` (calendar)
+28. `V_rollmax_F_NDVI_kobs14` (satellite)
+29. `V_rollrng_s2_b11_kobs30` (satellite)
+30. `D_z_F_NDMI` (calendar)
+31. `V_rollmax_E_SAR_ratio_kobs7` (satellite)
+32. `A_d_s2_b11_kobs30` (satellite)
+33. `SMAP_ampm_diff_interp` (satellite)
+34. `precip_mm` (hydro)
+35. `D_fft_dom_LST_modis_kobs30` (calendar)
+36. `E_rough_s1_vh_kobs14` (satellite)
+37. `G_rain_sum_7d` (hydro)
+38. `J_lc_code` (static)
+39. `V_rollmin_s2_b12_kobs30` (satellite)
+40. `sin_year` (calendar)
+41. `V_rollmax_LST_modis_kobs30` (satellite)
+42. `G_API` (hydro)
+43. `SMAP_sm_am_interp_rollrange7` (satellite)
+44. `V_rollmax_F_NDVI_kobs30` (satellite)
+45. `A_grad_s2_b12_kobs7` (satellite)
+46. `E_SAR_ratio` (satellite)
