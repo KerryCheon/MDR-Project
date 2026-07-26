@@ -1,0 +1,34 @@
+{
+  "source": "derived_8.3 splits with MartenRidge_WA_999 and RainyPass_WA_711 filtered out",
+  "derived_features": "350+ lags, rolling means, and GEE remote-sensing features fully populated",
+  "train_years": [
+    2017,
+    2018,
+    2019,
+    2020
+  ],
+  "val_years": [
+    2021,
+    2022
+  ],
+  "test_years": [
+    2023,
+    2024,
+    2025
+  ],
+  "lia_csv": "data/splits/derived_8.4/LIA/stations_lia.csv",
+  "stations": [
+    "BeaverPass_WA_990",
+    "CayusePass_WA",
+    "Darrington",
+    "Paradise_WA",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane"
+  ],
+  "rows": {
+    "train": 9803,
+    "val": 4805,
+    "test": 6620
+  }
+}
