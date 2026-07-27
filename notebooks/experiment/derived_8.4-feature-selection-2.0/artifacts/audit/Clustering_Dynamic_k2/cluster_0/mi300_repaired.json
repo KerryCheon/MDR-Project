@@ -717,8 +717,8 @@
     "lia_std_asc_deg"
   ],
   "stability_scores": {
-    "J_aspect_deg": 1.0,
-    "lia_std_asc_deg": 1.0
+    "lia_std_asc_deg": 1.0,
+    "J_aspect_deg": 1.0
   },
   "bypass_features": [],
   "candidate_features": [

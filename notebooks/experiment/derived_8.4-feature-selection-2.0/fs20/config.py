@@ -85,5 +85,12 @@ def load_config(path: str | Path) -> dict[str, Any]:
     if config["selection"].get("canonical_profile") == "no_mi":
         raise ValueError("The no-MI profile cannot be canonical.")
 
-    return config
+    largest_delta = 10
+    required_pool_size = int(config["search"]["global_feature_max"]) + largest_delta
+    if int(config["search"]["candidate_pool_size"]) < required_pool_size:
+        raise ValueError(
+            "candidate_pool_size must leave room for the largest 0/5/10 specialist "
+            f"delta: expected at least {required_pool_size}."
+        )
 
+    return config

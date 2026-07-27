@@ -22,7 +22,7 @@ from fs20.audit import run_audit
 from fs20.config import load_config
 from fs20.data import load_experiment_data
 from fs20.evaluate import ModelEvaluator
-from fs20.search import DirectSearch
+from fs20.search import DirectSearch, SearchIncompleteError
 
 
 def _write_run_settings(config: dict, artifact_dir: Path, args: argparse.Namespace) -> None:
@@ -46,12 +46,15 @@ def _smoke_config(config: dict) -> dict:
     smoke = deepcopy(config)
     smoke["audit"]["profiles"] = ["mi300"]
     smoke["audit"]["stability_n_boot"] = 2
-    smoke["search"]["candidate_pool_size"] = 8
+    # The smoke path still exercises the mandatory 0/5/10 grid, so the pool
+    # must hold the 50-feature backbone plus ten external specialists.
+    smoke["search"]["candidate_pool_size"] = 60
     smoke["search"]["max_rounds"] = 1
     smoke["search"]["exact_attempts_per_round"] = 1
     smoke["search"]["global_feature_min"] = 50
     smoke["search"]["global_feature_max"] = 50
     smoke["search"]["final_reserve_minutes"] = 1
+    smoke["model"]["exact_params"]["n_estimators"] = 50
     smoke["model"]["proxy_params"]["n_estimators"] = 50
     smoke["seeds"]["files"] = {
         name: path
@@ -130,7 +133,12 @@ def main(argv: list[str] | None = None) -> int:
         workers=args.workers,
         deadline_minutes=args.deadline_minutes,
     )
-    summary = search.run()
+    try:
+        summary = search.run()
+    except SearchIncompleteError as error:
+        print(f"Search checkpointed as incomplete: {error}", file=sys.stderr)
+        print(f"Wrote incomplete artifacts to {artifact_dir}", file=sys.stderr)
+        return 2
     print("=== Direct-search winner ===")
     print(json.dumps(summary["winner"], indent=2))
     print(f"Wrote artifacts to {artifact_dir}")

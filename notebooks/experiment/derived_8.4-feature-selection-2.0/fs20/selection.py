@@ -277,6 +277,8 @@ def select_features(
     else:
         repaired = stable_selected[:top_k]
 
+    enet_nonzero = sum(score > 0.0 for score in enet_scores.values())
+
     return SelectionResult(
         profile=profile.name,
         selected=repaired,
@@ -290,12 +292,12 @@ def select_features(
         candidate_features=candidate,
         alpha=alpha,
         l1_ratio=l1_ratio,
-        enet_nonzero=sum(score > 0.0 for score in enet_scores.values()),
+        enet_nonzero=enet_nonzero,
         stage_counts={
             "raw": len(all_features),
             "mi": len(mi_ranked) if profile.mi_k is not None else len(all_features),
             "candidate": len(candidate),
-            "elasticnet_nonzero": len(enet_selected),
+            "elasticnet_nonzero": enet_nonzero,
             "stability": len(stable_selected),
             "repaired": len(repaired),
         },
