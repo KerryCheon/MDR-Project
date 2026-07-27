@@ -4,6 +4,7 @@ from pathlib import Path
 import stat
 import sys
 
+
 import pandas as pd
 
 
@@ -87,9 +88,13 @@ def test_atomic_writes_preserve_or_repair_shared_file_modes(tmp_path):
 
 def test_master_runner_stage_order_and_defaults():
     experiment_dir = MODULE_PATH.parent
+    run_all_path = experiment_dir / "run_all.py"
+    spec = importlib.util.spec_from_file_location("run_all", run_all_path)
+    assert spec and spec.loader
+    run_all = importlib.util.module_from_spec(spec)
     sys.path.insert(0, str(experiment_dir))
     try:
-        import run_all
+        spec.loader.exec_module(run_all)
     finally:
         sys.path.remove(str(experiment_dir))
     assert [stage["name"] for stage in run_all.STAGES] == [
