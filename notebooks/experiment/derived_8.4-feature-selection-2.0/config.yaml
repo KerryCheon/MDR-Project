@@ -1,0 +1,92 @@
+# Isolated configuration for direct 2023--2025 feature search. No temporal weighting is allowed.
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+artifacts:
+  directory: "artifacts"
+
+model:
+  seed: 42
+  exact_params:
+    n_estimators: 2500
+    learning_rate: 0.005
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: "hist"
+    device: "cuda"
+  proxy_params:
+    n_estimators: 500
+    learning_rate: 0.01
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: "hist"
+    device: "cuda"
+
+calibration:
+  expected_r2: 0.7703
+  expected_rmse: 0.0488
+  r2_tolerance: 0.0005
+  rmse_tolerance: 0.0005
+
+selection:
+  canonical_profile: "mi300"
+  canonical_mi_k: 300
+  top_k: 50
+  elasticnet_k: 60
+  bootstrap_k: 60
+  stability_min_freq: 0.6
+  stability_min_keep: 20
+
+audit:
+  # The first four profiles reproduce the historical alternatives. The repaired
+  # profile shows whether the fallback source, rather than the data, caused a collapse.
+  profiles:
+    - "mi120"
+    - "mi300"
+    - "legacy_forced_bypass"
+    - "no_mi"
+    - "mi300_repaired"
+  stability_n_boot: 20
+  stability_sample_fraction: 0.8
+
+search:
+  workers: 8
+  deadline_minutes: 120
+  final_reserve_minutes: 15
+  candidate_pool_size: 96
+  global_feature_min: 40
+  global_feature_max: 60
+  max_rounds: 6
+  exact_attempts_per_round: 4
+
+seeds:
+  files:
+    legacy_8_2_forced_bypass: "notebooks/experiment/derived_8.2-feature-selection-2.1/artifacts/derived_8.2/c1_baseline_bypass_off/selected_features.json"
+    current_8_4_c0: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c0_baseline_bypass_on/selected_features.json"
+    current_8_4_c1_true_off: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c1_baseline_bypass_off/selected_features.json"
+    current_8_4_c2: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c2_xgb/selected_features.json"
+    current_8_4_c2b: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c2b_xgb_softcorr/selected_features.json"
+    current_8_4_c2c: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c2c_xgb_nocorr/selected_features.json"
+    current_8_4_c2d: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c2d_xgb_softcorr_k65/selected_features.json"
+    current_8_4_c3: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c3_xgb_no_coverage/selected_features.json"
+    current_8_4_c4: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c4_hybrid/selected_features.json"
+    current_8_4_c5: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c5_rf/selected_features.json"
+  metadata:
+    historical_8_2_v3:
+      path: "data/splits/derived_8.2/dataset_metadata.py"
+      attribute: "OVERALL_SELECTED_FEATURES_V3"

@@ -1,0 +1,17 @@
+{
+  "candidate_id": "baseline_v0_calibration",
+  "model_kind": "exact",
+  "pooled_r2": 0.7703476074674797,
+  "pooled_rmse": 0.04881702829652429,
+  "pooled_mae": 0.03697708659935574,
+  "global_feature_count": 50,
+  "cluster_0_additions": "",
+  "cluster_1_additions": "",
+  "cluster_0_feature_count": 50,
+  "cluster_1_feature_count": 50,
+  "year_2023_r2": 0.7509904311753833,
+  "year_2024_r2": 0.7612950787035925,
+  "year_2025_r2": 0.7937100485796286,
+  "train_time_s": 15.318556586280465,
+  "global_features": "A_d_E_SAR_diff_kobs30;A_d_LST_modis_kobs30;A_d_SMAP_sm_interp_kobs30;A_d_s2_b11_kobs30;A_grad_E_SAR_diff_kobs30;A_grad_LST_modis_kobs30;A_grad_SMAP_sm_interp_kobs30;A_grad_s2_b11_kobs30;C_lag_F_NDVI_kobs30;D_sa_F_NDMI;D_sa_LST_modis;D_z_E_SAR_ratio;E_SAR_ratio;F_MSI;J_aspect_deg;J_bio_bio15;K_aspect_cos;K_aspect_sin;SMAP_sm_pm_interp_lag30;SMAP_sm_pm_interp_rollrange30;SMAP_x_year;V_ema_F_NDVI_kobs30;V_ema_LST_modis_kobs30;V_rollmax_G_API_kobs7;V_rollmean_F_NDMI_kobs30;V_rollmin_s2_b12_kobs30;V_rollrng_F_NDVI_kobs30;aspect;latitude;lia_std_asc_deg;s2_b8;slope;A_grad_LST_modis_kobs14;V_rollmax_E_SAR_ratio_kobs7;A_d_LST_modis_kobs14;J_clay_wfrac_b100;V_ema_G_API_kobs30;V_rollmin_G_API_kobs14;V_rollrng_LST_modis_kobs30;V_rollrng_G_API_kobs30;A_d_SMAP_sm_interp_kobs5;C_lag_F_NDMI_kobs30;V_rollrng_E_SAR_ratio_kobs30;J_bio_bio02;SMAP_sm_pm_interp_rollmean30;V_rollmax_E_SAR_ratio_kobs30;V_rollmax_G_API_kobs30;s2_b11;V_rollrng_F_NDVI_kobs14;V_ema_SMAP_sm_interp_kobs30"
+}

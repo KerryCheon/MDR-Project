@@ -1,0 +1,91 @@
+{
+  "seed_notes": [
+    {
+      "seed": "legacy_8_2_forced_bypass",
+      "status": "loaded",
+      "detail": "50"
+    },
+    {
+      "seed": "current_8_4_c0",
+      "status": "loaded",
+      "detail": "45"
+    },
+    {
+      "seed": "current_8_4_c1_true_off",
+      "status": "loaded",
+      "detail": "12"
+    },
+    {
+      "seed": "current_8_4_c2",
+      "status": "loaded",
+      "detail": "50"
+    },
+    {
+      "seed": "current_8_4_c2b",
+      "status": "loaded",
+      "detail": "55"
+    },
+    {
+      "seed": "current_8_4_c2c",
+      "status": "loaded",
+      "detail": "55"
+    },
+    {
+      "seed": "current_8_4_c2d",
+      "status": "loaded",
+      "detail": "65"
+    },
+    {
+      "seed": "current_8_4_c3",
+      "status": "loaded",
+      "detail": "50"
+    },
+    {
+      "seed": "current_8_4_c4",
+      "status": "loaded",
+      "detail": "50"
+    },
+    {
+      "seed": "current_8_4_c5",
+      "status": "loaded",
+      "detail": "50"
+    },
+    {
+      "seed": "historical_8_2_v3",
+      "status": "loaded",
+      "detail": "47"
+    },
+    {
+      "seed": "local_mi300",
+      "status": "generated",
+      "detail": "9"
+    },
+    {
+      "seed": "local_legacy_forced_bypass",
+      "status": "generated",
+      "detail": "47"
+    },
+    {
+      "seed": "local_mi300_repaired",
+      "status": "generated",
+      "detail": "50"
+    }
+  ],
+  "seed_sizes": {
+    "v0": 50,
+    "legacy_8_2_forced_bypass": 50,
+    "current_8_4_c0": 45,
+    "current_8_4_c1_true_off": 12,
+    "current_8_4_c2": 50,
+    "current_8_4_c2b": 55,
+    "current_8_4_c2c": 55,
+    "current_8_4_c2d": 65,
+    "current_8_4_c3": 50,
+    "current_8_4_c4": 50,
+    "current_8_4_c5": 50,
+    "historical_8_2_v3": 47,
+    "local_mi300": 9,
+    "local_legacy_forced_bypass": 47,
+    "local_mi300_repaired": 50
+  }
+}

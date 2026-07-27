@@ -1,0 +1,8 @@
+{
+  "config_path": "/scratch/user/u.rp352032/MDR-Project/notebooks/experiment/derived_8.4-feature-selection-2.0/config.yaml",
+  "stage": "all",
+  "workers": 8,
+  "deadline_minutes": 120,
+  "audit_bootstrap": 20,
+  "search_rounds": 6
+}
