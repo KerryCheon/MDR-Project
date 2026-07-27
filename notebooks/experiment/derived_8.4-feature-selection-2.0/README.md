@@ -4,6 +4,16 @@ This is an isolated direct feature-search experiment for the Washington-only `de
 
 The implementation is local to this directory. It does not modify `Modeling/`, previous feature-selection experiments, the split metadata, or the current evaluation experiment.
 
+## Clustering Method
+
+The experiment uses the **V0-full K=2** routing scheme:
+- **Algorithm:** `KMeans(n_clusters=2, random_state=42, n_init=10)` from scikit-learn
+- **Features:** All 50 V0 features (`OVERALL_SELECTED_FEATURES_V0`) from `data/splits/derived_8.4/dataset_metadata.py` — the same feature set used in the original V0 model
+- **Training:** Fitted on the training split only; the same fitted router is applied to val and test splits
+- **Implementation:** `V0Router` class at `fs20/evaluate.py:60-81`
+
+This contrasts with the other audited routes: `Clustering_Dynamic_k2` (clusters on all 495 features), and `Univariate_G_API_k2` (clusters on the single G_API feature). V0 Full was chosen because it reflects the original V0 model's routing logic and produces the most balanced cluster sizes (cluster 0: 7,156 train rows; cluster 1: 2,647 train rows).
+
 ## What changed
 
 - `legacy_forced_bypass` explicitly reproduces the historical C1 semantics; true bypass-off remains a separate diagnostic. This prevents a 50-feature forced-bypass list from being mistaken for the current 12-feature true-bypass-off result.
