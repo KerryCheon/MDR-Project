@@ -1,0 +1,38 @@
+{
+  "Global Single Model (54 Backbone)": {
+    "ctx_shap_sum": 0.0,
+    "tabular_shap_sum": 0.17262867093086243,
+    "total_shap_sum": 0.17262867093086243,
+    "ctx_pct": 0.0,
+    "tabular_pct": 100.0,
+    "num_ctx_features": 0,
+    "num_tabular_features": 54
+  },
+  "Clustering_V0_Full_k2 (Winner c0=0, c1=10)": {
+    "ctx_shap_sum": 0.0,
+    "tabular_shap_sum": 0.17126837372779846,
+    "total_shap_sum": 0.17126837372779846,
+    "ctx_pct": 0.0,
+    "tabular_pct": 100.0,
+    "num_ctx_features": 0,
+    "num_tabular_features": 64
+  },
+  "Global Single Model (54 Backbone + 160 CTX)": {
+    "ctx_shap_sum": 0.12020530551671982,
+    "tabular_shap_sum": 0.03815445303916931,
+    "total_shap_sum": 0.15835975855588913,
+    "ctx_pct": 75.90647182901353,
+    "tabular_pct": 24.093528170986474,
+    "num_ctx_features": 160,
+    "num_tabular_features": 54
+  },
+  "Clustering_V0_Full_k2 (Winner c0=0, c1=10 + 160 CTX)": {
+    "ctx_shap_sum": 0.1187799796462059,
+    "tabular_shap_sum": 0.04101184755563736,
+    "total_shap_sum": 0.15979182720184326,
+    "ctx_pct": 74.33420202158858,
+    "tabular_pct": 25.66579797841142,
+    "num_ctx_features": 160,
+    "num_tabular_features": 64
+  }
+}
