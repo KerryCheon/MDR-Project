@@ -1,0 +1,7 @@
+artifacts/*.npy
+artifacts/*.csv
+artifacts/*.json
+artifacts/*.png
+artifacts/*.pkl
+models/*.json
+models/*.pt
