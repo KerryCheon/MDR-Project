@@ -1,0 +1,229 @@
+{
+  "station": "Touchet_WA_824",
+  "train_rows": 1397,
+  "val_rows": 0,
+  "test_rows": 170,
+  "train_date_range": [
+    "2017-01-01 00:00:00",
+    "2020-10-28 00:00:00"
+  ],
+  "test_date_range": [
+    "2024-10-04 00:00:00",
+    "2025-03-22 00:00:00"
+  ],
+  "long_gap_days": 1437,
+  "train_target_mean": 0.15417036506800286,
+  "train_target_std": 0.09099260730122231,
+  "test_target_mean": 0.19887058823529416,
+  "test_target_std": 0.029957337600737613,
+  "metrics": [
+    {
+      "model": "tabular_baseline_38",
+      "coverage_n": 170,
+      "target_mean": 0.19887058823529416,
+      "target_std": 0.029957337600737613,
+      "r2": -0.7899342930267899,
+      "rmse": 0.04007945044608923,
+      "ubrmse": 0.038644287521940934,
+      "bias": 0.010629270435080771,
+      "mae": 0.024724430536522585,
+      "q90": 0.07516781418323518,
+      "n": 170
+    },
+    {
+      "model": "tabular_minus_smap_x_year",
+      "coverage_n": 170,
+      "target_mean": 0.19887058823529416,
+      "target_std": 0.029957337600737613,
+      "r2": -0.6198935939774699,
+      "rmse": 0.03812821357053105,
+      "ubrmse": 0.03737644553191791,
+      "bias": 0.007534055314344483,
+      "mae": 0.023519762583339925,
+      "q90": 0.06598212368488308,
+      "n": 170
+    },
+    {
+      "model": "temporal_current",
+      "coverage_n": 160,
+      "target_mean": 0.20373125,
+      "target_std": 0.023446674037856628,
+      "r2": -1.0821747673391662,
+      "rmse": 0.033832947544279846,
+      "ubrmse": 0.0335498716810621,
+      "bias": 0.004367430562500002,
+      "mae": 0.0289879185625,
+      "q90": 0.049143460999999986,
+      "n": 160
+    },
+    {
+      "model": "temporal_alternative",
+      "coverage_n": 160,
+      "target_mean": 0.20373125,
+      "target_std": 0.023446674037856628,
+      "r2": -4.454114063299267,
+      "rmse": 0.054757467479151625,
+      "ubrmse": 0.05152718356187787,
+      "bias": -0.018529155375000002,
+      "mae": 0.0464534005,
+      "q90": 0.084322357,
+      "n": 160
+    },
+    {
+      "model": "strict_tabular",
+      "coverage_n": 160,
+      "target_mean": 0.20373125,
+      "target_std": 0.023446674037856628,
+      "r2": -1.823285453674333,
+      "rmse": 0.03939659075134712,
+      "ubrmse": 0.03891257979965874,
+      "bias": -0.006156500317901411,
+      "mae": 0.031164899265021105,
+      "q90": 0.04702930679321294,
+      "n": 160
+    },
+    {
+      "model": "strict_hybrid",
+      "coverage_n": 160,
+      "target_mean": 0.20373125,
+      "target_std": 0.023446674037856628,
+      "r2": -0.7098223279050118,
+      "rmse": 0.030658911925598293,
+      "ubrmse": 0.029394240804800888,
+      "bias": -0.008714785595238245,
+      "mae": 0.026374404105544102,
+      "q90": 0.04544314469099043,
+      "n": 160
+    },
+    {
+      "model": "station_mean",
+      "coverage_n": 170,
+      "target_mean": 0.19887058823529416,
+      "target_std": 0.029957337600737613,
+      "r2": -2.226450045482711,
+      "rmse": 0.05381033383403424,
+      "ubrmse": 0.02995733760073761,
+      "bias": -0.044700223167291255,
+      "mae": 0.052936300475809515,
+      "q90": 0.06292963493199713,
+      "n": 170
+    },
+    {
+      "model": "monthly_climatology",
+      "coverage_n": 170,
+      "target_mean": 0.19887058823529416,
+      "target_std": 0.029957337600737613,
+      "r2": -0.3667307781418083,
+      "rmse": 0.03502230299450523,
+      "ubrmse": 0.029660167192885837,
+      "bias": -0.01862353857699951,
+      "mae": 0.03111308646226933,
+      "q90": 0.05228756775970854,
+      "n": 170
+    },
+    {
+      "model": "smap_only",
+      "coverage_n": 170,
+      "target_mean": 0.19887058823529416,
+      "target_std": 0.029957337600737613,
+      "r2": NaN,
+      "rmse": NaN,
+      "ubrmse": NaN,
+      "bias": NaN,
+      "mae": NaN,
+      "q90": NaN,
+      "n": 0
+    },
+    {
+      "model": "persistence",
+      "coverage_n": 170,
+      "target_mean": 0.19887058823529416,
+      "target_std": 0.029957337600737613,
+      "r2": 0.8967260891740139,
+      "rmse": 0.009627167441214286,
+      "ubrmse": 0.009626585161338994,
+      "bias": 0.00010588235294117657,
+      "mae": 0.002564705882352941,
+      "q90": 0.0039999999999999775,
+      "n": 170
+    }
+  ],
+  "largest_feature_shifts": [
+    {
+      "feature": "LST_modis",
+      "train_mean": 283.07032479991364,
+      "train_std": 11.823537467084572,
+      "test_mean": 271.2224714127279,
+      "test_std": 8.15314608455396,
+      "standardized_mean_difference": -1.0020565689556846,
+      "wasserstein_distance": 11.847853387185753,
+      "test_outside_train_p1_p99": 0.12352941176470589,
+      "train_missing_fraction": 0.0,
+      "test_missing_fraction": 0.0
+    },
+    {
+      "feature": "F_NDVI",
+      "train_mean": 0.31214893277651123,
+      "train_std": 0.2487424658318956,
+      "test_mean": 0.19010298273714824,
+      "test_std": 0.18181698232112262,
+      "standardized_mean_difference": -0.4906518460014131,
+      "wasserstein_distance": 0.1314247077633436,
+      "test_outside_train_p1_p99": 0.0,
+      "train_missing_fraction": 0.0,
+      "test_missing_fraction": 0.0
+    },
+    {
+      "feature": "G_API",
+      "train_mean": 28.66461127881719,
+      "train_std": 21.454847465358124,
+      "test_mean": 37.15405760092782,
+      "test_std": 18.757822122670895,
+      "standardized_mean_difference": 0.39568896193823044,
+      "wasserstein_distance": 9.053711884540366,
+      "test_outside_train_p1_p99": 0.0,
+      "train_missing_fraction": 0.0,
+      "test_missing_fraction": 0.0
+    },
+    {
+      "feature": "G_rain_sum_7d",
+      "train_mean": 22.891982820329275,
+      "train_std": 22.27590495246797,
+      "test_mean": 30.064705882352943,
+      "test_std": 23.846154978663456,
+      "standardized_mean_difference": 0.3219946878624562,
+      "wasserstein_distance": 7.725276853762265,
+      "test_outside_train_p1_p99": 0.0,
+      "train_missing_fraction": 0.0,
+      "test_missing_fraction": 0.0
+    },
+    {
+      "feature": "SMAP_sm_interp",
+      "train_mean": NaN,
+      "train_std": NaN,
+      "test_mean": NaN,
+      "test_std": NaN,
+      "standardized_mean_difference": NaN,
+      "wasserstein_distance": NaN,
+      "test_outside_train_p1_p99": NaN,
+      "train_missing_fraction": 1.0,
+      "test_missing_fraction": 1.0
+    }
+  ],
+  "fully_missing_features": [
+    "SMAP_sm_interp",
+    "SMAP_x_year",
+    "V_rollstd_SMAP_sm_interp_kobs30"
+  ],
+  "hidden_trace": [
+    {
+      "station_id": "Touchet_WA_824",
+      "input_abs_mean": 0.7119545124471187,
+      "projected_norm_mean": 6.864976331591606,
+      "recurrent_norm_mean": 1.924241554737091,
+      "final_hidden_norm": 2.23471909314394,
+      "embedding_norm": 7.900461408495903,
+      "embedding_ood_score": 1.0214684303849937
+    }
+  ]
+}

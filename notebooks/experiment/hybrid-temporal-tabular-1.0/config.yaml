@@ -1,0 +1,35 @@
+experiment:
+  name: "hybrid-temporal-tabular-1.0"
+  seed: 42
+
+data:
+  directory: "data/splits/derived_9.0"
+  target: "soil_moisture_5cm"
+  id_columns:
+    - "station_id"
+    - "date"
+
+temporal_encoder:
+  sequence_length: 10
+  projection_size: 48
+  hidden_size: 64
+  embedding_size: 64
+  dropout: 0.20
+  batch_size: 512
+  learning_rate: 0.001
+  weight_decay: 0.002
+  max_epochs: 60
+  patience: 10
+  huber_delta: 0.05
+  max_window_span_factor: 2.0
+
+tree_model:
+  n_estimators: 1200
+  learning_rate: 0.03
+  max_depth: 4
+  min_child_weight: 10
+  subsample: 0.80
+  colsample_bytree: 0.80
+  reg_lambda: 1.0
+  early_stopping_rounds: 50
+

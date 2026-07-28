@@ -1,0 +1,71 @@
+{
+  "anchors": {
+    "v20_top25_seq30_test_r2_old_builder": 0.7900784611701965,
+    "v20_top25_seq30_test_n_old_builder": 3866,
+    "v20_full38_seq10_test_r2_old_builder": 0.6963052749633789
+  },
+  "configs": {
+    "top25_seq30": {
+      "feature_count": 25,
+      "seq_len": 30,
+      "seeds": [
+        42,
+        7,
+        123,
+        2024,
+        31337
+      ],
+      "per_seed_test_r2": [
+        0.7727850675582886,
+        0.7725254893302917,
+        0.728892982006073,
+        0.7826488018035889,
+        0.7735614776611328
+      ],
+      "test_r2_mean": 0.766082763671875,
+      "test_r2_std": 0.018973003104200435,
+      "test_rmse_mean": 0.045506659895181656,
+      "test_rmse_std": 0.0018010072647606202,
+      "test_mae_mean": 0.03336315229535103,
+      "test_mae_std": 0.0021850019706623623,
+      "seed_out_dirs": [
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/top25_seq30/seed42",
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/top25_seq30/seed7",
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/top25_seq30/seed123",
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/top25_seq30/seed2024",
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/top25_seq30/seed31337"
+      ]
+    },
+    "full58_seq10": {
+      "feature_count": 58,
+      "seq_len": 10,
+      "seeds": [
+        42,
+        7,
+        123,
+        2024,
+        31337
+      ],
+      "per_seed_test_r2": [
+        0.7747030854225159,
+        0.7247592210769653,
+        0.7109099626541138,
+        0.6909680366516113,
+        0.6516623497009277
+      ],
+      "test_r2_mean": 0.7106005311012268,
+      "test_r2_std": 0.04041991040395205,
+      "test_rmse_mean": 0.05052952915430069,
+      "test_rmse_std": 0.0035800615285446497,
+      "test_mae_mean": 0.03861489146947861,
+      "test_mae_std": 0.0029169922568116698,
+      "seed_out_dirs": [
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/full58_seq10/seed42",
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/full58_seq10/seed7",
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/full58_seq10/seed123",
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/full58_seq10/seed2024",
+        "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v23_baseline/full58_seq10/seed31337"
+      ]
+    }
+  }
+}

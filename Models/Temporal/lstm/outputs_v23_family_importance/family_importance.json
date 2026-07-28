@@ -1,0 +1,274 @@
+{
+  "method": "jointly replace all columns in a family with train-mean at every timestep",
+  "checkpoint": "/Users/kerrycheon/repos/Work/MDR-Project/Models/Temporal/lstm/outputs_v20/window_sweep/top25/seq30/best_model.pt",
+  "baseline_val": {
+    "r2": 0.8939555287361145,
+    "rmse": 0.034279510378837585,
+    "ubrmse": 0.03292754665017128,
+    "bias": -0.009532138705253601,
+    "mae": 0.025943664833903313,
+    "q90": 0.056858766824007034,
+    "n": 2600
+  },
+  "ranking": [
+    {
+      "family": "lst",
+      "n_features_ablated": 4,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "C_lag_LST_modis_kobs6",
+        "V_ema_LST_modis_kobs7"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.049871817231178284,
+      "delta_val_rmse": 0.015592306852340698,
+      "ablated_val_r2": 0.7755451202392578,
+      "rank": 1
+    },
+    {
+      "family": "interaction",
+      "n_features_ablated": 1,
+      "features": [
+        "SMAP_x_year"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.04419364035129547,
+      "delta_val_rmse": 0.009914129972457886,
+      "ablated_val_r2": 0.8237463235855103,
+      "rank": 2
+    },
+    {
+      "family": "api_antecedent",
+      "n_features_ablated": 10,
+      "features": [
+        "V_rollmean_G_API_kobs14",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_G_API_kobs30",
+        "G_DSLR",
+        "G_API",
+        "V_ema_G_API_kobs7",
+        "V_rollmax_G_API_kobs30",
+        "C_lag_G_API_kobs1",
+        "V_rollmean_G_API_kobs7",
+        "V_ema_G_API_kobs30"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.039920877665281296,
+      "delta_val_rmse": 0.00564136728644371,
+      "ablated_val_r2": 0.8561801314353943,
+      "rank": 3
+    },
+    {
+      "family": "calendar",
+      "n_features_ablated": 2,
+      "features": [
+        "D_sin_DOY",
+        "cos_year"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.0396944098174572,
+      "delta_val_rmse": 0.005414899438619614,
+      "ablated_val_r2": 0.8578072786331177,
+      "rank": 4
+    },
+    {
+      "family": "precip",
+      "n_features_ablated": 2,
+      "features": [
+        "G_rain_sum_3d",
+        "G_rain_sum_7d"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.039177779108285904,
+      "delta_val_rmse": 0.0048982687294483185,
+      "ablated_val_r2": 0.8614845275878906,
+      "rank": 5
+    },
+    {
+      "family": "smap",
+      "n_features_ablated": 1,
+      "features": [
+        "V_rollstd_SMAP_sm_interp_kobs30"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.03618353605270386,
+      "delta_val_rmse": 0.001904025673866272,
+      "ablated_val_r2": 0.8818480968475342,
+      "rank": 6
+    },
+    {
+      "family": "static_terrain",
+      "n_features_ablated": 3,
+      "features": [
+        "K_slope_sin",
+        "elev",
+        "K_slope_cos"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.0360732302069664,
+      "delta_val_rmse": 0.0017937198281288147,
+      "ablated_val_r2": 0.8825673460960388,
+      "rank": 7
+    },
+    {
+      "family": "sar",
+      "n_features_ablated": 1,
+      "features": [
+        "A_d_E_SAR_diff_kobs14"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.03470788523554802,
+      "delta_val_rmse": 0.00042837485671043396,
+      "ablated_val_r2": 0.8912886381149292,
+      "rank": 8
+    },
+    {
+      "family": "optical_s2",
+      "n_features_ablated": 1,
+      "features": [
+        "V_rollmean_s2_b11_kobs7"
+      ],
+      "baseline_val_rmse": 0.034279510378837585,
+      "ablated_val_rmse": 0.03401036560535431,
+      "delta_val_rmse": -0.00026914477348327637,
+      "ablated_val_r2": 0.8956142663955688,
+      "rank": 9
+    }
+  ],
+  "test_baseline": {
+    "r2": 0.7900784611701965,
+    "rmse": 0.04334788769483566,
+    "ubrmse": 0.043215710669755936,
+    "bias": -0.0033825694117695093,
+    "mae": 0.03063199855387211,
+    "q90": 0.0676242858171463,
+    "n": 3866
+  },
+  "test_ranking": [
+    {
+      "family": "interaction",
+      "n_features_ablated": 1,
+      "features": [
+        "SMAP_x_year"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.06235264614224434,
+      "delta_val_rmse": 0.019004758447408676,
+      "ablated_val_r2": 0.5656589269638062,
+      "rank": 1
+    },
+    {
+      "family": "lst",
+      "n_features_ablated": 4,
+      "features": [
+        "V_rollmin_LST_modis_kobs30",
+        "C_lag_LST_modis_kobs30",
+        "C_lag_LST_modis_kobs6",
+        "V_ema_LST_modis_kobs7"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.060169581323862076,
+      "delta_val_rmse": 0.016821693629026413,
+      "ablated_val_r2": 0.5955404043197632,
+      "rank": 2
+    },
+    {
+      "family": "precip",
+      "n_features_ablated": 2,
+      "features": [
+        "G_rain_sum_3d",
+        "G_rain_sum_7d"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.05177437886595726,
+      "delta_val_rmse": 0.008426491171121597,
+      "ablated_val_r2": 0.7005316615104675,
+      "rank": 3
+    },
+    {
+      "family": "calendar",
+      "n_features_ablated": 2,
+      "features": [
+        "D_sin_DOY",
+        "cos_year"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.048965200781822205,
+      "delta_val_rmse": 0.005617313086986542,
+      "ablated_val_r2": 0.7321471571922302,
+      "rank": 4
+    },
+    {
+      "family": "api_antecedent",
+      "n_features_ablated": 10,
+      "features": [
+        "V_rollmean_G_API_kobs14",
+        "V_ema_G_API_kobs14",
+        "V_rollmin_G_API_kobs30",
+        "G_DSLR",
+        "G_API",
+        "V_ema_G_API_kobs7",
+        "V_rollmax_G_API_kobs30",
+        "C_lag_G_API_kobs1",
+        "V_rollmean_G_API_kobs7",
+        "V_ema_G_API_kobs30"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.04689178988337517,
+      "delta_val_rmse": 0.003543902188539505,
+      "ablated_val_r2": 0.7543511390686035,
+      "rank": 5
+    },
+    {
+      "family": "static_terrain",
+      "n_features_ablated": 3,
+      "features": [
+        "K_slope_sin",
+        "elev",
+        "K_slope_cos"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.04687691107392311,
+      "delta_val_rmse": 0.003529023379087448,
+      "ablated_val_r2": 0.7545070052146912,
+      "rank": 6
+    },
+    {
+      "family": "optical_s2",
+      "n_features_ablated": 1,
+      "features": [
+        "V_rollmean_s2_b11_kobs7"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.045850154012441635,
+      "delta_val_rmse": 0.0025022663176059723,
+      "ablated_val_r2": 0.7651433944702148,
+      "rank": 7
+    },
+    {
+      "family": "smap",
+      "n_features_ablated": 1,
+      "features": [
+        "V_rollstd_SMAP_sm_interp_kobs30"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.04365737363696098,
+      "delta_val_rmse": 0.00030948594212532043,
+      "ablated_val_r2": 0.7870702743530273,
+      "rank": 8
+    },
+    {
+      "family": "sar",
+      "n_features_ablated": 1,
+      "features": [
+        "A_d_E_SAR_diff_kobs14"
+      ],
+      "baseline_val_rmse": 0.04334788769483566,
+      "ablated_val_rmse": 0.043473921716213226,
+      "delta_val_rmse": 0.00012603402137756348,
+      "ablated_val_r2": 0.7888559699058533,
+      "rank": 9
+    }
+  ]
+}
