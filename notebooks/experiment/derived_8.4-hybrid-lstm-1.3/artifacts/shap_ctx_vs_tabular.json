@@ -1,0 +1,74 @@
+{
+  "Global Single Model (54 Backbone)": {
+    "ctx_shap_sum": 0.0,
+    "tabular_shap_sum": 0.17262865602970123,
+    "total_shap_sum": 0.17262865602970123,
+    "ctx_pct": 0.0,
+    "tabular_pct": 100.0,
+    "num_ctx_features": 0,
+    "num_tabular_features": 54
+  },
+  "Clustering_V0_Full_k2 (Winner c0=0, c1=10)": {
+    "ctx_shap_sum": 0.0,
+    "tabular_shap_sum": 0.17126840353012085,
+    "total_shap_sum": 0.17126840353012085,
+    "ctx_pct": 0.0,
+    "tabular_pct": 100.0,
+    "num_ctx_features": 0,
+    "num_tabular_features": 64
+  },
+  "Global Single Model (54 Backbone + 160 CTX)": {
+    "ctx_shap_sum": 0.12020532786846161,
+    "tabular_shap_sum": 0.03815446421504021,
+    "total_shap_sum": 0.15835979208350182,
+    "ctx_pct": 75.90646987278079,
+    "tabular_pct": 24.093530127219207,
+    "num_ctx_features": 160,
+    "num_tabular_features": 54
+  },
+  "Clustering_V0_Full_k2 (Winner c0=0, c1=10 + 160 CTX)": {
+    "ctx_shap_sum": 0.1187799870967865,
+    "tabular_shap_sum": 0.04101185500621796,
+    "total_shap_sum": 0.15979184210300446,
+    "ctx_pct": 74.33419975233716,
+    "tabular_pct": 25.665800247662858,
+    "num_ctx_features": 160,
+    "num_tabular_features": 64
+  },
+  "Global Single Model (54 Backbone + 80 CTX-head)": {
+    "ctx_shap_sum": 0.10185917466878891,
+    "tabular_shap_sum": 0.052197907119989395,
+    "total_shap_sum": 0.1540570817887783,
+    "ctx_pct": 66.11781392071549,
+    "tabular_pct": 33.88218607928451,
+    "num_ctx_features": 80,
+    "num_tabular_features": 54
+  },
+  "Clustering_V0_Full_k2 (Winner c0=0, c1=10 + 80 CTX-head)": {
+    "ctx_shap_sum": 0.09701066464185715,
+    "tabular_shap_sum": 0.055159371346235275,
+    "total_shap_sum": 0.15217003598809242,
+    "ctx_pct": 63.75148958330299,
+    "tabular_pct": 36.24851041669701,
+    "num_ctx_features": 80,
+    "num_tabular_features": 64
+  },
+  "Global Single Model (54 Backbone + 80 pre-ReLU)": {
+    "ctx_shap_sum": 0.10803045332431793,
+    "tabular_shap_sum": 0.047655556350946426,
+    "total_shap_sum": 0.15568600967526436,
+    "ctx_pct": 69.38995581533104,
+    "tabular_pct": 30.610044184668965,
+    "num_ctx_features": 80,
+    "num_tabular_features": 54
+  },
+  "Clustering_V0_Full_k2 (Winner c0=0, c1=10 + 80 pre-ReLU)": {
+    "ctx_shap_sum": 0.10131800174713135,
+    "tabular_shap_sum": 0.04973446577787399,
+    "total_shap_sum": 0.15105246752500534,
+    "ctx_pct": 67.07470815090068,
+    "tabular_pct": 32.92529184909933,
+    "num_ctx_features": 80,
+    "num_tabular_features": 64
+  }
+}

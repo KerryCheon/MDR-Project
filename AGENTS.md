@@ -58,6 +58,8 @@ cd notebooks
 uv run --with jupyter jupyter lab
 ```
 
+And assume the system does not have global Python packages installed; need to run all Python commands through uv.
+
 ## Data Flow (Pipeline)
 
 ```
@@ -73,6 +75,7 @@ Output per station: processed final CSV under `src/pipeline/data/processed/`.
 - This is a large project with many moving parts, so only make changes you are confident about. If unsure, ask the team first.
 - Do not modify existing versioned notebooks (e.g. in `archive/v9/`, `archive/v10/`) — create new versions for new experiments to preserve history.
 - When the user asks to read, edit, execute, or work with .ipynb files, use the notebook-cli skill, which provides the `nb` command-line tool. Do not use the built-in Read/Write tools for `.ipynb` files. Never read or write the notebook file directly.
+- Must use asynchronous/non-blocking shell tool when executing long running shell commands (e.g. training) so you can monitor the progress and cancel if needed. Always set timeout for shell/bash commands.
 
 ### Reproducibility Verification Rule
 - Before committing or declaring an experiment completed, always run `nb execute <notebook_path> --uv` from `notebooks/`.
