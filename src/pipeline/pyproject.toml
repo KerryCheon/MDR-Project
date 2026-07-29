@@ -19,6 +19,7 @@ dependencies = [
     "pyyaml",
     "earthengine-api",
     "matplotlib",
+    "tabulate>=0.10.0",
 ]
 
 [tool.setuptools]
