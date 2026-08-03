@@ -21,6 +21,22 @@ As documented in [split_meta.json](../data/splits/derived_8.0/split_meta.json):
 * **`station_id`** (Metadata): Unique string identifier for the weather/SNOTEL monitoring station.
 * **`date`** (Metadata): Daily observation timestamp formatted as `YYYY-MM-DD`.
 
+### Raw Data Sources & Resolution Scales
+
+| Data Source Provider | GEE / Provider Catalog ID | Native Spatial Resolution | Pipeline Extraction Scale (`scale=`) | Temporal Resolution / Cadence | Mapped Raw / Key Features |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| **In-Situ Monitoring Networks** | USCRN / USDA ISMN SNOTEL | **Point** | Point (`lat, lon`) | Daily (aggregated from 1-hr / daily) | `soil_moisture_5cm` (Target), `station_id` |
+| **Open-Meteo Weather API** | ERA5-Land Reanalysis | **~11 km** ($0.1^\circ$ grid) | Point interpolation | Hourly $\to$ Daily | `precip_mm`, `rain_mm`, `G_API`, `G_rain_*` |
+| **Copernicus Sentinel-1 SAR** | `COPERNICUS/S1_GRD` | **10 m** (IW Mode GRD) | `scale=30` (30 m) | 6–12 Days | `s1_vv`, `s1_vh`, `lia_*`, `E_rough_*`, `E_SAR_*` |
+| **Copernicus Sentinel-2 MSI** | `COPERNICUS/S2_SR_HARMONIZED` | **10 m** (B4, B8) / **20 m** (B11, B12) | `scale=20` (20 m) | 5 Days | `s2_b4`, `s2_b8`, `s2_b11`, `s2_b12`, `F_NDVI`, `F_NDMI` |
+| **NASA MODIS LST** | `MODIS/061/MOD11A1` | **1 km** (1000 m / 926.6 m) | `scale=1000` (1 km) | Daily | `LST_modis` |
+| **NASA MODIS NDVI** | `MODIS/061/MOD13A3` | **1 km** (1000 m) | `scale=250` (250 m buffer) | Monthly (16-day composite) | `NDVI_modis` |
+| **NASA SMAP Radiometer** | `NASA/SMAP/SPL3SMP_E/005` & `006` | **9 km** (EASE-Grid 2.0) | `scale=9000` (9 km) | Daily (AM ~6:00 AM, PM ~6:00 PM) | `SMAP_sm_am`, `SMAP_sm_pm`, `SMAP_sm_interp` |
+| **USGS SRTM DEM** | `USGS/SRTMGL1_003` | **30 m** (1-Arc Second) | `scale=30` (30 m) | Static (2000 baseline) | `elev`, `slope`, `aspect`, `J_elev_m`, `J_slope_deg`, `J_aspect_deg` |
+| **FAO HWSD v1.2** | Harmonized World Soil Database | **~1 km** (30-Arc Seconds) | Point lookup | Static | `J_clay_wfrac_b*`, `J_sand_wfrac_b*`, `J_soil_texture_usda_b*` |
+| **WorldClim v2.1** | WorldClim 2.1 Climate Normals | **~1 km** (30-Arc Seconds) | Point lookup | Static (1970–2000 Climatological Normals) | `J_bio_bio01` to `J_bio_bio19` |
+| **ESA WorldCover / NLCD** | Land Cover Classification | **10 m – 30 m** | Point lookup | Static / Annual | `J_lc_code` |
+
 ---
 
 ## 2. Feature Families (Prefix Conventions)
@@ -66,13 +82,13 @@ Every single column in the dataset is generated through a rigorous combinatorial
 ### A. Metadata, Targets & Raw Inputs (17 columns)
 * **Metadata & Targets (3)**: `station_id`, `date`, `soil_moisture_5cm`
 * **Raw Geospatial, Weather & Satellite Inputs (14)**:
-  * Spatial coordinates (2): `longitude`, `latitude`
-  * Terrain attributes (3): `elev`, `slope`, `aspect`
+  * Spatial coordinates (2): `longitude`, `latitude` (Point location)
+  * Terrain attributes (3): `elev`, `slope`, `aspect` (30 m spatial resolution via USGS SRTM DEM)
   * Time variables (1): `DOY` (Day of Year)
-  * Meteorological (1): `precip_mm`
-  * Sentinel-1 backscatter (2): `s1_vv`, `s1_vh`
-  * Sentinel-2 raw spectral bands (4): `s2_b4` (Red), `s2_b8` (NIR), `s2_b11` (SWIR-1), `s2_b12` (SWIR-2)
-  * MODIS raw temperature (1): `LST_modis`
+  * Meteorological (1): `precip_mm` (~11 km spatial resolution via Open-Meteo ERA5-Land)
+  * Sentinel-1 backscatter (2): `s1_vv`, `s1_vh` (10 m native spatial resolution, C-band SAR)
+  * Sentinel-2 raw spectral bands (4): `s2_b4` (Red, 10 m), `s2_b8` (NIR, 10 m), `s2_b11` (SWIR-1, 20 m), `s2_b12` (SWIR-2, 20 m)
+  * MODIS raw temperature (1): `LST_modis` (1 km spatial resolution via MOD11A1)
 
 ### B. Core Time-Series Transforms (362 columns)
 The temporal operators are systematically applied to **9 base variables**:
@@ -111,7 +127,7 @@ The temporal operators are systematically applied to **9 base variables**:
   $$\text{Count: } 3 \text{ bases} \times 2 \text{ spectral attributes} = 6 \text{ columns}$$
 
 ### D. SMAP Active Passive Interpolations (43 columns)
-Separate morning (AM) and evening (PM) SMAP passes are interpolated and derived as follows:
+Separate morning (AM) and evening (PM) SMAP passes (9 km native spatial resolution on EASE-Grid 2.0 via SPL3SMP_E) are interpolated and derived as follows:
 * **Base variables (3)**: `SMAP_sm_am_interp`, `SMAP_sm_pm_interp`, `SMAP_sm_interp`
 * **Diurnal difference (1)**: `SMAP_ampm_diff_interp`
 * **Derived indicators (39)**: For each of the 3 base variables, the following 13 metrics are computed:
@@ -125,17 +141,17 @@ Separate morning (AM) and evening (PM) SMAP passes are interpolated and derived 
   $$\text{Count: } 3 \text{ bases} \times 13 \text{ derived} = 39 \text{ columns}$$
 
 ### E. Static Soils, GIS & Bioclimatic variables (49 columns)
-* **GIS Terrain Parameters (3)**: `J_aspect_deg`, `J_slope_deg`, `J_elev_m`
+* **GIS Terrain Parameters (3)**: `J_aspect_deg`, `J_slope_deg`, `J_elev_m` (30 m spatial resolution via USGS SRTM DEM).
 * **Engineered Terrain parameters (4)**: Sine and cosine transformations to solve angular discontinuities:
   * Aspect: `K_aspect_sin`, `K_aspect_cos`
   * Slope: `K_slope_sin`, `K_slope_cos`
-* **HWSD Soil fractions at 6 depths (12)**: Clay weight fraction (`J_clay_wfrac_b*`) and Sand weight fraction (`J_sand_wfrac_b*`) at depths $\{0, 10, 30, 60, 100, 200\}$ cm.
-* **USDA Soil Classes at 6 depths (6)**: USDA Soil texture category code (`J_soil_texture_usda_b*`) at depths $\{0, 10, 30, 60, 100, 200\}$ cm.
+* **HWSD Soil fractions at 6 depths (12)**: Clay weight fraction (`J_clay_wfrac_b*`) and Sand weight fraction (`J_sand_wfrac_b*`) at depths $\{0, 10, 30, 60, 100, 200\}$ cm (~1 km spatial resolution via FAO HWSD v1.2).
+* **USDA Soil Classes at 6 depths (6)**: USDA Soil texture category code (`J_soil_texture_usda_b*`) at depths $\{0, 10, 30, 60, 100, 200\}$ cm (~1 km spatial resolution via FAO HWSD v1.2).
 * **Soil Fraction Composites (5)**:
-  * Land Cover code: `J_lc_code`
+  * Land Cover code: `J_lc_code` (10 m – 30 m spatial resolution via ESA WorldCover / NLCD)
   * Soil mixture sum: `J_clay_plus_sand_b0`, `K_clay_plus_sand_b0`
   * Soil fraction ratios: `J_sand_clay_ratio_b0`, `K_sand_clay_ratio_b0`
-* **WorldClim Climatological Seasonality (19)**: long term climate variables `J_bio_bio01` to `J_bio_bio19`.
+* **WorldClim Climatological Seasonality (19)**: Long-term climate variables `J_bio_bio01` to `J_bio_bio19` (~1 km spatial resolution via WorldClim v2.1 30-arc-second climate normals).
 
 ### F. Calendar Cycles & Interaction Features (8 columns)
 * **Temporal baseline (4)**: `year`, `year_frac`, `sin_year`, `cos_year` (cyclical calendar seasonality).
