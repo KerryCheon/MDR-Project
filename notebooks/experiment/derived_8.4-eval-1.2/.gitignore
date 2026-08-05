@@ -1,0 +1,5 @@
+# Heavy LOSO artifacts (weights ~30GB, per-fold predictions) are regenerable via
+# `uv run python run_loso.py` (configs pinned in loso_configurations.json).
+models/*
+predictions/*
+predictions_full/*
