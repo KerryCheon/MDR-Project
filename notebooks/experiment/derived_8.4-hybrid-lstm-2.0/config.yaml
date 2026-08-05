@@ -1,0 +1,130 @@
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+# LSTM hidden sizes to sweep. Each size H produces:
+#   ctx = 2H dims (attention-pooled bidirectional hidden state)
+#   head_hidden / head_pre_relu = H dims (head Linear(2H -> H) output)
+# Same sweep as derived_8.4-hybrid-lstm-1.6 for direct comparison.
+hidden_sizes: [40, 20, 16, 8, 4]
+
+artifacts:
+  directory: "artifacts"
+
+models:
+  directory: "models"
+
+model:
+  seed: 42
+  exact_params:
+    n_estimators: 2500
+    learning_rate: 0.005
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: "hist"
+    device: "cuda"
+
+# ---------------------------------------------------------------------------
+# derived_8.4-hybrid-lstm-2.0: strict static/temporal feature split.
+#
+# STATIC_FEATURES is the ONLY direct (tabular) feature set fed to XGBoost.
+#   - 5 features are the static subset of the 54-feature backbone (1.6)
+#   - 13 features are the static station attributes formerly in the LSTM input
+#     (moved out of the LSTM so the LSTM context is pure temporal signal)
+# All 18 are numeric and constant per station (verified in the notebook).
+#
+# TEMPORAL_FEATURES (all temporal/rolling dynamics) are fed ONLY to the LSTM,
+# which is retrained so its frozen context vector carries the temporal signal.
+# They are derived in lstm/train.py from the provenance lists below (not
+# hand-typed) so the split is auditable.
+# ---------------------------------------------------------------------------
+static_features:
+  # --- static subset of the 54-feature backbone (derived_8.4-hybrid-lstm-1.6) ---
+  - J_aspect_deg
+  - J_bio_bio02
+  - J_bio_bio13
+  - J_lc_code
+  - J_soil_texture_usda_b0
+  # --- static station attributes formerly in the LSTM input (moved here) ---
+  - longitude
+  - latitude
+  - elev
+  - slope
+  - aspect
+  - J_clay_wfrac_b0
+  - J_sand_wfrac_b0
+  - K_slope_sin
+  - K_slope_cos
+  - K_aspect_cos
+  - K_sand_clay_ratio_b0
+  - K_clay_plus_sand_b0
+  - K_aspect_sin
+
+# Kept for provenance only: the original 54-feature backbone of 1.6. Its
+# temporal subset (49 features) now feeds the LSTM input instead of XGBoost.
+shared_backbone_54:
+  - precip_mm
+  - s2_b4
+  - s2_b8
+  - SMAP_sm_pm_interp
+  - D_sin_DOY
+  - D_cos_DOY
+  - E_SAR_ratio
+  - G_API
+  - G_DSLR
+  - G_rain_sum_3d
+  - G_rain_sum_7d
+  - SMAP_sm_pm_interp_lag7
+  - SMAP_sm_pm_interp_lag30
+  - SMAP_sm_pm_interp_rollrange7
+  - SMAP_sm_pm_interp_rollmean30
+  - SMAP_sm_pm_interp_rollrange30
+  - SMAP_sm_interp_rollrange7
+  - SMAP_ampm_diff_interp
+  - V_rollrng_G_API_kobs7
+  - V_rollmax_F_NDMI_kobs30
+  - A_d_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs7
+  - V_rollmin_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs30
+  - V_rollmin_LST_modis_kobs30
+  - V_ema_LST_modis_kobs30
+  - V_rollmax_F_NDVI_kobs14
+  - V_rollmax_F_NDVI_kobs30
+  - V_ema_F_NDVI_kobs30
+  - C_lag_F_NDVI_kobs30
+  - A_grad_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs14
+  - V_rollrng_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs30
+  - A_grad_s2_b11_kobs30
+  - V_rollrng_s2_b11_kobs30
+  - V_rollmin_s2_b11_kobs30
+  - V_rollmin_s2_b12_kobs30
+  - A_d_SMAP_sm_interp_kobs30
+  - V_rollmin_SMAP_sm_interp_kobs14
+  - V_rollmin_SMAP_sm_interp_kobs30
+  - E_rough_s1_vh_kobs14
+  - J_aspect_deg
+  - J_bio_bio02
+  - J_bio_bio13
+  - J_lc_code
+  - J_soil_texture_usda_b0
+  - sin_year
+  - cos_year
+  - SMAP_x_year
+  - D_z_F_NDMI
+  - D_z_LST_modis
+  - D_fft_dom_LST_modis_kobs30
+  - D_fft_ent_LST_modis_kobs30
+
+candidate_pool_file: "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv"

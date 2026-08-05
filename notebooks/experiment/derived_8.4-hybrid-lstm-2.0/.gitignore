@@ -1,0 +1,3 @@
+# Generated outputs (LSTM checkpoints, XGBoost boosters, representations, metrics, plots)
+artifacts/
+models/
