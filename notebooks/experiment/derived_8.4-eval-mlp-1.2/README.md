@@ -227,6 +227,49 @@ Total training time (all jobs, GPU-seconds): 6132 s = 1.70 GPU-hours (budget: 2.
 
 Fastest jobs ~29 s (small nets); slowest are the FT-Transformer (269–315 s) and the longest 2-seed 2-regime MLPs (~150–190 s for both specialists).
 
+## Overfitting-Symptom Analysis
+
+Quantifies the generalization failure modes of the MLP sweep from the saved artifacts (no retraining): (1) the **train-fit vs held-out gap** — aux2020 RMSE (the 2020 slice of *train*, n=2,519, which the model has seen) vs val vs test; (2) **capacity vs transfer** by n_params bucket; (3) the **residual nets** — best in-sample (val + train-fit), worst test; (4) the **per-epoch curve shape** of each family's 2-seed val winner — does test bottom out early and then rise while train-fit keeps improving?; (5) **systematic bias** on test vs XGBoost. Backed by `analyze_overfitting.py` in this directory (see also `overfitting_analysis.md`).
+
+### 1. Train-fit vs held-out gap (median RMSE over 2-regime MLP configs)
+
+| family     |   aux2020 (train-fit) |   val |   test |   val/train ratio |
+|:-----------|----------------------:|------:|-------:|------------------:|
+| 2regime_96 | 0.0303 | 0.0508 | 0.0505 | 1.7x |
+| 2regime_54 | 0.0293 | 0.0599 | 0.0484 | 2.0x |
+
+### 2. Capacity vs test transfer (median by n_params bucket)
+
+| family     | capacity   |   n_configs |   med_val_rmse |   med_test_r2 |   med_test_bias |
+|:-----------|:-----------|------------:|---------------:|--------------:|----------------:|
+| 2regime_96 | <200k | 5 | 0.0553 | 0.7557 | 0.0142 |
+| 2regime_96 | 200-500k | 7 | 0.0509 | 0.7565 | 0.0183 |
+| 2regime_96 | 500k-1M | 13 | 0.0509 | 0.7333 | 0.0242 |
+| 2regime_96 | 1M+ | 15 | 0.0503 | 0.7618 | 0.0207 |
+| 2regime_54 | <200k | 3 | 0.0635 | 0.7738 | -0.0007 |
+| 2regime_54 | 200-500k | 3 | 0.0611 | 0.7841 | 0.0056 |
+| 2regime_54 | 500k-1M | 2 | 0.0602 | 0.7724 | 0.0024 |
+| 2regime_54 | 1M+ | 4 | 0.0574 | 0.7648 | 0.0056 |
+
+### 3. Residual nets — best in-sample, worst test (val-overfitters)
+
+| family     | config_id |   n_params |   val_rmse |   aux_rmse |   test_r2 |   test_bias |
+|:-----------|:----------|-----------:|-----------:|-----------:|----------:|------------:|
+| 2regime_96 | res_w1024x1024_d0.2 | 10717186 | 0.0476 | 0.0146 | 0.7294 | 0.0155 |
+| 2regime_96 | res_w512x256x128_d0.2 | 1817090 | 0.0472 | 0.0183 | 0.7245 | 0.0221 |
+| 2regime_96 | res_w512x512x256_d0.2 | 3264514 | 0.0478 | 0.0186 | 0.7277 | 0.0227 |
+
+### 4. Per-epoch curve shape for the 2-seed val winner (cluster-0 specialist)
+
+| family     | config_id |   aux_ep100 |   aux_ep260 |   val_plateau |   test_min |   test_min_epoch |   test_at_best_val |   test_final |   test_rise_after_min |
+|:-----------|:----------|------------:|------------:|--------------:|-----------:|-----------------:|-------------------:|-------------:|----------------------:|
+| 2regime_96 | w512x512x512_d0.3_lr1e-3 | 0.0262 | 0.0179 | 0.0531 | 0.0451 | 90 | 0.0491 | 0.0489 | 0.0037 |
+| 2regime_54 | w512x512x512_d0.3_huber0.1 | 0.0379 | 0.0209 | 0.0622 | 0.0500 | 266 | 0.0522 | 0.0507 | 0.0007 |
+
+### 5. Systematic bias on test (MLP vs XGBoost references)
+
+MLP median test bias — 2regime_96: 0.0207, 2regime_54: 0.0050. XGBoost references (eval-1.1) — 2-regime: 0.0065, global: 0.0105. The 2-regime-96 MLPs carry ~3× the systematic bias of the XGBoost 2-regime reference (bias² ≈ 10–17% of MSE), i.e. a portion of the gap is a learned mapping slightly shifted for the test years, not pure variance.
+
 ## Key Takeaways
 
 1. **Honest selection is fixed for 2-regime-54 and improved for 2-regime-96.** The 2-seed val-selected winners move from 1.1's 0.756 → 0.761 (2-Regime-96) and 0.646 → 0.765 (2-Regime-54, the family matching the XGBoost winner's feature structure). The val top-10 MLP ensemble reaches **0.786** (2-Regime-54) and the val top-5 0.771 (2-Regime-96).
