@@ -1,0 +1,207 @@
+# Configuration for derived_8.4-eval-mlp-1.0 — MLP vs XGBoost on derived_8.4
+#
+# 1-regime:   Global single MLP on the 54-feature shared backbone (shared_backbone_54).
+# 2-regime:   Best cluster config from derived_8.4-eval-1.1:
+#             Clustering_V0_Full_k2 winner (c0=0, c1=10) -> cluster 0 = 54 backbone
+#             feats, cluster 1 = 54 backbone + 10 delta feats (64 total).
+#             Cluster labels come from eval11.routers.V0FullRouter (KMeans k=2 on
+#             the 50 OVERALL_SELECTED_FEATURES_V0, seed 42) — identical to eval-1.1.
+#
+# The hyperparameter sweep in `sweep.configs` is run for BOTH families; the winner
+# per family is picked by pooled holdout RMSE.
+
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+model:
+  seed: 42
+
+# Reference XGBoost leaderboard to tag MLP rows against (from eval-1.1).
+xgboost_reference_file: "notebooks/experiment/derived_8.4-eval-1.1/metrics_summary.csv"
+
+# Candidate pool from the feature-selection lab (used by eval11.data for the
+# delta-feature candidate list; the 2-regime deltas here are fixed to the
+# eval-1.1 winner, not re-searched).
+candidate_pool_file: "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv"
+
+# Shared 54-feature global backbone discovered in derived_8.4-feature-selection-2.0.
+shared_backbone_54:
+  - precip_mm
+  - s2_b4
+  - s2_b8
+  - SMAP_sm_pm_interp
+  - D_sin_DOY
+  - D_cos_DOY
+  - E_SAR_ratio
+  - G_API
+  - G_DSLR
+  - G_rain_sum_3d
+  - G_rain_sum_7d
+  - SMAP_sm_pm_interp_lag7
+  - SMAP_sm_pm_interp_lag30
+  - SMAP_sm_pm_interp_rollrange7
+  - SMAP_sm_pm_interp_rollmean30
+  - SMAP_sm_pm_interp_rollrange30
+  - SMAP_sm_interp_rollrange7
+  - SMAP_ampm_diff_interp
+  - V_rollrng_G_API_kobs7
+  - V_rollmax_F_NDMI_kobs30
+  - A_d_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs7
+  - V_rollmin_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs30
+  - V_rollmin_LST_modis_kobs30
+  - V_ema_LST_modis_kobs30
+  - V_rollmax_F_NDVI_kobs14
+  - V_rollmax_F_NDVI_kobs30
+  - V_ema_F_NDVI_kobs30
+  - C_lag_F_NDVI_kobs30
+  - A_grad_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs14
+  - V_rollrng_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs30
+  - A_grad_s2_b11_kobs30
+  - V_rollrng_s2_b11_kobs30
+  - V_rollmin_s2_b11_kobs30
+  - V_rollmin_s2_b12_kobs30
+  - A_d_SMAP_sm_interp_kobs30
+  - V_rollmin_SMAP_sm_interp_kobs14
+  - V_rollmin_SMAP_sm_interp_kobs30
+  - E_rough_s1_vh_kobs14
+  - J_aspect_deg
+  - J_bio_bio02
+  - J_bio_bio13
+  - J_lc_code
+  - J_soil_texture_usda_b0
+  - sin_year
+  - cos_year
+  - SMAP_x_year
+  - D_z_F_NDMI
+  - D_z_LST_modis
+  - D_fft_dom_LST_modis_kobs30
+  - D_fft_ent_LST_modis_kobs30
+
+cluster_config:
+  strategy: "Clustering_V0_Full_k2"
+  c0_count: 0
+  c1_count: 10
+  # Cluster-1 add-only delta features = eval-1.1 winner
+  # (candidate_id Clustering_V0_Full_k2_c0_0_c1_10 in its selected_features.json).
+  # The driver loads these from eval-1.1's selected_features.json when present;
+  # this list is the explicit fallback so the experiment is self-describing.
+  cluster_1_delta_features:
+    - V_rollmin_F_NDMI_kobs30
+    - V_rollmean_G_API_kobs14
+    - lia_mean_asc_deg
+    - J_bio_bio04
+    - DOY
+    - SMAP_sm_am_interp
+    - J_bio_bio07
+    - SMAP_sm_am_interp_lag1
+    - C_lag_F_NDMI_kobs30
+    - SMAP_sm_pm_interp_lag1
+
+sweep:
+  n_parallel: 8          # concurrent GPU workers (small MLPs -> share one H100)
+  holdout_frac: 0.10     # temporal holdout: last 10% of each station's trainval rows by date
+                         # (mirrors the trainval=2017-2022 / test=2023-2025 temporal split;
+                         #  a random holdout would leak temporally-adjacent rows)
+  data_version: 2        # bump to invalidate stale job artifacts (v1 = random holdout)
+  seed: 42
+  stability_seeds: [42, 7, 123]   # optional per-family winner rerun
+  # Global training defaults (overridable per config below).
+  defaults:
+    max_epochs: 200
+    patience: 25
+    checkpoint_every: 10
+    grad_clip: 1.0
+    use_bn: true
+    activation: "silu"
+    dropout: 0.1
+    lr: 0.0003
+    weight_decay: 0.0001
+    batch_size: 512
+    loss: "mse"          # mse | huber (huber delta 0.05)
+  # Curated sweep: width/depth sweep at anchor hyperparams, then targeted
+  # variations on lr / dropout / weight_decay / activation / batch / loss.
+  # Every config runs in BOTH families (1-regime and 2-regime).
+  configs:
+    - id: "w64x64"
+      hidden_sizes: [64, 64]
+    - id: "w128"
+      hidden_sizes: [128]
+    - id: "w128x128"
+      hidden_sizes: [128, 128]
+    - id: "w256"
+      hidden_sizes: [256]
+    - id: "w256x256"
+      hidden_sizes: [256, 256]
+    - id: "w512"
+      hidden_sizes: [512]
+    - id: "w512x256"
+      hidden_sizes: [512, 256]
+    - id: "w512x256x128"
+      hidden_sizes: [512, 256, 128]
+    - id: "w1024x512x256"
+      hidden_sizes: [1024, 512, 256]
+    - id: "w256x256_lr1e-3"
+      hidden_sizes: [256, 256]
+      lr: 0.001
+    - id: "w256x256_lr1e-4"
+      hidden_sizes: [256, 256]
+      lr: 0.0001
+    - id: "w512x256x128_lr1e-3"
+      hidden_sizes: [512, 256, 128]
+      lr: 0.001
+    - id: "w512x256x128_lr1e-4"
+      hidden_sizes: [512, 256, 128]
+      lr: 0.0001
+    - id: "w256x256_d0"
+      hidden_sizes: [256, 256]
+      dropout: 0.0
+    - id: "w256x256_d0.3"
+      hidden_sizes: [256, 256]
+      dropout: 0.3
+    - id: "w512x256x128_d0.3"
+      hidden_sizes: [512, 256, 128]
+      dropout: 0.3
+    - id: "w256x256_wd0"
+      hidden_sizes: [256, 256]
+      weight_decay: 0.0
+    - id: "w256x256_wd1e-3"
+      hidden_sizes: [256, 256]
+      weight_decay: 0.001
+    - id: "w256x256_relu"
+      hidden_sizes: [256, 256]
+      activation: "relu"
+    - id: "w512x256x128_relu"
+      hidden_sizes: [512, 256, 128]
+      activation: "relu"
+    - id: "w256x256_bs256"
+      hidden_sizes: [256, 256]
+      batch_size: 256
+    - id: "w256x256_bs1024"
+      hidden_sizes: [256, 256]
+      batch_size: 1024
+    - id: "w1024x1024"
+      hidden_sizes: [1024, 1024]
+    - id: "w1024x512x256_lr1e-3_d0"
+      hidden_sizes: [1024, 512, 256]
+      lr: 0.001
+      dropout: 0.0
+    - id: "w256x256_lr1e-3_d0"
+      hidden_sizes: [256, 256]
+      lr: 0.001
+      dropout: 0.0
+    - id: "w512x256_lr1e-3_d0"
+      hidden_sizes: [512, 256]
+      lr: 0.001
+      dropout: 0.0
+    - id: "w256x256_huber"
+      hidden_sizes: [256, 256]
+      loss: "huber"
