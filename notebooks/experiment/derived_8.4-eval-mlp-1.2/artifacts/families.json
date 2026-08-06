@@ -1,0 +1,12 @@
+{
+  "2regime_96": {
+    "id": "2regime_96",
+    "structure": "cluster",
+    "features": "candidate_pool_96"
+  },
+  "2regime_54": {
+    "id": "2regime_54",
+    "structure": "cluster",
+    "features": "backbone_54"
+  }
+}

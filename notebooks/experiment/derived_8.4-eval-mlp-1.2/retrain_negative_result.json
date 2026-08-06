@@ -1,0 +1,14 @@
+{
+  "finding": "Retraining the strong configs on the full trainval (train+val, 14608 rows) HURTS 2023-25 test generalization. Adding the 2021-22 val years to the training set poisons cluster-0 (73% of test rows): its test RMSE degrades monotonically after ~epoch 22, and even the best retrain epoch (0.052) is worse than the train-only sweep (0.046-0.049). This is a documented negative result; champion models use the train-only sweep models + offline ensembles.",
+  "ensemble_level": [
+    {"config_id": "w512x512x512_d0.3_lr1e-3", "sweep_2seed_test_r2": 0.7610, "retrain_5seed_test_r2": 0.6804},
+    {"config_id": "w512x512x512_d0.3_huber0.05", "sweep_2seed_test_r2": 0.7702, "retrain_5seed_test_r2": 0.6553}
+  ],
+  "cluster_level_seed42": [
+    {"config_id": "w512x512x512_d0.3_lr1e-3", "cluster": 0, "sweep_r2": 0.7705, "sweep_rmse": 0.0479, "retrain_r2": 0.5579, "retrain_rmse": 0.0665},
+    {"config_id": "w512x512x512_d0.3_lr1e-3", "cluster": 1, "sweep_r2": 0.7689, "sweep_rmse": 0.0512, "retrain_r2": 0.8045, "retrain_rmse": 0.0471}
+  ],
+  "curve_level": [
+    {"config_id": "w512x512x512_d0.3_huber0.05", "cluster": 0, "sweep_min_test_rmse": 0.0455, "sweep_min_epoch": 155, "retrain_min_test_rmse": 0.0519, "retrain_min_epoch": 22, "retrain_final_test_rmse": 0.0665}
+  ]
+}
