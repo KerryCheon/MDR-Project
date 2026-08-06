@@ -1,0 +1,22 @@
+{
+  "1regime_54": {
+    "id": "1regime_54",
+    "structure": "global",
+    "features": "backbone_54"
+  },
+  "2regime_54": {
+    "id": "2regime_54",
+    "structure": "cluster",
+    "features": "backbone_54"
+  },
+  "1regime_96": {
+    "id": "1regime_96",
+    "structure": "global",
+    "features": "candidate_pool_96"
+  },
+  "2regime_96": {
+    "id": "2regime_96",
+    "structure": "cluster",
+    "features": "candidate_pool_96"
+  }
+}

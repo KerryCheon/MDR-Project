@@ -1,0 +1,4 @@
+models/*
+artifacts/tensors_*
+artifacts/*.npy
+artifacts/*.npz
