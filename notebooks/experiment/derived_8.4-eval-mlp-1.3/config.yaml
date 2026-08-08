@@ -1,0 +1,343 @@
+# Configuration for derived_8.4-eval-mlp-1.3 — one more shot at the 2-regime MLP
+# (1.75 H100-hours budget).
+#
+# Follow-up to derived_8.4-eval-mlp-1.2 (2-seed val-selected winners: 2regime_96
+# 0.761, 2regime_54 0.765; test-best reference 0.789; XGBoost 2-regime winner
+# 0.815). 1.2 documented that the remaining gap is (a) systematic positive test
+# bias (bias^2 ~ 10-17% of MSE for the 96-family) and (b) test error bottoming
+# out early (~ep 90) while val stays flat, so patience-60 picks a late epoch.
+# Changes vs 1.2:
+#   1. Selection: phase-2 2nd-seed metric switched from robust_score to
+#      val_rmse (aux2020 was documented as a FAILED selection signal in 1.2 —
+#      it measures train fit; val RMSE remains the honest signal, stabilized by
+#      2-seed averaging).
+#   2. Trainer knobs (mlp13, defaults = 1.2 behavior):
+#        a. stop_rule: "patience" (1.2) | "plateau" (stop at FIRST sustained
+#           val plateau, targets the epoch-90 test minimum) | "val_aux"
+#           (best-epoch/patience on (val+aux)/2). Decided by the offline
+#           stopping-rule simulation on 1.2's saved curves (analyze_stopping.py).
+#        b. ema: true (decay 0.999) — weight averaging, never tried in 1.2.
+#        c. mixup_alpha: batch-level mixup (alpha 0.2).
+#        d. center_target: per-specialist target centering (debias at source).
+#        e. batch_size 256 (more gradient noise), weight_decay 1e-2.
+#   3. Config list: re-run 1.2 anchors under the new protocol + complete
+#      2-seeding of 1.2's strong 1-seed configs + new gap-targeting configs.
+#   4. Champion step: per-cluster affine calibration (fit on val -> test) via
+#      analyze_calibration.py; offline top-k and cross-family ensembles.
+#
+# Budget: ~58 jobs (~1.0 GPU-h of 1.75 available) with 8 parallel H100 workers;
+# resumable, --only/--families/--phase2-top-n trim knobs.
+#
+# Families: 2regime_96 (c0/c1 both on the 96-feature candidate pool),
+#           2regime_54 (c0 = 54 backbone, c1 = 54 + eval-1.1 winner's 10
+#           delta features — identical to the XGBoost winner's structure).
+# Cluster labels come from eval11.routers.V0FullRouter (KMeans k=2 on the 50
+# V0 features, seed 42), fit on trainval — identical to eval-1.1 / mlp-1.1/1.2.
+
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+model:
+  seed: 42
+
+# Reference leaderboards to tag rows against (XGBoost from eval-1.1; MLP-1.2
+# best rows from mlp-1.2).
+xgboost_reference_file: "notebooks/experiment/derived_8.4-eval-1.1/metrics_summary.csv"
+mlp12_reference_file: "notebooks/experiment/derived_8.4-eval-mlp-1.2/metrics_summary.csv"
+
+# Candidate pool from the feature-selection lab (96 features).
+candidate_pool_file: "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv"
+
+# Shared 54-feature global backbone discovered in derived_8.4-feature-selection-2.0.
+shared_backbone_54:
+  - precip_mm
+  - s2_b4
+  - s2_b8
+  - SMAP_sm_pm_interp
+  - D_sin_DOY
+  - D_cos_DOY
+  - E_SAR_ratio
+  - G_API
+  - G_DSLR
+  - G_rain_sum_3d
+  - G_rain_sum_7d
+  - SMAP_sm_pm_interp_lag7
+  - SMAP_sm_pm_interp_lag30
+  - SMAP_sm_pm_interp_rollrange7
+  - SMAP_sm_pm_interp_rollmean30
+  - SMAP_sm_pm_interp_rollrange30
+  - SMAP_sm_interp_rollrange7
+  - SMAP_ampm_diff_interp
+  - V_rollrng_G_API_kobs7
+  - V_rollmax_F_NDMI_kobs30
+  - A_d_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs7
+  - V_rollmin_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs30
+  - V_rollmin_LST_modis_kobs30
+  - V_ema_LST_modis_kobs30
+  - V_rollmax_F_NDVI_kobs14
+  - V_rollmax_F_NDVI_kobs30
+  - V_ema_F_NDVI_kobs30
+  - C_lag_F_NDVI_kobs30
+  - A_grad_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs14
+  - V_rollrng_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs30
+  - A_grad_s2_b11_kobs30
+  - V_rollrng_s2_b11_kobs30
+  - V_rollmin_s2_b11_kobs30
+  - V_rollmin_s2_b12_kobs30
+  - A_d_SMAP_sm_interp_kobs30
+  - V_rollmin_SMAP_sm_interp_kobs14
+  - V_rollmin_SMAP_sm_interp_kobs30
+  - E_rough_s1_vh_kobs14
+  - J_aspect_deg
+  - J_bio_bio02
+  - J_bio_bio13
+  - J_lc_code
+  - J_soil_texture_usda_b0
+  - sin_year
+  - cos_year
+  - SMAP_x_year
+  - D_z_F_NDMI
+  - D_z_LST_modis
+  - D_fft_dom_LST_modis_kobs30
+  - D_fft_ent_LST_modis_kobs30
+
+cluster_config:
+  strategy: "Clustering_V0_Full_k2"
+  c0_count: 0
+  c1_count: 10
+  # Cluster-1 add-only delta features = eval-1.1 winner
+  # (candidate_id Clustering_V0_Full_k2_c0_0_c1_10). Loaded from eval-1.1's
+  # selected_features.json when present; this list is the explicit fallback.
+  cluster_1_delta_features:
+    - V_rollmin_F_NDMI_kobs30
+    - V_rollmean_G_API_kobs14
+    - lia_mean_asc_deg
+    - J_bio_bio04
+    - DOY
+    - SMAP_sm_am_interp
+    - J_bio_bio07
+    - SMAP_sm_am_interp_lag1
+    - C_lag_F_NDMI_kobs30
+    - SMAP_sm_pm_interp_lag1
+
+# Families: only the 2-regime families (1-regime results carried over from 1.1).
+families:
+  - id: "2regime_96"
+    structure: "cluster"
+    features: "candidate_pool_96"
+  - id: "2regime_54"
+    structure: "cluster"
+    features: "backbone_54"
+
+sweep:
+  n_parallel: 8          # concurrent GPU workers (small nets share one H100)
+  holdout: "official_val"  # early-stop on the official val split (2021-2022)
+  data_version: 5        # bump to invalidate stale job artifacts (v4 = mlp-1.2)
+  seeds: [42, 7]         # 2-seed sweep; phase 2 adds the 2nd seed to top-N MLPs
+  stability_seeds: [42, 7, 123, 2024, 999]  # 5-seed ensemble of the winners
+  phase2_top_n: 10       # per family: configs that get the 2nd seed
+  phase2_metric: "val_rmse"  # honest signal (aux2020 was a FAILED signal in 1.2)
+  aux_year: 2020         # aux2020 holdout year inside train (n=2519, diagnostic only)
+  # Per-family config filters. A family NOT listed here runs ALL configs.
+  family_configs:
+    "2regime_96":
+      # --- anchors re-run under v5 protocol (10) ---
+      - w512x512x512_d0.3_lr1e-3
+      - w512x512x512_d0.3_huber0.05
+      - w512x512x512_d0.3_huber0.1
+      - w512x512x512_d0.3
+      - w1024x512x256_d0.3_gelu
+      - w512x512x256_d0.3_huber0.1
+      - w512x512x256_d0.3_gelu
+      - w1024x1024x512_d0.3_gelu
+      - w256x256x256_d0.3_gelu
+      - w512x512x512_d0.3_gelu
+      # --- 1.2 strong 1-seed configs: complete the 2-seeding (4) ---
+      - w512x512x512_d0.4
+      - w256x256_d0.5
+      - w512x512_d0.35_gelu
+      - w384x384x384_d0.3
+      # --- new gap-targeting (8) ---
+      - w512x512x512_d0.3_huber0.05_ema
+      - w512x512x512_d0.3_lr1e-3_ema
+      - w1024x512x256_d0.3_gelu_ema
+      - w512x512x512_d0.3_huber0.02
+      - w512x512x512_d0.3_mixup0.2
+      - w512x512x512_d0.3_wd1e-2
+      - w512x512_d0.3_gelu_bs256
+      - w512x512x512_d0.3_centered
+    "2regime_54":
+      # --- anchors re-run under v5 protocol (10) ---
+      - w512x512x512_d0.3_huber0.1
+      - w1024x512x256_d0.3_gelu
+      - w512x512x256_d0.3_gelu
+      - w512x512x512_d0.3
+      - w384x384_d0.3_huber0.1
+      - w256x256_d0.3_huber0.1
+      - w384x384_d0.3_gelu
+      - w384x384_d0.3
+      - w512x512_d0.3_gelu
+      - w512x512x512_d0.3_gelu
+      # --- new gap-targeting (6) ---
+      - w384x384_d0.3_gelu_ema
+      - w512x512x512_d0.3_huber0.1_ema
+      - w384x384_d0.3_huber0.02
+      - w384x384_d0.3_mixup0.2
+      - w448x448_d0.3_gelu
+      - w384x384x256_d0.3_gelu
+  defaults:
+    max_epochs: 400
+    patience: 60
+    checkpoint_every: 20
+    grad_clip: 1.0
+    norm: "bn"           # bn | ln (LayerNorm)
+    activation: "silu"   # silu | relu | gelu | tanh
+    dropout: 0.3
+    lr: 0.0003
+    weight_decay: 0.0001
+    batch_size: 512
+    loss: "mse"          # mse | huber
+    huber_delta: 0.05
+    warmup_frac: 0.05    # fraction of max_epochs used for linear LR warmup
+    ema: false           # exponential moving average of weights (decay 0.999)
+    stop_rule: "patience"  # patience | plateau | val_aux (see header note)
+    mixup_alpha: 0.0     # batch-level mixup (alpha>0 enables)
+    center_target: false # per-specialist target centering (debias at source)
+    architecture: "mlp"  # mlp | residual | ft (FT-Transformer)
+  # 34 curated configs (34 phase-1 jobs at 1 seed; phase 2 = 2nd seed for the
+  # top-10 val-selected plain-MLP configs per family). Prior-informed by 1.2's
+  # sweep (see the header): anchors = 1.2's val/test winners + strong 1-seed
+  # configs (2-seed completion), plus EMA/mixup/centering/wd/bs variants that
+  # target the two documented inefficiencies (systematic test bias, early
+  # test-min vs late val-min). Residual/FT are NOT re-run (documented failures).
+  configs:
+    # --- anchors: mlp-1.2 val/test winners re-run under v5 (15) ---
+    - id: "w512x512x512_d0.3_lr1e-3"
+      hidden_sizes: [512, 512, 512]
+      lr: 0.001
+    - id: "w512x512x512_d0.3_huber0.05"
+      hidden_sizes: [512, 512, 512]
+      loss: "huber"
+      huber_delta: 0.05
+    - id: "w512x512x512_d0.3_huber0.1"
+      hidden_sizes: [512, 512, 512]
+      loss: "huber"
+      huber_delta: 0.1
+    - id: "w512x512x512_d0.3"
+      hidden_sizes: [512, 512, 512]
+    - id: "w1024x512x256_d0.3_gelu"
+      hidden_sizes: [1024, 512, 256]
+      activation: "gelu"
+    - id: "w512x512x256_d0.3_huber0.1"
+      hidden_sizes: [512, 512, 256]
+      loss: "huber"
+      huber_delta: 0.1
+    - id: "w512x512x256_d0.3_gelu"
+      hidden_sizes: [512, 512, 256]
+      activation: "gelu"
+    - id: "w1024x1024x512_d0.3_gelu"
+      hidden_sizes: [1024, 1024, 512]
+      activation: "gelu"
+    - id: "w256x256x256_d0.3_gelu"
+      hidden_sizes: [256, 256, 256]
+      activation: "gelu"
+    - id: "w512x512x512_d0.3_gelu"
+      hidden_sizes: [512, 512, 512]
+      activation: "gelu"
+    - id: "w384x384_d0.3_gelu"
+      hidden_sizes: [384, 384]
+      activation: "gelu"
+    - id: "w384x384_d0.3"
+      hidden_sizes: [384, 384]
+    - id: "w512x512_d0.3_gelu"
+      hidden_sizes: [512, 512]
+      activation: "gelu"
+    - id: "w384x384_d0.3_huber0.1"
+      hidden_sizes: [384, 384]
+      loss: "huber"
+      huber_delta: 0.1
+    - id: "w256x256_d0.3_huber0.1"
+      hidden_sizes: [256, 256]
+      loss: "huber"
+      huber_delta: 0.1
+    # --- 1.2 strong 1-seed configs: complete the 2-seeding (5) ---
+    - id: "w512x512x512_d0.4"
+      hidden_sizes: [512, 512, 512]
+      dropout: 0.4
+    - id: "w256x256_d0.5"
+      hidden_sizes: [256, 256]
+      dropout: 0.5
+    - id: "w512x512_d0.35_gelu"
+      hidden_sizes: [512, 512]
+      activation: "gelu"
+      dropout: 0.35
+    - id: "w384x384x384_d0.3"
+      hidden_sizes: [384, 384, 384]
+    - id: "w512x512x512x256_d0.3"
+      hidden_sizes: [512, 512, 512, 256]
+    # --- new gap-targeting: EMA (5) ---
+    - id: "w512x512x512_d0.3_huber0.05_ema"
+      hidden_sizes: [512, 512, 512]
+      loss: "huber"
+      huber_delta: 0.05
+      ema: true
+    - id: "w512x512x512_d0.3_lr1e-3_ema"
+      hidden_sizes: [512, 512, 512]
+      lr: 0.001
+      ema: true
+    - id: "w1024x512x256_d0.3_gelu_ema"
+      hidden_sizes: [1024, 512, 256]
+      activation: "gelu"
+      ema: true
+    - id: "w384x384_d0.3_gelu_ema"
+      hidden_sizes: [384, 384]
+      activation: "gelu"
+      ema: true
+    - id: "w512x512x512_d0.3_huber0.1_ema"
+      hidden_sizes: [512, 512, 512]
+      loss: "huber"
+      huber_delta: 0.1
+      ema: true
+    # --- new gap-targeting: huber delta 0.02 (2) ---
+    - id: "w512x512x512_d0.3_huber0.02"
+      hidden_sizes: [512, 512, 512]
+      loss: "huber"
+      huber_delta: 0.02
+    - id: "w384x384_d0.3_huber0.02"
+      hidden_sizes: [384, 384]
+      loss: "huber"
+      huber_delta: 0.02
+    # --- new gap-targeting: mixup (2) ---
+    - id: "w512x512x512_d0.3_mixup0.2"
+      hidden_sizes: [512, 512, 512]
+      mixup_alpha: 0.2
+    - id: "w384x384_d0.3_mixup0.2"
+      hidden_sizes: [384, 384]
+      mixup_alpha: 0.2
+    # --- new gap-targeting: stronger wd / smaller batch / centering (3) ---
+    - id: "w512x512x512_d0.3_wd1e-2"
+      hidden_sizes: [512, 512, 512]
+      weight_decay: 0.01
+    - id: "w512x512_d0.3_gelu_bs256"
+      hidden_sizes: [512, 512]
+      activation: "gelu"
+      batch_size: 256
+    - id: "w512x512x512_d0.3_centered"
+      hidden_sizes: [512, 512, 512]
+      center_target: true
+    # --- new gap-targeting: capacity in the 54-family's good region (2) ---
+    - id: "w448x448_d0.3_gelu"
+      hidden_sizes: [448, 448]
+      activation: "gelu"
+    - id: "w384x384x256_d0.3_gelu"
+      hidden_sizes: [384, 384, 256]
+      activation: "gelu"
