@@ -1,0 +1,14 @@
+# Heavy LOSO artifacts (per-fold MLP checkpoints, per-fold predictions) are
+# regenerable via `uv run python run_loso.py` (configs pinned in
+# loso_configurations.json) and `uv run python run_full_baseline.py`.
+models/*
+predictions/*
+predictions_full/*
+artifacts/tensors_*
+artifacts/labels_*
+artifacts/fold_*_test.npz
+artifacts/fold_*_meta.json
+artifacts/test_meta.npz
+artifacts/*.npy
+artifacts/logs/*
+__pycache__/

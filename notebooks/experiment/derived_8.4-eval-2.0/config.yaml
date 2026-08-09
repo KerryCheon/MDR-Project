@@ -1,0 +1,243 @@
+# Configuration for derived_8.4-eval-2.0 — MLP Leave-One-Station-Out (LOSO)
+# Spatial Generalization.
+#
+# Continuation of derived_8.4-eval-1.2 (same output format: LOSO protocol +
+# full-training baseline + station-similarity analysis) but evaluating the
+# **MLP models** whose hyperparameters were established in the temporal
+# experiments derived_8.4-eval-mlp-1.3 (2-regime) and derived_8.4-eval-mlp-1.1
+# (1-regime). Motivation (mlp-1.3 finding): MLPs extrapolate smoothly in
+# feature space (OOD test R2 0.75 vs XGBoost 2-regime 0.62), so they may
+# generalize to held-out stations better than the XGBoost MoE baselines.
+#
+# Scope (per user): one regime (global single MLP) AND two regimes — but only
+# the BEST clustering strategy (Clustering_V0_Full_k2, c0=0, c1=10, the
+# eval-1.1/1.2 spatial winner). 6 pinned MLP configs = val-selected winners
+# (honest) + notable mlp-1.3 findings (w448x448_d0.3_gelu, near-zero bias) and
+# the 54-family test-best reference (w384x384_d0.3_gelu, reporting only).
+#
+# LOSO protocol (MLP-adapted from eval-1.2): for each held-out station s,
+#   fold_train = train rows with station != s (2017-2020, 6 stations)
+#   fold_val   = val rows   with station != s (2021-2022, 6 stations)  [early stop]
+#   fold_test  = all test rows of station s (2023-2025)
+# Router (GlobalSingle / V0Full) refitted per fold on fold_trainval only
+# (no held-out-station leakage into routing). Specialists trained per cluster
+# with the mlp-1.3 trainer (train / val early-stop patience 60 / test), aux2020
+# kept as a diagnostic. 2 seeds {42, 7}, seed-mean predictions per fold, so the
+# full-training baseline replicates mlp-1.3 bit-identically and LOSO R2 is
+# directly comparable to the temporal references.
+
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+model:
+  seed: 42
+
+# Temporal-test references (used for the LOSO-vs-temporal gap and for the
+# full-baseline replication check):
+#   mlp13: 2-regime families (val-selected winners + findings) from mlp-1.3
+#   mlp11: 1-regime families (val-selected winners) from mlp-1.1
+#   eval12: XGBoost LOSO results from eval-1.2 (reference rows, no retraining)
+mlp13_reference_file: "notebooks/experiment/derived_8.4-eval-mlp-1.3/metrics_summary.csv"
+mlp11_reference_file: "notebooks/experiment/derived_8.4-eval-mlp-1.1/metrics_summary.csv"
+eval12_reference_dir: "notebooks/experiment/derived_8.4-eval-1.2"
+
+# Candidate pool from the feature-selection lab (96 features).
+candidate_pool_file: "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv"
+
+# Shared 54-feature global backbone discovered in derived_8.4-feature-selection-2.0.
+shared_backbone_54:
+  - precip_mm
+  - s2_b4
+  - s2_b8
+  - SMAP_sm_pm_interp
+  - D_sin_DOY
+  - D_cos_DOY
+  - E_SAR_ratio
+  - G_API
+  - G_DSLR
+  - G_rain_sum_3d
+  - G_rain_sum_7d
+  - SMAP_sm_pm_interp_lag7
+  - SMAP_sm_pm_interp_lag30
+  - SMAP_sm_pm_interp_rollrange7
+  - SMAP_sm_pm_interp_rollmean30
+  - SMAP_sm_pm_interp_rollrange30
+  - SMAP_sm_interp_rollrange7
+  - SMAP_ampm_diff_interp
+  - V_rollrng_G_API_kobs7
+  - V_rollmax_F_NDMI_kobs30
+  - A_d_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs7
+  - V_rollmin_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs30
+  - V_rollmin_LST_modis_kobs30
+  - V_ema_LST_modis_kobs30
+  - V_rollmax_F_NDVI_kobs14
+  - V_rollmax_F_NDVI_kobs30
+  - V_ema_F_NDVI_kobs30
+  - C_lag_F_NDVI_kobs30
+  - A_grad_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs14
+  - V_rollrng_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs30
+  - A_grad_s2_b11_kobs30
+  - V_rollrng_s2_b11_kobs30
+  - V_rollmin_s2_b11_kobs30
+  - V_rollmin_s2_b12_kobs30
+  - A_d_SMAP_sm_interp_kobs30
+  - V_rollmin_SMAP_sm_interp_kobs14
+  - V_rollmin_SMAP_sm_interp_kobs30
+  - E_rough_s1_vh_kobs14
+  - J_aspect_deg
+  - J_bio_bio02
+  - J_bio_bio13
+  - J_lc_code
+  - J_soil_texture_usda_b0
+  - sin_year
+  - cos_year
+  - SMAP_x_year
+  - D_z_F_NDMI
+  - D_z_LST_modis
+  - D_fft_dom_LST_modis_kobs30
+  - D_fft_ent_LST_modis_kobs30
+
+# Best clustering strategy (the ONLY 2-regime strategy tested here, per user):
+# Clustering_V0_Full_k2 winner c0=0, c1=10 — cluster 0 = base features,
+# cluster 1 = base + the eval-1.1 winner's 10 delta features (identical to the
+# XGBoost winner's structure). Deltas loaded from mlp-1.3's
+# selected_features.json when present; this list is the explicit fallback.
+cluster_config:
+  strategy: "Clustering_V0_Full_k2"
+  c0_count: 0
+  c1_count: 10
+  cluster_1_delta_features:
+    - V_rollmin_F_NDMI_kobs30
+    - V_rollmean_G_API_kobs14
+    - lia_mean_asc_deg
+    - J_bio_bio04
+    - DOY
+    - SMAP_sm_am_interp
+    - J_bio_bio07
+    - SMAP_sm_am_interp_lag1
+    - C_lag_F_NDMI_kobs30
+    - SMAP_sm_pm_interp_lag1
+
+# Families: 1-regime = global single model; 2-regime = per-cluster specialists.
+# Features: backbone_54 | candidate_pool_96 (the same pool the XGBoost MoE used).
+families:
+  - id: "1regime_54"
+    structure: "global"
+    features: "backbone_54"
+  - id: "1regime_96"
+    structure: "global"
+    features: "candidate_pool_96"
+  - id: "2regime_54"
+    structure: "cluster"
+    features: "backbone_54"
+  - id: "2regime_96"
+    structure: "cluster"
+    features: "candidate_pool_96"
+
+sweep:
+  n_parallel: 8          # concurrent GPU workers (small nets share one H100)
+  holdout: "official_val"  # early-stop on the official val split (2021-2022)
+  data_version: 6        # bump to invalidate stale job artifacts (v5 = mlp-1.3)
+  seeds: [42, 7]         # default 2-seed protocol (identical to mlp-1.3)
+  # Per-family seed override: the 1-regime temporal references from mlp-1.1 are
+  # SINGLE-seed (seed 42), so 1-regime families run seed 42 only — this keeps
+  # the full-baseline replication check bit-identical and LOSO R2 comparable to
+  # the family's temporal reference. 2-regime families keep {42, 7} (mlp-1.3).
+  family_seeds:
+    "1regime_54": [42]
+    "1regime_96": [42]
+  aux_year: 2020         # aux2020 holdout inside fold_train (diagnostic only)
+  # Per-family config filter: which pinned configs run in which family.
+  family_configs:
+    "1regime_54":
+      - w256x256_d0.3_tanh          # mlp-1.1 val-selected 1-regime-54 winner
+    "1regime_96":
+      - res_w512x512_d0.2_wd1e-3    # mlp-1.1 val-selected 1-regime-96 winner
+    "2regime_54":
+      - w512x512x512_d0.3_huber0.1  # mlp-1.3 val-selected 2-regime-54 winner
+      - w448x448_d0.3_gelu          # mlp-1.3 finding: good-capacity, near-zero bias
+      - w384x384_d0.3_gelu          # mlp-1.3 54-family test-best (reference only)
+    "2regime_96":
+      - w512x512x512_d0.3_lr1e-3    # mlp-1.3 val-selected 2-regime-96 winner
+  defaults:
+    max_epochs: 400
+    patience: 60
+    checkpoint_every: 20
+    grad_clip: 1.0
+    norm: "bn"           # bn | ln (LayerNorm)
+    activation: "silu"   # silu | relu | gelu | tanh
+    dropout: 0.3
+    lr: 0.0003
+    weight_decay: 0.0001
+    batch_size: 512
+    loss: "mse"          # mse | huber
+    huber_delta: 0.05
+    warmup_frac: 0.05    # fraction of max_epochs used for linear LR warmup
+    ema: false           # exponential moving average of weights (decay 0.999)
+    stop_rule: "patience"  # patience | plateau | val_aux (mlp-1.3 keeps patience)
+    mixup_alpha: 0.0     # batch-level mixup (alpha>0 enables)
+    center_target: false # per-specialist target centering (debias at source)
+    architecture: "mlp"  # mlp | residual | ft (FT-Transformer)
+  # 6 pinned configs (hyperparameters copied verbatim from the mlp-1.1 / mlp-1.3
+  # config.yaml so the full-baseline replication check is exact).
+  configs:
+    # --- 1-regime (from mlp-1.1) ---
+    - id: "w256x256_d0.3_tanh"
+      hidden_sizes: [256, 256]
+      activation: "tanh"
+    - id: "res_w512x512_d0.2_wd1e-3"
+      architecture: "residual"
+      hidden_sizes: [512, 512]
+      dropout: 0.2
+      weight_decay: 0.001
+    # --- 2-regime (from mlp-1.3) ---
+    - id: "w512x512x512_d0.3_huber0.1"
+      hidden_sizes: [512, 512, 512]
+      loss: "huber"
+      huber_delta: 0.1
+    - id: "w512x512x512_d0.3_lr1e-3"
+      hidden_sizes: [512, 512, 512]
+      lr: 0.001
+    - id: "w448x448_d0.3_gelu"
+      hidden_sizes: [448, 448]
+      activation: "gelu"
+    - id: "w384x384_d0.3_gelu"
+      hidden_sizes: [384, 384]
+      activation: "gelu"
+
+# LOSO (leave-one-station-out) spatial generalization protocol.
+# For each config and each held-out station s:
+#   1. fold_train = train rows with station != s; fold_val = val rows with
+#      station != s; fold_test = all test rows of station s.
+#   2. Router refitted on fold_trainval (train+val of the 6 remaining stations)
+#      only — no held-out-station leakage into routing.
+#   3. MLP specialists trained per regime cluster on fold_train, early-stopped
+#      on fold_val, with the config's features (mlp-1.3 trainer, patience 60).
+#   4. Metrics computed on fold_test (pooled / per-year / per-regime).
+# Hyperparameters and cluster delta features are FIXED from mlp-1.3 / mlp-1.1,
+# so LOSO measures generalization of model fitting given fixed features.
+loso:
+  holdout_column: "station_id"
+  configs: "all"             # "all" = the union of sweep.family_configs (6)
+  save_weights: true         # per-fold model dirs under models/ (checkpoints)
+  save_predictions: true     # per-fold preds under predictions/ (eval-1.2 naming)
+
+# Full-training baseline (replicates the mlp-1.3 temporal protocol: train on
+# ALL 7 stations' train, early-stop on ALL stations' val, test on the full
+# test set). Per-station test metrics = *intrinsic* difficulty, contrasted with
+# LOSO difficulty. Pooled test R2 per config must match the mlp-1.3 / mlp-1.1
+# metrics_summary.csv (deterministic, expect |diff| ~ 0).
+full_baseline:
+  configs: "all"             # same 6 configs as LOSO (apples-to-apples)
+  save_predictions: true
+  predictions_dir: "predictions_full"
+  validation: "per-config pooled test R2 must match mlp13/mlp11 metrics_summary.csv (|diff| < 1e-3)"
