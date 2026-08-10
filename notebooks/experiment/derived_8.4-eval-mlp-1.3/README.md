@@ -8,6 +8,16 @@ Changes vs 1.2: phase-2 2nd-seed metric switched from the failed aux2020-based r
 
 All numbers below are the stdout of the executed report notebook (`derived_8.4-eval-mlp-1.3.ipynb`). Trained weights, checkpoints, test predictions, and loss curves are archived under `models/`; preprocessed tensors and per-job logs under `artifacts/`; figures under the experiment root.
 
+## Data Split and Protocol
+
+All models use the official `derived_8.4` split (`data/splits/derived_8.4/`, see `split_meta.json`): a **temporal** split over the 7 WA stations (BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane), derived from `derived_8.3` with `MartenRidge_WA_999` and `RainyPass_WA_711` filtered out. train = 2017–2020 (n=9,803), val = 2021–2022 (n=4,805), test = 2023–2025 (n=6,620).
+
+- **train (2017–2020)** — the only data ever trained on. Preprocessing follows the repo LSTM convention (`_clean_inf` → median imputation → standardization → clip [−5, 5]) and is fit **on train only** (per-cluster subset for the 2-regime specialists); the target stays in original units (RMSE-consistent with the XGBoost baselines).
+- **val (2021–2022)** — the selection oracle. Training early-stops with patience 60 on val RMSE, the best-val-epoch checkpoint (`best_model.pt`) produces the test predictions, and configs are selected by **2-seed mean val RMSE** (phase 2 adds seed 7 to the val top-10 MLP configs per family, expanded to top-15 in the final run). Test is never used for any of these choices.
+- **test (2023–2025)** — untouched until the end; scored exactly once at the best-val epoch. `test-best` rows in the leaderboard are reported **for reference only** (selection on test would be leakage).
+- **aux2020 diagnostic (not a selection signal):** the 2020 slice of train (n=2,519) is preprocessed with the same train-fitted imputer/scaler and scored at the best-val epoch. Because 2020 ⊂ train, aux2020 RMSE measures *train fit*, not generalization — 1.3 therefore dropped it from selection (1.2's robust score used it; documented as a failed signal).
+- **Cluster assignment (2-regime families):** the `Clustering_V0_Full_k2` router (KMeans k=2 on the 50 V0 features, seed 42) is fit on **trainval** (train + val), then predicts labels for train/val/test — the test split never influences cluster memberships. Each specialist trains on its cluster's slice of train; pooled val RMSE = √(Σ (n_c/n_total) · rmse_c²).
+
 ## Verdict (TL;DR)
 
 - **The plain-2-regime-MLP ceiling is confirmed.** The val-selected winners are **bit-identical to 1.2** (deterministic re-run): 2regime_96 `w512x512x512_d0.3_lr1e-3` test R² 0.761, 2regime_54 `w512x512x512_d0.3_huber0.1` 0.765. The gap to the XGBoost 2-regime winner (0.815) is unchanged (~0.03).
