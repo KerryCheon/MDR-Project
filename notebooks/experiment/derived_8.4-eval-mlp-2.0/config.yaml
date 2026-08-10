@@ -1,0 +1,341 @@
+# Configuration for derived_8.4-eval-mlp-2.0 — optimized MLP architecture
+# to break the confirmed plain-2-regime-MLP ceiling (2.0 H100-hours budget).
+#
+# Follow-up to derived_8.4-eval-mlp-1.3 (1.3: val-selected winners 2regime_96
+# 0.761 / 2regime_54 0.765, test-best 0.789, val top-10 avg 0.7825; XGBoost
+# 2-regime winner 0.815 — the plain-2-regime-MLP ceiling is confirmed) and
+# derived_8.4-eval-2.0 (LOSO: the 96-pool transfers spatially better, pooled
+# LOSO 0.668 ≈ XGBoost 2-regime 0.689).
+#
+# 2.0 changes:
+#   1. Architecture: two new model classes in mlp20 —
+#        a. FeatureGroupedMLP ("fg"): per-semantic-group towers + fusion MLP.
+#           Groups are resolved from the feature names by
+#           mlp20/feature_groups.py (explicit rule table, validated: every
+#           feature lands in exactly one group). Targets 1.2's documented
+#           overfitting kind — capacity spent on period-specific interactions
+#           between heterogeneous sensor families.
+#        b. PLRRegressor ("plr"): piecewise-linear encoding (Gorishniy et al.
+#           2022) + plain-MLP body. Never tried in this project.
+#      Residual / FT remain reference-only rows (documented failures).
+#   2. Trainer: SWA knob (swa=true) — Stochastic Weight Averaging updated once
+#      per epoch from swa_start_frac, BN-recalibrated before each SWA-val eval,
+#      deployed iff its best val RMSE beats the live best (honest within-val
+#      comparison). Replaces the 1.3 per-step EMA (documented trainer failure).
+#   3. New family 2regime_mixed: c0 = candidate_pool_96, c1 = backbone_54 +
+#      eval-1.1's 10 delta features — the per-cluster-optimal allocation
+#      motivated by 1.3's per-cluster R2 (c0-96 0.754 > c0-54 0.737; c1-54
+#      0.831 > c1-96 0.776). 1-regime families are not run (carried over from
+#      1.1); LOSO is explicitly out of the sweep (per the experiment brief).
+#   4. Selection: unchanged honest protocol — 2-seed mean val RMSE
+#      (phase-2 metric val_rmse); aux2020 stays diagnostic only; patience-60
+#      confirmed in 1.3; no calibration / no trainval retrain (documented
+#      negatives).
+#
+# Budget: 30 phase-1 jobs (seed 42) + 24 phase-2 jobs (seed 7, top-8/family)
+# ≈ 54 jobs ≈ 1.4–1.5 GPU-h; champion 5-seed step (top-1/family) ≈ +0.3 GPU-h.
+# Resumable, --only/--families/--phase2-top-n trim knobs.
+#
+# Families (feature_sets = per-cluster feature allocation; keys resolved by
+# run_mlp_sweep._resolve_feature_key):
+#   candidate_pool_96  -> the 96-feature selection-lab pool
+#   backbone_54        -> the shared 54-feature global backbone
+#   backbone_54_delta  -> backbone + eval-1.1 winner's 10 cluster-1 deltas
+# Cluster labels come from eval11.routers.V0FullRouter (KMeans k=2 on the 50
+# V0 features, seed 42), fit on trainval — identical to eval-1.1 / mlp-1.1-1.3.
+
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+model:
+  seed: 42
+
+# Reference leaderboards to tag rows against (XGBoost from eval-1.1; MLP-1.3
+# best rows from mlp-1.3).
+xgboost_reference_file: "notebooks/experiment/derived_8.4-eval-1.1/metrics_summary.csv"
+mlp13_reference_file: "notebooks/experiment/derived_8.4-eval-mlp-1.3/metrics_summary.csv"
+
+# Candidate pool from the feature-selection lab (96 features).
+candidate_pool_file: "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv"
+
+# Shared 54-feature global backbone discovered in derived_8.4-feature-selection-2.0
+# (identical to mlp-1.3; do not edit — parity with the XGBoost baseline).
+shared_backbone_54:
+  - precip_mm
+  - s2_b4
+  - s2_b8
+  - SMAP_sm_pm_interp
+  - D_sin_DOY
+  - D_cos_DOY
+  - E_SAR_ratio
+  - G_API
+  - G_DSLR
+  - G_rain_sum_3d
+  - G_rain_sum_7d
+  - SMAP_sm_pm_interp_lag7
+  - SMAP_sm_pm_interp_lag30
+  - SMAP_sm_pm_interp_rollrange7
+  - SMAP_sm_pm_interp_rollmean30
+  - SMAP_sm_pm_interp_rollrange30
+  - SMAP_sm_interp_rollrange7
+  - SMAP_ampm_diff_interp
+  - V_rollrng_G_API_kobs7
+  - V_rollmax_F_NDMI_kobs30
+  - A_d_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs7
+  - V_rollmin_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs30
+  - V_rollmin_LST_modis_kobs30
+  - V_ema_LST_modis_kobs30
+  - V_rollmax_F_NDVI_kobs14
+  - V_rollmax_F_NDVI_kobs30
+  - V_ema_F_NDVI_kobs30
+  - C_lag_F_NDVI_kobs30
+  - A_grad_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs14
+  - V_rollrng_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs30
+  - A_grad_s2_b11_kobs30
+  - V_rollrng_s2_b11_kobs30
+  - V_rollmin_s2_b11_kobs30
+  - V_rollmin_s2_b12_kobs30
+  - A_d_SMAP_sm_interp_kobs30
+  - V_rollmin_SMAP_sm_interp_kobs14
+  - V_rollmin_SMAP_sm_interp_kobs30
+  - E_rough_s1_vh_kobs14
+  - J_aspect_deg
+  - J_bio_bio02
+  - J_bio_bio13
+  - J_lc_code
+  - J_soil_texture_usda_b0
+  - sin_year
+  - cos_year
+  - SMAP_x_year
+  - D_z_F_NDMI
+  - D_z_LST_modis
+  - D_fft_dom_LST_modis_kobs30
+  - D_fft_ent_LST_modis_kobs30
+
+cluster_config:
+  strategy: "Clustering_V0_Full_k2"
+  c0_count: 0
+  c1_count: 10
+  # Cluster-1 add-only delta features = eval-1.1 winner
+  # (candidate_id Clustering_V0_Full_k2_c0_0_c1_10). Loaded from eval-1.1's
+  # selected_features.json when present; this list is the explicit fallback.
+  cluster_1_delta_features:
+    - V_rollmin_F_NDMI_kobs30
+    - V_rollmean_G_API_kobs14
+    - lia_mean_asc_deg
+    - J_bio_bio04
+    - DOY
+    - SMAP_sm_am_interp
+    - J_bio_bio07
+    - SMAP_sm_am_interp_lag1
+    - C_lag_F_NDMI_kobs30
+    - SMAP_sm_pm_interp_lag1
+
+# Families: the two mlp-1.3 2-regime families + NEW 2regime_mixed
+# (per-cluster-optimal feature allocation). 1-regime families are not re-run
+# (results carried over from mlp-1.1).
+families:
+  - id: "2regime_96"
+    structure: "cluster"
+    feature_sets:
+      "0": "candidate_pool_96"
+      "1": "candidate_pool_96"
+  - id: "2regime_54"
+    structure: "cluster"
+    feature_sets:
+      "0": "backbone_54"
+      "1": "backbone_54_delta"
+  - id: "2regime_mixed"
+    structure: "cluster"
+    feature_sets:
+      "0": "candidate_pool_96"
+      "1": "backbone_54_delta"
+
+sweep:
+  n_parallel: 8          # concurrent GPU workers (small nets share one H100)
+  holdout: "official_val"  # early-stop on the official val split (2021-2022)
+  data_version: 6        # bump to invalidate stale job artifacts (v5 = mlp-1.3)
+  seeds: [42, 7]         # 2-seed sweep; phase 2 adds the 2nd seed to top-N configs
+  stability_seeds: [42, 7, 123, 2024, 999]  # 5-seed ensemble of the winners
+  phase2_top_n: 8        # per family: configs that get the 2nd seed (60 jobs total incl. phase 1)
+  phase2_metric: "val_rmse"  # honest signal (aux2020 was a FAILED signal in 1.2)
+  aux_year: 2020         # aux2020 holdout year inside train (n=2519, diagnostic only)
+  # Per-family config filters. A family NOT listed here runs ALL configs.
+  family_configs:
+    "2regime_54":
+      - w512x512x512_d0.3_huber0.1
+      - w384x384_d0.3_gelu
+      - w448x448_d0.3_gelu
+      - w384x384_d0.3_mixup0.4
+      - w512x512x512_d0.3_huber0.1_swa
+      - w448x448_d0.3_gelu_swa
+      - fg_w384x384_d0.3
+      - fg_w384x384_d0.3_swa
+      - fg_w512x512_d0.3_huber0.1_swa
+      - plr_w384x384_d0.3_gelu_swa
+    "2regime_96":
+      - w512x512x512_d0.3_lr1e-3
+      - w256x256_d0.5
+      - w512x512_d0.35_gelu
+      - w256x256_d0.5_swa
+      - w512x512x512_d0.3_lr1e-3_swa
+      - w512x512x512_d0.3_huber0.1_swa
+      - fg_w256x256_d0.4_swa
+      - fg_w384x384_d0.3_huber0.1
+      - fg_w384x384_d0.3_huber0.1_swa
+      - plr_w256x256_d0.4_swa
+    "2regime_mixed":
+      - w512x512x512_d0.3_huber0.1
+      - w384x384_d0.3_gelu
+      - w448x448_d0.3_gelu
+      - w512x512x512_d0.3_huber0.1_swa
+      - w448x448_d0.3_gelu_swa
+      - w384x384_d0.3_mixup0.4_huber0.1
+      - fg_w384x384_d0.3_gelu_swa
+      - fg_w512x512_d0.3_huber0.1_swa
+      - plr_w384x384_d0.3_gelu
+      - w256x256_d0.4_swa
+  defaults:
+    max_epochs: 400
+    patience: 60
+    checkpoint_every: 20
+    grad_clip: 1.0
+    norm: "bn"           # bn | ln (LayerNorm)
+    activation: "silu"   # silu | relu | gelu | tanh
+    dropout: 0.3
+    lr: 0.0003
+    weight_decay: 0.0001
+    batch_size: 512
+    loss: "mse"          # mse | huber
+    huber_delta: 0.05
+    warmup_frac: 0.05    # fraction of max_epochs used for linear LR warmup
+    ema: false           # legacy mlp-1.3 per-step EMA (documented failure; unused in 2.0)
+    stop_rule: "patience"  # patience (1.3-confirmed) | plateau | val_aux
+    mixup_alpha: 0.0     # batch-level mixup (alpha>0 enables)
+    center_target: false # per-specialist target centering (1.3 negative; unused in 2.0)
+    architecture: "mlp"  # mlp | residual | ft | fg (FeatureGroupedMLP) | plr (PLR encoding)
+    # --- mlp-2.0 new knobs ---
+    swa: false           # Stochastic Weight Averaging (once per epoch, BN-recalibrated)
+    swa_start_frac: 0.6  # SWA averaging starts at round(max_epochs * swa_start_frac)
+    swa_eval_every: 10   # epochs between SWA-val evaluations
+    swa_bn_recal: true   # recalibrate BatchNorm running stats before each SWA eval
+    fg_tower_width: 128  # per-group tower width (architecture "fg"); fusion_in = G*tower_width
+    fg_group_dropout: 0.0
+    plr_n_bins: 8        # PLR bins per feature (architecture "plr")
+  # 23 unique configs x 3 families = 30 phase-1 jobs (ids shared across
+  # families use the same hyperparameters, different feature sets — the 1.3
+  # convention). Phase 2 = 2nd seed for the val top-10 per family.
+  configs:
+    # --- 2regime_54 anchors (mlp-1.3 val winner / test-best / bias finding) ---
+    - id: "w512x512x512_d0.3_huber0.1"
+      hidden_sizes: [512, 512, 512]
+      loss: "huber"
+      huber_delta: 0.1
+    - id: "w384x384_d0.3_gelu"
+      hidden_sizes: [384, 384]
+      activation: "gelu"
+    - id: "w448x448_d0.3_gelu"
+      hidden_sizes: [448, 448]
+      activation: "gelu"
+    # --- 2regime_54 training-side: mixup (stronger alpha), SWA ---
+    - id: "w384x384_d0.3_mixup0.4"
+      hidden_sizes: [384, 384]
+      mixup_alpha: 0.4
+    - id: "w512x512x512_d0.3_huber0.1_swa"
+      hidden_sizes: [512, 512, 512]
+      loss: "huber"
+      huber_delta: 0.1
+      swa: true
+    - id: "w448x448_d0.3_gelu_swa"
+      hidden_sizes: [448, 448]
+      activation: "gelu"
+      swa: true
+    # --- 2regime_54 architectures: grouped towers / PLR ---
+    - id: "fg_w384x384_d0.3"
+      hidden_sizes: [384, 384]
+      architecture: "fg"
+    - id: "fg_w384x384_d0.3_swa"
+      hidden_sizes: [384, 384]
+      architecture: "fg"
+      swa: true
+    - id: "fg_w512x512_d0.3_huber0.1_swa"
+      hidden_sizes: [512, 512]
+      architecture: "fg"
+      loss: "huber"
+      huber_delta: 0.1
+      swa: true
+    - id: "plr_w384x384_d0.3_gelu_swa"
+      hidden_sizes: [384, 384]
+      architecture: "plr"
+      activation: "gelu"
+      swa: true
+    # --- 2regime_96 anchors (val winner; small-net debias evidence) ---
+    - id: "w512x512x512_d0.3_lr1e-3"
+      hidden_sizes: [512, 512, 512]
+      lr: 0.001
+    - id: "w256x256_d0.5"
+      hidden_sizes: [256, 256]
+      dropout: 0.5
+    - id: "w512x512_d0.35_gelu"
+      hidden_sizes: [512, 512]
+      activation: "gelu"
+      dropout: 0.35
+    # --- 2regime_96 bias-targeting: small nets + SWA (the proven debias lever) ---
+    - id: "w256x256_d0.5_swa"
+      hidden_sizes: [256, 256]
+      dropout: 0.5
+      swa: true
+    - id: "w512x512x512_d0.3_lr1e-3_swa"
+      hidden_sizes: [512, 512, 512]
+      lr: 0.001
+      swa: true
+    - id: "fg_w256x256_d0.4_swa"
+      hidden_sizes: [256, 256]
+      architecture: "fg"
+      dropout: 0.4
+      swa: true
+    - id: "fg_w384x384_d0.3_huber0.1"
+      hidden_sizes: [384, 384]
+      architecture: "fg"
+      loss: "huber"
+      huber_delta: 0.1
+    - id: "fg_w384x384_d0.3_huber0.1_swa"
+      hidden_sizes: [384, 384]
+      architecture: "fg"
+      loss: "huber"
+      huber_delta: 0.1
+      swa: true
+    - id: "plr_w256x256_d0.4_swa"
+      hidden_sizes: [256, 256]
+      architecture: "plr"
+      dropout: 0.4
+      swa: true
+    # --- 2regime_mixed-only configs (same space as the 54-family for direct
+    #     comparison; c0 = 96-pool, c1 = 54+10) ---
+    - id: "w384x384_d0.3_mixup0.4_huber0.1"
+      hidden_sizes: [384, 384]
+      mixup_alpha: 0.4
+      loss: "huber"
+      huber_delta: 0.1
+    - id: "fg_w384x384_d0.3_gelu_swa"
+      hidden_sizes: [384, 384]
+      architecture: "fg"
+      activation: "gelu"
+      swa: true
+    - id: "plr_w384x384_d0.3_gelu"
+      hidden_sizes: [384, 384]
+      architecture: "plr"
+      activation: "gelu"
+    - id: "w256x256_d0.4_swa"
+      hidden_sizes: [256, 256]
+      dropout: 0.4
+      swa: true
