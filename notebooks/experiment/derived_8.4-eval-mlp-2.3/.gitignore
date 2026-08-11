@@ -1,0 +1,6 @@
+models/*
+artifacts/tensors_*
+artifacts/*.npy
+artifacts/*.npz
+artifacts/slurm/
+calibrated_preds*/*
