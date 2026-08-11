@@ -31,7 +31,7 @@ sys.path.insert(0, str(EXP_DIR))
 
 from eval11.data import load_experiment_data  # noqa: E402
 from eval11.evaluator import compute_metrics  # noqa: E402
-from mlp22.plots import matplotlib, plt  # noqa: E402
+from mlp23.plots import matplotlib, plt  # noqa: E402
 
 FAMILY_LABELS = {
     "2regime_54": "2regime-54",

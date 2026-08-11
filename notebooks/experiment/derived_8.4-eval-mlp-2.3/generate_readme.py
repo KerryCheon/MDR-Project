@@ -55,7 +55,43 @@ experiment root.
 
 ## Verdict (TL;DR)
 
-[FILLED AFTER THE SWEEP FROM THE EXECUTED NOTEBOOK — see the notebook stdout]
+- **The mlp-2.0 architecture IS still meaningful — on test: the series' first
+  single MLP above 2.0's 0.8003.** The mixed test-best
+  `w384x384x384_d0.3_huber0.1_gelu_lr2e-4` → test R² **0.8014** (bias 0.0018)
+  is the first MLP single config above 2.0's mixed val top-5 ensemble
+  (0.8003); the 54 test-best `w320x320_d0.4_huber0.15_gelu_lr5e-4` → **0.7980**
+  (new 54 record, bias 0.0020) and the 96 test-best `w256x256_d0.5_lr2e-4` →
+  **0.7897** (new 96 record, NEGATIVE bias −0.0028) beat their families' 2.2
+  records. `test-best` rows are reporting only (selection on test would be
+  leakage) — but the frontier exists.
+- **Val selection: the mixed family's structural val-noise is GONE — first
+  significant positive Spearman ever.** Full-val +0.318 (p=0.031; 2.1: −0.309,
+  2.2: −0.413), BOTH val years positive (+0.263 ns / +0.408 p=0.005), and the
+  winner is stable under leave-one-val-year-out. The 2.3 mixed grid (gelu
+  3-layer at lr {2e-4, 3e-4}) fixed the family's val-proxy problem. The mixed
+  val winner is unchanged (`w512x512x512_d0.3_huber0.03_lr1e-3`, 0.7809) but
+  mixed val top-5 avg rose to 0.7895 (2.2: 0.7850).
+- **54-family val selection did NOT recover: −0.055 (2.2: +0.582) — and the
+  single 3-layer bit-identity anchor still wins the 54 val ranking** (val RMSE
+  0.0544 vs the best 2-layer 0.0556): the 3-layer val-overfit is structural,
+  not pool-composition luck (test 0.7596). The val-year diagnostic sharpens
+  this: the 2-layer-only pool's val-2022 half is strongly NEGATIVELY
+  correlated with test (−0.472, p=2e-9). The 54 val top-10 avg still improved
+  to 0.7834 (2.2: 0.7770) — the 2-layer ensembles are the real 54 gains.
+- **96 val selection weakened (+0.157 ns vs +0.566)** — val-2021 stays strong
+  (+0.566, p=7e-4) while val-2022 turned negative (−0.316, p=0.078); the
+  big-net `w512x512x512_d0.3_lr1e-3` remains the val winner (stable under all
+  selectors, test 0.7595) while the 96 test-best is the lr2e-4 small net
+  (0.7897). The 3-layer-val-overfit pattern repeats in 96 (w128³/w256³ rank
+  2–3 on val, test 0.738–0.741).
+- **Debias: 54 met with the best margin yet (median bias²/MSE 1.25 %;
+  w128x128_d0.3_gelu_lr4e-4 bias −1.6e-5); mixed improved to 6.2 % (2.2:
+  9.6 %) but still >5 %; 96 improved to 13.5 % (2.2: 21.7 %) but unmet** —
+  within 96, the d0.4 variants are the biased cells (0.20–0.25 share) while
+  lr2e-4 goes negative-bias.
+- **Budget:** sweep 5,287.5 s (88.1 min) wall / 8.8 GPU-h for 681 job-seeds;
+  total job 1:31:47 inside the 2 h `gpu_debug` cap (target ~1.75 h);
+  3/3 anchors bit-identical vs 2.2 (max|diff| = 0).
 
 ## What's new in 2.3
 
