@@ -1,0 +1,1796 @@
+# Configuration for derived_8.4-eval-mlp-2.2 — exploit the 54-family
+# lr6e-4/gelu region + the mixed 3-layer gelu cell + finish the 96-family
+# debias (~1.25 h gpu_debug H100 wall).
+#
+# GENERATED FILE — do not edit by hand. This config.yaml is produced
+# deterministically by make_configs.py from the documented grid spec (see its
+# docstring). Regenerate with `python make_configs.py`; the output is
+# byte-identical across runs (no RNG).
+#
+# Protocol (data_version 9, temporal only): train on official train
+# (2017-2020, n=9,803); early-stop/select on official val (2021-2022,
+# n=4,805); evaluate on untouched test (2023-2025, n=6,620). aux2020
+# diagnostic only. 3-phase, 3-seed sweep: seed 42 (phase 1, all configs) ->
+# seed 7 (phase 2, top-N per family by 2-seed val RMSE) -> seed 123 (phase 3,
+# top-M per family by 3-seed val RMSE). Winners = multi-seed mean val RMSE
+# among mlp/fg/plr (mlp-only in practice; fg/plr are documented 2.0 negatives,
+# swa a documented 2.1 negative — 0/152 deployments with the RNG guard).
+#
+# Families: 2regime_96 (c0=c1=96-pool), 2regime_54 (c0=54, c1=54+10 deltas),
+# 2regime_mixed (c0=96-pool, c1=54+10 deltas) — pinned from 2.0/2.1.
+#
+# New in 2.2 (mlp22/trainer.py): best-val predictions saved to
+# val_preds.npy (post-training, same deployed weights as preds.npy, no RNG
+# consumption) + artifacts/val_meta.npz (y_val/year/station) -> the offline
+# val-year (2021 vs 2022) selection-reliability diagnostic. No SWA configs
+# (closed negative). Champion step per-family top-N via sweep.champion_top_n.
+#
+# Budget: 191 phase-1 + 201 phase-2 + 108 phase-3 + 8 champion = 508
+# job-seeds ~= 6.4 GPU-h ~= 65 min sweep ~= 74 min total wall (target
+# ~1.25 h; 2 h wall cap).
+data:
+  target: soil_moisture_5cm
+  metadata_path: data/splits/derived_8.4/dataset_metadata.py
+  splits:
+    train: data/splits/derived_8.4/train.csv
+    val: data/splits/derived_8.4/val.csv
+    test: data/splits/derived_8.4/test.csv
+model:
+  seed: 42
+xgboost_reference_file: notebooks/experiment/derived_8.4-eval-1.1/metrics_summary.csv
+mlp13_reference_file: notebooks/experiment/derived_8.4-eval-mlp-1.3/metrics_summary.csv
+mlp20_reference_file: notebooks/experiment/derived_8.4-eval-mlp-2.0/metrics_summary.csv
+mlp21_reference_file: notebooks/experiment/derived_8.4-eval-mlp-2.1/metrics_summary.csv
+candidate_pool_file: notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv
+shared_backbone_54:
+- precip_mm
+- s2_b4
+- s2_b8
+- SMAP_sm_pm_interp
+- D_sin_DOY
+- D_cos_DOY
+- E_SAR_ratio
+- G_API
+- G_DSLR
+- G_rain_sum_3d
+- G_rain_sum_7d
+- SMAP_sm_pm_interp_lag7
+- SMAP_sm_pm_interp_lag30
+- SMAP_sm_pm_interp_rollrange7
+- SMAP_sm_pm_interp_rollmean30
+- SMAP_sm_pm_interp_rollrange30
+- SMAP_sm_interp_rollrange7
+- SMAP_ampm_diff_interp
+- V_rollrng_G_API_kobs7
+- V_rollmax_F_NDMI_kobs30
+- A_d_E_SAR_ratio_kobs30
+- V_rollmax_E_SAR_ratio_kobs7
+- V_rollmin_E_SAR_ratio_kobs30
+- V_rollmax_E_SAR_ratio_kobs30
+- V_rollmin_LST_modis_kobs30
+- V_ema_LST_modis_kobs30
+- V_rollmax_F_NDVI_kobs14
+- V_rollmax_F_NDVI_kobs30
+- V_ema_F_NDVI_kobs30
+- C_lag_F_NDVI_kobs30
+- A_grad_E_SAR_diff_kobs30
+- V_rollmax_E_SAR_diff_kobs14
+- V_rollrng_E_SAR_diff_kobs30
+- V_rollmax_E_SAR_diff_kobs30
+- A_grad_s2_b11_kobs30
+- V_rollrng_s2_b11_kobs30
+- V_rollmin_s2_b11_kobs30
+- V_rollmin_s2_b12_kobs30
+- A_d_SMAP_sm_interp_kobs30
+- V_rollmin_SMAP_sm_interp_kobs14
+- V_rollmin_SMAP_sm_interp_kobs30
+- E_rough_s1_vh_kobs14
+- J_aspect_deg
+- J_bio_bio02
+- J_bio_bio13
+- J_lc_code
+- J_soil_texture_usda_b0
+- sin_year
+- cos_year
+- SMAP_x_year
+- D_z_F_NDMI
+- D_z_LST_modis
+- D_fft_dom_LST_modis_kobs30
+- D_fft_ent_LST_modis_kobs30
+cluster_config:
+  strategy: Clustering_V0_Full_k2
+  c0_count: 0
+  c1_count: 10
+  cluster_1_delta_features:
+  - V_rollmin_F_NDMI_kobs30
+  - V_rollmean_G_API_kobs14
+  - lia_mean_asc_deg
+  - J_bio_bio04
+  - DOY
+  - SMAP_sm_am_interp
+  - J_bio_bio07
+  - SMAP_sm_am_interp_lag1
+  - C_lag_F_NDMI_kobs30
+  - SMAP_sm_pm_interp_lag1
+families:
+- id: 2regime_96
+  structure: cluster
+  feature_sets:
+    '0': candidate_pool_96
+    '1': candidate_pool_96
+- id: 2regime_54
+  structure: cluster
+  feature_sets:
+    '0': backbone_54
+    '1': backbone_54_delta
+- id: 2regime_mixed
+  structure: cluster
+  feature_sets:
+    '0': candidate_pool_96
+    '1': backbone_54_delta
+sweep:
+  n_parallel: 8
+  holdout: official_val
+  data_version: 9
+  seeds:
+  - 42
+  - 7
+  - 123
+  stability_seeds:
+  - 42
+  - 7
+  - 123
+  - 2024
+  - 999
+  phase2_top_n:
+    2regime_mixed: 66
+    2regime_96: 57
+    2regime_54: 78
+  phase3_top_n:
+    2regime_mixed: 42
+    2regime_96: 26
+    2regime_54: 40
+  phase2_metric: val_rmse
+  phase3_metric: val_rmse
+  champion_top_n:
+    2regime_mixed: 2
+    2regime_54: 1
+    2regime_96: 1
+  aux_year: 2020
+  family_configs:
+    2regime_mixed:
+    - w384x384_d0.3_huber0.05_gelu_lr6e-4
+    - w384x384_d0.3_huber0.1_gelu_lr1e-3
+    - w384x384_d0.3_huber0.1_gelu_lr6e-4
+    - w384x384x384_d0.3_huber0.1
+    - w384x384x384_d0.3_huber0.1_gelu
+    - w384x384x384_d0.3_huber0.1_gelu_lr1e-3
+    - w384x384x384_d0.3_huber0.1_gelu_lr6e-4
+    - w384x384x384_d0.3_huber0.1_lr1e-3
+    - w384x384x384_d0.3_huber0.1_lr6e-4
+    - w448x448_d0.3_huber0.05_gelu_lr6e-4
+    - w448x448_d0.3_huber0.1_gelu_lr1e-3
+    - w448x448_d0.3_huber0.1_gelu_lr6e-4
+    - w448x448x448_d0.3_huber0.05_gelu_lr1e-3
+    - w448x448x448_d0.3_huber0.05_gelu_lr6e-4
+    - w448x448x448_d0.3_huber0.05_lr6e-4
+    - w448x448x448_d0.3_huber0.1
+    - w448x448x448_d0.3_huber0.1_gelu
+    - w448x448x448_d0.3_huber0.1_gelu_lr1e-3
+    - w448x448x448_d0.3_huber0.1_gelu_lr4e-4
+    - w448x448x448_d0.3_huber0.1_gelu_lr6e-4
+    - w448x448x448_d0.3_huber0.1_gelu_lr8e-4
+    - w448x448x448_d0.3_huber0.1_lr1e-3
+    - w448x448x448_d0.3_huber0.1_lr4e-4
+    - w448x448x448_d0.3_huber0.1_lr6e-4
+    - w448x448x448_d0.3_huber0.1_lr8e-4
+    - w448x448x448_d0.3_huber0.2_gelu_lr1e-3
+    - w448x448x448_d0.3_huber0.2_gelu_lr6e-4
+    - w512x512_d0.3_huber0.05_gelu_lr6e-4
+    - w512x512_d0.3_huber0.1_gelu_lr1e-3
+    - w512x512_d0.3_huber0.1_gelu_lr6e-4
+    - w512x512x512_d0.2_huber0.05_lr6e-4
+    - w512x512x512_d0.2_huber0.1_lr6e-4
+    - w512x512x512_d0.3_huber0.03_lr1e-3
+    - w512x512x512_d0.3_huber0.03_lr4e-4
+    - w512x512x512_d0.3_huber0.03_lr6e-4
+    - w512x512x512_d0.3_huber0.03_lr8e-4
+    - w512x512x512_d0.3_huber0.05_gelu_lr6e-4
+    - w512x512x512_d0.3_huber0.05_lr1e-3
+    - w512x512x512_d0.3_huber0.05_lr4e-4
+    - w512x512x512_d0.3_huber0.05_lr6e-4
+    - w512x512x512_d0.3_huber0.05_lr8e-4
+    - w512x512x512_d0.3_huber0.08_lr1e-3
+    - w512x512x512_d0.3_huber0.08_lr4e-4
+    - w512x512x512_d0.3_huber0.08_lr6e-4
+    - w512x512x512_d0.3_huber0.08_lr8e-4
+    - w512x512x512_d0.3_huber0.1
+    - w512x512x512_d0.3_huber0.15_lr1e-3
+    - w512x512x512_d0.3_huber0.15_lr4e-4
+    - w512x512x512_d0.3_huber0.15_lr6e-4
+    - w512x512x512_d0.3_huber0.15_lr8e-4
+    - w512x512x512_d0.3_huber0.1_gelu
+    - w512x512x512_d0.3_huber0.1_gelu_lr1e-3
+    - w512x512x512_d0.3_huber0.1_gelu_lr4e-4
+    - w512x512x512_d0.3_huber0.1_gelu_lr6e-4
+    - w512x512x512_d0.3_huber0.1_gelu_lr8e-4
+    - w512x512x512_d0.3_huber0.1_lr1e-3
+    - w512x512x512_d0.3_huber0.1_lr4e-4
+    - w512x512x512_d0.3_huber0.1_lr6e-4
+    - w512x512x512_d0.3_huber0.1_lr8e-4
+    - w512x512x512_d0.4_huber0.05_lr6e-4
+    - w512x512x512_d0.4_huber0.1_lr6e-4
+    - w576x576_d0.3_huber0.1_gelu_lr1e-3
+    - w576x576_d0.3_huber0.1_gelu_lr6e-4
+    - w640x640_d0.3_huber0.05_gelu_lr6e-4
+    - w640x640_d0.3_huber0.1_gelu_lr1e-3
+    - w640x640_d0.3_huber0.1_gelu_lr6e-4
+    2regime_96:
+    - w128x128_d0.5
+    - w128x128_d0.5_lr4e-4
+    - w128x128_d0.5_lr6e-4
+    - w128x128_d0.5_lr8e-4
+    - w128x128_d0.5_me500
+    - w128x128_d0.5_me600
+    - w128x128x128_d0.4_lr1e-3
+    - w128x128x128_d0.4_lr6e-4
+    - w192x192_d0.5
+    - w192x192_d0.5_huber0.1
+    - w192x192_d0.5_huber0.1_lr1e-3
+    - w192x192_d0.5_huber0.1_lr6e-4
+    - w192x192_d0.5_huber0.2
+    - w192x192_d0.5_huber0.2_lr1e-3
+    - w192x192_d0.5_huber0.2_lr6e-4
+    - w192x192_d0.5_lr4e-4
+    - w192x192_d0.5_lr6e-4
+    - w192x192_d0.5_lr8e-4
+    - w192x192_d0.5_me500
+    - w192x192_d0.5_me600
+    - w192x192x192_d0.4_lr1e-3
+    - w192x192x192_d0.4_lr6e-4
+    - w256x256_d0.4_huber0.1_lr6e-4
+    - w256x256_d0.4_huber0.2_lr6e-4
+    - w256x256_d0.5
+    - w256x256_d0.5_huber0.1
+    - w256x256_d0.5_huber0.1_lr1e-3
+    - w256x256_d0.5_huber0.1_lr6e-4
+    - w256x256_d0.5_huber0.2
+    - w256x256_d0.5_huber0.2_lr1e-3
+    - w256x256_d0.5_huber0.2_lr6e-4
+    - w256x256_d0.5_lr1e-3_mixup0.2
+    - w256x256_d0.5_lr1e-3_mixup0.4
+    - w256x256_d0.5_lr4e-4
+    - w256x256_d0.5_lr6e-4
+    - w256x256_d0.5_lr6e-4_mixup0.2
+    - w256x256_d0.5_lr6e-4_mixup0.4
+    - w256x256_d0.5_lr8e-4
+    - w256x256_d0.5_me500
+    - w256x256_d0.5_me600
+    - w256x256_d0.6_huber0.1_lr6e-4
+    - w256x256_d0.6_huber0.2_lr6e-4
+    - w320x320_d0.5
+    - w320x320_d0.5_huber0.1
+    - w320x320_d0.5_huber0.1_lr1e-3
+    - w320x320_d0.5_huber0.1_lr6e-4
+    - w320x320_d0.5_huber0.2
+    - w320x320_d0.5_huber0.2_lr1e-3
+    - w320x320_d0.5_huber0.2_lr6e-4
+    - w320x320_d0.5_lr4e-4
+    - w320x320_d0.5_lr6e-4
+    - w320x320_d0.5_lr8e-4
+    - w512x512x512_d0.3_lr1e-3
+    - w96x96_d0.5
+    - w96x96_d0.5_lr4e-4
+    - w96x96_d0.5_lr6e-4
+    - w96x96_d0.5_lr8e-4
+    - w96x96x96_d0.4_lr1e-3
+    - w96x96x96_d0.4_lr6e-4
+    2regime_54:
+    - w192x192_d0.3_gelu_lr1e-3
+    - w192x192_d0.3_gelu_lr4e-4
+    - w192x192_d0.3_gelu_lr6e-4
+    - w192x192_d0.3_gelu_lr8e-4
+    - w224x224_d0.2_gelu_lr6e-4
+    - w224x224_d0.3_gelu_lr1e-3
+    - w224x224_d0.3_gelu_lr4e-4
+    - w224x224_d0.3_gelu_lr6e-4
+    - w224x224_d0.3_gelu_lr8e-4
+    - w224x224_d0.3_huber0.05_gelu_lr6e-4
+    - w224x224_d0.3_huber0.1_gelu_lr6e-4
+    - w224x224_d0.3_huber0.2_gelu_lr6e-4
+    - w224x224_d0.4_gelu_lr6e-4
+    - w256x256_d0.2_gelu_lr6e-4
+    - w256x256_d0.3_gelu_lr1e-3
+    - w256x256_d0.3_gelu_lr4e-4
+    - w256x256_d0.3_gelu_lr6e-4
+    - w256x256_d0.3_gelu_lr8e-4
+    - w256x256_d0.3_huber0.05_gelu_lr6e-4
+    - w256x256_d0.3_huber0.1_gelu_lr6e-4
+    - w256x256_d0.3_huber0.2_gelu_lr6e-4
+    - w256x256_d0.4_gelu_lr6e-4
+    - w288x288_d0.3_gelu_lr1e-3
+    - w288x288_d0.3_gelu_lr4e-4
+    - w288x288_d0.3_gelu_lr6e-4
+    - w288x288_d0.3_gelu_lr8e-4
+    - w320x320_d0.2_gelu_lr6e-4
+    - w320x320_d0.2_huber0.1_gelu_lr6e-4
+    - w320x320_d0.2_huber0.2_gelu_lr6e-4
+    - w320x320_d0.3_gelu_lr1e-3
+    - w320x320_d0.3_gelu_lr4e-4
+    - w320x320_d0.3_gelu_lr6e-4
+    - w320x320_d0.3_gelu_lr8e-4
+    - w320x320_d0.3_huber0.05_gelu_lr6e-4
+    - w320x320_d0.3_huber0.1_gelu_lr6e-4
+    - w320x320_d0.3_huber0.2_gelu_lr6e-4
+    - w320x320_d0.4_gelu_lr6e-4
+    - w320x320_d0.4_huber0.1_gelu_lr6e-4
+    - w320x320_d0.4_huber0.2_gelu_lr6e-4
+    - w320x320x320_d0.3_huber0.05_gelu_lr6e-4
+    - w320x320x320_d0.3_huber0.1_gelu
+    - w320x320x320_d0.3_huber0.1_gelu_lr1e-3
+    - w320x320x320_d0.3_huber0.1_gelu_lr6e-4
+    - w320x320x320_d0.3_huber0.2_gelu_lr6e-4
+    - w352x352_d0.3_gelu_lr1e-3
+    - w352x352_d0.3_gelu_lr4e-4
+    - w352x352_d0.3_gelu_lr6e-4
+    - w352x352_d0.3_gelu_lr8e-4
+    - w384x384_d0.2_gelu_lr6e-4
+    - w384x384_d0.3_gelu_lr1e-3
+    - w384x384_d0.3_gelu_lr4e-4
+    - w384x384_d0.3_gelu_lr6e-4
+    - w384x384_d0.3_gelu_lr8e-4
+    - w384x384_d0.3_huber0.05_gelu_lr6e-4
+    - w384x384_d0.3_huber0.1_gelu_lr6e-4
+    - w384x384_d0.3_huber0.2_gelu_lr6e-4
+    - w384x384_d0.4_gelu_lr6e-4
+    - w384x384x384_d0.3_huber0.05_gelu_lr6e-4
+    - w384x384x384_d0.3_huber0.1_gelu
+    - w384x384x384_d0.3_huber0.1_gelu_lr1e-3
+    - w384x384x384_d0.3_huber0.1_gelu_lr6e-4
+    - w384x384x384_d0.3_huber0.2_gelu_lr6e-4
+    - w448x448_d0.3_gelu_lr1e-3
+    - w448x448_d0.3_gelu_lr4e-4
+    - w448x448_d0.3_gelu_lr6e-4
+    - w448x448_d0.3_gelu_lr8e-4
+    - w448x448_d0.3_huber0.05_gelu_lr6e-4
+    - w448x448_d0.3_huber0.1_gelu_lr6e-4
+    - w448x448_d0.3_huber0.2_gelu_lr6e-4
+    - w448x448x448_d0.3_huber0.05_gelu_lr6e-4
+    - w448x448x448_d0.3_huber0.1_gelu
+    - w448x448x448_d0.3_huber0.1_gelu_lr1e-3
+    - w448x448x448_d0.3_huber0.1_gelu_lr6e-4
+    - w448x448x448_d0.3_huber0.2_gelu_lr6e-4
+    - w512x512_d0.3_gelu_lr1e-3
+    - w512x512_d0.3_gelu_lr4e-4
+    - w512x512_d0.3_gelu_lr6e-4
+    - w512x512_d0.3_gelu_lr8e-4
+    - w512x512x512_d0.3_huber0.1
+    - w512x512x512_d0.3_huber0.1_gelu
+    - w512x512x512_d0.3_huber0.1_gelu_lr1e-3
+    - w512x512x512_d0.3_huber0.1_gelu_lr6e-4
+  defaults:
+    max_epochs: 400
+    patience: 60
+    checkpoint_every: 20
+    grad_clip: 1.0
+    norm: bn
+    activation: silu
+    dropout: 0.3
+    lr: 0.0003
+    weight_decay: 0.0001
+    batch_size: 512
+    loss: mse
+    huber_delta: 0.05
+    warmup_frac: 0.05
+    ema: false
+    stop_rule: patience
+    mixup_alpha: 0.0
+    center_target: false
+    architecture: mlp
+    swa: false
+    swa_start_frac: 0.6
+    swa_eval_every: 10
+    swa_bn_recal: true
+    fg_tower_width: 128
+    fg_group_dropout: 0.0
+    plr_n_bins: 8
+  configs:
+  - id: w128x128_d0.5
+    hidden_sizes:
+    - 128
+    - 128
+    dropout: 0.5
+  - id: w128x128_d0.5_lr4e-4
+    hidden_sizes:
+    - 128
+    - 128
+    dropout: 0.5
+    lr: 0.0004
+  - id: w128x128_d0.5_lr6e-4
+    hidden_sizes:
+    - 128
+    - 128
+    dropout: 0.5
+    lr: 0.0006
+  - id: w128x128_d0.5_lr8e-4
+    hidden_sizes:
+    - 128
+    - 128
+    dropout: 0.5
+    lr: 0.0008
+  - id: w128x128_d0.5_me500
+    hidden_sizes:
+    - 128
+    - 128
+    dropout: 0.5
+    max_epochs: 500
+  - id: w128x128_d0.5_me600
+    hidden_sizes:
+    - 128
+    - 128
+    dropout: 0.5
+    max_epochs: 600
+  - id: w128x128x128_d0.4_lr1e-3
+    hidden_sizes:
+    - 128
+    - 128
+    - 128
+    dropout: 0.4
+    lr: 0.001
+  - id: w128x128x128_d0.4_lr6e-4
+    hidden_sizes:
+    - 128
+    - 128
+    - 128
+    dropout: 0.4
+    lr: 0.0006
+  - id: w192x192_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 192
+    - 192
+    activation: gelu
+    lr: 0.001
+  - id: w192x192_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 192
+    - 192
+    activation: gelu
+    lr: 0.0004
+  - id: w192x192_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 192
+    - 192
+    activation: gelu
+    lr: 0.0006
+  - id: w192x192_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 192
+    - 192
+    activation: gelu
+    lr: 0.0008
+  - id: w192x192_d0.5
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+  - id: w192x192_d0.5_huber0.1
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    loss: huber
+    huber_delta: 0.1
+  - id: w192x192_d0.5_huber0.1_lr1e-3
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w192x192_d0.5_huber0.1_lr6e-4
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w192x192_d0.5_huber0.2
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    loss: huber
+    huber_delta: 0.2
+  - id: w192x192_d0.5_huber0.2_lr1e-3
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.2
+  - id: w192x192_d0.5_huber0.2_lr6e-4
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w192x192_d0.5_lr4e-4
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    lr: 0.0004
+  - id: w192x192_d0.5_lr6e-4
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    lr: 0.0006
+  - id: w192x192_d0.5_lr8e-4
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    lr: 0.0008
+  - id: w192x192_d0.5_me500
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    max_epochs: 500
+  - id: w192x192_d0.5_me600
+    hidden_sizes:
+    - 192
+    - 192
+    dropout: 0.5
+    max_epochs: 600
+  - id: w192x192x192_d0.4_lr1e-3
+    hidden_sizes:
+    - 192
+    - 192
+    - 192
+    dropout: 0.4
+    lr: 0.001
+  - id: w192x192x192_d0.4_lr6e-4
+    hidden_sizes:
+    - 192
+    - 192
+    - 192
+    dropout: 0.4
+    lr: 0.0006
+  - id: w224x224_d0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    dropout: 0.2
+    lr: 0.0006
+  - id: w224x224_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    lr: 0.001
+  - id: w224x224_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    lr: 0.0004
+  - id: w224x224_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    lr: 0.0006
+  - id: w224x224_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    lr: 0.0008
+  - id: w224x224_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w224x224_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w224x224_d0.3_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w224x224_d0.4_gelu_lr6e-4
+    hidden_sizes:
+    - 224
+    - 224
+    activation: gelu
+    dropout: 0.4
+    lr: 0.0006
+  - id: w256x256_d0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    dropout: 0.2
+    lr: 0.0006
+  - id: w256x256_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    lr: 0.001
+  - id: w256x256_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    lr: 0.0004
+  - id: w256x256_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    lr: 0.0006
+  - id: w256x256_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    lr: 0.0008
+  - id: w256x256_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w256x256_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w256x256_d0.3_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w256x256_d0.4_gelu_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    activation: gelu
+    dropout: 0.4
+    lr: 0.0006
+  - id: w256x256_d0.4_huber0.1_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.4
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w256x256_d0.4_huber0.2_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.4
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w256x256_d0.5
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+  - id: w256x256_d0.5_huber0.1
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    loss: huber
+    huber_delta: 0.1
+  - id: w256x256_d0.5_huber0.1_lr1e-3
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w256x256_d0.5_huber0.1_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w256x256_d0.5_huber0.2
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    loss: huber
+    huber_delta: 0.2
+  - id: w256x256_d0.5_huber0.2_lr1e-3
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.2
+  - id: w256x256_d0.5_huber0.2_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w256x256_d0.5_lr1e-3_mixup0.2
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.001
+    mixup_alpha: 0.2
+  - id: w256x256_d0.5_lr1e-3_mixup0.4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.001
+    mixup_alpha: 0.4
+  - id: w256x256_d0.5_lr4e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.0004
+  - id: w256x256_d0.5_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.0006
+  - id: w256x256_d0.5_lr6e-4_mixup0.2
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.0006
+    mixup_alpha: 0.2
+  - id: w256x256_d0.5_lr6e-4_mixup0.4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.0006
+    mixup_alpha: 0.4
+  - id: w256x256_d0.5_lr8e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    lr: 0.0008
+  - id: w256x256_d0.5_me500
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    max_epochs: 500
+  - id: w256x256_d0.5_me600
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.5
+    max_epochs: 600
+  - id: w256x256_d0.6_huber0.1_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.6
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w256x256_d0.6_huber0.2_lr6e-4
+    hidden_sizes:
+    - 256
+    - 256
+    dropout: 0.6
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w288x288_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 288
+    - 288
+    activation: gelu
+    lr: 0.001
+  - id: w288x288_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 288
+    - 288
+    activation: gelu
+    lr: 0.0004
+  - id: w288x288_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 288
+    - 288
+    activation: gelu
+    lr: 0.0006
+  - id: w288x288_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 288
+    - 288
+    activation: gelu
+    lr: 0.0008
+  - id: w320x320_d0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    dropout: 0.2
+    lr: 0.0006
+  - id: w320x320_d0.2_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    dropout: 0.2
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320_d0.2_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    dropout: 0.2
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w320x320_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.001
+  - id: w320x320_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0004
+  - id: w320x320_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0006
+  - id: w320x320_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0008
+  - id: w320x320_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w320x320_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320_d0.3_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w320x320_d0.4_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    dropout: 0.4
+    lr: 0.0006
+  - id: w320x320_d0.4_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    dropout: 0.4
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320_d0.4_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    activation: gelu
+    dropout: 0.4
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w320x320_d0.5
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+  - id: w320x320_d0.5_huber0.1
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320_d0.5_huber0.1_lr1e-3
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320_d0.5_huber0.1_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320_d0.5_huber0.2
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    loss: huber
+    huber_delta: 0.2
+  - id: w320x320_d0.5_huber0.2_lr1e-3
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.2
+  - id: w320x320_d0.5_huber0.2_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w320x320_d0.5_lr4e-4
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    lr: 0.0004
+  - id: w320x320_d0.5_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    lr: 0.0006
+  - id: w320x320_d0.5_lr8e-4
+    hidden_sizes:
+    - 320
+    - 320
+    dropout: 0.5
+    lr: 0.0008
+  - id: w320x320x320_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w320x320x320_d0.3_huber0.1_gelu
+    hidden_sizes:
+    - 320
+    - 320
+    - 320
+    activation: gelu
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320x320_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 320
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320x320_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w320x320x320_d0.3_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 320
+    - 320
+    - 320
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w352x352_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 352
+    - 352
+    activation: gelu
+    lr: 0.001
+  - id: w352x352_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 352
+    - 352
+    activation: gelu
+    lr: 0.0004
+  - id: w352x352_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 352
+    - 352
+    activation: gelu
+    lr: 0.0006
+  - id: w352x352_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 352
+    - 352
+    activation: gelu
+    lr: 0.0008
+  - id: w384x384_d0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    dropout: 0.2
+    lr: 0.0006
+  - id: w384x384_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.001
+  - id: w384x384_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0004
+  - id: w384x384_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0006
+  - id: w384x384_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0008
+  - id: w384x384_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w384x384_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w384x384_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w384x384_d0.3_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w384x384_d0.4_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    activation: gelu
+    dropout: 0.4
+    lr: 0.0006
+  - id: w384x384x384_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w384x384x384_d0.3_huber0.1
+    hidden_sizes:
+    - 384
+    - 384
+    - 384
+    loss: huber
+    huber_delta: 0.1
+  - id: w384x384x384_d0.3_huber0.1_gelu
+    hidden_sizes:
+    - 384
+    - 384
+    - 384
+    activation: gelu
+    loss: huber
+    huber_delta: 0.1
+  - id: w384x384x384_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 384
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w384x384x384_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w384x384x384_d0.3_huber0.1_lr1e-3
+    hidden_sizes:
+    - 384
+    - 384
+    - 384
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w384x384x384_d0.3_huber0.1_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    - 384
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w384x384x384_d0.3_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 384
+    - 384
+    - 384
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w448x448_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.001
+  - id: w448x448_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0004
+  - id: w448x448_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0006
+  - id: w448x448_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0008
+  - id: w448x448_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w448x448_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448_d0.3_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w448x448x448_d0.3_huber0.05_gelu_lr1e-3
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.05
+  - id: w448x448x448_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w448x448x448_d0.3_huber0.05_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w448x448x448_d0.3_huber0.1
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_gelu
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_gelu_lr4e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0004
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_gelu_lr8e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0008
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_lr1e-3
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_lr4e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    lr: 0.0004
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.1_lr8e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    lr: 0.0008
+    loss: huber
+    huber_delta: 0.1
+  - id: w448x448x448_d0.3_huber0.2_gelu_lr1e-3
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.2
+  - id: w448x448x448_d0.3_huber0.2_gelu_lr6e-4
+    hidden_sizes:
+    - 448
+    - 448
+    - 448
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.2
+  - id: w512x512_d0.3_gelu_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.001
+  - id: w512x512_d0.3_gelu_lr4e-4
+    hidden_sizes:
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0004
+  - id: w512x512_d0.3_gelu_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0006
+  - id: w512x512_d0.3_gelu_lr8e-4
+    hidden_sizes:
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0008
+  - id: w512x512_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w512x512_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.2_huber0.05_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    dropout: 0.2
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w512x512x512_d0.2_huber0.1_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    dropout: 0.2
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.03_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.03
+  - id: w512x512x512_d0.3_huber0.03_lr4e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0004
+    loss: huber
+    huber_delta: 0.03
+  - id: w512x512x512_d0.3_huber0.03_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.03
+  - id: w512x512x512_d0.3_huber0.03_lr8e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0008
+    loss: huber
+    huber_delta: 0.03
+  - id: w512x512x512_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w512x512x512_d0.3_huber0.05_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.05
+  - id: w512x512x512_d0.3_huber0.05_lr4e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0004
+    loss: huber
+    huber_delta: 0.05
+  - id: w512x512x512_d0.3_huber0.05_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w512x512x512_d0.3_huber0.05_lr8e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0008
+    loss: huber
+    huber_delta: 0.05
+  - id: w512x512x512_d0.3_huber0.08_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.08
+  - id: w512x512x512_d0.3_huber0.08_lr4e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0004
+    loss: huber
+    huber_delta: 0.08
+  - id: w512x512x512_d0.3_huber0.08_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.08
+  - id: w512x512x512_d0.3_huber0.08_lr8e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0008
+    loss: huber
+    huber_delta: 0.08
+  - id: w512x512x512_d0.3_huber0.1
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.15_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.15
+  - id: w512x512x512_d0.3_huber0.15_lr4e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0004
+    loss: huber
+    huber_delta: 0.15
+  - id: w512x512x512_d0.3_huber0.15_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.15
+  - id: w512x512x512_d0.3_huber0.15_lr8e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0008
+    loss: huber
+    huber_delta: 0.15
+  - id: w512x512x512_d0.3_huber0.1_gelu
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    activation: gelu
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.1_gelu_lr4e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0004
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.1_gelu_lr8e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    activation: gelu
+    lr: 0.0008
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.1_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.1_lr4e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0004
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.1_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_huber0.1_lr8e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.0008
+    loss: huber
+    huber_delta: 0.1
+  - id: w512x512x512_d0.3_lr1e-3
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    lr: 0.001
+  - id: w512x512x512_d0.4_huber0.05_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    dropout: 0.4
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w512x512x512_d0.4_huber0.1_lr6e-4
+    hidden_sizes:
+    - 512
+    - 512
+    - 512
+    dropout: 0.4
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w576x576_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 576
+    - 576
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w576x576_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 576
+    - 576
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w640x640_d0.3_huber0.05_gelu_lr6e-4
+    hidden_sizes:
+    - 640
+    - 640
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.05
+  - id: w640x640_d0.3_huber0.1_gelu_lr1e-3
+    hidden_sizes:
+    - 640
+    - 640
+    activation: gelu
+    lr: 0.001
+    loss: huber
+    huber_delta: 0.1
+  - id: w640x640_d0.3_huber0.1_gelu_lr6e-4
+    hidden_sizes:
+    - 640
+    - 640
+    activation: gelu
+    lr: 0.0006
+    loss: huber
+    huber_delta: 0.1
+  - id: w96x96_d0.5
+    hidden_sizes:
+    - 96
+    - 96
+    dropout: 0.5
+  - id: w96x96_d0.5_lr4e-4
+    hidden_sizes:
+    - 96
+    - 96
+    dropout: 0.5
+    lr: 0.0004
+  - id: w96x96_d0.5_lr6e-4
+    hidden_sizes:
+    - 96
+    - 96
+    dropout: 0.5
+    lr: 0.0006
+  - id: w96x96_d0.5_lr8e-4
+    hidden_sizes:
+    - 96
+    - 96
+    dropout: 0.5
+    lr: 0.0008
+  - id: w96x96x96_d0.4_lr1e-3
+    hidden_sizes:
+    - 96
+    - 96
+    - 96
+    dropout: 0.4
+    lr: 0.001
+  - id: w96x96x96_d0.4_lr6e-4
+    hidden_sizes:
+    - 96
+    - 96
+    - 96
+    dropout: 0.4
+    lr: 0.0006
