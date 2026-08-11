@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extrapolation (OOD) diagnostic for derived_8.4-eval-mlp-2.0.
+"""Extrapolation (OOD) diagnostic for derived_8.4-eval-mlp-2.1.
 
 Same definition as mlp-1.0: test rows whose top-k gain backbone features fall
 outside the trainval [min, max] range are flagged OOD; compares RMSE / R² of
@@ -31,7 +31,7 @@ sys.path.insert(0, str(EXP_DIR))
 
 from eval11.data import load_experiment_data  # noqa: E402
 from eval11.evaluator import compute_metrics  # noqa: E402
-from mlp20.plots import matplotlib, plt  # noqa: E402
+from mlp21.plots import matplotlib, plt  # noqa: E402
 
 FAMILY_LABELS = {
     "2regime_54": "2regime-54",

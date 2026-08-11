@@ -1,27 +1,31 @@
 #!/usr/bin/env python3
-"""Driver for the derived_8.4-eval-mlp-2.0 sweep (3 families, 2 seeds).
+"""Driver for the derived_8.4-eval-mlp-2.1 sweep (3 families, 3-phase seeds).
 
-Protocol is data_version 6: train on train (2017-2020), early-stop on val
+Protocol is data_version 8: train on train (2017-2020), early-stop on val
 (2021-2022), test on test (2023-2025). Every job is ALSO evaluated at its
 best-val epoch on the AUX2020 holdout (the 2020 slice of train, n=2519) —
 DIAGNOSTIC ONLY (mlp-1.2 documented it measures train fit, not generalization).
 
-Families: 2regime_96 (c0/c1 on the 96-pool), 2regime_54 (c0 = 54 backbone,
-c1 = 54 + eval-1.1 winner's 10 delta features), and NEW 2regime_mixed
-(c0 = 96-pool, c1 = 54 + deltas) — the per-cluster-optimal feature allocation
-motivated by mlp-1.3's per-cluster R2 (c0-96 0.754 > c0-54 0.737; c1-54 0.831
-> c1-96 0.776).
+Families (unchanged from 2.0): 2regime_96 (c0/c1 on the 96-pool), 2regime_54
+(c0 = 54 backbone, c1 = 54 + eval-1.1 winner's 10 delta features), and
+2regime_mixed (c0 = 96-pool, c1 = 54 + deltas) — the per-cluster-optimal
+feature allocation that broke the ceiling in 2.0 (val top-5 ensemble 0.8003).
 
-Two-phase, 2-seed sweep:
+Three-phase, 3-seed sweep (2.1: dense seed coverage to beat the 2.0 finding
+that the mixed family's val ranking is noisy — Spearman(val, test) = -0.455):
   phase 1 (default): every (family x config) trains seed[0] (42).
-  phase 2 (--phase2-top-n N): after phase 1, the top-N configs per family by
-    val RMSE (2-seed-able, honest signal) train seed[1] (7). Final per-config
-    metrics are the mean over completed seeds; test predictions are the
-    seed-mean.
+  phase 2 (--phase2-top-n N): the top-N configs per family by val RMSE
+    (2-seed-able, honest signal) train seed[1] (7).
+  phase 3 (--phase3-top-n M): the top-M per family by the now-2-seed val RMSE
+    train seed[2] (123) -> 3-seed mean val RMSE winner selection.
+  Per-family N/M via int-or-dict sweep.phase2_top_n / phase3_top_n (the mixed
+  family, the winner, gets the densest coverage). Final per-config metrics are
+  the mean over completed seeds; test predictions are the seed-mean.
 
-Architectures: mlp (plain), fg (FeatureGroupedMLP), plr (PLR encoding) enter
-the winner pool; residual/ft are reference-only (documented failures in
-mlp-1.1/1.2).
+Architectures: ONLY `mlp` configs run in 2.1 — `fg`/`plr` are documented
+negatives from 2.0 (best 0.782 / 0.720 vs plain-MLP 0.790) and get no GPU.
+The winner pool filter in the phase-2/3 selection stays mlp/fg/plr so the
+protocol text is unchanged (it is effectively mlp-only).
 
 Per-config model layout:
     models/<family>/<config_id>/seed_<s>/{checkpoint.pt, best_model.pt,
@@ -33,7 +37,8 @@ Usage:
     python run_mlp_sweep.py [--config config.yaml] [--out .] [--resume]
                             [--n-parallel N] [--families 2regime_96,...]
                             [--only id1,id2] [--phase2-top-n N]
-                            [--phase2-only] [--smoke]
+                            [--phase3-top-n M] [--phase2-only] [--phase3-only]
+                            [--smoke]
 
 Outputs:
     artifacts/tensors_<family>[_cluster{0,1}].npz   preprocessed tensors (+aux)
@@ -67,7 +72,7 @@ sys.path.insert(0, str(EXP_DIR))
 
 from eval11.data import load_experiment_data  # noqa: E402
 from eval11.routers import get_router  # noqa: E402
-from mlp20.data import build_feature_set, save_feature_set  # noqa: E402
+from mlp21.data import build_feature_set, save_feature_set  # noqa: E402
 
 
 def load_cluster_deltas(config: dict, exp_dir: Path) -> list[str]:
@@ -342,6 +347,43 @@ def aggregate_config(out: Path, family: str, cid: str, config: dict) -> dict | N
             }
         agg["per_cluster"] = per_cluster
 
+    # SWA deployment + pooled live/SWA val RMSE — the aggregated meta cannot
+    # otherwise report them (2.0 left val_rmse_live/val_rmse_swa/deployed NaN in
+    # the leaderboard). Pooled = n_val-weighted over clusters, mean over seeds;
+    # `deployed` = "swa" iff ANY (seed, cluster) specialist deployed the SWA
+    # snapshot (honest within-val rule per specialist), n_deployed_swa counts them.
+    if "per_cluster" in agg:
+        live_vals: list[tuple[int, float]] = []
+        swa_vals: list[tuple[int, float]] = []
+        n_deployed_swa = 0
+        n_specs = 0
+        for m in metas.values():
+            pc = m.get("per_cluster", {})
+            for cl in ("0", "1"):
+                cm = pc.get(cl, {})
+                n_specs += 1
+                if cm.get("deployed") == "swa":
+                    n_deployed_swa += 1
+                if cm.get("val_rmse_live") is not None:
+                    live_vals.append((int(cm.get("n_val", 0)), float(cm["val_rmse_live"])))
+                if cm.get("val_rmse_swa") is not None:
+                    swa_vals.append((int(cm.get("n_val", 0)), float(cm["val_rmse_swa"])))
+
+        def _pool(vals: list[tuple[int, float]]) -> float:
+            # never-started SWA evals keep inf in the per-seed metas; treat
+            # them as missing so the pooled value is NaN, not inf (reporting).
+            finite = [(n, r) for n, r in vals if np.isfinite(r)]
+            if not finite:
+                return float("nan")
+            tot = sum(n for n, _ in finite)
+            return float(np.sqrt(sum((n / tot) * r**2 for n, r in finite)))
+
+        agg["val_rmse_live"] = _pool(live_vals) if live_vals else float("nan")
+        agg["val_rmse_swa"] = _pool(swa_vals) if swa_vals else float("nan")
+        agg["deployed"] = "swa" if n_deployed_swa else "live"
+        agg["n_deployed_swa"] = n_deployed_swa
+        agg["n_specs"] = n_specs
+
     with open(cdir / "meta.json", "w", encoding="utf-8") as f:
         json.dump(agg, f, indent=2, default=str)
     return agg
@@ -411,6 +453,8 @@ def run_jobs(out: Path, jobs, n_parallel: int, config: dict) -> dict[str, float]
                 "--family", family, "--config-id", cid, "--seed", str(seed),
                 "--artifacts", str(artifacts), "--out", str(out),
             ]
+            if mode == "resume":
+                cmd.append("--resume")
             logf = open(log_path, "w", encoding="utf-8")
             proc = subprocess.Popen(cmd, stdout=logf, stderr=subprocess.STDOUT, cwd=str(EXP_DIR))
             active.append((proc, (family, cid, seed, mode), logf, time.perf_counter()))
@@ -508,6 +552,45 @@ def collect_sweep_results(out: Path, config: dict, families, per_job_time: dict)
         print(sub[cols].to_string(index=False), flush=True)
 
 
+def top_n_for(spec, family: str, default: int) -> int:
+    """Resolve a phase top-N spec (int, or {family: int}) for one family."""
+    if spec is None:
+        return default
+    if isinstance(spec, dict):
+        return int(spec.get(family, default))
+    return int(spec)
+
+
+def _phase_jobs(out: Path, families, seeds_for_phase, config: dict, metric: str,
+                top_n_spec, phase_name: str) -> list[tuple[str, str, int, str]]:
+    """Build the (family, cid, seed, mode) jobs for a later-seed phase.
+
+    Phase 2 (seed 7) and phase 3 (seed 123) both add one seed to the top-N
+    honest-architecture configs per family by the phase metric (val_rmse).
+    """
+    jobs: list[tuple[str, str, int, str]] = []
+    for family in families:
+        rank = robust_ranking(out, family, config, metric=metric)
+        # winner pool = plain MLP + FeatureGroupedMLP + PLR (residual/ft are
+        # reference-only, documented failures in mlp-1.1/1.2).
+        honest = rank[rank["architecture"].isin(("mlp", "fg", "plr"))].head(top_n_for(top_n_spec, family, 10))
+        for _, r in honest.iterrows():
+            cid = r["config_id"]
+            jdir = job_dir(out, family, cid, seeds_for_phase)
+            if seed_complete(jdir, expected_version(config)):
+                mode = "skip"
+            elif seed_resumable(jdir, expected_version(config)):
+                mode = "resume"
+            else:
+                mode = "fresh"
+            jobs.append((family, cid, seeds_for_phase, mode))
+    n_done = len([j for j in jobs if j[3] == "skip"])
+    n_resume = len([j for j in jobs if j[3] == "resume"])
+    print(f"[{phase_name}] top-{top_n_spec} MLP configs/family by {metric} get seed {seeds_for_phase}: "
+          f"{len(jobs)} jobs ({n_done} done, {n_resume} resume)", flush=True)
+    return jobs
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, default=EXP_DIR / "config.yaml")
@@ -523,7 +606,14 @@ def main() -> None:
                         help="ranking metric for phase-2 2nd-seed selection: "
                              "robust_score (default) | val_rmse")
     parser.add_argument("--phase2-only", action="store_true",
-                        help="skip phase-1 jobs; only run the phase-2 2nd-seed jobs")
+                        help="skip phase-1 jobs; run phases 2 and 3 only")
+    parser.add_argument("--phase3-top-n", type=int, default=None,
+                        help="after phase 2, add the 3rd seed to the top-N MLP configs per "
+                             "family by the phase-3 metric (default: sweep.phase3_top_n)")
+    parser.add_argument("--phase3-metric", default=None,
+                        help="ranking metric for phase-3 3rd-seed selection: val_rmse (default)")
+    parser.add_argument("--phase3-only", action="store_true",
+                        help="skip phases 1-2; run the phase-3 3rd-seed jobs only")
     parser.add_argument("--smoke", action="store_true",
                         help="train 3 epochs max (data_version -1: never reused by real runs)")
     args = parser.parse_args()
@@ -543,10 +633,14 @@ def main() -> None:
     if args.families:
         families = [f for f in families if f in args.families.split(",")]
     seeds = [int(s) for s in config["sweep"].get("seeds", [42])]
-    phase2_top_n = args.phase2_top_n if args.phase2_top_n is not None else int(config["sweep"].get("phase2_top_n", 10))
+    phase2_top_n = args.phase2_top_n if args.phase2_top_n is not None else config["sweep"].get("phase2_top_n", 10)
     phase2_metric = args.phase2_metric or str(config["sweep"].get("phase2_metric", "robust_score"))
     if phase2_metric not in ("robust_score", "val_rmse"):
         raise SystemExit(f"--phase2-metric must be robust_score or val_rmse, got {phase2_metric}")
+    phase3_top_n = args.phase3_top_n if args.phase3_top_n is not None else config["sweep"].get("phase3_top_n", None)
+    phase3_metric = args.phase3_metric or str(config["sweep"].get("phase3_metric", "val_rmse"))
+    if phase3_metric not in ("robust_score", "val_rmse"):
+        raise SystemExit(f"--phase3-metric must be robust_score or val_rmse, got {phase3_metric}")
 
     t0 = time.perf_counter()
     with open(artifacts / "families.json", "w", encoding="utf-8") as f:
@@ -572,7 +666,7 @@ def main() -> None:
     t_start = time.perf_counter()
     all_wall: dict[str, float] = {}
 
-    if not args.phase2_only:
+    if not args.phase2_only and not args.phase3_only:
         # ---- phase 1: seed[0] for every (family, config) ----
         p1 = make_jobs(args.out, families, config_ids_by_family, [seeds[0]], config)
         todo = [j for j in p1 if j[3] != "skip"]
@@ -581,28 +675,17 @@ def main() -> None:
         all_wall.update(run_jobs(args.out, todo, n_parallel, config))
         collect_sweep_results(args.out, config, families, all_wall)
 
-    # ---- phase 2: 2nd seed for the top-N honest-architecture configs per family ----
-    p2: list[tuple[str, str, int, str]] = []
-    if len(seeds) > 1:
-        for family in families:
-            rank = robust_ranking(args.out, family, config, metric=phase2_metric)
-            # winner pool = plain MLP + FeatureGroupedMLP + PLR (residual/ft are
-            # reference-only, documented failures in mlp-1.1/1.2).
-            honest = rank[rank["architecture"].isin(("mlp", "fg", "plr"))].head(phase2_top_n)
-            for _, r in honest.iterrows():
-                cid = r["config_id"]
-                jdir = job_dir(args.out, family, cid, seeds[1])
-                if seed_complete(jdir, expected_version(config)):
-                    mode = "skip"
-                elif seed_resumable(jdir, expected_version(config)):
-                    mode = "resume"
-                else:
-                    mode = "fresh"
-                p2.append((family, cid, seeds[1], mode))
-        print(f"[phase2] top-{phase2_top_n} MLP configs/family by {phase2_metric} get seed {seeds[1]}: "
-              f"{len(p2)} jobs ({len([j for j in p2 if j[3]=='skip'])} done, "
-              f"{len([j for j in p2 if j[3]=='resume'])} resume)", flush=True)
+    if not args.phase3_only and len(seeds) > 1:
+        # ---- phase 2: 2nd seed (seeds[1]) for the top-N honest configs per family ----
+        p2 = _phase_jobs(args.out, families, seeds[1], config, phase2_metric, phase2_top_n, "phase2")
         all_wall.update(run_jobs(args.out, [j for j in p2 if j[3] != "skip"], n_parallel, config))
+        collect_sweep_results(args.out, config, families, all_wall)
+
+    if len(seeds) > 2:
+        # ---- phase 3: 3rd seed (seeds[2]) for the top-M per family -> 3-seed winners ----
+        p3 = _phase_jobs(args.out, families, seeds[2], config, phase3_metric, phase3_top_n, "phase3")
+        all_wall.update(run_jobs(args.out, [j for j in p3 if j[3] != "skip"], n_parallel, config))
+        collect_sweep_results(args.out, config, families, all_wall)
 
     sweep_wall = time.perf_counter() - t_start
     collect_sweep_results(args.out, config, families, all_wall)

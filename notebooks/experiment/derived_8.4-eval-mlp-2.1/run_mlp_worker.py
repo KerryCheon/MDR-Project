@@ -31,7 +31,7 @@ sys.path.insert(0, str(EVAL11_DIR))
 sys.path.insert(0, str(EXP_DIR))
 
 from eval11.evaluator import compute_metrics  # noqa: E402
-from mlp20.trainer import train_one_config  # noqa: E402
+from mlp21.trainer import train_one_config  # noqa: E402
 
 CLUSTERS = ("0", "1")
 

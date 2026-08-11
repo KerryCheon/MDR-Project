@@ -1,0 +1,38 @@
+{
+  "config": {
+    "family": "2regime_54",
+    "config_id": "w384x384_d0.3_gelu",
+    "seed": 42,
+    "spec": 0,
+    "paths": {
+      "2.1": "experiment/derived_8.4-eval-mlp-2.1/models/2regime_54/w384x384_d0.3_gelu/seed_42/spec_0/curves.npy",
+      "2.0": "experiment/derived_8.4-eval-mlp-2.0/models/2regime_54/w384x384_d0.3_gelu/seed_42/spec_0/curves.npy"
+    }
+  },
+  "per_row_max_abs_diff": {
+    "val": {
+      "n_epochs": 300,
+      "max_abs_diff": 0.0,
+      "n_nonzero": 0
+    },
+    "aux": {
+      "n_epochs": 300,
+      "max_abs_diff": 0.0,
+      "n_nonzero": 0
+    },
+    "test": {
+      "n_epochs": 300,
+      "max_abs_diff": 0.0,
+      "n_nonzero": 0
+    }
+  },
+  "best_val_epoch_1idx": {
+    "2.1": 240,
+    "2.0": 240
+  },
+  "best_val_rmse": {
+    "2.1": 0.0662436563394433,
+    "2.0": 0.0662436563394433
+  },
+  "verdict": "bit-identical"
+}

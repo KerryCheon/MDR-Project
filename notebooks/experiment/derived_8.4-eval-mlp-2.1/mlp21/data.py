@@ -1,6 +1,6 @@
-"""Data preprocessing and tensor preparation for derived_8.4-eval-mlp-2.0.
+"""Data preprocessing and tensor preparation for derived_8.4-eval-mlp-2.1.
 
-Protocol (data_version 6) — train on the OFFICIAL train split (2017-2020),
+Protocol (data_version 8) — train on the OFFICIAL train split (2017-2020),
 early-stop / select configs on the OFFICIAL val split (2021-2022), evaluate on
 the untouched test split (2023-2025). Identical preprocessing to mlp-1.3
 (data_version 5): an AUXILIARY 2020 holdout (the last year of train, n=2,519)

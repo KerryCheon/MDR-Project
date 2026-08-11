@@ -1,4 +1,4 @@
-"""Plotting helpers for derived_8.4-eval-mlp-2.0.
+"""Plotting helpers for derived_8.4-eval-mlp-2.1.
 
 Re-exports the shared diagnostics from eval11.plots and adds MLP-specific
 figures: per-epoch test-RMSE loss curves and the sweep summary plot.

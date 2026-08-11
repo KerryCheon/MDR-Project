@@ -2,4 +2,7 @@ models/*
 artifacts/tensors_*
 artifacts/*.npy
 artifacts/*.npz
+artifacts/slurm/
 calibrated_preds*/*
+verify_rng_guard_out/*
+!verify_rng_guard_out/summary.json

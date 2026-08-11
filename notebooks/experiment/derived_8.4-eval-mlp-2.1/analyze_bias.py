@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Systematic-bias diagnostic for derived_8.4-eval-mlp-2.0 (offline, no GPU).
+"""Systematic-bias diagnostic for derived_8.4-eval-mlp-2.1 (offline, no GPU).
 
 mlp-1.2/1.3 documented that the 2-regime-96 MLPs carry a systematic positive
 test bias with bias^2 ~ 10-17% of MSE (vs ~0.5% for the XGBoost 2-regime
@@ -100,11 +100,11 @@ def compute_bias_by_cluster(exp_dir: Path, sweep: pd.DataFrame) -> pd.DataFrame:
 
 def print_report(bias_df: pd.DataFrame, cluster_df: pd.DataFrame) -> None:
     print("=" * 78)
-    print("SYSTEMATIC-BIAS DIAGNOSTIC — derived_8.4-eval-mlp-2.0")
+    print("SYSTEMATIC-BIAS DIAGNOSTIC — derived_8.4-eval-mlp-2.1")
     print("=" * 78)
     print("\nbias^2/MSE share = squared pooled test bias / MSE (MSE = bias^2 + ubRMSE^2).")
     print("1.3 reference medians: 2regime_96 ~10-17%, 2regime_54 ~1%.")
-    print("2.0 success criterion: per-family median < 5%.\n")
+    print("2.1 success criterion: per-family median < 5%.\n")
 
     print("### Per-family median bias^2/MSE share (honest architectures)")
     print("| family     | n_configs |   med_bias2_mse_share |   med_test_bias |   med_test_r2 |")

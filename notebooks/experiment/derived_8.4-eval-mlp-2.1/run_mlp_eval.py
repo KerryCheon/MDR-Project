@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Aggregate the derived_8.4-eval-mlp-2.0 sweep into the eval-1.1-style report.
+"""Aggregate the derived_8.4-eval-mlp-2.1 sweep into the eval-1.1-style report.
 
 No retraining: the sweep already produced per-seed test predictions/models per
-job. Picks the winners per family by 2-seed mean val RMSE among the honest
-architectures (mlp / fg / plr — residual/ft are reference-only, documented
-failures), reports the selection diagnostics + Spearman correlations so the
-fix is auditable, and builds the leaderboard (metrics_summary.csv),
-per-regime breakdown, offline val top-k and NEW cross-family ensembles (the
-54/96/mixed families are complementary: 54 near-unbiased, 96 extrapolation,
-mixed per-cluster-optimal), selected_features.json, all figures, and the
-timing summary.
+job. Picks the winners per family by 3-seed mean val RMSE among the honest
+architectures (mlp / fg / plr — only mlp configs run in 2.1; fg/plr are
+documented negatives from 2.0), reports the selection diagnostics + Spearman
+correlations so the fix is auditable, and builds the leaderboard
+(metrics_summary.csv), per-regime breakdown, offline val top-k and cross-family
+ensembles (the 54/96/mixed families are complementary: 54 near-unbiased, 96
+extrapolation, mixed per-cluster-optimal), selected_features.json, all figures,
+and the timing summary. Reference rows include the XGBoost eval-1.1 baselines,
+the mlp-1.3 rows, and NEW mlp-2.0 rows (val-selected winners, test-best refs,
+val top-k ensembles, cross-family ensemble) read from the 2.0
+metrics_summary.csv via config.mlp20_reference_file.
 
 Usage:
     python run_mlp_eval.py [--config config.yaml] [--out .] [--top-n 5]
@@ -20,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -33,13 +37,14 @@ EXP_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = EXP_DIR.parents[2]
 EVAL11_DIR = EXP_DIR.parent / "derived_8.4-eval-1.1"
 MLP13_DIR = EXP_DIR.parent / "derived_8.4-eval-mlp-1.3"
+MLP20_DIR = EXP_DIR.parent / "derived_8.4-eval-mlp-2.0"
 sys.path.insert(0, str(EVAL11_DIR))
 sys.path.insert(0, str(EXP_DIR))
 
 from eval11.data import load_experiment_data  # noqa: E402
 from eval11.evaluator import compute_metrics  # noqa: E402
 from generate_station_year_table import generate_table_from_preds  # noqa: E402
-from mlp20.plots import (  # noqa: E402
+from mlp21.plots import (  # noqa: E402
     plot_diagnostics,
     plot_mlp_loss_curves,
     plot_per_regime_diagnostics,
@@ -151,11 +156,85 @@ def load_mlp13_references(config: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
     return df_ref, per_reg
 
 
+def load_mlp20_references(config: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Best MLP-2.0 rows (val-selected winner, test-best ref, val top-5 ensemble,
+    cross-family ensemble) from the 2.0 metrics_summary.csv.
+
+    2.0's metrics_summary uses strategy_name "MLP_<family>" for individual
+    config rows and offline val top-k ensembles; the honest val-selected
+    winner is the row with the minimum (non-NaN) val_rmse. 2.1's headline
+    comparison is against 2.0's mixed val top-5 ensemble (0.8003) and its
+    2-seed honest single (0.7903).
+    """
+    ref_file = PROJECT_ROOT / Path(config["mlp20_reference_file"])
+    df = pd.read_csv(ref_file)
+    fam_map = {"2regime_96": "2regime_96", "2regime_54": "2regime_54", "2regime_mixed": "2regime_mixed"}
+    keep = []
+    for fam in fam_map:
+        sub = df[df["family"] == fam]
+        if sub.empty:
+            continue
+        sub = sub.copy()
+        # val-selected winner = min val_rmse among the honest MLP_<fam> rows
+        honest = sub[sub["strategy_name"] == f"MLP_{fam}"].dropna(subset=["val_rmse"]).sort_values("val_rmse")
+        if not honest.empty:
+            r = honest.iloc[0].copy()
+            r["strategy_name"] = "MLP_2.0_Reference"
+            r["model_name"] = f"MLP-2.0 {FAMILY_LABELS[fam]} (val_sel: {r['config_id']})"
+            keep.append(r)
+        # test-best reference rows (reporting only)
+        tb = sub[sub["strategy_name"] == "MLP_testbest_reference"].sort_values("pooled_r2", ascending=False).head(1)
+        if not tb.empty:
+            r = tb.iloc[0].copy()
+            r["strategy_name"] = "MLP_2.0_Reference"
+            r["model_name"] = f"MLP-2.0 {FAMILY_LABELS[fam]} (test_best: {r['config_id']})"
+            keep.append(r)
+        # best offline ensemble row (val top-k avg) per family — keep its name
+        ens_topk = sub[(sub["strategy_name"] == f"MLP_{fam}")
+                       & sub["model_name"].str.contains("val top-", regex=False)]
+        if not ens_topk.empty:
+            r = ens_topk.sort_values("pooled_r2", ascending=False).iloc[0].copy()
+            r["strategy_name"] = "MLP_2.0_Reference"
+            r["model_name"] = "MLP-2.0 " + r["model_name"].removeprefix("MLP ")
+            keep.append(r)
+    # cross-family ensemble row (2.0's strongest cross-family result)
+    cf = df[df["strategy_name"] == "MLP_cross_family"].sort_values("pooled_r2", ascending=False)
+    if not cf.empty:
+        r = cf.iloc[0].copy()
+        r["strategy_name"] = "MLP_2.0_Reference"
+        r["model_name"] = "MLP-2.0 cross-family (val winners)"
+        keep.append(r)
+    df_ref = pd.DataFrame(keep) if keep else pd.DataFrame(columns=df.columns)
+
+    # per-regime rows for the 2.0 val-selected winners
+    per_reg = pd.read_csv(MLP20_DIR / "per_regime_metrics_summary.csv")
+    per_reg = per_reg[per_reg["strategy_name"].isin([f"MLP_{f}" for f in fam_map])].copy()
+    winners = {}
+    for fam in fam_map:
+        sub = df[df["family"] == fam]
+        honest = sub[sub["strategy_name"] == f"MLP_{fam}"].dropna(subset=["val_rmse"]).sort_values("val_rmse")
+        if not honest.empty:
+            winners[f"MLP_{fam}"] = honest.iloc[0]["config_id"]
+    keep_rows = []
+    for strat, winner in winners.items():
+        sub = per_reg[per_reg["strategy_name"] == strat]
+        # strict match: winner + ")" so a winner id that is a prefix of another
+        # (e.g. ..._lr1e-3 vs ..._lr1e-3_swa) does not pull in the sibling rows
+        keep_rows.append(sub[sub["model_name"].str.contains(re.escape(winner) + r"\)", regex=True)])
+    per_reg = pd.concat(keep_rows, ignore_index=True) if keep_rows else pd.DataFrame(columns=per_reg.columns)
+    per_reg["strategy_name"] = "MLP_2.0_Reference"
+    return df_ref, per_reg
+
+
 def mlp_leaderboard_row(
     family: str, config_id: str, meta: dict, test_meta: dict, config: dict, c1_deltas: list[str],
-    *, tag: str = "", label: str | None = None,
+    *, tag: str = "", label: str | None = None, out_dir: Path | None = None, n_c0: int | None = None,
 ) -> dict:
     backbone = list(config["shared_backbone_54"])
+    # cluster-0 feature count: 96-pool families use the candidate pool (96),
+    # the 54 family (and 2.0's "global" rows) use the shared 54-feature backbone.
+    if n_c0 is None:
+        n_c0 = len(backbone)
     test = meta["test"]
     mname = label or f"MLP {FAMILY_LABELS[family]} ({config_id})"
     row = {
@@ -168,11 +247,11 @@ def mlp_leaderboard_row(
         "pooled_bias": test["bias"],
         "pooled_mae": test["mae"],
         "pooled_pearson": test["pearson"],
-        "global_feature_count": len(backbone),
+        "global_feature_count": n_c0,
         "cluster_0_additions": "",
         "cluster_1_additions": ";".join(c1_deltas) if "2regime" in family else "",
-        "cluster_0_feature_count": len(backbone),
-        "cluster_1_feature_count": len(backbone) + (len(c1_deltas) if "2regime" in family else 0),
+        "cluster_0_feature_count": n_c0,
+        "cluster_1_feature_count": n_c0 + (len(c1_deltas) if "2regime" in family else 0),
         "train_time_s": meta.get("train_time_s", float("nan")),
         "epochs": meta.get("epochs", float("nan")),
         "best_epoch": meta.get("best_epoch", float("nan")),
@@ -186,7 +265,7 @@ def mlp_leaderboard_row(
         "family": family,
         "n_seeds": meta.get("n_seeds", 1),
     }
-    preds = np.load(EXP_DIR / "models" / family / config_id / "preds.npy")
+    preds = np.load((out_dir or EXP_DIR) / "models" / family / config_id / "preds.npy")
     row.update(yearly_metrics(preds, test_meta))
     return row
 
@@ -194,7 +273,7 @@ def mlp_leaderboard_row(
 def print_selection_diagnostic(sweep: pd.DataFrame, test_meta: dict, out: Path) -> None:
     """Selection diagnostics: val-RMSE ranking + Spearman vs test (aux reported only)."""
     print("\n" + "=" * 78, flush=True)
-    print("SELECTION PROTOCOL v6 DIAGNOSTIC (selection = 2-seed mean val RMSE; robust/aux reported)", flush=True)
+    print("SELECTION PROTOCOL v8 DIAGNOSTIC (selection = 3-seed mean val RMSE; robust/aux reported)", flush=True)
     print("=" * 78, flush=True)
     for family in FAMILY_LABELS:
         sub = sweep[sweep["family"] == family].dropna(subset=["test_r2"]).copy()
@@ -235,6 +314,7 @@ def main() -> None:
     with open(args.config, encoding="utf-8") as f:
         config = yaml.safe_load(f)
 
+    data = load_experiment_data(PROJECT_ROOT, config)  # hoisted: needed for the leaderboard feature counts
     artifacts = args.out / "artifacts"
     test_meta = load_test_meta(artifacts)
     c1_deltas = load_cluster_deltas(config, EXP_DIR)
@@ -242,6 +322,7 @@ def main() -> None:
     sweep = pd.read_csv(args.out / "sweep_results.csv")
     xgb_df, xgb_per_reg = load_xgb_references(config)
     mlp13_df, mlp13_per_reg = load_mlp13_references(config)
+    mlp20_df, mlp20_per_reg = load_mlp20_references(config)
 
     print_selection_diagnostic(sweep, test_meta, args.out)
 
@@ -257,7 +338,9 @@ def main() -> None:
         for _, r in sub.head(args.top_n).iterrows():
             meta_path = args.out / "models" / family / r["config_id"] / "meta.json"
             meta = json.loads(meta_path.read_text(encoding="utf-8"))
-            rows.append(mlp_leaderboard_row(family, r["config_id"], meta, test_meta, config, c1_deltas))
+            n_c0 = len(data.candidate_pool) if family in ("2regime_96", "2regime_mixed") else len(config["shared_backbone_54"])
+            rows.append(mlp_leaderboard_row(family, r["config_id"], meta, test_meta, config, c1_deltas,
+                                            out_dir=args.out, n_c0=n_c0))
 
     # retrain + 5-seed ensembles (if present) as the final champion rows
     retrain_path = args.out / "retrain_results.csv"
@@ -507,11 +590,13 @@ def main() -> None:
             row = mlp_leaderboard_row(
                 family, r["config_id"], meta, test_meta, config, c1_deltas,
                 tag="MLP_testbest_reference", label=f"MLP {FAMILY_LABELS[family]} (test-best, {r['config_id']})",
+                out_dir=args.out,
+                n_c0=len(data.candidate_pool) if family in ("2regime_96", "2regime_mixed") else len(config["shared_backbone_54"]),
             )
             rows.append(row)
 
     df_mlp = pd.DataFrame(rows + retrain_rows)
-    df_summary = pd.concat([df_mlp, xgb_df, mlp13_df], ignore_index=True)
+    df_summary = pd.concat([df_mlp, xgb_df, mlp13_df, mlp20_df], ignore_index=True)
     df_summary = df_summary.sort_values("pooled_r2", ascending=False).reset_index(drop=True)
     df_summary.to_csv(args.out / "metrics_summary.csv", index=False)
     print(f"[eval] wrote metrics_summary.csv ({len(df_summary)} rows)", flush=True)
@@ -563,18 +648,17 @@ def main() -> None:
                 "cluster": int(cl), "n_train": meta["per_cluster"][cl]["n_train"],
                 "n_test": int(mask.sum()), **cm,
             })
-    df_per_reg = pd.concat([pd.DataFrame(per_reg_rows), xgb_per_reg, mlp13_per_reg], ignore_index=True)
+    df_per_reg = pd.concat([pd.DataFrame(per_reg_rows), xgb_per_reg, mlp13_per_reg, mlp20_per_reg], ignore_index=True)
     df_per_reg.to_csv(args.out / "per_regime_metrics_summary.csv", index=False)
     print(f"[eval] wrote per_regime_metrics_summary.csv ({len(df_per_reg)} rows)", flush=True)
 
     # ---- selected_features.json (eval-1.1 schema) ----
-    data = load_experiment_data(PROJECT_ROOT, config)
     selected = {
         "shared_backbone_54": list(config["shared_backbone_54"]),
         "candidate_pool_96": list(data.candidate_pool),
         "baseline_v0_50": list(data.v0_features),
         "cluster_1_delta_features": c1_deltas,
-        "selection_protocol": "2-seed mean val RMSE among mlp/fg/plr (aux2020 diagnostic only)",
+        "selection_protocol": "3-seed mean val RMSE among mlp/fg/plr (phases 1-2-3; aux2020 diagnostic only)",
         "mlp_winners": winners,
         "leaderboard": json.loads(df_summary.to_json(orient="records")),
     }
@@ -673,7 +757,23 @@ def main() -> None:
     # ---- timing summary ----
     timing = json.loads((args.out / "timing_log.json").read_text(encoding="utf-8"))
     timing["eval_wall_s"] = time.perf_counter() - t0
-    timing["gpu"] = {"device": "NVIDIA H100 PCIe 80GB", "n_parallel": config["sweep"]["n_parallel"]}
+    # Record the device(s) the training workers actually ran on (per-seed
+    # metas of the CURRENT data_version), not the eval host — so a CPU re-run
+    # of this script does not mislabel the H100-produced artifacts, and stale
+    # smoke (data_version -1) leftovers are excluded.
+    cur_version = int(config["sweep"].get("data_version", 4))
+    devices: set[str] = set()
+    for meta_p in (args.out / "models").glob("*/*/seed_*/meta.json"):
+        try:
+            payload = json.loads(meta_p.read_text(encoding="utf-8"))
+            if int(payload.get("config", {}).get("data_version", -1)) != cur_version:
+                continue
+            dev = payload.get("device")
+            if dev:
+                devices.add(str(dev))
+        except Exception:
+            continue
+    timing["gpu"] = {"device": ", ".join(sorted(devices)) or "unknown", "n_parallel": config["sweep"]["n_parallel"]}
     with open(args.out / "timing_log.json", "w", encoding="utf-8") as f:
         json.dump(timing, f, indent=2)
 
@@ -699,7 +799,7 @@ def main() -> None:
     # ---- print leaderboard ----
     cols = ["model_name", "strategy_name", "pooled_r2", "pooled_rmse", "pooled_bias", "pooled_mae"]
     print("\n" + "=" * 72, flush=True)
-    print("FINAL MODEL LEADERBOARD (derived_8.4-eval-mlp-2.0)", flush=True)
+    print("FINAL MODEL LEADERBOARD (derived_8.4-eval-mlp-2.1)", flush=True)
     print("=" * 72, flush=True)
     print(df_summary[cols].to_string(index=False), flush=True)
 

@@ -1,13 +1,13 @@
 """Training loop for one neural tabular model (global or a 2-regime specialist).
 
-Protocol (data_version 6): train on `train`, early-stop on `val`, evaluate on
-`test`. Identical to the mlp13 trainer (data_version 5) — train on the OFFICIAL
-train split (2017-2020), early-stop / select on the OFFICIAL val split
-(2021-2022), evaluate on the untouched test split (2023-2025) — with the
-AUXILIARY 2020 holdout (aux) kept as a DIAGNOSTIC ONLY (mlp-1.2 documented it
-measures train fit, not generalization).
+Protocol (data_version 8): train on `train`, early-stop on `val`, evaluate on
+`test`. Identical to the mlp20 trainer (data_version 6) apart from the 2.1 SWA
+fixes. Train on the OFFICIAL train split (2017-2020), early-stop / select on
+the OFFICIAL val split (2021-2022), evaluate on the untouched test split
+(2023-2025) — with the AUXILIARY 2020 holdout (aux) kept as a DIAGNOSTIC ONLY
+(mlp-1.2 documented it measures train fit, not generalization).
 
-New in mlp-2.0:
+New in mlp-2.0 (kept):
   - swa=True: Stochastic Weight Averaging (Izmailov et al. 2018). From
     `swa_start_frac` of max_epochs onward, maintain a running average of the
     model state (params + BN buffers, excluding num_batches_tracked) updated
@@ -17,12 +17,23 @@ New in mlp-2.0:
     (swa_bn_recal=True, standard SWA update_bn) so the val signal is honest.
     Early stopping keeps using the LIVE model's val with patience-60 (the
     1.3-confirmed rule); the deployed model is the SWA snapshot iff its best
-    val RMSE beats the live best — an honest within-val comparison. This
-    replaces the 1.3 per-step EMA, which was documented as a trainer-level
-    failure (decay 0.999/step lags ~70 epochs behind the fast-moving head).
-    SWA targets the 1.2/1.3 finding that test bottoms out early (~ep 90)
-    while val stays flat to ep 260: it smooths the flat-val region instead of
-    picking one late epoch.
+    val RMSE beats the live best — an honest within-val comparison.
+
+New in mlp-2.1 (the two documented fixes from the 2.0 SWA section):
+  - RNG guard: the SWA snapshot evaluation (`_eval_swa_snapshot`) runs the
+    train loader in train mode (BN recalibration) and iterates the val/aux/test
+    loaders — ALL of which consume the shared torch RNG (DataLoader iteration
+    consumes RNG even with shuffle=False), which in 2.0 made a swa=true job's
+    live trajectory diverge from its swa=false anchor (the 2.0 README's "gains
+    are live-trajectory artifacts" caveat). In 2.1 the whole snapshot
+    evaluation runs inside `_rng_guard()`, which restores the torch / numpy /
+    random RNG states on exit, so a swa=true job's LIVE trajectory is
+    bit-identical to its swa=false anchor. Verified by a pre-sweep stack check
+    (anchor val curve == swa_late live val curve).
+  - `swa_start_frac` is a swept knob ({0.7, 0.75, 0.8, 0.85} in the 2.1
+    configs; 2.0 hard-coded 0.6, which averaged over the 240-400 region and
+    never beat the live best). 0.85 x 400 = 340 risks never starting before
+    the patience-60 early stop, so the sweep tests all four values.
 
 Keeps the mlp-1.3 checkpoint/resume contract (checkpoint.pt every
 checkpoint_every epochs and at early stop) so interrupted jobs resume exactly.
@@ -32,8 +43,10 @@ curves_swa.npy (when swa=True) is the SWA snapshot's [val, aux, test] stack.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import math
+import random
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -55,6 +68,36 @@ CURVES_SWA_NAME = "curves_swa.npy"
 
 # Buffers that must NOT be averaged into the SWA snapshot (counters).
 _SWA_EXCLUDE = ("num_batches_tracked",)
+
+
+@contextlib.contextmanager
+def _rng_guard(device: torch.device):
+    """Restore every RNG state on exit (mlp-2.1 fix).
+
+    The SWA BN-recalibration pass runs the TRAIN loader in train mode, so its
+    shuffle=True RandomSampler consumes torch RNG at iterator creation and its
+    dropout layers consume the shared torch RNG stream per forward (plus, in
+    principle, the numpy/python streams via mixup / dataloader helpers). The
+    val/aux/test loaders use SequentialSampler with num_workers=0 and are
+    RNG-free. Without a guard the recalibration perturbs the live training
+    trajectory of a swa=true job relative to its swa=false anchor — the 2.0
+    README's documented "gains are live-trajectory artifacts" caveat. Guarding
+    the whole snapshot evaluation makes the live trajectory bit-identical to
+    the anchor, so any `_swa*` gain is attributable to SWA.
+    """
+    rng_saved = (random.getstate(), np.random.get_state(), torch.get_rng_state())
+    cuda_saved: dict[int, torch.Tensor] = {}
+    if device.type == "cuda":
+        idx = device.index if device.index is not None else 0
+        cuda_saved[idx] = torch.cuda.get_rng_state(idx)
+    try:
+        yield
+    finally:
+        random.setstate(rng_saved[0])
+        np.random.set_state(rng_saved[1])
+        torch.set_rng_state(rng_saved[2])
+        for i, st in cuda_saved.items():
+            torch.cuda.set_rng_state(st, i)
 
 
 @dataclass
@@ -151,6 +194,10 @@ def _recalibrate_bn(model: nn.Module, loader: DataLoader, device: torch.device) 
     The SWA-averaged buffers are a crude average; a single no-grad forward pass
     over the training set with reset running stats gives the correct statistics
     for the averaged weights. No-op when the model has no BatchNorm.
+
+    mlp-2.1: the forward pass runs in train mode, so dropout consumes the shared
+    RNG stream; it is wrapped in `_rng_guard` so the live training trajectory
+    stays bit-identical to the swa=false anchor (2.0 RNG-leak fix).
     """
     bn_modules = [m for m in model.modules() if isinstance(m, nn.BatchNorm1d)]
     if not bn_modules:
@@ -158,8 +205,9 @@ def _recalibrate_bn(model: nn.Module, loader: DataLoader, device: torch.device) 
     for m in bn_modules:
         m.reset_running_stats()
     model.train()
-    for X_batch, _ in loader:
-        model(X_batch.to(device))
+    with _rng_guard(device):
+        for X_batch, _ in loader:
+            model(X_batch.to(device))
     model.eval()
 
 
@@ -344,26 +392,32 @@ def train_one_config(
         nonlocal best_swa_val_rmse, best_swa_epoch, best_swa_aux_rmse
         if swa_state is None:
             return
-        val_preds = _predict_with_swa(model, swa_state, val_loader, device,
-                                      recal_loader=train_loader, bn_recal=swa_bn_recal)
-        val_rmse_swa_now = _rmse(fs["y_val"], val_preds)
-        swa_val_curve.append(val_rmse_swa_now)
-        if has_aux and not retrain_mode:
-            aux_preds = _predict_with_swa(model, swa_state, aux_loader[0], device,
+        # mlp-2.1 RNG guard: EVERYTHING in the snapshot evaluation is SWA
+        # bookkeeping and must not perturb the live trajectory. This covers the
+        # train-loader recalibration forward pass AND the val/aux/test loader
+        # iterations in _predict_with_swa — DataLoader iteration consumes torch
+        # RNG even with shuffle=False, so the whole block is guarded.
+        with _rng_guard(device):
+            val_preds = _predict_with_swa(model, swa_state, val_loader, device,
                                           recal_loader=train_loader, bn_recal=swa_bn_recal)
-            aux_rmse_swa_now = _rmse(fs["y_aux"], aux_preds)
-        else:
-            aux_rmse_swa_now = float("nan")
-        swa_aux_curve.append(aux_rmse_swa_now)
-        test_preds_swa = _predict_with_swa(model, swa_state, test_loader, device,
-                                           recal_loader=train_loader, bn_recal=swa_bn_recal)
-        test_rmse_swa_now = _rmse(fs["y_test"], test_preds_swa)
-        swa_test_curve.append(test_rmse_swa_now)
-        if val_rmse_swa_now < best_swa_val_rmse:
-            best_swa_val_rmse = val_rmse_swa_now
-            best_swa_epoch = epoch
-            best_swa_aux_rmse = aux_rmse_swa_now
-            torch.save({k: v.cpu() for k, v in swa_state.items()}, out_dir / BEST_SWA_NAME)
+            val_rmse_swa_now = _rmse(fs["y_val"], val_preds)
+            swa_val_curve.append(val_rmse_swa_now)
+            if has_aux and not retrain_mode:
+                aux_preds = _predict_with_swa(model, swa_state, aux_loader[0], device,
+                                              recal_loader=train_loader, bn_recal=swa_bn_recal)
+                aux_rmse_swa_now = _rmse(fs["y_aux"], aux_preds)
+            else:
+                aux_rmse_swa_now = float("nan")
+            swa_aux_curve.append(aux_rmse_swa_now)
+            test_preds_swa = _predict_with_swa(model, swa_state, test_loader, device,
+                                               recal_loader=train_loader, bn_recal=swa_bn_recal)
+            test_rmse_swa_now = _rmse(fs["y_test"], test_preds_swa)
+            swa_test_curve.append(test_rmse_swa_now)
+            if val_rmse_swa_now < best_swa_val_rmse:
+                best_swa_val_rmse = val_rmse_swa_now
+                best_swa_epoch = epoch
+                best_swa_aux_rmse = aux_rmse_swa_now
+                torch.save({k: v.cpu() for k, v in swa_state.items()}, out_dir / BEST_SWA_NAME)
         print(f"  [swa] ep {epoch:3d} swa_val={val_rmse_swa_now:.5f} "
               f"best_swa={best_swa_val_rmse:.5f} (ep{best_swa_epoch}) "
               f"swa_aux={aux_rmse_swa_now:.5f} swa_test={test_rmse_swa_now:.5f}", flush=True)

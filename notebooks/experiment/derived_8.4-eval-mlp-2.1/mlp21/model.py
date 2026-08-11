@@ -1,9 +1,9 @@
-"""Neural tabular regressors for derived_8.4-eval-mlp-2.0.
+"""Neural tabular regressors for derived_8.4-eval-mlp-2.1.
 
 Extends the mlp13 architecture zoo (plain MLP, residual MLP, FT-Transformer)
 with the two new architectures this experiment exists to test:
 
-  - FeatureGroupedMLP  : per-semantic-group towers (see mlp20.feature_groups)
+  - FeatureGroupedMLP  : per-semantic-group towers (see mlp21.feature_groups)
                          -> concat group embeddings -> fusion MLP -> head.
                          Targets 1.2's documented overfitting kind: capacity
                          spent on period-specific *interactions* between
@@ -248,7 +248,7 @@ class FeatureGroupedMLP(nn.Module):
     tower: Linear(len_g -> w) -> Norm -> act -> Dropout -> Linear(w -> w) -> Norm -> act -> Dropout
     fusion: same block pattern as MLPRegressor on the concatenated embeddings.
 
-    The grouping is resolved from the feature names by mlp20.feature_groups
+    The grouping is resolved from the feature names by mlp21.feature_groups
     (single source of truth, validated: every feature in exactly one group).
     """
 

@@ -8,7 +8,7 @@ out at ~epoch 90 (rmse 0.0451) while VAL stays flat to epoch 260 (best-val
 saved per-epoch val/test RMSE curves (curves.npy: [val, aux, test]) and
 confirmed no honest rule beats patience-60 (plateau rules stop too early).
 This 2.0 version additionally replays the SWA rule on the SWA snapshot curves
-(curves_swa.npy: [swa_val, swa_aux, swa_test], written by the mlp20 trainer
+(curves_swa.npy: [swa_val, swa_aux, swa_test], written by the mlp21 trainer
 when swa=true) — SWA is the 2.0 mechanism for smoothing the flat-val region,
 so the replay checks it against patience-60 honestly.
 

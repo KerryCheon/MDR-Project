@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Overfitting-symptom analysis for derived_8.4-eval-mlp-2.0 (no retraining).
+"""Overfitting-symptom analysis for derived_8.4-eval-mlp-2.1 (no retraining).
 
 Quantifies the generalization failure modes of the MLP sweep directly from the
 saved artifacts:
@@ -10,7 +10,7 @@ saved artifacts:
      does extra capacity buy in-sample fit that does not transfer?
   3. residual nets (reference)   — best val AND best train-fit, worst test
      (the 1.1 selection failure mode; reference-only in 2.0).
-  4. per-epoch curve shape       — for each family's 2-seed val winner: test
+  4. per-epoch curve shape       — for each family's 3-seed val winner: test
      bottoms out early then RISES while train-fit (aux) keeps improving, and
      val stays flat -> early stopping on val cannot catch the overfitting.
   5. systematic bias on test     — MLP avg test bias vs XGBoost references.
@@ -20,7 +20,7 @@ Outputs: overfitting_summary.csv (per-family summary) + printed report.
 Usage:
     python analyze_overfitting.py [--out .]
 
-The report notebook (derived_8.4-eval-mlp-2.0.ipynb) imports compute_overfitting
+The report notebook (derived_8.4-eval-mlp-2.1.ipynb) imports compute_overfitting
 and renders the same tables; README.md tables are copied from its stdout.
 """
 
@@ -81,7 +81,7 @@ def compute_overfitting(sweep: pd.DataFrame, exp_dir: Path) -> dict:
         if not res.empty:
             out[f"{fam}_residuals"] = res[["config_id", "n_params", "val_rmse", "aux_rmse", "test_r2", "test_bias"]].to_dict("records")
 
-        # --- 4. per-epoch curve shape for the 2-seed val winner (cluster 0) ---
+        # --- 4. per-epoch curve shape for the 3-seed val winner (cluster 0) ---
         winner = sub.sort_values("val_rmse").iloc[0]["config_id"]
         curve_path = exp_dir / "models" / fam / winner / "seed_42" / "spec_0" / "curves.npy"
         if curve_path.exists():
@@ -112,7 +112,7 @@ def compute_overfitting(sweep: pd.DataFrame, exp_dir: Path) -> dict:
 def print_report(r: dict) -> None:
     """Render the symptom tables (used by both the CLI and the report notebook)."""
     print("=" * 78)
-    print("OVERFITTING-SYMPTOM ANALYSIS — derived_8.4-eval-mlp-2.0 (from sweep artifacts)")
+    print("OVERFITTING-SYMPTOM ANALYSIS — derived_8.4-eval-mlp-2.1 (from sweep artifacts)")
     print("=" * 78)
 
     print("\n### 1. Train-fit vs held-out gap (median RMSE over 2-regime MLP configs)")
@@ -138,7 +138,7 @@ def print_report(r: dict) -> None:
             print(f"| {fam} | {row['config_id']} | {row['n_params']} | {row['val_rmse']:.4f} | "
                   f"{row['aux_rmse']:.4f} | {row['test_r2']:.4f} | {row['test_bias']:.4f} |")
 
-    print("\n### 4. Per-epoch curve shape for the 2-seed val winner (cluster-0 specialist)")
+    print("\n### 4. Per-epoch curve shape for the 3-seed val winner (cluster-0 specialist)")
     print("| family     | config_id |   aux_ep100 |   aux_ep260 |   val_plateau |   test_min |   test_min_epoch |   test_at_best_val |   test_final |   test_rise_after_min |")
     print("|:-----------|:----------|------------:|------------:|--------------:|-----------:|-----------------:|-------------------:|-------------:|----------------------:|")
     for row in r["curve_rows"]:

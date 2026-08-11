@@ -1,4 +1,4 @@
-"""Semantic feature groups for the FeatureGroupedMLP (derived_8.4-eval-mlp-2.0).
+"""Semantic feature groups for the FeatureGroupedMLP (derived_8.4-eval-mlp-2.1).
 
 Motivation (see experiment README): the 54-backbone / 96-pool / 64-feature
 specialist sets are heterogeneous — SMAP soil-moisture series, Sentinel-2
@@ -98,7 +98,7 @@ def group_features(feature_names: list[str]) -> FeatureGroups:
         if matched is None:
             raise ValueError(
                 f"Feature {name!r} matched no semantic group. Add an explicit rule "
-                f"to mlp20/feature_groups.py (rules are first-match-wins)."
+                f"to mlp21/feature_groups.py (rules are first-match-wins)."
             )
         group_of.append(GROUP_ORDER.index(matched))
 

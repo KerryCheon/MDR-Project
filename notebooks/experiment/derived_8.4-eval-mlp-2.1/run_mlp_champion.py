@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Champion step for derived_8.4-eval-mlp-2.0: 5-seed ensembles of the winners.
+"""Champion step for derived_8.4-eval-mlp-2.1: 5-seed ensembles of the winners.
 
-After the sweep, the val-selected winner config per family (top-N by 2-seed
-mean val RMSE among mlp/fg/plr) is trained on the extra stability seeds
-{123, 2024, 999} (seeds 42 and 7 already exist from the sweep) and the 5-seed
-seed-mean test predictions are aggregated into:
+After the 3-phase sweep, the val-selected winner config per family (top-N by
+3-seed mean val RMSE among mlp/fg/plr) is trained on the remaining stability
+seeds {2024, 999} (seeds 42, 7, 123 already exist from the sweep) and the
+5-seed seed-mean test predictions are aggregated into:
 
     models/champion/<family>__<config_id>/{ens_preds.npy, ens_meta.json}
 
 No trainval retrain (documented negative in mlp-1.2) — the ensemble is a pure
 seed average of train-only models, exactly the neural analog of the XGBoost
 tree ensemble. The sweep's own per-config aggregation (models/<family>/<cid>/
-meta.json, 2-seed) is left untouched.
+meta.json, mean over completed sweep seeds) is left untouched.
 
 Usage:
     python run_mlp_champion.py [--config config.yaml] [--out .] [--top-n 1]
@@ -100,6 +100,8 @@ def run_champion_jobs(out: Path, jobs, n_parallel: int, config: dict) -> None:
                 "--family", family, "--config-id", cid, "--seed", str(seed),
                 "--artifacts", str(artifacts), "--out", str(out),
             ]
+            if mode == "resume":
+                cmd.append("--resume")
             logf = open(log_path, "w", encoding="utf-8")
             proc = subprocess.Popen(cmd, stdout=logf, stderr=subprocess.STDOUT, cwd=str(EXP_DIR))
             active.append((proc, (family, cid, seed, mode), logf, time.perf_counter()))

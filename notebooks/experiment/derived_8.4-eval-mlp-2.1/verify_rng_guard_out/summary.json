@@ -1,0 +1,9 @@
+{
+  "anchor": "w384x384_d0.3_gelu",
+  "swa_twin": "w384x384_d0.3_gelu_swa085",
+  "seed": 42,
+  "cluster": "0",
+  "n_epochs": 6,
+  "max_abs_diff_anchor_vs_2p0": 0.05459705363890821,
+  "max_abs_diff_swa_live_vs_anchor": 0.0
+}
