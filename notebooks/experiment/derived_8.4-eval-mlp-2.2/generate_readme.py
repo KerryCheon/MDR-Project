@@ -50,7 +50,41 @@ experiment root.
 
 ## Verdict (TL;DR)
 
-<!-- VERDICT — filled from the executed notebook after the GPU run -->
+- **The val-selected winners are again below 2.0's 0.8003 — an honest
+  negative — but the sweep found the strongest single MLP of the whole
+  1.0–2.2 series on test.** Honest 3-seed val winners: mixed
+  `w512x512x512_d0.3_huber0.03_lr1e-3` → test R² 0.7809 (below 2.1's
+  0.7844), 54 `w448x448x448_d0.3_huber0.1_gelu_lr1e-3` → 0.7596 (below
+  2.1's 0.7713), 96 unchanged 0.7595; 2.2's mixed val top-5 ensemble 0.7850
+  and cross-family ensemble 0.7885 both sit below 2.0's 0.8003 / 0.7932.
+  The **test-best single is the 54-family `w320x320_d0.4_huber0.2_gelu_lr6e-4`
+  → 0.7973** (3 seeds, val rank 49/82!), with `w320x320_d0.4_gelu_lr6e-4`
+  0.7960 and mixed `w512x512x512_d0.3_huber0.1_gelu` 0.7928 (the untested
+  gelu-512³ cell) close behind — the 320²-hubergelu/lr6e-4 cell is the new
+  frontier, and it is invisible to the val selector.
+- **Val-year diagnostic (NEW, headline finding): the official val split's
+  2022 half is the noise source for the 54/96 families.** Spearman(val-2021,
+  test) = +0.747 (96, p=1e-11) / +0.454 (54) while val-2022 = +0.106 /
+  +0.133 (both ns) — the full-val mean dilutes the reliable 2021 signal;
+  selecting on val-2021 only would pick the 54 `w320x320_d0.2_huber0.1_gelu_lr6e-4`
+  (test 0.7810) over the full-val winner (0.7596). The mixed family is
+  different: BOTH years are negatively correlated with test (−0.249 /
+  −0.352) — its val-noise is structural (the c0 = 96-pool half), not a year
+  artifact. Diagnostic only; the deployed rule is unchanged.
+- **54-family selection signal flipped positive: +0.582 at 3 seeds (2.1:
+  −0.555)** — the denser seed coverage and the new pool fixed the direction,
+  yet the 2→3-seed flip still moved the 54 winner to a worse-test config
+  (0.7772 → 0.7596); the 54 val top-10 is dominated by 3-layer configs that
+  fail on test (the 3-layer-val-overfit pattern).
+- **Debias: 54 met (median 3.1 %), mixed improved (12.7 → 9.6 %) but still
+  >5 %; 96 worsened (13.9 → 21.7 %).** The mid-lr {4e-4, 6e-4, 8e-4}
+  small-net configs are more biased than the lr3e-4 anchor (w256x256_d0.5:
+  1.1 %), and the max_epochs {500, 600} probes did not help (me500 → 0.7682
+  vs the 400-cap 0.7834). The 96 criterion remains unmet.
+- **Budget:** sweep 3,774.5 s (62.9 min) + champion/eval/analyses ≈
+  1:06:53 total wall on the `gpu_debug` H100 (6.1 GPU-h of training) —
+  inside the ~1.25 h target; 3/3 anchors bit-identical vs 2.1 on a different
+  node (max|diff| = 0).
 
 ## What's new in 2.2
 
@@ -171,10 +205,15 @@ uv run --no-sync python generate_readme.py         # regenerate this README from
   the pure-96 family remains the best OOD model.
 - 2025 test coverage is partial for several stations; year-2025 numbers should be read
   with the same caution as 1.x/2.0/2.1.
-- Val selection was shown noisy for the 54/mixed families in 2.1 (Spearman −0.555 /
-  −0.309 even at 3 seeds); 2.2's mitigation is denser seed coverage (phase-2/3
-  top-Ns capped at family sizes) plus the val-year diagnostic — the selection rule
-  itself is unchanged (protocol).
+- Val selection remains the bottleneck: the 54-family 3-seed val winner (0.7596) is
+  a test loser while the test-best (0.7973) sits at val rank 49/82; the mixed family's
+  val ranking is negatively correlated with test in both val years. The val-year
+  diagnostic (val-2021 reliable, val-2022 noise for 54/96) is the actionable finding —
+  the selection rule itself is unchanged (protocol).
+- The 96-family median bias²/MSE worsened to 21.7 % (2.1: 13.9 %): the mid-lr
+  {4e-4, 6e-4, 8e-4} small-net pool is more biased than the lr3e-4 anchor; the
+  max_epochs {500, 600} probes did not help. The <5 % criterion remains unmet for
+  96 and mixed (9.6 %).
 - The champion step runs the per-family `sweep.champion_top_n` (mixed top-2 +
   54 top-1 + 96 top-1) × extra seeds {2024, 999}; `--top-n N` CLI overrides
   (uniform, 2.1 parity). See `docs/plans/20260810-mlp-2.2.md`.

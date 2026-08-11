@@ -1,0 +1,119 @@
+{
+  "overall_verdict": "bit-identical",
+  "anchors": {
+    "2regime_54/w512x512x512_d0.3_huber0.1": {
+      "config": {
+        "family": "2regime_54",
+        "config_id": "w512x512x512_d0.3_huber0.1",
+        "seed": 42,
+        "spec": 0,
+        "paths": {
+          "2.2": "experiment/derived_8.4-eval-mlp-2.2/models/2regime_54/w512x512x512_d0.3_huber0.1/seed_42/spec_0/curves.npy",
+          "2.1": "experiment/derived_8.4-eval-mlp-2.1/models/2regime_54/w512x512x512_d0.3_huber0.1/seed_42/spec_0/curves.npy"
+        }
+      },
+      "per_row_max_abs_diff": {
+        "val": {
+          "n_epochs": 323,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        },
+        "aux": {
+          "n_epochs": 323,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        },
+        "test": {
+          "n_epochs": 323,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        }
+      },
+      "best_val_epoch_1idx": {
+        "2.2": 263,
+        "2.1": 263
+      },
+      "best_val_rmse": {
+        "2.2": 0.061125248221637424,
+        "2.1": 0.061125248221637424
+      },
+      "verdict": "bit-identical"
+    },
+    "2regime_mixed/w512x512x512_d0.3_huber0.05_lr6e-4": {
+      "config": {
+        "family": "2regime_mixed",
+        "config_id": "w512x512x512_d0.3_huber0.05_lr6e-4",
+        "seed": 42,
+        "spec": 0,
+        "paths": {
+          "2.2": "experiment/derived_8.4-eval-mlp-2.2/models/2regime_mixed/w512x512x512_d0.3_huber0.05_lr6e-4/seed_42/spec_0/curves.npy",
+          "2.1": "experiment/derived_8.4-eval-mlp-2.1/models/2regime_mixed/w512x512x512_d0.3_huber0.05_lr6e-4/seed_42/spec_0/curves.npy"
+        }
+      },
+      "per_row_max_abs_diff": {
+        "val": {
+          "n_epochs": 221,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        },
+        "aux": {
+          "n_epochs": 221,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        },
+        "test": {
+          "n_epochs": 221,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        }
+      },
+      "best_val_epoch_1idx": {
+        "2.2": 161,
+        "2.1": 161
+      },
+      "best_val_rmse": {
+        "2.2": 0.051108803172106594,
+        "2.1": 0.051108803172106594
+      },
+      "verdict": "bit-identical"
+    },
+    "2regime_96/w512x512x512_d0.3_lr1e-3": {
+      "config": {
+        "family": "2regime_96",
+        "config_id": "w512x512x512_d0.3_lr1e-3",
+        "seed": 42,
+        "spec": 0,
+        "paths": {
+          "2.2": "experiment/derived_8.4-eval-mlp-2.2/models/2regime_96/w512x512x512_d0.3_lr1e-3/seed_42/spec_0/curves.npy",
+          "2.1": "experiment/derived_8.4-eval-mlp-2.1/models/2regime_96/w512x512x512_d0.3_lr1e-3/seed_42/spec_0/curves.npy"
+        }
+      },
+      "per_row_max_abs_diff": {
+        "val": {
+          "n_epochs": 323,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        },
+        "aux": {
+          "n_epochs": 323,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        },
+        "test": {
+          "n_epochs": 323,
+          "max_abs_diff": 0.0,
+          "n_nonzero": 0
+        }
+      },
+      "best_val_epoch_1idx": {
+        "2.2": 263,
+        "2.1": 263
+      },
+      "best_val_rmse": {
+        "2.2": 0.05167515019706183,
+        "2.1": 0.05167515019706183
+      },
+      "verdict": "bit-identical"
+    }
+  }
+}

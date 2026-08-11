@@ -1,0 +1,26 @@
+{
+  "2regime_96": {
+    "id": "2regime_96",
+    "structure": "cluster",
+    "feature_sets": {
+      "0": "candidate_pool_96",
+      "1": "candidate_pool_96"
+    }
+  },
+  "2regime_54": {
+    "id": "2regime_54",
+    "structure": "cluster",
+    "feature_sets": {
+      "0": "backbone_54",
+      "1": "backbone_54_delta"
+    }
+  },
+  "2regime_mixed": {
+    "id": "2regime_mixed",
+    "structure": "cluster",
+    "feature_sets": {
+      "0": "candidate_pool_96",
+      "1": "backbone_54_delta"
+    }
+  }
+}
