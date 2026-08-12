@@ -1,0 +1,8 @@
+station_id,n,share_cluster1,dominant_cluster,longitude,latitude,purity
+Spokane,1793,1.0,1,-117.53,47.42,1.0
+SourdoughGulch_WA_985,2191,1.0,1,-117.4,46.233333,1.0
+BeaverPass_WA_990,2185,0.0,0,-121.2555,48.8793,1.0
+Darrington,2048,0.0,0,-121.45,48.54,1.0
+CayusePass_WA,2042,0.0,0,-121.53434,46.86956,1.0
+Quinault,2160,0.0,0,-123.81,47.51,1.0
+Paradise_WA,2189,0.0,0,-121.74767,46.78266,1.0
