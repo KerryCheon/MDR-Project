@@ -1,0 +1,18 @@
+Strategy,K,Features Used,Group Sizes,Top 20 Divergence,Max Drift,Drift Feature
+Univariate_G_API,2,-,"7304, 7304",0.1715,0.5864,V_rollmax_G_API_kobs7
+Seasonal_Binary,2,-,"7559, 7049",0.1661,0.5757,V_ema_G_API_kobs30
+Clustering_Dynamic,2,3,"7974, 6634",0.1599,0.5026,V_ema_F_NDVI_kobs30
+Clustering_Dynamic,3,3,"4717, 3891, 6000",0.2019,0.7641,V_ema_G_API_kobs30
+Clustering_Dynamic,4,3,"2173, 2350, 5048, 5037",0.2187,0.9025,latitude
+Clustering_V0_Full,2,50,"10624, 3984",0.1133,1.0725,SMAP_sm_pm_interp_rollmean30
+Clustering_V0_Full,3,50,"4247, 3968, 6393",0.1318,1.3793,SMAP_sm_pm_interp_rollmean30
+Clustering_V0_Full,4,50,"4247, 3968, 4158, 2235",0.1622,1.3045,SMAP_sm_pm_interp_rollmean30
+Clustering_Backbone54,2,54,"10624, 3984",0.1133,1.0725,SMAP_sm_pm_interp_rollmean30
+Clustering_Backbone54,3,54,"6513, 3857, 4238",0.2386,0.9488,V_ema_SMAP_sm_interp_kobs30
+Clustering_Backbone54,4,54,"2142, 4053, 3826, 4587",0.2209,1.1132,SMAP_sm_pm_interp_rollmean30
+Clustering_Static,2,58,"8192, 6416",0.0822,0.5829,slope
+Clustering_Static,3,58,"4208, 6416, 3984",0.178,1.3249,SMAP_sm_pm_interp_rollmean30
+Clustering_Static,4,58,"4231, 3984, 2185, 4208",0.155,1.3249,SMAP_sm_pm_interp_rollmean30
+Clustering_Weather,2,16,"3870, 10738",0.103,0.9687,SMAP_sm_pm_interp_rollmean30
+Clustering_Weather,3,16,"3794, 6230, 4584",0.2007,0.9901,SMAP_sm_pm_interp_lag30
+Clustering_Weather,4,16,"5695, 3517, 1694, 3702",0.2179,1.0907,V_ema_SMAP_sm_interp_kobs30
