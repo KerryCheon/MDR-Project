@@ -421,6 +421,73 @@ def yearly_rows_for_fold(config_id: str, station: str, config: dict) -> list[dic
     return rows
 
 
+# ---------------------------------------------------------------------------
+# eval-1.2 reference rows (deterministic same-protocol results)
+# ---------------------------------------------------------------------------
+# The 47 eval-1.1 configs were already evaluated under the IDENTICAL LOSO
+# protocol in derived_8.4-eval-1.2 (same seed 42, same xgboost 3.2.0 env — its
+# full baseline replicated eval-1.1 to 0.000000). Rather than re-computing them
+# (~2 h of GPU time, no new information), eval-1.3 merges those recorded rows
+# as references for any pinned config NOT computed in this run (all-or-nothing
+# per config) and computes only the NEW Clustering_Backbone54_k2 configs — the
+# same reference pattern derived_8.4-eval-2.0 used for its XGBoost baselines.
+
+
+def load_eval12_loso_references(config: dict) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
+    """eval-1.2 LOSO rows: (per-config-station, per-regime, per-year, pooled R2 map)."""
+    src = PROJECT_ROOT / Path(config["loso"].get(
+        "reference_eval12_dir", "notebooks/experiment/derived_8.4-eval-1.2"))
+    pcs_path = src / "loso_per_config_station.csv"
+    if not pcs_path.exists():
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), {}
+    pcs = pd.read_csv(pcs_path)
+    regime = pd.read_csv(src / "loso_per_regime_metrics.csv")
+    year = pd.read_csv(src / "loso_per_year_metrics.csv")
+    summary = pd.read_csv(src / "loso_config_summary.csv")
+    pooled_r2 = dict(zip(summary["config_id"], summary.get("loso_pooled_r2", float("nan"))))
+    pooled_rmse = dict(zip(summary["config_id"], summary.get("loso_pooled_rmse", float("nan"))))
+    pooled = {k: {"loso_pooled_r2": pooled_r2.get(k, float("nan")),
+                  "loso_pooled_rmse": pooled_rmse.get(k, float("nan"))}
+              for k in pooled_r2}
+    return pcs, regime, year, pooled
+
+
+def merge_loso_references(df_pcs: pd.DataFrame, df_regime: pd.DataFrame, df_year: pd.DataFrame,
+                          configurations: list[dict], config: dict
+                          ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, set[str]]:
+    """Append eval-1.2 reference rows for pinned configs with no computed folds.
+
+    Returns (df_pcs, df_regime, df_year, referenced_config_ids, eval12_pooled_map).
+    All-or-nothing per config: a config is referenced only if NONE of its folds
+    were computed in this run (computed folds win).
+    """
+    computed_ids = set(df_pcs["config_id"].unique()) if not df_pcs.empty else set()
+    pinned_ids = {c["config_id"] for c in configurations}
+    need_ref = sorted(pinned_ids - computed_ids)
+    if not need_ref:
+        return df_pcs, df_regime, df_year, set(), {}
+    ref_pcs, ref_regime, ref_year, pooled = load_eval12_loso_references(config)
+    if ref_pcs.empty:
+        print(f"[Refs] eval-1.2 reference file not found — {len(need_ref)} configs missing "
+              f"(computed-only aggregation).", flush=True)
+        return df_pcs, df_regime, df_year, set(), {}
+
+    mask = ref_pcs["config_id"].isin(need_ref)
+    ref_pcs = ref_pcs[mask].copy()
+    ref_pcs["is_reference"] = True
+    ref_regime = ref_regime[ref_regime["config_id"].isin(need_ref)].copy()
+    ref_regime["is_reference"] = True
+    ref_year = ref_year[ref_year["config_id"].isin(need_ref)].copy()
+    ref_year["is_reference"] = True
+
+    df_pcs = pd.concat([df_pcs, ref_pcs], ignore_index=True)
+    df_regime = pd.concat([df_regime, ref_regime], ignore_index=True)
+    df_year = pd.concat([df_year, ref_year], ignore_index=True)
+    print(f"[Refs] Merged eval-1.2 LOSO rows for {len(need_ref)} configurations "
+          f"({len(ref_pcs)} folds, {len(ref_regime)} regime rows, {len(ref_year)} year rows).", flush=True)
+    return df_pcs, df_regime, df_year, set(need_ref), pooled
+
+
 def _write_partial(per_config_station, per_regime_rows, per_year_rows) -> None:
     """Crash-safety: flush accumulated rows to CSVs."""
     pd.DataFrame(per_config_station).to_csv(EXP_DIR / "loso_per_config_station.csv", index=False)
@@ -436,6 +503,10 @@ def main() -> None:
     parser.add_argument("--station", action="append", default=None, help="Only run these stations (repeatable).")
     parser.add_argument("--n-parallel", type=int, default=None, help="Concurrent GPU workers.")
     parser.add_argument("--device", default=None, help="Override model device (e.g. cpu for login-node smoke).")
+    parser.add_argument("--new-strategy-only", action="store_true",
+                        help="Compute only the NEW Clustering_Backbone54_k2 configs; merge the "
+                             "other 47 configs' LOSO results as eval-1.2 references (deterministic "
+                             "same-protocol results — fits the 1h GPU wall).")
     parser.add_argument("--skip-plots", action="store_true", help="Skip figure generation.")
     parser.add_argument("--no-resume", action="store_true", help="Ignore existing partial results.")
     parser.add_argument("--smoke", action="store_true", help="data_version -1 + n_estimators 100 (never reused).")
@@ -471,7 +542,12 @@ def main() -> None:
     print(f"[Artifacts] Pinned configurations to {pin_path.name}", flush=True)
 
     # Run filter (execution scope only — the pin always covers all 56).
-    if args.config_id:
+    if args.new_strategy_only:
+        new_strat = str(config["new_clustering_strategy"]["strategy"])
+        configurations = [c for c in all_configurations if c["strategy_name"] == new_strat]
+        print(f"[Scope] Computing only the NEW strategy ({new_strat}, "
+              f"{len(configurations)} configs); other pinned configs merge as eval-1.2 references.", flush=True)
+    elif args.config_id:
         configurations = [c for c in all_configurations if c["config_id"] in args.config_id]
     else:
         configurations = list(all_configurations)
@@ -531,6 +607,7 @@ def main() -> None:
             if row is None:
                 missing += 1
                 continue
+            row["is_reference"] = False
             row.update({k: v for k, v in cfg.items() if k in (
                 "config_label", "strategy_name", "strategy_order", "is_baseline", "is_winner",
                 "cluster_0_count", "cluster_1_count", "eval11_test_r2",
@@ -548,6 +625,11 @@ def main() -> None:
     df_pcs = pd.DataFrame(per_config_station)
     df_regime = pd.DataFrame(per_regime_rows)
     df_year = pd.DataFrame(per_year_rows)
+
+    # Merge eval-1.2 references for pinned configs not computed in this run
+    # (all pinned configs, not just the run scope).
+    df_pcs, df_regime, df_year, ref_ids, eval12_pooled = merge_loso_references(
+        df_pcs, df_regime, df_year, all_configurations, config)
     if df_pcs.empty:
         print("[Error] No folds aggregated — check artifacts/logs/*.log for worker failures.", flush=True)
         raise SystemExit(1)
@@ -587,6 +669,7 @@ def main() -> None:
     worst = df_pcs.loc[df_pcs.groupby("config_id")["r2"].idxmin(), ["config_id", "station"]]
     summary = summary.merge(best.rename(columns={"station": "best_station"}), on="config_id")
     summary = summary.merge(worst.rename(columns={"station": "worst_station"}), on="config_id")
+    summary["is_reference"] = summary["config_id"].isin(ref_ids)
 
     # Temporal reference: eval-1.1 test R2 for the 47 pinned configs; the NEW
     # Clustering_Backbone54_k2 configs have no eval-1.1 row, so their temporal
@@ -609,7 +692,23 @@ def main() -> None:
             pd.DataFrame(pooled).T.reset_index().rename(columns={"index": "config_id"}),
             on="config_id", how="left",
         )
-        summary["pooled_loso_minus_test_r2"] = summary["loso_pooled_r2"] - summary["temporal_test_r2"]
+    # Reference configs have no per-fold predictions in this run — backfill their
+    # pooled LOSO from eval-1.2's summary (identical protocol). The merge suffix
+    # only applies when the computed column already exists, so handle both.
+    if eval12_pooled:
+        ref_pooled = pd.DataFrame(eval12_pooled).T.reset_index().rename(columns={"index": "config_id"})
+        summary = summary.merge(ref_pooled, on="config_id", how="left", suffixes=("", "_ref"))
+        if "loso_pooled_r2" not in summary.columns:
+            summary["loso_pooled_r2"] = np.nan
+        if "loso_pooled_r2_ref" in summary.columns:
+            summary["loso_pooled_r2"] = summary["loso_pooled_r2"].fillna(summary["loso_pooled_r2_ref"])
+            summary = summary.drop(columns=["loso_pooled_r2_ref"])
+        if "loso_pooled_rmse" not in summary.columns:
+            summary["loso_pooled_rmse"] = np.nan
+        if "loso_pooled_rmse_ref" in summary.columns:
+            summary["loso_pooled_rmse"] = summary["loso_pooled_rmse"].fillna(summary["loso_pooled_rmse_ref"])
+            summary = summary.drop(columns=["loso_pooled_rmse_ref"])
+    summary["pooled_loso_minus_test_r2"] = summary["loso_pooled_r2"] - summary["temporal_test_r2"]
 
     summary = summary.sort_values("loso_mean_r2", ascending=False).reset_index(drop=True)
     summary.to_csv(EXP_DIR / "loso_config_summary.csv", index=False)

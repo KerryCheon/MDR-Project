@@ -118,16 +118,22 @@ new_clustering_strategy:
 # so LOSO measures generalization of model fitting given fixed features (see README caveat).
 loso:
   source_eval11_dir: "notebooks/experiment/derived_8.4-eval-1.1"
+  # eval-1.2 recorded LOSO + full-baseline results for the 47 eval-1.1 configs
+  # (identical protocol, seed 42, xgboost 3.2.0 — its full baseline replicated
+  # eval-1.1 to 0.000000). With `--new-strategy-only` those rows are merged as
+  # references instead of being recomputed (~2 h of GPU time, no new info), so
+  # the 1 h GPU wall fits; a full run (no flag) computes all 56 configs.
+  reference_eval12_dir: "notebooks/experiment/derived_8.4-eval-1.2"
   holdout_column: "station_id"
   configs: "all"  # "all" = 2 baselines + 6 strategies x 9 delta-grid points (56 configs)
   save_weights: true
   save_predictions: true
   # Parallel worker execution (derived_8.4-eval-2.0 format): the driver spawns
   # n_parallel `run_loso_worker.py` subprocesses, each training one
-  # (config, station) fold on the GPU concurrently. XGBoost uses 1 CPU per
-  # worker (n_jobs=1); 8 workers mildly oversubscribe the 6-CPU sbatch
-  # allocation (same tradeoff as eval-2.0) — use 6 if the node throttles.
-  n_parallel: 8
+  # (config, station) fold. NOTE: XGBoost GPU folds serialize on a single GPU —
+  # the observed per-fold wall grows ~8x at 8 workers (GPU-bound), so workers
+  # buy resilience/resume, not throughput. 6 workers = 1 per sbatch CPU.
+  n_parallel: 6
   # Bump to invalidate stale worker artifacts (job meta.json records the
   # data_version; completed folds are resumed/skipped only on an exact match).
   data_version: 1

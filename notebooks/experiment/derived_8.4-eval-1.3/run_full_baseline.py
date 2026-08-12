@@ -86,6 +86,55 @@ def aggregate_full(config_id: str, config: dict) -> dict | None:
     return pooled_row, station_rows
 
 
+def merge_eval12_full_references(pooled_rows: list[dict], per_config_station: list[dict],
+                                 configurations: list[dict], config: dict,
+                                 cfg_frame: pd.DataFrame) -> tuple[list[dict], list[dict], set[str]]:
+    """Merge eval-1.2's full-baseline rows for pinned configs not computed here.
+
+    The 47 eval-1.1 configs were already evaluated under the identical protocol
+    in eval-1.2 (replicating eval-1.1 to 0.000000); re-computing them adds no
+    information. Returns (pooled_rows, per_config_station, referenced_ids).
+    """
+    computed_ids = {r["config_id"] for r in pooled_rows}
+    pinned_ids = {c["config_id"] for c in configurations}
+    need_ref = sorted(pinned_ids - computed_ids)
+    if not need_ref:
+        return pooled_rows, per_config_station, set()
+    src = PROJECT_ROOT / Path(config["loso"].get(
+        "reference_eval12_dir", "notebooks/experiment/derived_8.4-eval-1.2"))
+    full_path = src / "full_config_summary.csv"
+    if not full_path.exists():
+        print(f"[Refs] eval-1.2 full_config_summary.csv not found — {len(need_ref)} configs "
+              f"missing (computed-only aggregation).", flush=True)
+        return pooled_rows, per_config_station, set()
+
+    fsum = pd.read_csv(full_path)
+    fsum = fsum[fsum["config_id"].isin(need_ref)]
+    strat_map = cfg_frame.set_index("config_id")["strategy_name"].to_dict()
+    for _, row in fsum.iterrows():
+        pooled_rows.append({
+            "config_id": row["config_id"],
+            "strategy_name": strat_map.get(row["config_id"], str(row.get("strategy_name_x", ""))),
+            "n_train_total": int(row["n_train_total"]),
+            "n_test": int(row["n_test"]),
+            "full_pooled_r2": row["full_pooled_r2"],
+            "full_pooled_rmse": row["full_pooled_rmse"],
+            "full_pooled_ubrmse": row["full_pooled_ubrmse"],
+            "full_pooled_bias": row["full_pooled_bias"],
+            "full_pooled_mae": row["full_pooled_mae"],
+            "train_time_s": row["train_time_s"],
+            "is_reference": True,
+        })
+    fstat = pd.read_csv(src / "full_per_config_station.csv")
+    fstat = fstat[fstat["config_id"].isin(need_ref)].copy()
+    fstat["strategy_name"] = fstat["config_id"].map(strat_map)
+    fstat["is_reference"] = True
+    per_config_station.extend(fstat.to_dict(orient="records"))
+    print(f"[Refs] Merged eval-1.2 full-baseline rows for {len(need_ref)} configurations "
+          f"({len(fstat)} station rows).", flush=True)
+    return pooled_rows, per_config_station, set(need_ref)
+
+
 def _write_partial(per_config_station: list[dict], pooled_rows: list[dict]) -> None:
     """Crash-safety: flush accumulated rows to CSVs."""
     pd.DataFrame(per_config_station).to_csv(EXP_DIR / "full_per_config_station.csv", index=False)
@@ -98,6 +147,9 @@ def main() -> None:
     parser.add_argument("--config-id", action="append", default=None, help="Only run these config ids (repeatable).")
     parser.add_argument("--n-parallel", type=int, default=None, help="Concurrent GPU workers.")
     parser.add_argument("--device", default=None, help="Override model device (e.g. cpu for login-node smoke).")
+    parser.add_argument("--new-strategy-only", action="store_true",
+                        help="Compute only the NEW Clustering_Backbone54_k2 configs; merge the "
+                             "other 47 configs' full-baseline results as eval-1.2 references.")
     parser.add_argument("--no-resume", action="store_true", help="Ignore existing partial results.")
     parser.add_argument("--smoke", action="store_true", help="data_version -1 + n_estimators 100 (never reused).")
     args = parser.parse_args()
@@ -116,14 +168,19 @@ def main() -> None:
     data = load_experiment_data(PROJECT_ROOT, config)
     print(f"[Data] TrainVal={len(data.trainval)} samples, Test={len(data.test)} samples.", flush=True)
 
-    configurations = load_configurations(data, config)
-    if args.config_id:
-        configurations = [c for c in configurations if c["config_id"] in args.config_id]
+    all_configurations = load_configurations(data, config)
+    if args.new_strategy_only:
+        new_strat = str(config["new_clustering_strategy"]["strategy"])
+        configurations = [c for c in all_configurations if c["strategy_name"] == new_strat]
+        print(f"[Scope] Computing only the NEW strategy ({new_strat}, {len(configurations)} configs); "
+              f"other pinned configs merge as eval-1.2 references.", flush=True)
+    elif args.config_id:
+        configurations = [c for c in all_configurations if c["config_id"] in args.config_id]
     if args.max_configs:
         configurations = configurations[: args.max_configs]
     print(f"[Configs] Evaluating {len(configurations)} configs on full trainval (no LOSO).", flush=True)
 
-    cfg_frame = build_config_frame(configurations)
+    cfg_frame = build_config_frame(all_configurations)
     eval11_r2 = cfg_frame.set_index("config_id")["eval11_test_r2"].to_dict()
 
     n_parallel = args.n_parallel or int(config["loso"].get("n_parallel", 8))
@@ -170,6 +227,9 @@ def main() -> None:
             missing += 1
             continue
         pooled_row, station_rows = agg
+        pooled_row["is_reference"] = False
+        for r in station_rows:
+            r["is_reference"] = False
         per_config_station.extend(station_rows)
         pooled_rows.append(pooled_row)
         _write_partial(per_config_station, pooled_rows)
@@ -177,6 +237,11 @@ def main() -> None:
               f"pooled R2={pooled_row['full_pooled_r2']:.4f}", flush=True)
     if missing:
         print(f"[Warn] {missing} configs missing/incomplete — aggregation is partial.", flush=True)
+
+    # Merge eval-1.2 full-baseline references for pinned configs not computed here
+    # (all pinned configs, not just the run scope).
+    pooled_rows, per_config_station, ref_ids = merge_eval12_full_references(
+        pooled_rows, per_config_station, all_configurations, config, cfg_frame)
 
     df_pcs = pd.DataFrame(per_config_station)
     df_pooled = pd.DataFrame(pooled_rows)
@@ -197,6 +262,7 @@ def main() -> None:
         on="config_id", how="left",
     )
     summary["r2_diff"] = (summary["full_pooled_r2"] - summary["eval11_test_r2"]).abs()
+    summary["is_reference"] = summary["config_id"].isin(ref_ids)
     summary = summary.sort_values("full_pooled_r2", ascending=False).reset_index(drop=True)
     summary.to_csv(EXP_DIR / "full_config_summary.csv", index=False)
 
