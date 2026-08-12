@@ -1,0 +1,165 @@
+# Configuration for derived_8.4-eval-1.3 LOSO Spatial Generalization Evaluation
+#
+# Copy of derived_8.4-eval-1.2 (all 47 configurations retained) PLUS a NEW
+# clustering strategy `Clustering_Backbone54_k2`: KMeans(k=2) fitted on the SAME
+# 54 shared-backbone features as the single-regime global model
+# (`Global_Single_54`), so the two-regime model is presented as developed from
+# the single-regime model instead of from the separate V0-50 feature source.
+# Execution follows the derived_8.4-eval-2.0 parallel worker format (driver
+# spawns n_parallel worker subprocesses) to utilize the H100 GPU.
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+artifacts:
+  directory: "artifacts"
+
+model:
+  seed: 42
+  exact_params:
+    n_estimators: 2500
+    learning_rate: 0.005
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: "hist"
+    device: "cuda"
+
+shared_backbone_54:
+  - precip_mm
+  - s2_b4
+  - s2_b8
+  - SMAP_sm_pm_interp
+  - D_sin_DOY
+  - D_cos_DOY
+  - E_SAR_ratio
+  - G_API
+  - G_DSLR
+  - G_rain_sum_3d
+  - G_rain_sum_7d
+  - SMAP_sm_pm_interp_lag7
+  - SMAP_sm_pm_interp_lag30
+  - SMAP_sm_pm_interp_rollrange7
+  - SMAP_sm_pm_interp_rollmean30
+  - SMAP_sm_pm_interp_rollrange30
+  - SMAP_sm_interp_rollrange7
+  - SMAP_ampm_diff_interp
+  - V_rollrng_G_API_kobs7
+  - V_rollmax_F_NDMI_kobs30
+  - A_d_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs7
+  - V_rollmin_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs30
+  - V_rollmin_LST_modis_kobs30
+  - V_ema_LST_modis_kobs30
+  - V_rollmax_F_NDVI_kobs14
+  - V_rollmax_F_NDVI_kobs30
+  - V_ema_F_NDVI_kobs30
+  - C_lag_F_NDVI_kobs30
+  - A_grad_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs14
+  - V_rollrng_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs30
+  - A_grad_s2_b11_kobs30
+  - V_rollrng_s2_b11_kobs30
+  - V_rollmin_s2_b11_kobs30
+  - V_rollmin_s2_b12_kobs30
+  - A_d_SMAP_sm_interp_kobs30
+  - V_rollmin_SMAP_sm_interp_kobs14
+  - V_rollmin_SMAP_sm_interp_kobs30
+  - E_rough_s1_vh_kobs14
+  - J_aspect_deg
+  - J_bio_bio02
+  - J_bio_bio13
+  - J_lc_code
+  - J_soil_texture_usda_b0
+  - sin_year
+  - cos_year
+  - SMAP_x_year
+  - D_z_F_NDMI
+  - D_z_LST_modis
+  - D_fft_dom_LST_modis_kobs30
+  - D_fft_ent_LST_modis_kobs30
+
+candidate_pool_file: "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv"
+
+delta_addition_counts: [0, 5, 10]
+
+# NEW in eval-1.3: the two-regime clustering developed from the single-regime
+# model. Routing = KMeans(k=2, seed 42) on the SAME 54 shared-backbone features
+# used by `Global_Single_54` (no separate V0-50 feature source to explain).
+# The 9 delta-grid points reuse eval-1.1's `Clustering_V0_Full_k2` additions per
+# (c0, c1) (additions stay fixed from eval-1.1, exactly like the other 5 MoE
+# strategies — only the routing features differ). The winner is pinned to the
+# same grid point that won for V0-Full in eval-1.1 (c0=0, c1=10), decided BEFORE
+# running (no post-hoc selection); the full grid shows the winner is robust.
+new_clustering_strategy:
+  strategy: "Clustering_Backbone54_k2"
+  router_features: "shared_backbone_54"      # same 54 features as the single-regime global model
+  winner: {c0: 0, c1: 10}                    # mirrors the eval-1.1 Clustering_V0_Full_k2 winner
+  additions_source: "Clustering_V0_Full_k2"  # grid-point additions pinned from eval-1.1's V0-Full rows
+
+# LOSO (leave-one-station-out) spatial generalization protocol.
+# For each configuration and each held-out station s:
+#   1. fold_trainval = trainval rows with station_id != s (train 2017-2020 + val 2021-2022)
+#   2. fold_test     = test rows with station_id == s (2023-2025)
+#   3. Router is refitted on fold_trainval only (no held-out-station leakage into routing)
+#   4. Experts trained per regime cluster on fold_trainval with the configuration's features
+#   5. Metrics computed on fold_test (pooled / per-year / per-regime)
+# Delta additions are FIXED from derived_8.4-eval-1.1 (selected with full test-set knowledge),
+# so LOSO measures generalization of model fitting given fixed features (see README caveat).
+loso:
+  source_eval11_dir: "notebooks/experiment/derived_8.4-eval-1.1"
+  holdout_column: "station_id"
+  configs: "all"  # "all" = 2 baselines + 6 strategies x 9 delta-grid points (56 configs)
+  save_weights: true
+  save_predictions: true
+  # Parallel worker execution (derived_8.4-eval-2.0 format): the driver spawns
+  # n_parallel `run_loso_worker.py` subprocesses, each training one
+  # (config, station) fold on the GPU concurrently. XGBoost uses 1 CPU per
+  # worker (n_jobs=1); 8 workers mildly oversubscribe the 6-CPU sbatch
+  # allocation (same tradeoff as eval-2.0) — use 6 if the node throttles.
+  n_parallel: 8
+  # Bump to invalidate stale worker artifacts (job meta.json records the
+  # data_version; completed folds are resumed/skipped only on an exact match).
+  data_version: 1
+
+# Station similarity / clustering analysis (hypothesis: a station generalizes well spatially
+# when the LOSO training set contains a climate/geography "twin"; poorly when it stands out).
+# Computed in eval13/station_sim.py and the results notebook; figures generated by the notebook.
+station_clustering:
+  static_features_file: "data/splits/derived_8.4/station_static_features.csv"
+  static_feature_groups:
+    geography: ["latitude", "longitude", "J_elev_m", "J_slope_deg", "K_aspect_sin", "K_aspect_cos"]
+    climate: "WorldClim BioClim J_bio_bio01..J_bio_bio19 (BIO1-19)"
+    soil: ["J_sand_wfrac_b0", "J_clay_wfrac_b0", "J_sand_wfrac_b200", "J_clay_wfrac_b200"]
+  observed_climatology: "per-station mean/std of precip_mm, LST_modis, F_NDVI, SMAP_sm_interp, soil_moisture_5cm over train+val"
+  standardization: "z-score across the 7 stations"
+  distance: "Euclidean on standardized features; similarity = 1 - d/dmax"
+  clustering: "Ward hierarchical linkage; PCA 2D projection"
+  difficulty_metrics: ["median_r2 / mean_r2 (aggregate over 56 configs, loso_station_summary.csv)",
+                       "winner_r2 (Clustering_Backbone54_k2 pinned winner per-station R2, loso_per_config_station.csv)"]
+  isolation_metrics: ["nn_dist (1-NN)", "mean_dist (mean to other 6)", "centroid_dist"]
+  hypothesis_test: "Spearman rank correlation isolation x difficulty (n=7, illustrative only)"
+
+# Full-training baseline (replicates derived_8.4-eval-1.1: train on ALL stations, no LOSO).
+# LOSO is an addition to the experiment, not a replacement — this baseline measures the
+# *intrinsic* per-station test difficulty, which is contrasted with LOSO difficulty to
+# separate generalization-limited stations from intrinsically hard ones. Also provides the
+# temporal test R2 for the 9 NEW Clustering_Backbone54_k2 configs (no eval-1.1 row exists),
+# used by the report notebook as their temporal reference.
+# Run: python run_full_baseline.py (same pinned 56 configs as LOSO).
+full_baseline:
+  configs: "all"              # same 56 configs as LOSO (apples-to-apples per-station medians)
+  save_weights: false         # predictions + metrics only (weights not needed for metrics)
+  save_predictions: true
+  predictions_dir: "predictions_full"
+  validation: "per-config pooled test R2 must match eval-1.1 delta_grid_summary/metrics_summary for the 47 pinned configs (|diff| < 1e-3)"
