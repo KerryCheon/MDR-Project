@@ -220,6 +220,28 @@ static feature profiles, top-15 separating features, 25 figures) is in the noteb
 
 `Global_Single` and `Baseline_V0` have a single regime and are not analyzed.
 
+### Temporal (per-year) performance
+
+Per-year pooled test R² for the same winner models already exists in eval-1.1's
+`metrics_summary.csv` (eval-1.1 notebook §"Yearly Performance Breakdown"). Figures live in
+eval-1.1 as well: `yearly_r2_linechart.png` covers all models, and station×year metric cards
+exist for `Clustering_V0_Full_k2`, `Clustering_Dynamic_k2`, `Trained_Gating_k2` and
+`Global_Single` (`station_year_metrics_*.png`); `Seasonal_Binary_k2` and `Univariate_G_API_k2`
+have per-year R² in the CSV but no station-year card.
+
+| strategy | pooled R² | 2023 | 2024 | 2025 |
+| :--- | ---: | ---: | ---: | ---: |
+| Clustering_V0_Full_k2 | 0.815 | 0.823 | 0.7833 | 0.8303 |
+| Clustering_Dynamic_k2 | 0.7866 | 0.7594 | 0.779 | 0.8182 |
+| Seasonal_Binary_k2 | 0.7698 | 0.7332 | 0.7618 | 0.8121 |
+| Univariate_G_API_k2 | 0.7696 | 0.7309 | 0.7685 | 0.8077 |
+| Trained_Gating_k2 | 0.7355 | 0.6976 | 0.7324 | 0.7733 |
+
+The winner is the best model in every single year (2023–2025). All five strategies are
+strongest in 2025 (the last test year); 2023 is the weakest year for the four temporal
+strategies, while the winner dips slightly in 2024. The leaderboard order holds in every year
+except 2024, where `Univariate_G_API_k2` (0.7685) edges past `Seasonal_Binary_k2` (0.7618).
+
 ### Station → regime composition (share of cluster 1 per station, trainval)
 
 1.0 = the station is entirely in cluster 1; 0.0 = entirely in cluster 0.
@@ -306,7 +328,7 @@ the ECE team's new in-situ stations.
 | File | Description |
 | :--- | :--- |
 | `derived_8.4_regime_interpretation_1.1.ipynb` | Notebook (the experiment only; explanation is this README) |
-| `regime_comparison_summary.csv` | Cross-strategy comparison (sizes, purity, station groups, top feature, eval-1.1 R²/RMSE/MAE/bias) |
+| `regime_comparison_summary.csv` | Cross-strategy comparison (sizes, purity, station groups, top feature, eval-1.1 R²/RMSE/MAE/bias, per-year R² 2023–2025) |
 | `regime_profile_summary_<strategy>.csv` | Per-regime medians + rank-biserial for target/drivers/static |
 | `regime_station_composition_<strategy>.csv` | Per-station regime shares (trainval + test), purity, coordinates |
 | `regime_top_features_<strategy>.csv` | Top-15 V0 features by \|rank-biserial\| separation |
