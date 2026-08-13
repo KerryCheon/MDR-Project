@@ -1,6 +1,6 @@
-strategy,trainval_sizes_c0_c1,mean_purity_trainval,mean_purity_test,dominant_stations_per_cluster,top_separating_feature,winner_test_r2
-Clustering_V0_Full_k2,10624 (73%) / 3984 (27%),1.0,1.0,"c0: BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault; c1: SourdoughGulch_WA_985, Spokane",K_aspect_cos (r=1.0),0.815
-Clustering_Dynamic_k2,7974 (55%) / 6634 (45%),0.62,0.612,"c0: Darrington, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, CayusePass_WA, Paradise_WA, Quinault",V_ema_LST_modis_kobs30 (r=0.9),0.7866
-Seasonal_Binary_k2,7559 (52%) / 7049 (48%),0.527,0.539,"c0: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane; c1: CayusePass_WA",V_ema_LST_modis_kobs30 (r=0.917),0.7698
-Univariate_G_API_k2,7304 (50%) / 7304 (50%),0.686,0.688,"c0: CayusePass_WA, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault",V_rollmax_G_API_kobs7 (r=-0.985),0.7696
-Trained_Gating_k2,4181 (29%) / 10427 (71%),0.709,0.716,"c1: BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane",V_ema_LST_modis_kobs30 (r=0.807),0.7355
+strategy,trainval_sizes_c0_c1,mean_purity_trainval,mean_purity_test,dominant_stations_per_cluster,top_separating_feature,winner_test_r2,winner_test_rmse,winner_test_mae,winner_test_bias
+Clustering_V0_Full_k2,10624 (73%) / 3984 (27%),1.0,1.0,"c0: BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault; c1: SourdoughGulch_WA_985, Spokane",K_aspect_cos (r=1.0),0.815,0.0438,0.0337,0.0065
+Clustering_Dynamic_k2,7974 (55%) / 6634 (45%),0.62,0.612,"c0: Darrington, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, CayusePass_WA, Paradise_WA, Quinault",V_ema_LST_modis_kobs30 (r=0.9),0.7866,0.0471,0.0362,0.0094
+Seasonal_Binary_k2,7559 (52%) / 7049 (48%),0.527,0.539,"c0: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane; c1: CayusePass_WA",V_ema_LST_modis_kobs30 (r=0.917),0.7698,0.0489,0.0377,0.0104
+Univariate_G_API_k2,7304 (50%) / 7304 (50%),0.686,0.688,"c0: CayusePass_WA, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault",V_rollmax_G_API_kobs7 (r=-0.985),0.7696,0.0489,0.0379,0.0101
+Trained_Gating_k2,4181 (29%) / 10427 (71%),0.709,0.716,"c1: BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane",V_ema_LST_modis_kobs30 (r=0.807),0.7355,0.0524,0.0389,0.0142

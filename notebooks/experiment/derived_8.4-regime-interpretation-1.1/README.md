@@ -210,13 +210,13 @@ static feature profiles, top-15 separating features, 25 figures) is in the noteb
 
 ### Cross-strategy comparison
 
-| strategy | trainval sizes (c0 / c1) | mean purity trainval | mean purity test | dominant stations per cluster | top separating V0 feature | winner test R² |
-| :--- | :--- | ---: | ---: | :--- | :--- | ---: |
-| Clustering_V0_Full_k2 | 10624 (73%) / 3984 (27%) | 1 | 1 | c0: BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault; c1: SourdoughGulch_WA_985, Spokane | K_aspect_cos (r=1.0) | 0.815 |
-| Clustering_Dynamic_k2 | 7974 (55%) / 6634 (45%) | 0.62 | 0.612 | c0: Darrington, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, CayusePass_WA, Paradise_WA, Quinault | V_ema_LST_modis_kobs30 (r=0.9) | 0.7866 |
-| Seasonal_Binary_k2 | 7559 (52%) / 7049 (48%) | 0.527 | 0.539 | c0: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane; c1: CayusePass_WA | V_ema_LST_modis_kobs30 (r=0.917) | 0.7698 |
-| Univariate_G_API_k2 | 7304 (50%) / 7304 (50%) | 0.686 | 0.688 | c0: CayusePass_WA, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault | V_rollmax_G_API_kobs7 (r=-0.985) | 0.7696 |
-| Trained_Gating_k2 | 4181 (29%) / 10427 (71%) | 0.709 | 0.716 | c1: all seven stations (c0 never dominant) | V_ema_LST_modis_kobs30 (r=0.807) | 0.7355 |
+| strategy | trainval sizes (c0 / c1) | mean purity trainval | mean purity test | dominant stations per cluster | top separating V0 feature | winner test R² | winner test RMSE | winner test MAE | winner test bias |
+| :--- | :--- | ---: | ---: | :--- | :--- | ---: | ---: | ---: | ---: |
+| Clustering_V0_Full_k2 | 10624 (73%) / 3984 (27%) | 1 | 1 | c0: BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault; c1: SourdoughGulch_WA_985, Spokane | K_aspect_cos (r=1.0) | 0.815 | 0.0438 | 0.0337 | 0.0065 |
+| Clustering_Dynamic_k2 | 7974 (55%) / 6634 (45%) | 0.62 | 0.612 | c0: Darrington, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, CayusePass_WA, Paradise_WA, Quinault | V_ema_LST_modis_kobs30 (r=0.9) | 0.7866 | 0.0471 | 0.0362 | 0.0094 |
+| Seasonal_Binary_k2 | 7559 (52%) / 7049 (48%) | 0.527 | 0.539 | c0: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane; c1: CayusePass_WA | V_ema_LST_modis_kobs30 (r=0.917) | 0.7698 | 0.0489 | 0.0377 | 0.0104 |
+| Univariate_G_API_k2 | 7304 (50%) / 7304 (50%) | 0.686 | 0.688 | c0: CayusePass_WA, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault | V_rollmax_G_API_kobs7 (r=-0.985) | 0.7696 | 0.0489 | 0.0379 | 0.0101 |
+| Trained_Gating_k2 | 4181 (29%) / 10427 (71%) | 0.709 | 0.716 | c1: all seven stations (c0 never dominant) | V_ema_LST_modis_kobs30 (r=0.807) | 0.7355 | 0.0524 | 0.0389 | 0.0142 |
 
 `Global_Single` and `Baseline_V0` have a single regime and are not analyzed.
 
@@ -306,7 +306,7 @@ the ECE team's new in-situ stations.
 | File | Description |
 | :--- | :--- |
 | `derived_8.4_regime_interpretation_1.1.ipynb` | Notebook (the experiment only; explanation is this README) |
-| `regime_comparison_summary.csv` | Cross-strategy comparison (sizes, purity, station groups, top feature, eval-1.1 R²) |
+| `regime_comparison_summary.csv` | Cross-strategy comparison (sizes, purity, station groups, top feature, eval-1.1 R²/RMSE/MAE/bias) |
 | `regime_profile_summary_<strategy>.csv` | Per-regime medians + rank-biserial for target/drivers/static |
 | `regime_station_composition_<strategy>.csv` | Per-station regime shares (trainval + test), purity, coordinates |
 | `regime_top_features_<strategy>.csv` | Top-15 V0 features by \|rank-biserial\| separation |
