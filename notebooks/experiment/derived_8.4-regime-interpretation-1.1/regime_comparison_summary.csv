@@ -4,3 +4,4 @@ Clustering_Dynamic_k2,7974 (55%) / 6634 (45%),0.62,0.612,"c0: Darrington, Sourdo
 Seasonal_Binary_k2,7559 (52%) / 7049 (48%),0.527,0.539,"c0: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane; c1: CayusePass_WA",V_ema_LST_modis_kobs30 (r=0.917),0.7698,0.0489,0.0377,0.0104,0.7332,0.7618,0.8121
 Univariate_G_API_k2,7304 (50%) / 7304 (50%),0.686,0.688,"c0: CayusePass_WA, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault",V_rollmax_G_API_kobs7 (r=-0.985),0.7696,0.0489,0.0379,0.0101,0.7309,0.7685,0.8077
 Trained_Gating_k2,4181 (29%) / 10427 (71%),0.709,0.716,"c1: BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane",V_ema_LST_modis_kobs30 (r=0.807),0.7355,0.0524,0.0389,0.0142,0.6976,0.7324,0.7733
+Global_Single,—,—,—,—,—,0.7792,0.0479,0.0371,0.0105,0.7507,0.7701,0.8136

@@ -217,8 +217,12 @@ static feature profiles, top-15 separating features, 25 figures) is in the noteb
 | Seasonal_Binary_k2 | 7559 (52%) / 7049 (48%) | 0.527 | 0.539 | c0: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane; c1: CayusePass_WA | V_ema_LST_modis_kobs30 (r=0.917) | 0.7698 | 0.0489 | 0.0377 | 0.0104 |
 | Univariate_G_API_k2 | 7304 (50%) / 7304 (50%) | 0.686 | 0.688 | c0: CayusePass_WA, SourdoughGulch_WA_985, Spokane; c1: BeaverPass_WA_990, Darrington, Paradise_WA, Quinault | V_rollmax_G_API_kobs7 (r=-0.985) | 0.7696 | 0.0489 | 0.0379 | 0.0101 |
 | Trained_Gating_k2 | 4181 (29%) / 10427 (71%) | 0.709 | 0.716 | c1: all seven stations (c0 never dominant) | V_ema_LST_modis_kobs30 (r=0.807) | 0.7355 | 0.0524 | 0.0389 | 0.0142 |
+| Global_Single (baseline) | — | — | — | — | — | 0.7792 | 0.0479 | 0.0371 | 0.0105 |
 
-`Global_Single` and `Baseline_V0` have a single regime and are not analyzed.
+`Global_Single` — the single-regime baseline (Global Single Model, 54-feature backbone, no
+routing) — is included in every performance table; its regime-specific columns (sizes, purity,
+dominant stations, top separating feature) are marked "—" because it has no regimes.
+`Baseline_V0` (the older 50-feature set) remains excluded.
 
 ### Temporal (per-year) performance
 
@@ -236,11 +240,14 @@ have per-year R² in the CSV but no station-year card.
 | Seasonal_Binary_k2 | 0.7698 | 0.7332 | 0.7618 | 0.8121 |
 | Univariate_G_API_k2 | 0.7696 | 0.7309 | 0.7685 | 0.8077 |
 | Trained_Gating_k2 | 0.7355 | 0.6976 | 0.7324 | 0.7733 |
+| Global_Single (baseline) | 0.7792 | 0.7507 | 0.7701 | 0.8136 |
 
-The winner is the best model in every single year (2023–2025). All five strategies are
-strongest in 2025 (the last test year); 2023 is the weakest year for the four temporal
-strategies, while the winner dips slightly in 2024. The leaderboard order holds in every year
-except 2024, where `Univariate_G_API_k2` (0.7685) edges past `Seasonal_Binary_k2` (0.7618).
+The winner is the best model in every single year (2023–2025). All strategies are strongest in
+2025 (the last test year); 2023 is the weakest year for the four temporal strategies, while the
+winner dips slightly in 2024. The single-regime baseline beats the three temporal strategies in
+every year but trails `Clustering_Dynamic_k2` and the winner in all three years. The
+leaderboard order holds in every year except 2024, where `Univariate_G_API_k2` (0.7685) edges
+past `Seasonal_Binary_k2` (0.7618).
 
 ### Spatial (per-station) performance
 
@@ -255,99 +262,99 @@ as `regime_spatial_summary.csv`.
 
 Per-station test R², full protocol (eval-1.4 `full_per_config_station.csv`):
 
-| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BeaverPass_WA_990 | 0.619 | 0.598 | 0.544 | 0.526 | 0.384 |
-| CayusePass_WA | 0.807 | 0.792 | 0.768 | 0.761 | 0.759 |
-| Darrington | 0.828 | 0.805 | 0.811 | 0.798 | 0.801 |
-| Paradise_WA | 0.853 | 0.779 | 0.77 | 0.77 | 0.661 |
-| Quinault | 0.69 | 0.69 | 0.672 | 0.656 | 0.677 |
-| SourdoughGulch_WA_985 | 0.554 | 0.462 | 0.437 | 0.477 | 0.375 |
-| Spokane | 0.95 | 0.943 | 0.923 | 0.936 | 0.937 |
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 | Global_Single (baseline) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.619 | 0.598 | 0.544 | 0.526 | 0.384 | 0.542 |
+| CayusePass_WA | 0.807 | 0.792 | 0.768 | 0.761 | 0.759 | 0.804 |
+| Darrington | 0.828 | 0.805 | 0.811 | 0.798 | 0.801 | 0.785 |
+| Paradise_WA | 0.853 | 0.779 | 0.77 | 0.77 | 0.661 | 0.798 |
+| Quinault | 0.69 | 0.69 | 0.672 | 0.656 | 0.677 | 0.666 |
+| SourdoughGulch_WA_985 | 0.554 | 0.462 | 0.437 | 0.477 | 0.375 | 0.426 |
+| Spokane | 0.95 | 0.943 | 0.923 | 0.936 | 0.937 | 0.934 |
 
 Per-station test R², LOSO held-out (eval-1.4 `loso_per_config_station.csv`):
 
-| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BeaverPass_WA_990 | 0.742 | 0.626 | 0.597 | 0.677 | 0.633 |
-| CayusePass_WA | 0.694 | 0.412 | 0.401 | 0.404 | 0.288 |
-| Darrington | 0.703 | 0.688 | 0.732 | 0.702 | 0.594 |
-| Paradise_WA | 0.78 | 0.649 | 0.604 | 0.551 | 0.37 |
-| Quinault | 0.561 | 0.527 | 0.546 | 0.532 | 0.366 |
-| SourdoughGulch_WA_985 | 0.427 | 0.39 | 0.484 | 0.364 | 0.438 |
-| Spokane | 0.584 | 0.648 | 0.634 | 0.616 | 0.75 |
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 | Global_Single (baseline) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.742 | 0.626 | 0.597 | 0.677 | 0.633 | 0.711 |
+| CayusePass_WA | 0.694 | 0.412 | 0.401 | 0.404 | 0.288 | 0.347 |
+| Darrington | 0.703 | 0.688 | 0.732 | 0.702 | 0.594 | 0.702 |
+| Paradise_WA | 0.78 | 0.649 | 0.604 | 0.551 | 0.37 | 0.74 |
+| Quinault | 0.561 | 0.527 | 0.546 | 0.532 | 0.366 | 0.553 |
+| SourdoughGulch_WA_985 | 0.427 | 0.39 | 0.484 | 0.364 | 0.438 | 0.394 |
+| Spokane | 0.584 | 0.648 | 0.634 | 0.616 | 0.75 | 0.63 |
 
 Per-station test RMSE, full protocol:
 
-| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BeaverPass_WA_990 | 0.056 | 0.058 | 0.062 | 0.063 | 0.072 |
-| CayusePass_WA | 0.052 | 0.054 | 0.058 | 0.058 | 0.059 |
-| Darrington | 0.039 | 0.041 | 0.041 | 0.042 | 0.042 |
-| Paradise_WA | 0.038 | 0.046 | 0.047 | 0.047 | 0.057 |
-| Quinault | 0.039 | 0.039 | 0.04 | 0.041 | 0.04 |
-| SourdoughGulch_WA_985 | 0.054 | 0.059 | 0.06 | 0.058 | 0.063 |
-| Spokane | 0.026 | 0.028 | 0.032 | 0.029 | 0.029 |
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 | Global_Single (baseline) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.056 | 0.058 | 0.062 | 0.063 | 0.072 | 0.062 |
+| CayusePass_WA | 0.052 | 0.054 | 0.058 | 0.058 | 0.059 | 0.053 |
+| Darrington | 0.039 | 0.041 | 0.041 | 0.042 | 0.042 | 0.043 |
+| Paradise_WA | 0.038 | 0.046 | 0.047 | 0.047 | 0.057 | 0.044 |
+| Quinault | 0.039 | 0.039 | 0.04 | 0.041 | 0.04 | 0.04 |
+| SourdoughGulch_WA_985 | 0.054 | 0.059 | 0.06 | 0.058 | 0.063 | 0.061 |
+| Spokane | 0.026 | 0.028 | 0.032 | 0.029 | 0.029 | 0.03 |
 
 Per-station test RMSE, LOSO held-out:
 
-| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BeaverPass_WA_990 | 0.046 | 0.056 | 0.058 | 0.052 | 0.055 |
-| CayusePass_WA | 0.066 | 0.092 | 0.092 | 0.092 | 0.101 |
-| Darrington | 0.051 | 0.052 | 0.048 | 0.051 | 0.06 |
-| Paradise_WA | 0.046 | 0.058 | 0.062 | 0.066 | 0.078 |
-| Quinault | 0.046 | 0.048 | 0.047 | 0.048 | 0.055 |
-| SourdoughGulch_WA_985 | 0.061 | 0.063 | 0.058 | 0.064 | 0.06 |
-| Spokane | 0.074 | 0.068 | 0.07 | 0.071 | 0.057 |
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 | Global_Single (baseline) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.046 | 0.056 | 0.058 | 0.052 | 0.055 | 0.049 |
+| CayusePass_WA | 0.066 | 0.092 | 0.092 | 0.092 | 0.101 | 0.096 |
+| Darrington | 0.051 | 0.052 | 0.048 | 0.051 | 0.06 | 0.051 |
+| Paradise_WA | 0.046 | 0.058 | 0.062 | 0.066 | 0.078 | 0.05 |
+| Quinault | 0.046 | 0.048 | 0.047 | 0.048 | 0.055 | 0.046 |
+| SourdoughGulch_WA_985 | 0.061 | 0.063 | 0.058 | 0.064 | 0.06 | 0.062 |
+| Spokane | 0.074 | 0.068 | 0.07 | 0.071 | 0.057 | 0.07 |
 
 Per-station test MAE, full protocol:
 
-| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BeaverPass_WA_990 | 0.05 | 0.051 | 0.055 | 0.056 | 0.06 |
-| CayusePass_WA | 0.041 | 0.044 | 0.047 | 0.047 | 0.047 |
-| Darrington | 0.032 | 0.033 | 0.033 | 0.035 | 0.034 |
-| Paradise_WA | 0.03 | 0.034 | 0.035 | 0.036 | 0.04 |
-| Quinault | 0.032 | 0.032 | 0.033 | 0.034 | 0.032 |
-| SourdoughGulch_WA_985 | 0.038 | 0.042 | 0.042 | 0.041 | 0.044 |
-| Spokane | 0.018 | 0.021 | 0.024 | 0.023 | 0.022 |
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 | Global_Single (baseline) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.05 | 0.051 | 0.055 | 0.056 | 0.06 | 0.055 |
+| CayusePass_WA | 0.041 | 0.044 | 0.047 | 0.047 | 0.047 | 0.042 |
+| Darrington | 0.032 | 0.033 | 0.033 | 0.035 | 0.034 | 0.036 |
+| Paradise_WA | 0.03 | 0.034 | 0.035 | 0.036 | 0.04 | 0.033 |
+| Quinault | 0.032 | 0.032 | 0.033 | 0.034 | 0.032 | 0.033 |
+| SourdoughGulch_WA_985 | 0.038 | 0.042 | 0.042 | 0.041 | 0.044 | 0.043 |
+| Spokane | 0.018 | 0.021 | 0.024 | 0.023 | 0.022 | 0.023 |
 
 Per-station test MAE, LOSO held-out:
 
-| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BeaverPass_WA_990 | 0.036 | 0.047 | 0.05 | 0.045 | 0.046 |
-| CayusePass_WA | 0.053 | 0.078 | 0.08 | 0.077 | 0.08 |
-| Darrington | 0.041 | 0.042 | 0.037 | 0.04 | 0.042 |
-| Paradise_WA | 0.036 | 0.046 | 0.046 | 0.053 | 0.06 |
-| Quinault | 0.037 | 0.039 | 0.038 | 0.038 | 0.045 |
-| SourdoughGulch_WA_985 | 0.046 | 0.05 | 0.044 | 0.048 | 0.049 |
-| Spokane | 0.062 | 0.055 | 0.059 | 0.058 | 0.048 |
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 | Global_Single (baseline) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.036 | 0.047 | 0.05 | 0.045 | 0.046 | 0.043 |
+| CayusePass_WA | 0.053 | 0.078 | 0.08 | 0.077 | 0.08 | 0.078 |
+| Darrington | 0.041 | 0.042 | 0.037 | 0.04 | 0.042 | 0.041 |
+| Paradise_WA | 0.036 | 0.046 | 0.046 | 0.053 | 0.06 | 0.04 |
+| Quinault | 0.037 | 0.039 | 0.038 | 0.038 | 0.045 | 0.037 |
+| SourdoughGulch_WA_985 | 0.046 | 0.05 | 0.044 | 0.048 | 0.049 | 0.05 |
+| Spokane | 0.062 | 0.055 | 0.059 | 0.058 | 0.048 | 0.057 |
 
 Per-station test bias, full protocol:
 
-| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BeaverPass_WA_990 | 0.046 | 0.048 | 0.052 | 0.052 | 0.059 |
-| CayusePass_WA | 0.001 | 0.007 | 0.006 | 0.006 | 0.014 |
-| Darrington | 0.022 | 0.024 | 0.022 | 0.024 | 0.025 |
-| Paradise_WA | 0.008 | 0.017 | 0.019 | 0.021 | 0.027 |
-| Quinault | -0.019 | -0.021 | -0.022 | -0.02 | -0.022 |
-| SourdoughGulch_WA_985 | -0 | 0.002 | 0.007 | 0.001 | 0.01 |
-| Spokane | 0.002 | 0.003 | 0.005 | 0.002 | 0.005 |
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 | Global_Single (baseline) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.046 | 0.048 | 0.052 | 0.052 | 0.059 | 0.053 |
+| CayusePass_WA | 0.001 | 0.007 | 0.006 | 0.006 | 0.014 | 0.008 |
+| Darrington | 0.022 | 0.024 | 0.022 | 0.024 | 0.025 | 0.026 |
+| Paradise_WA | 0.008 | 0.017 | 0.019 | 0.021 | 0.027 | 0.014 |
+| Quinault | -0.019 | -0.021 | -0.022 | -0.02 | -0.022 | -0.021 |
+| SourdoughGulch_WA_985 | -0 | 0.002 | 0.007 | 0.001 | 0.01 | 0.006 |
+| Spokane | 0.002 | 0.003 | 0.005 | 0.002 | 0.005 | 0.004 |
 
 Per-station test bias, LOSO held-out:
 
-| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| BeaverPass_WA_990 | 0.02 | 0.016 | 0.008 | 0.016 | 0.02 |
-| CayusePass_WA | 0.011 | 0.059 | 0.06 | 0.06 | 0.07 |
-| Darrington | 0.028 | 0.019 | 0.015 | 0.017 | 0.032 |
-| Paradise_WA | 0.024 | 0.035 | 0.032 | 0.04 | 0.053 |
-| Quinault | 0.003 | 0.007 | 0.004 | 0.004 | 0.008 |
-| SourdoughGulch_WA_985 | -0.025 | -0.028 | -0.017 | -0.025 | -0.01 |
-| Spokane | 0.048 | 0.045 | 0.047 | 0.04 | 0.036 |
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 | Global_Single (baseline) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.02 | 0.016 | 0.008 | 0.016 | 0.02 | 0.025 |
+| CayusePass_WA | 0.011 | 0.059 | 0.06 | 0.06 | 0.07 | 0.068 |
+| Darrington | 0.028 | 0.019 | 0.015 | 0.017 | 0.032 | 0.013 |
+| Paradise_WA | 0.024 | 0.035 | 0.032 | 0.04 | 0.053 | 0.027 |
+| Quinault | 0.003 | 0.007 | 0.004 | 0.004 | 0.008 | 0.003 |
+| SourdoughGulch_WA_985 | -0.025 | -0.028 | -0.017 | -0.025 | -0.01 | -0.026 |
+| Spokane | 0.048 | 0.045 | 0.047 | 0.04 | 0.036 | 0.048 |
 
 LOSO aggregates (eval-1.4 `loso_config_summary.csv`):
 
@@ -358,6 +365,7 @@ LOSO aggregates (eval-1.4 `loso_config_summary.csv`):
 | Seasonal_Binary_k2 | 0.5711 | 0.6014 | 0.0621 | 0.0505 | 0.0211 | 0.7698 | -0.1987 | Darrington | CayusePass_WA |
 | Univariate_G_API_k2 | 0.5493 | 0.5819 | 0.0634 | 0.0513 | 0.0215 | 0.7696 | -0.2203 | Darrington | SourdoughGulch_WA_985 |
 | Trained_Gating_k2 | 0.4913 | 0.5291 | 0.0666 | 0.0529 | 0.0299 | 0.7355 | -0.2441 | Spokane | CayusePass_WA |
+| Global_Single (baseline) | 0.5826 | 0.607 | 0.0607 | 0.0495 | 0.0226 | 0.7792 | -0.1966 | Paradise_WA | CayusePass_WA |
 
 The winner is the best full-protocol model at every station by R² (tying
 `Clustering_Dynamic_k2` at Quinault), and its per-station RMSE/MAE are lowest or tied-lowest
@@ -367,9 +375,12 @@ positive full-protocol bias (0.046–0.059) while Quinault is the only station w
 (−0.019…−0.022). Holding the target station out of training costs every strategy roughly
 0.17–0.24 R² (`loso_minus_test_r2`): the winner still generalizes best (loso_mean_r2 = 0.6415,
 smallest gap −0.1734) and has the lowest LOSO mean error metrics (RMSE 0.0557, MAE 0.0445, bias
-0.0156), `Trained_Gating_k2` worst on all of them (0.0666 / 0.0529 / 0.0299). The largest LOSO
-errors occur at CayusePass (RMSE 0.092–0.101, bias 0.059–0.07 for the four non-winning
-strategies) even though SourdoughGulch is the weakest held-out station by R² — R² is
+0.0156), `Trained_Gating_k2` worst on all of them (0.0666 / 0.0529 / 0.0299). The single-regime
+baseline sits between the winner and the temporal strategies: loso_mean_r2 0.5826 (second
+best, above Seasonal 0.5711) with the second-smallest gap (−0.1966), and its full-protocol
+per-station R² trails the winner at every station (closest at CayusePass, 0.804 vs 0.807). The
+largest LOSO errors occur at CayusePass (RMSE 0.092–0.101, bias 0.059–0.07 for the five
+non-winning strategies) even though SourdoughGulch is the weakest held-out station by R² — R² is
 variance-normalized, the error metrics are not. Per-station LOSO R² can even exceed the
 full-protocol value for some stations (e.g. BeaverPass, 0.742 vs 0.619), because the per-fold
 router and experts are refit without the station and label assignments shift. eval-1.4's
