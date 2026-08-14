@@ -1,0 +1,11 @@
+# Heavy multi-seed artifacts (model weights ~60-80GB, per-seed predictions, job
+# metas) are regenerable via `sbatch run_slurm.sh` (configs pinned in
+# pinned_configurations.json; per-seed cache-safe naming).
+models/*
+predictions/*
+predictions_loso/*
+artifacts/*
+*.log
+*.out
+*.err
+__pycache__/
