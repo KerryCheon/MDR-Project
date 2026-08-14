@@ -47,27 +47,36 @@ No GPU training is involved (clustering + diagnostics only).
 | `Clustering_Static` (new) | 58 | Columns with zero within-station variance (coordinates, terrain, soil, land cover, bioclimatic normals); derived programmatically; data-availability `*_mask` / `*_isnan` flags excluded |
 | `Clustering_Weather` (new) | 16 | Core dynamic drivers: precip, LST, SMAP (3 products + AM/PM diff), NDVI, NDMI, MSI, SAR ratio/diff, G_API, G_DSLR, 3/7/30-day rain sums |
 
+Exact feature lists (verbatim from the executed notebook §2 stdout):
+
+**`Clustering_Static` (58):** `longitude`, `latitude`, `elev`, `slope`, `aspect`, `lia_mean_asc_deg`, `lia_std_asc_deg`, `lia_mean_desc_deg`, `lia_std_desc_deg`, `J_aspect_deg`, `J_bio_bio01`, `J_bio_bio02`, `J_bio_bio03`, `J_bio_bio04`, `J_bio_bio05`, `J_bio_bio06`, `J_bio_bio07`, `J_bio_bio08`, `J_bio_bio09`, `J_bio_bio10`, `J_bio_bio11`, `J_bio_bio12`, `J_bio_bio13`, `J_bio_bio14`, `J_bio_bio15`, `J_bio_bio16`, `J_bio_bio17`, `J_bio_bio18`, `J_bio_bio19`, `J_clay_plus_sand_b0`, `J_clay_wfrac_b0`, `J_clay_wfrac_b10`, `J_clay_wfrac_b100`, `J_clay_wfrac_b200`, `J_clay_wfrac_b30`, `J_clay_wfrac_b60`, `J_elev_m`, `J_lc_code`, `J_sand_clay_ratio_b0`, `J_sand_wfrac_b0`, `J_sand_wfrac_b10`, `J_sand_wfrac_b100`, `J_sand_wfrac_b200`, `J_sand_wfrac_b30`, `J_sand_wfrac_b60`, `J_slope_deg`, `J_soil_texture_usda_b0`, `J_soil_texture_usda_b10`, `J_soil_texture_usda_b100`, `J_soil_texture_usda_b200`, `J_soil_texture_usda_b30`, `J_soil_texture_usda_b60`, `K_sand_clay_ratio_b0`, `K_clay_plus_sand_b0`, `K_slope_sin`, `K_slope_cos`, `K_aspect_sin`, `K_aspect_cos`
+
+**`Clustering_Weather` (16):** `precip_mm`, `LST_modis`, `SMAP_sm_pm_interp`, `SMAP_sm_am_interp`, `SMAP_sm_interp`, `SMAP_ampm_diff_interp`, `F_NDVI`, `F_NDMI`, `F_MSI`, `E_SAR_ratio`, `E_SAR_diff`, `G_API`, `G_DSLR`, `G_rain_sum_3d`, `G_rain_sum_7d`, `G_rain_sum_30d`
+
 ## Evaluated gating strategies (trainval; K = 2, 3, 4)
 
-| Strategy | K | Features Used | Group Sizes | Top 20 Divergence | Max Drift | Drift Feature |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Univariate_G_API | 2 | - | 7304, 7304 | 0.1715 | 0.5864 | V_rollmax_G_API_kobs7 |
-| Seasonal_Binary | 2 | - | 7559, 7049 | 0.1661 | 0.5757 | V_ema_G_API_kobs30 |
-| Clustering_Dynamic | 2 | 3 | 7974, 6634 | 0.1599 | 0.5026 | V_ema_F_NDVI_kobs30 |
-| Clustering_Dynamic | 3 | 3 | 4717, 3891, 6000 | 0.2019 | 0.7641 | V_ema_G_API_kobs30 |
-| Clustering_Dynamic | 4 | 3 | 2173, 2350, 5048, 5037 | 0.2187 | 0.9025 | latitude |
-| Clustering_V0_Full | 2 | 50 | 10624, 3984 | 0.1133 | 1.0725 | SMAP_sm_pm_interp_rollmean30 |
-| Clustering_V0_Full | 3 | 50 | 4247, 3968, 6393 | 0.1318 | 1.3793 | SMAP_sm_pm_interp_rollmean30 |
-| Clustering_V0_Full | 4 | 50 | 4247, 3968, 4158, 2235 | 0.1622 | 1.3045 | SMAP_sm_pm_interp_rollmean30 |
-| Clustering_Backbone54 | 2 | 54 | 10624, 3984 | 0.1133 | 1.0725 | SMAP_sm_pm_interp_rollmean30 |
-| Clustering_Backbone54 | 3 | 54 | 6513, 3857, 4238 | 0.2386 | 0.9488 | V_ema_SMAP_sm_interp_kobs30 |
-| Clustering_Backbone54 | 4 | 54 | 2142, 4053, 3826, 4587 | 0.2209 | 1.1132 | SMAP_sm_pm_interp_rollmean30 |
-| Clustering_Static | 2 | 58 | 8192, 6416 | 0.0822 | 0.5829 | slope |
-| Clustering_Static | 3 | 58 | 4208, 6416, 3984 | 0.178 | 1.3249 | SMAP_sm_pm_interp_rollmean30 |
-| Clustering_Static | 4 | 58 | 4231, 3984, 2185, 4208 | 0.155 | 1.3249 | SMAP_sm_pm_interp_rollmean30 |
-| Clustering_Weather | 2 | 16 | 3870, 10738 | 0.103 | 0.9687 | SMAP_sm_pm_interp_rollmean30 |
-| Clustering_Weather | 3 | 16 | 3794, 6230, 4584 | 0.2007 | 0.9901 | SMAP_sm_pm_interp_lag30 |
-| Clustering_Weather | 4 | 16 | 5695, 3517, 1694, 3702 | 0.2179 | 1.0907 | V_ema_SMAP_sm_interp_kobs30 |
+Purity = mean over stations of the share of rows in the station's dominant cluster, on trainval
+and out-of-sample test (same convention as `derived_8.4-regime-interpretation-1.1`).
+
+| Strategy | K | Features Used | Group Sizes | Purity (trainval) | Purity (test) | Top 20 Divergence | Max Drift | Drift Feature |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Univariate_G_API | 2 | - | 7304, 7304 | 0.686 | 0.688 | 0.1715 | 0.5864 | V_rollmax_G_API_kobs7 |
+| Seasonal_Binary | 2 | - | 7559, 7049 | 0.527 | 0.539 | 0.1661 | 0.5757 | V_ema_G_API_kobs30 |
+| Clustering_Dynamic | 2 | 3 | 7974, 6634 | 0.62 | 0.612 | 0.1599 | 0.5026 | V_ema_F_NDVI_kobs30 |
+| Clustering_Dynamic | 3 | 3 | 4717, 3891, 6000 | 0.641 | 0.654 | 0.2019 | 0.7641 | V_ema_G_API_kobs30 |
+| Clustering_Dynamic | 4 | 3 | 2173, 2350, 5048, 5037 | 0.532 | 0.569 | 0.2187 | 0.9025 | latitude |
+| Clustering_V0_Full | 2 | 50 | 10624, 3984 | 1.000 | 1.000 | 0.1133 | 1.0725 | SMAP_sm_pm_interp_rollmean30 |
+| Clustering_V0_Full | 3 | 50 | 4247, 3968, 6393 | 0.999 | 1.000 | 0.1318 | 1.3793 | SMAP_sm_pm_interp_rollmean30 |
+| Clustering_V0_Full | 4 | 50 | 4247, 3968, 4158, 2235 | 0.995 | 1.000 | 0.1622 | 1.3045 | SMAP_sm_pm_interp_rollmean30 |
+| Clustering_Backbone54 | 2 | 54 | 10624, 3984 | 1.000 | 1.000 | 0.1133 | 1.0725 | SMAP_sm_pm_interp_rollmean30 |
+| Clustering_Backbone54 | 3 | 54 | 6513, 3857, 4238 | 0.833 | 0.834 | 0.2386 | 0.9488 | V_ema_SMAP_sm_interp_kobs30 |
+| Clustering_Backbone54 | 4 | 54 | 2142, 4053, 3826, 4587 | 0.695 | 0.704 | 0.2209 | 1.1132 | SMAP_sm_pm_interp_rollmean30 |
+| Clustering_Static | 2 | 58 | 8192, 6416 | 1.000 | 1.000 | 0.0822 | 0.5829 | slope |
+| Clustering_Static | 3 | 58 | 4208, 6416, 3984 | 1.000 | 1.000 | 0.178 | 1.3249 | SMAP_sm_pm_interp_rollmean30 |
+| Clustering_Static | 4 | 58 | 4231, 3984, 2185, 4208 | 1.000 | 1.000 | 0.155 | 1.3249 | SMAP_sm_pm_interp_rollmean30 |
+| Clustering_Weather | 2 | 16 | 3870, 10738 | 0.984 | 0.990 | 0.103 | 0.9687 | SMAP_sm_pm_interp_rollmean30 |
+| Clustering_Weather | 3 | 16 | 3794, 6230, 4584 | 0.704 | 0.726 | 0.2007 | 0.9901 | SMAP_sm_pm_interp_lag30 |
+| Clustering_Weather | 4 | 16 | 5695, 3517, 1694, 3702 | 0.67 | 0.71 | 0.2179 | 1.0907 | V_ema_SMAP_sm_interp_kobs30 |
 
 `Clustering_Backbone54` K=2 produces the **exact same partition as the eval-1.1 winning
 `Clustering_V0_Full` K=2 router** (group sizes 10,624 / 3,984; ARI = 1.0000), so routing on the
@@ -152,16 +161,7 @@ deployable station group; K=4 gains nothing on quality and fragments further.
 Mean station purity (trainval): 1.000 — mean test purity: 1.000. Cluster 1 = the two eastern,
 inland stations (Spokane + SourdoughGulch); cluster 0 = the five western/mountain stations.
 
-### Station purity across strategies and K (trainval / test)
-
-| Strategy | K | trainval purity | test purity |
-| :--- | ---: | ---: | ---: |
-| Clustering_Backbone54 | 2 | 1.000 | 1.000 |
-| Clustering_Backbone54 | 3 | 0.833 | 0.834 |
-| Clustering_Backbone54 | 4 | 0.695 | 0.704 |
-| Clustering_V0_Full | 2 | 1.000 | 1.000 |
-| Clustering_Static | 2 | 1.000 | 1.000 |
-| Clustering_Weather | 2 | 0.984 | 0.990 |
+### Station purity across strategies
 
 `Clustering_Static` is perfectly station-pure by construction (features are per-station
 constants), but its K=2 partition differs from the backbone's (it groups Darrington, Spokane,
@@ -219,7 +219,8 @@ Aliases: `dynamic`, `v0_full` (retained filenames from the base experiment), `ba
 ## Generated artifacts
 
 - **Notebook**: `derived_8.4_gating_analysis_1.0.ipynb`
-- **CSVs**: `gating_strategies_summary.csv`, `cluster_quality_metrics.csv`,
+- **CSVs**: `gating_strategies_summary.csv` (per-configuration metrics incl. trainval/test
+  station purity), `cluster_quality_metrics.csv`,
   `regime_profile_summary_<strategy>_k<K>.csv`, `regime_station_composition_<strategy>_k<K>.csv`
 - **Params**: 15 × `clustering_params_<alias>_k<K>.{json,joblib}` + `clustering_params_combined.json`
 - **Figures**: strategy-level grids (`gating_target_distributions_grid.png`,
