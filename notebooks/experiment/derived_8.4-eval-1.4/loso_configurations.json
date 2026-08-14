@@ -60,6 +60,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": "Baseline_V0_50",
     "eval11_test_r2": 0.7604466165770485,
+    "eval11_test_rmse": 0.0498582471332669,
+    "eval11_test_bias": 0.0099122187099788,
+    "eval11_test_mae": 0.0381564708230898,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -128,6 +131,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": "Global_Single_backbone_0_0",
     "eval11_test_r2": 0.779230195195575,
+    "eval11_test_rmse": 0.0478636361243758,
+    "eval11_test_bias": 0.0105483640440731,
+    "eval11_test_mae": 0.0370592415431565,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -199,6 +205,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_0_c1_0",
     "eval11_test_r2": 0.8143343367764553,
+    "eval11_test_rmse": 0.0438936451151031,
+    "eval11_test_bias": 0.0057493349266736,
+    "eval11_test_mae": 0.0337737558762832,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -276,6 +285,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_0_c1_5",
     "eval11_test_r2": 0.814301763944213,
+    "eval11_test_rmse": 0.04389749525522,
+    "eval11_test_bias": 0.0063713028874642,
+    "eval11_test_mae": 0.033805329446328,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -358,6 +370,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_0_c1_10",
     "eval11_test_r2": 0.8149598879296633,
+    "eval11_test_rmse": 0.0438196387351364,
+    "eval11_test_bias": 0.0064856707143369,
+    "eval11_test_mae": 0.0337194978193484,
     "is_winner": true,
     "n_clusters": 2
   },
@@ -435,6 +450,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_5_c1_0",
     "eval11_test_r2": 0.8141455422294883,
+    "eval11_test_rmse": 0.0439159561206424,
+    "eval11_test_bias": 0.0057508719206756,
+    "eval11_test_mae": 0.0337972357890757,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -518,6 +536,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_5_c1_5",
     "eval11_test_r2": 0.8141129693972461,
+    "eval11_test_rmse": 0.0439198043049105,
+    "eval11_test_bias": 0.0063728398814662,
+    "eval11_test_mae": 0.0338288093591204,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -606,6 +627,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_5_c1_10",
     "eval11_test_r2": 0.8147710933826964,
+    "eval11_test_rmse": 0.0438419874022317,
+    "eval11_test_bias": 0.0064872077083389,
+    "eval11_test_mae": 0.0337429777321408,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -688,6 +712,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_10_c1_0",
     "eval11_test_r2": 0.7890715142526764,
+    "eval11_test_rmse": 0.0467846590454637,
+    "eval11_test_bias": 0.0064720386391229,
+    "eval11_test_mae": 0.0358632543075931,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -776,6 +803,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_10_c1_5",
     "eval11_test_r2": 0.7890389414204342,
+    "eval11_test_rmse": 0.0467882712887721,
+    "eval11_test_bias": 0.0070940065999135,
+    "eval11_test_mae": 0.0358948278776378,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -869,6 +899,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Clustering_V0_Full_k2_c0_10_c1_10",
     "eval11_test_r2": 0.7896970654058846,
+    "eval11_test_rmse": 0.046715232840986,
+    "eval11_test_bias": 0.0072083744267862,
+    "eval11_test_mae": 0.0358089962506582,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -940,6 +973,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_0_c1_0",
     "eval11_test_r2": 0.786606270013708,
+    "eval11_test_rmse": 0.0470572646331295,
+    "eval11_test_bias": 0.0093801880817668,
+    "eval11_test_mae": 0.0361913220880705,
     "is_winner": true,
     "n_clusters": 2
   },
@@ -1017,6 +1053,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_0_c1_5",
     "eval11_test_r2": 0.7792803972217257,
+    "eval11_test_rmse": 0.0478581938309214,
+    "eval11_test_bias": 0.0103923416428785,
+    "eval11_test_mae": 0.0368352810433894,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1099,6 +1138,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_0_c1_10",
     "eval11_test_r2": 0.7711334049974058,
+    "eval11_test_rmse": 0.0487334385496881,
+    "eval11_test_bias": 0.0109023012372392,
+    "eval11_test_mae": 0.037664137496968,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1176,6 +1218,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_5_c1_0",
     "eval11_test_r2": 0.7767038527070884,
+    "eval11_test_rmse": 0.0481367168818934,
+    "eval11_test_bias": 0.0100679348416648,
+    "eval11_test_mae": 0.0373882138269635,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1259,6 +1304,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_5_c1_5",
     "eval11_test_r2": 0.7693779799151061,
+    "eval11_test_rmse": 0.0489199762282569,
+    "eval11_test_bias": 0.0110800884027765,
+    "eval11_test_mae": 0.0380321727822824,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1347,6 +1395,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_5_c1_10",
     "eval11_test_r2": 0.7612309876907863,
+    "eval11_test_rmse": 0.049776554624556,
+    "eval11_test_bias": 0.0115900479971372,
+    "eval11_test_mae": 0.038861029235861,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1429,6 +1480,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_10_c1_0",
     "eval11_test_r2": 0.763459098063469,
+    "eval11_test_rmse": 0.049543761413762,
+    "eval11_test_bias": 0.0097173719624288,
+    "eval11_test_mae": 0.0386861840740521,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1517,6 +1571,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_10_c1_5",
     "eval11_test_r2": 0.7561332252714867,
+    "eval11_test_rmse": 0.0503051176027791,
+    "eval11_test_bias": 0.0107295255235404,
+    "eval11_test_mae": 0.039330143029371,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1610,6 +1667,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Clustering_Dynamic_k2_c0_10_c1_10",
     "eval11_test_r2": 0.7479862330471667,
+    "eval11_test_rmse": 0.0511384999110027,
+    "eval11_test_bias": 0.0112394851179011,
+    "eval11_test_mae": 0.0401589994829496,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1681,6 +1741,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_0_c1_0",
     "eval11_test_r2": 0.7696316887965589,
+    "eval11_test_rmse": 0.0488930602212781,
+    "eval11_test_bias": 0.0100684505749054,
+    "eval11_test_mae": 0.0379484275482842,
     "is_winner": true,
     "n_clusters": 2
   },
@@ -1758,6 +1821,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_0_c1_5",
     "eval11_test_r2": 0.7670807333900711,
+    "eval11_test_rmse": 0.0491630206059949,
+    "eval11_test_bias": 0.0104409023167953,
+    "eval11_test_mae": 0.0381846288871819,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1840,6 +1906,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_0_c1_10",
     "eval11_test_r2": 0.7563541556726956,
+    "eval11_test_rmse": 0.0502823255514096,
+    "eval11_test_bias": 0.0105726277106388,
+    "eval11_test_mae": 0.0389085560965484,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -1917,6 +1986,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_5_c1_0",
     "eval11_test_r2": 0.7561708369909664,
+    "eval11_test_rmse": 0.0503012381589047,
+    "eval11_test_bias": 0.0107134516904811,
+    "eval11_test_mae": 0.0391059382691214,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2000,6 +2072,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_5_c1_5",
     "eval11_test_r2": 0.7536198815844786,
+    "eval11_test_rmse": 0.0505636808156092,
+    "eval11_test_bias": 0.011085903432371,
+    "eval11_test_mae": 0.039342139608019,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2088,6 +2163,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_5_c1_10",
     "eval11_test_r2": 0.7428933038671031,
+    "eval11_test_rmse": 0.0516526425788194,
+    "eval11_test_bias": 0.0112176288262144,
+    "eval11_test_mae": 0.0400660668173855,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2170,6 +2248,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_10_c1_0",
     "eval11_test_r2": 0.7638615204566536,
+    "eval11_test_rmse": 0.0495015995594683,
+    "eval11_test_bias": 0.0108647750116186,
+    "eval11_test_mae": 0.0383301252056644,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2258,6 +2339,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_10_c1_5",
     "eval11_test_r2": 0.7613105650501657,
+    "eval11_test_rmse": 0.0497682591241637,
+    "eval11_test_bias": 0.0112372267535085,
+    "eval11_test_mae": 0.0385663265445621,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2351,6 +2435,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Univariate_G_API_k2_c0_10_c1_10",
     "eval11_test_r2": 0.7505839873327902,
+    "eval11_test_rmse": 0.0508742497143925,
+    "eval11_test_bias": 0.011368952147352,
+    "eval11_test_mae": 0.0392902537539286,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2422,6 +2509,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_0_c1_0",
     "eval11_test_r2": 0.7697954935406667,
+    "eval11_test_rmse": 0.0488756742809565,
+    "eval11_test_bias": 0.0104277426500334,
+    "eval11_test_mae": 0.0376977827784878,
     "is_winner": true,
     "n_clusters": 2
   },
@@ -2499,6 +2589,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_0_c1_5",
     "eval11_test_r2": 0.7561224458219745,
+    "eval11_test_rmse": 0.0503062293890892,
+    "eval11_test_bias": 0.0105583549203829,
+    "eval11_test_mae": 0.0387662189401888,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2581,6 +2674,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_0_c1_10",
     "eval11_test_r2": 0.7642705879452761,
+    "eval11_test_rmse": 0.0494587046608671,
+    "eval11_test_bias": 0.0127859529191813,
+    "eval11_test_mae": 0.0380245662458533,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2658,6 +2754,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_5_c1_0",
     "eval11_test_r2": 0.7659877182384899,
+    "eval11_test_rmse": 0.0492782387099611,
+    "eval11_test_bias": 0.0104427256077978,
+    "eval11_test_mae": 0.0379628688400245,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2741,6 +2840,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_5_c1_5",
     "eval11_test_r2": 0.7523146705197977,
+    "eval11_test_rmse": 0.0506974357269223,
+    "eval11_test_bias": 0.0105733378781472,
+    "eval11_test_mae": 0.0390313050017256,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2829,6 +2931,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_5_c1_10",
     "eval11_test_r2": 0.7604628126430992,
+    "eval11_test_rmse": 0.0498565616611157,
+    "eval11_test_bias": 0.0128009358769457,
+    "eval11_test_mae": 0.03828965230739,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2911,6 +3016,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_10_c1_0",
     "eval11_test_r2": 0.7564935035171527,
+    "eval11_test_rmse": 0.0502679445636641,
+    "eval11_test_bias": 0.0120889816033245,
+    "eval11_test_mae": 0.0388014449421282,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -2999,6 +3107,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_10_c1_5",
     "eval11_test_r2": 0.7428204557984606,
+    "eval11_test_rmse": 0.0516599596359223,
+    "eval11_test_bias": 0.012219593873674,
+    "eval11_test_mae": 0.0398698811038293,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3092,6 +3203,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Seasonal_Binary_k2_c0_10_c1_10",
     "eval11_test_r2": 0.7509685979217621,
+    "eval11_test_rmse": 0.0508350094026581,
+    "eval11_test_bias": 0.0144471918724724,
+    "eval11_test_mae": 0.0391282284094937,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3163,6 +3277,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Trained_Gating_k2_c0_0_c1_0",
     "eval11_test_r2": 0.7354738890953785,
+    "eval11_test_rmse": 0.0523926209713724,
+    "eval11_test_bias": 0.014226290185718,
+    "eval11_test_mae": 0.0388807045085552,
     "is_winner": true,
     "n_clusters": 2
   },
@@ -3240,6 +3357,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Trained_Gating_k2_c0_0_c1_5",
     "eval11_test_r2": 0.735064047098511,
+    "eval11_test_rmse": 0.0524331923645215,
+    "eval11_test_bias": 0.0142154549121496,
+    "eval11_test_mae": 0.0389290597521646,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3322,6 +3442,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Trained_Gating_k2_c0_0_c1_10",
     "eval11_test_r2": 0.7327641768958516,
+    "eval11_test_rmse": 0.052660283025851,
+    "eval11_test_bias": 0.0143519403491315,
+    "eval11_test_mae": 0.0391590256822253,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3399,6 +3522,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Trained_Gating_k2_c0_5_c1_0",
     "eval11_test_r2": 0.7262357035074077,
+    "eval11_test_rmse": 0.0532996375121831,
+    "eval11_test_bias": 0.0153452392363251,
+    "eval11_test_mae": 0.0400226804815435,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3482,6 +3608,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Trained_Gating_k2_c0_5_c1_5",
     "eval11_test_r2": 0.7258258615105402,
+    "eval11_test_rmse": 0.0533395190099717,
+    "eval11_test_bias": 0.0153344039627567,
+    "eval11_test_mae": 0.0400710357251529,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3570,6 +3699,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Trained_Gating_k2_c0_5_c1_10",
     "eval11_test_r2": 0.7235259913078809,
+    "eval11_test_rmse": 0.053562767245942,
+    "eval11_test_bias": 0.0154708893997386,
+    "eval11_test_mae": 0.0403010016552135,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3652,6 +3784,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": "Trained_Gating_k2_c0_10_c1_0",
     "eval11_test_r2": 0.7199241067594041,
+    "eval11_test_rmse": 0.0539105442486945,
+    "eval11_test_bias": 0.0164429463985958,
+    "eval11_test_mae": 0.0410997072379349,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3740,6 +3875,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": "Trained_Gating_k2_c0_10_c1_5",
     "eval11_test_r2": 0.7195142647625365,
+    "eval11_test_rmse": 0.0539499741471251,
+    "eval11_test_bias": 0.0164321111250274,
+    "eval11_test_mae": 0.0411480624815443,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3833,6 +3971,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": "Trained_Gating_k2_c0_10_c1_10",
     "eval11_test_r2": 0.7172143945598772,
+    "eval11_test_rmse": 0.0541707066347051,
+    "eval11_test_bias": 0.0165685965620093,
+    "eval11_test_mae": 0.041378028411605,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3904,6 +4045,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -3981,6 +4125,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -4063,6 +4210,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": true,
     "n_clusters": 2
   },
@@ -4140,6 +4290,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -4223,6 +4376,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -4311,6 +4467,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -4393,6 +4552,9 @@
     "cluster_1_count": 0,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -4481,6 +4643,9 @@
     "cluster_1_count": 5,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -4574,6 +4739,9 @@
     "cluster_1_count": 10,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -4646,6 +4814,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 3
   },
@@ -4719,6 +4890,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 4
   },
@@ -4790,6 +4964,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -4862,6 +5039,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 3
   },
@@ -4935,6 +5115,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 4
   },
@@ -5006,6 +5189,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 2
   },
@@ -5078,6 +5264,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 3
   },
@@ -5151,6 +5340,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 4
   },
@@ -5223,6 +5415,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 3
   },
@@ -5296,6 +5491,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 4
   },
@@ -5368,6 +5566,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 3
   },
@@ -5441,6 +5642,9 @@
     "cluster_1_count": null,
     "eval11_candidate_id": null,
     "eval11_test_r2": NaN,
+    "eval11_test_rmse": NaN,
+    "eval11_test_bias": NaN,
+    "eval11_test_mae": NaN,
     "is_winner": false,
     "n_clusters": 4
   }

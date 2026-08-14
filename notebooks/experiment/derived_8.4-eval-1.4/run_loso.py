@@ -101,12 +101,21 @@ def load_configurations(data, config) -> list[dict]:
     grid = pd.read_csv(src / "delta_grid_summary.csv")
     leaderboard = pd.read_csv(src / "metrics_summary.csv")
 
-    # eval-1.1 test-set R2 by candidate_id (for LOSO vs temporal comparison).
+    # eval-1.1 test-set metrics by candidate_id (for LOSO vs temporal comparison):
+    # R2 plus pooled RMSE / bias / MAE, so the temporal reference is not R2-only.
     eval11_r2: dict[str, float] = {}
+    eval11_metrics: dict[str, dict[str, float]] = {}
     for _, row in grid.iterrows():
         eval11_r2[str(row["candidate_id"])] = float(row["pooled_r2"])
     for _, row in leaderboard.iterrows():
         eval11_r2[str(row["candidate_id"])] = float(row["pooled_r2"])
+    for _df in (grid, leaderboard):
+        for _, row in _df.iterrows():
+            eval11_metrics[str(row["candidate_id"])] = {
+                "rmse": float(row["pooled_rmse"]),
+                "bias": float(row["pooled_bias"]),
+                "mae": float(row["pooled_mae"]),
+            }
 
     # eval-1.1 winning (c0, c1) per strategy, e.g. "Clustering_V0_Full_k2 (Winner c0=0, c1=10)".
     winner_by_strategy: dict[str, tuple[int, int]] = {}
@@ -142,6 +151,9 @@ def load_configurations(data, config) -> list[dict]:
             "cluster_1_count": c1,
             "eval11_candidate_id": eval11_candidate_id,
             "eval11_test_r2": eval11_r2.get(eval11_candidate_id, float("nan")),
+            "eval11_test_rmse": eval11_metrics.get(eval11_candidate_id, {}).get("rmse", float("nan")),
+            "eval11_test_bias": eval11_metrics.get(eval11_candidate_id, {}).get("bias", float("nan")),
+            "eval11_test_mae": eval11_metrics.get(eval11_candidate_id, {}).get("mae", float("nan")),
             "is_winner": bool(is_winner),
             "n_clusters": int(n_clusters),
         })
@@ -270,6 +282,9 @@ def build_config_frame(configurations: list[dict]) -> pd.DataFrame:
             "cluster_0_count": cfg["cluster_0_count"],
             "cluster_1_count": cfg["cluster_1_count"],
             "eval11_test_r2": cfg["eval11_test_r2"],
+            "eval11_test_rmse": cfg["eval11_test_rmse"],
+            "eval11_test_bias": cfg["eval11_test_bias"],
+            "eval11_test_mae": cfg["eval11_test_mae"],
             "n_global_features": len(cfg["global_features"]),
             "n_add0": len(cfg["cluster_additions"].get("0", [])),
             "n_add1": len(cfg["cluster_additions"].get("1", [])),
@@ -677,6 +692,7 @@ def main() -> None:
             row.update({k: v for k, v in cfg.items() if k in (
                 "config_label", "strategy_name", "strategy_order", "is_baseline", "is_winner",
                 "cluster_0_count", "cluster_1_count", "eval11_test_r2",
+                "eval11_test_rmse", "eval11_test_bias", "eval11_test_mae",
             )})
             per_config_station.append(row)
             per_regime_rows.extend(cluster_rows_for_fold(config_id, station, config))
@@ -727,7 +743,8 @@ def main() -> None:
     ).reset_index()
     summary = summary.merge(
         cfg_frame[["config_id", "config_label", "strategy_name", "is_baseline", "is_winner",
-                   "cluster_0_count", "cluster_1_count", "eval11_test_r2"]],
+                   "cluster_0_count", "cluster_1_count", "eval11_test_r2",
+                   "eval11_test_rmse", "eval11_test_bias", "eval11_test_mae"]],
         on="config_id", how="left",
     )
     # Best / worst held-out station per configuration.
@@ -743,16 +760,28 @@ def main() -> None:
     # in eval-1.3 from its full baseline); the 12 NEW gating configs get the
     # full-training baseline's pooled test R2 (full_config_summary.csv, written by
     # run_full_baseline.py — run it first for the backfill, or re-run afterwards).
+    # Temporal RMSE / bias / MAE follow the same provenance: eval-1.1 pooled
+    # metrics for the pinned configs, full-training baseline pooled metrics
+    # otherwise (the 9 grid points' full_config_summary rows are eval-1.3
+    # references, bit-identical to eval-1.3's recorded values).
     summary["temporal_test_r2"] = summary["eval11_test_r2"]
+    summary["temporal_test_rmse"] = summary["eval11_test_rmse"]
+    summary["temporal_test_bias"] = summary["eval11_test_bias"]
+    summary["temporal_test_mae"] = summary["eval11_test_mae"]
     if eval13_temporal:
         summary["temporal_test_r2"] = summary["temporal_test_r2"].fillna(
             summary["config_id"].map(eval13_temporal))
     full_path = EXP_DIR / "full_config_summary.csv"
     if full_path.exists():
-        fb = pd.read_csv(full_path)[["config_id", "full_pooled_r2"]]
+        fb = pd.read_csv(full_path)[["config_id", "full_pooled_r2", "full_pooled_rmse",
+                                     "full_pooled_bias", "full_pooled_mae"]]
         summary = summary.merge(fb, on="config_id", how="left")
         summary["temporal_test_r2"] = summary["temporal_test_r2"].fillna(summary["full_pooled_r2"])
-        summary = summary.drop(columns=["full_pooled_r2"])
+        summary["temporal_test_rmse"] = summary["temporal_test_rmse"].fillna(summary["full_pooled_rmse"])
+        summary["temporal_test_bias"] = summary["temporal_test_bias"].fillna(summary["full_pooled_bias"])
+        summary["temporal_test_mae"] = summary["temporal_test_mae"].fillna(summary["full_pooled_mae"])
+        summary = summary.drop(columns=["full_pooled_r2", "full_pooled_rmse",
+                                        "full_pooled_bias", "full_pooled_mae"])
     summary["loso_minus_test_r2"] = summary["loso_mean_r2"] - summary["temporal_test_r2"]
 
     # Pooled LOSO R2/RMSE (concatenated folds) for direct comparison with eval-1.1.
@@ -827,11 +856,13 @@ def main() -> None:
     print("=" * 70, flush=True)
     cols = ["config_id", "strategy_name", "loso_mean_r2", "loso_std_r2", "loso_min_r2",
             "loso_max_r2", "loso_mean_rmse", "loso_mean_bias", "temporal_test_r2",
+            "temporal_test_rmse", "temporal_test_bias", "temporal_test_mae",
             "loso_minus_test_r2", "is_winner"]
     if "loso_pooled_r2" in summary.columns:
         cols = ["config_id", "strategy_name", "loso_mean_r2", "loso_pooled_r2", "loso_std_r2",
                 "loso_min_r2", "loso_max_r2", "loso_mean_rmse", "loso_mean_bias",
-                "temporal_test_r2", "loso_minus_test_r2", "is_winner"]
+                "temporal_test_r2", "temporal_test_rmse", "temporal_test_bias",
+                "temporal_test_mae", "loso_minus_test_r2", "is_winner"]
     print(summary[cols].to_string(index=False), flush=True)
 
     print("\nSTATION DIFFICULTY (median LOSO R2 across configs)", flush=True)
