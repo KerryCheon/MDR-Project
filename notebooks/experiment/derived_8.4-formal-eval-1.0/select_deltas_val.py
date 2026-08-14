@@ -237,14 +237,24 @@ def main() -> None:
         config = yaml.safe_load(f)
     data = load_experiment_data(PROJECT_ROOT, config)
 
-    params = dict(config["model"]["proxy_params"])
+    # The gain proxy uses the lightweight proxy_params (500 trees, lr 0.01); the
+    # ranking backbone fits and the 9-point val grid use the SAME exact_params as
+    # the final evaluation (2500 trees, lr 0.005) so the val-selected arm is not a
+    # confound of model quality relative to the test-selected arm.
+    proxy_params = dict(config["model"]["proxy_params"])
+    exact_params = dict(config["model"]["exact_params"])
     if args.smoke:
-        params["n_estimators"] = 100
-        params["device"] = "cpu"
+        proxy_params["n_estimators"] = 100
+        exact_params["n_estimators"] = 100
+        proxy_params["device"] = "cpu"
+        exact_params["device"] = "cpu"
     if args.device:
-        params["device"] = args.device
-    params["n_jobs"] = 1
-    params["random_state"] = int(config["model"]["router_seed"])
+        proxy_params["device"] = args.device
+        exact_params["device"] = args.device
+    proxy_params["n_jobs"] = 1
+    exact_params["n_jobs"] = 1
+    proxy_params["random_state"] = int(config["model"]["router_seed"])
+    exact_params["random_state"] = int(config["model"]["router_seed"])
 
     router_seed = int(config["model"]["router_seed"])
 
@@ -252,11 +262,13 @@ def main() -> None:
     print("Val-selected delta protocol (derived_8.4-formal-eval-1.0)", flush=True)
     print("=" * 70, flush=True)
     print(f"[Data] Train={len(data.train)} Val={len(data.val)} Test={len(data.test)}", flush=True)
-    print(f"[Model] n_estimators={params['n_estimators']} device={params['device']}", flush=True)
+    print(f"[Model] gain proxy n_estimators={proxy_params['n_estimators']}, "
+          f"grid n_estimators={exact_params['n_estimators']} device={exact_params['device']}",
+          flush=True)
 
-    # 1. Train-only gain proxy (all features, 500 trees) — replaces the trainval proxy.
+    # 1. Train-only gain proxy (all features, proxy params) — replaces the trainval proxy.
     print("[Gain] Fitting train-only gain proxy...", flush=True)
-    proxy = XGBRegressor(**params)
+    proxy = XGBRegressor(**proxy_params)
     proxy.fit(data.train.loc[:, data.feature_columns],
               data.train[data.target].to_numpy(dtype=float), verbose=False)
     gain_scores = dict(zip(data.feature_columns,
@@ -265,9 +277,7 @@ def main() -> None:
     # 2. Val residuals from a V0-50 global backbone fit on TRAIN only (mirrors fs20's
     #    residual_association, which used the V0 baseline on the test period).
     print("[Residuals] V0 backbone on train -> val residuals...", flush=True)
-    v0_params = dict(params)
-    v0_params["random_state"] = router_seed
-    v0_expert = XGBRegressor(**v0_params)
+    v0_expert = XGBRegressor(**exact_params)
     v0_expert.fit(data.train.loc[:, data.v0_features],
                   data.train[data.target].to_numpy(dtype=float), verbose=False)
     v0_pred_val = np.asarray(v0_expert.predict(data.val.loc[:, data.v0_features])).ravel()
@@ -288,17 +298,18 @@ def main() -> None:
     output: dict = {
         "pool": pool,
         "gain_scores": gain_scores,
-        "n_estimators": int(params["n_estimators"]),
-        "device": str(params["device"]),
+        "proxy_n_estimators": int(proxy_params["n_estimators"]),
+        "grid_n_estimators": int(exact_params["n_estimators"]),
+        "device": str(exact_params["device"]),
         "router_seed": router_seed,
         "strategies": {},
     }
     for strategy in config["val_selection"]["strategies"]:
         print(f"[{strategy}] Ranking deltas on val residuals...", flush=True)
         rankings, _ = delta_rankings_val(data, config, strategy, pool, gain_scores,
-                                         params, router_seed)
+                                         exact_params, router_seed)
         print(f"[{strategy}] Evaluating 9-point grid on val...", flush=True)
-        grid = evaluate_val_grid(data, config, strategy, rankings, params, router_seed)
+        grid = evaluate_val_grid(data, config, strategy, rankings, exact_params, router_seed)
         grid_rows.append(grid)
         best = grid.sort_values(["val_r2", "val_rmse", "cluster_0_count", "cluster_1_count"],
                                 ascending=[False, True, True, True]).iloc[0]

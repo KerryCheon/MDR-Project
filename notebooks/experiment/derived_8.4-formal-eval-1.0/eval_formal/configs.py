@@ -107,9 +107,10 @@ def load_pinned_configs(data, config: dict, require_val: bool = True) -> list[di
                 f"{val_path} not found — run select_deltas_val.py before the evaluation runs.")
         return configs
     val_selected = json.loads(val_path.read_text(encoding="utf-8"))
-    sel_estimators = int(val_selected.get("n_estimators", 2500))
+    sel_estimators = int(val_selected.get("grid_n_estimators",
+                                          val_selected.get("n_estimators", 2500)))
     if sel_estimators < 2500:
-        print(f"[WARN] val_selected_deltas.json was produced with n_estimators="
+        print(f"[WARN] val_selected_deltas.json was produced with grid n_estimators="
               f"{sel_estimators} (likely a --smoke run) — re-run select_deltas_val.py "
               f"before the real evaluation.", flush=True)
     for strategy in config["val_selection"]["strategies"]:
