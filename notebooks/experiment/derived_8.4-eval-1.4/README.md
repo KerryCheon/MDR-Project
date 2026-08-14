@@ -182,6 +182,7 @@ The five gating-analysis clustering feature sets as K=2 routers under LOSO (all 
 | 3 dynamic features   | Clustering_Dynamic_k2  c0=0, c1=0    |       0.562955 |         0.600519 |        0.062314  |       0.0218873  |           0.786606 |            -0.223651 | True           |
 | 58 static attributes | Clustering_Static_k2                 |       0.458532 |         0.567489 |        0.0665854 |       0.00208644 |           0.801974 |            -0.343442 | False          |
 | 16 weather drivers   | Clustering_Weather_k2                |       0.581309 |         0.61488  |        0.0605392 |       0.018806   |           0.809942 |            -0.228633 | False          |
+
 | config_id                |   cluster |   n_test |        mean_r2 |        min_r2 |       max_r2 |
 |:-------------------------|----------:|---------:|---------------:|--------------:|-------------:|
 | Clustering_Backbone54_k3 |         0 |     1774 |     -0.579891  |     -1.43698  |   0.154836   |
