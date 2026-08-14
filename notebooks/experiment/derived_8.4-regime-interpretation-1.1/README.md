@@ -244,13 +244,14 @@ except 2024, where `Univariate_G_API_k2` (0.7685) edges past `Seasonal_Binary_k2
 
 ### Spatial (per-station) performance
 
-Per-station test R² for the same winner configs already exists in `derived_8.4-eval-1.4`
-(the LOSO spatial-generalization experiment, which carries these configs as reference rows
-reused from eval-1.2/1.3): the *full protocol* (`full_per_config_station.csv`, models trained
-on trainval as in eval-1.1) and the *LOSO protocol* (`loso_per_config_station.csv`, router and
-experts refit per fold with the target station held out of training). Per-station R² is
-computed relative to each station's own variance, so the mean of per-station R² differs from
-the pooled R² above. The notebook prints and exports these as `regime_spatial_summary.csv`.
+Per-station test R², RMSE, MAE and bias for the same winner configs already exist in
+`derived_8.4-eval-1.4` (the LOSO spatial-generalization experiment, which carries these configs
+as reference rows reused from eval-1.2/1.3): the *full protocol* (`full_per_config_station.csv`,
+models trained on trainval as in eval-1.1) and the *LOSO protocol*
+(`loso_per_config_station.csv`, router and experts refit per fold with the target station held
+out of training). Per-station R² is computed relative to each station's own variance, so the
+mean of per-station R² differs from the pooled R² above. The notebook prints and exports these
+as `regime_spatial_summary.csv`.
 
 Per-station test R², full protocol (eval-1.4 `full_per_config_station.csv`):
 
@@ -276,26 +277,103 @@ Per-station test R², LOSO held-out (eval-1.4 `loso_per_config_station.csv`):
 | SourdoughGulch_WA_985 | 0.427 | 0.39 | 0.484 | 0.364 | 0.438 |
 | Spokane | 0.584 | 0.648 | 0.634 | 0.616 | 0.75 |
 
+Per-station test RMSE, full protocol:
+
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.056 | 0.058 | 0.062 | 0.063 | 0.072 |
+| CayusePass_WA | 0.052 | 0.054 | 0.058 | 0.058 | 0.059 |
+| Darrington | 0.039 | 0.041 | 0.041 | 0.042 | 0.042 |
+| Paradise_WA | 0.038 | 0.046 | 0.047 | 0.047 | 0.057 |
+| Quinault | 0.039 | 0.039 | 0.04 | 0.041 | 0.04 |
+| SourdoughGulch_WA_985 | 0.054 | 0.059 | 0.06 | 0.058 | 0.063 |
+| Spokane | 0.026 | 0.028 | 0.032 | 0.029 | 0.029 |
+
+Per-station test RMSE, LOSO held-out:
+
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.046 | 0.056 | 0.058 | 0.052 | 0.055 |
+| CayusePass_WA | 0.066 | 0.092 | 0.092 | 0.092 | 0.101 |
+| Darrington | 0.051 | 0.052 | 0.048 | 0.051 | 0.06 |
+| Paradise_WA | 0.046 | 0.058 | 0.062 | 0.066 | 0.078 |
+| Quinault | 0.046 | 0.048 | 0.047 | 0.048 | 0.055 |
+| SourdoughGulch_WA_985 | 0.061 | 0.063 | 0.058 | 0.064 | 0.06 |
+| Spokane | 0.074 | 0.068 | 0.07 | 0.071 | 0.057 |
+
+Per-station test MAE, full protocol:
+
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.05 | 0.051 | 0.055 | 0.056 | 0.06 |
+| CayusePass_WA | 0.041 | 0.044 | 0.047 | 0.047 | 0.047 |
+| Darrington | 0.032 | 0.033 | 0.033 | 0.035 | 0.034 |
+| Paradise_WA | 0.03 | 0.034 | 0.035 | 0.036 | 0.04 |
+| Quinault | 0.032 | 0.032 | 0.033 | 0.034 | 0.032 |
+| SourdoughGulch_WA_985 | 0.038 | 0.042 | 0.042 | 0.041 | 0.044 |
+| Spokane | 0.018 | 0.021 | 0.024 | 0.023 | 0.022 |
+
+Per-station test MAE, LOSO held-out:
+
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.036 | 0.047 | 0.05 | 0.045 | 0.046 |
+| CayusePass_WA | 0.053 | 0.078 | 0.08 | 0.077 | 0.08 |
+| Darrington | 0.041 | 0.042 | 0.037 | 0.04 | 0.042 |
+| Paradise_WA | 0.036 | 0.046 | 0.046 | 0.053 | 0.06 |
+| Quinault | 0.037 | 0.039 | 0.038 | 0.038 | 0.045 |
+| SourdoughGulch_WA_985 | 0.046 | 0.05 | 0.044 | 0.048 | 0.049 |
+| Spokane | 0.062 | 0.055 | 0.059 | 0.058 | 0.048 |
+
+Per-station test bias, full protocol:
+
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.046 | 0.048 | 0.052 | 0.052 | 0.059 |
+| CayusePass_WA | 0.001 | 0.007 | 0.006 | 0.006 | 0.014 |
+| Darrington | 0.022 | 0.024 | 0.022 | 0.024 | 0.025 |
+| Paradise_WA | 0.008 | 0.017 | 0.019 | 0.021 | 0.027 |
+| Quinault | -0.019 | -0.021 | -0.022 | -0.02 | -0.022 |
+| SourdoughGulch_WA_985 | -0 | 0.002 | 0.007 | 0.001 | 0.01 |
+| Spokane | 0.002 | 0.003 | 0.005 | 0.002 | 0.005 |
+
+Per-station test bias, LOSO held-out:
+
+| station | Clustering_V0_Full_k2 | Clustering_Dynamic_k2 | Seasonal_Binary_k2 | Univariate_G_API_k2 | Trained_Gating_k2 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| BeaverPass_WA_990 | 0.02 | 0.016 | 0.008 | 0.016 | 0.02 |
+| CayusePass_WA | 0.011 | 0.059 | 0.06 | 0.06 | 0.07 |
+| Darrington | 0.028 | 0.019 | 0.015 | 0.017 | 0.032 |
+| Paradise_WA | 0.024 | 0.035 | 0.032 | 0.04 | 0.053 |
+| Quinault | 0.003 | 0.007 | 0.004 | 0.004 | 0.008 |
+| SourdoughGulch_WA_985 | -0.025 | -0.028 | -0.017 | -0.025 | -0.01 |
+| Spokane | 0.048 | 0.045 | 0.047 | 0.04 | 0.036 |
+
 LOSO aggregates (eval-1.4 `loso_config_summary.csv`):
 
-| strategy | loso_mean_r2 | loso_pooled_r2 | temporal_test_r2 | loso_minus_test_r2 | best_station | worst_station |
-| :--- | ---: | ---: | ---: | ---: | :--- | :--- |
-| Clustering_V0_Full_k2 | 0.6415 | 0.6885 | 0.815 | -0.1734 | Paradise_WA | SourdoughGulch_WA_985 |
-| Clustering_Dynamic_k2 | 0.563 | 0.6005 | 0.7866 | -0.2237 | Darrington | SourdoughGulch_WA_985 |
-| Seasonal_Binary_k2 | 0.5711 | 0.6014 | 0.7698 | -0.1987 | Darrington | CayusePass_WA |
-| Univariate_G_API_k2 | 0.5493 | 0.5819 | 0.7696 | -0.2203 | Darrington | SourdoughGulch_WA_985 |
-| Trained_Gating_k2 | 0.4913 | 0.5291 | 0.7355 | -0.2441 | Spokane | CayusePass_WA |
+| strategy | loso_mean_r2 | loso_pooled_r2 | loso_mean_rmse | loso_mean_mae | loso_mean_bias | temporal_test_r2 | loso_minus_test_r2 | best_station | worst_station |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
+| Clustering_V0_Full_k2 | 0.6415 | 0.6885 | 0.0557 | 0.0445 | 0.0156 | 0.815 | -0.1734 | Paradise_WA | SourdoughGulch_WA_985 |
+| Clustering_Dynamic_k2 | 0.563 | 0.6005 | 0.0623 | 0.051 | 0.0219 | 0.7866 | -0.2237 | Darrington | SourdoughGulch_WA_985 |
+| Seasonal_Binary_k2 | 0.5711 | 0.6014 | 0.0621 | 0.0505 | 0.0211 | 0.7698 | -0.1987 | Darrington | CayusePass_WA |
+| Univariate_G_API_k2 | 0.5493 | 0.5819 | 0.0634 | 0.0513 | 0.0215 | 0.7696 | -0.2203 | Darrington | SourdoughGulch_WA_985 |
+| Trained_Gating_k2 | 0.4913 | 0.5291 | 0.0666 | 0.0529 | 0.0299 | 0.7355 | -0.2441 | Spokane | CayusePass_WA |
 
-The winner is the best full-protocol model at every station (tying `Clustering_Dynamic_k2` at
-Quinault). SourdoughGulch is the hardest station for every strategy (full R² 0.375–0.554) and
-Spokane the easiest (0.923–0.950). Holding the target station out of training costs every
-strategy roughly 0.17–0.24 R² (`loso_minus_test_r2`): the winner still generalizes best
-(loso_mean_r2 = 0.6415, smallest gap −0.1734) and `Trained_Gating_k2` worst (0.4913, largest
-gap −0.2441); the winner remains best at 4 of 7 held-out stations (BeaverPass, CayusePass,
-Paradise, Quinault). Per-station LOSO R² can even exceed the full-protocol value for some
-stations (e.g. BeaverPass, 0.742 vs 0.619), because the per-fold router and experts are refit
-without the station and label assignments shift. eval-1.4's figures
-(`loso_r2_config_station_heatmap.png`, `full_vs_loso_station_bars.png`,
+The winner is the best full-protocol model at every station by R² (tying
+`Clustering_Dynamic_k2` at Quinault), and its per-station RMSE/MAE are lowest or tied-lowest
+at every station. SourdoughGulch is the hardest station for every strategy (full R²
+0.375–0.554) and Spokane the easiest (0.923–0.950); in absolute error terms BeaverPass has the largest
+positive full-protocol bias (0.046–0.059) while Quinault is the only station with negative bias
+(−0.019…−0.022). Holding the target station out of training costs every strategy roughly
+0.17–0.24 R² (`loso_minus_test_r2`): the winner still generalizes best (loso_mean_r2 = 0.6415,
+smallest gap −0.1734) and has the lowest LOSO mean error metrics (RMSE 0.0557, MAE 0.0445, bias
+0.0156), `Trained_Gating_k2` worst on all of them (0.0666 / 0.0529 / 0.0299). The largest LOSO
+errors occur at CayusePass (RMSE 0.092–0.101, bias 0.059–0.07 for the four non-winning
+strategies) even though SourdoughGulch is the weakest held-out station by R² — R² is
+variance-normalized, the error metrics are not. Per-station LOSO R² can even exceed the
+full-protocol value for some stations (e.g. BeaverPass, 0.742 vs 0.619), because the per-fold
+router and experts are refit without the station and label assignments shift. eval-1.4's
+figures (`loso_r2_config_station_heatmap.png`, `full_vs_loso_station_bars.png`,
 `loso_r2_station_boxplot.png`, `full_vs_loso_scatter.png`) show the same picture, as do
 eval-1.1's station×year cards (`station_year_metrics_*.png`, per-station × per-year R²/RMSE for
 V0-Full, Dynamic, Trained-Gating and Global-Single).
@@ -381,7 +459,7 @@ the ECE team's new in-situ stations.
   (per-station shares on trainval and test, purity, coordinates),
   `regime_top_features_<strategy>.csv` (top-15 separating features), plus
   `regime_comparison_summary.csv` (the cross-strategy table) and `regime_spatial_summary.csv`
-  (per-station full/LOSO R² + RMSE of the winner configs).
+  (per-station full/LOSO R², RMSE, MAE and bias of the winner configs).
 
 ## Generated artifacts
 
@@ -389,7 +467,7 @@ the ECE team's new in-situ stations.
 | :--- | :--- |
 | `derived_8.4_regime_interpretation_1.1.ipynb` | Notebook (the experiment only; explanation is this README) |
 | `regime_comparison_summary.csv` | Cross-strategy comparison (sizes, purity, station groups, top feature, eval-1.1 R²/RMSE/MAE/bias, per-year R² 2023–2025) |
-| `regime_spatial_summary.csv` | Per-station test R²/RMSE of the winner configs, full and LOSO protocols (from eval-1.4) |
+| `regime_spatial_summary.csv` | Per-station test R²/RMSE/MAE/bias of the winner configs, full and LOSO protocols (from eval-1.4) |
 | `regime_profile_summary_<strategy>.csv` | Per-regime medians + rank-biserial for target/drivers/static |
 | `regime_station_composition_<strategy>.csv` | Per-station regime shares (trainval + test), purity, coordinates |
 | `regime_top_features_<strategy>.csv` | Top-15 V0 features by \|rank-biserial\| separation |
