@@ -1,0 +1,7 @@
+strategy,test_config,test_temporal_r2,test_loso_r2,val_config,val_temporal_r2,val_loso_r2,none_config,none_temporal_r2,none_loso_r2
+Clustering_V0_Full_k2,Clustering_V0_Full_k2_c0_0_c1_10,0.8126 ± 0.0013,0.6430,Clustering_V0_Full_k2_val_winner,0.7351 ± 0.0025,0.5060,Clustering_V0_Full_k2_c0_0_c1_0,0.8118 ± 0.0014,0.6372
+Clustering_Backbone54_k2,Clustering_Backbone54_k2_c0_10_c1_10,0.7893 ± 0.0014,0.6236,Clustering_Backbone54_k2_val_winner,0.7490 ± 0.0031,0.5161,Clustering_Backbone54_k2_c0_0_c1_0,0.8117 ± 0.0014,0.6208
+Univariate_G_API_k2,Univariate_G_API_k2_c0_10_c1_0,0.7627 ± 0.0011,0.5751,Univariate_G_API_k2_val_winner,0.7517 ± 0.0012,0.5628,Univariate_G_API_k2_c0_0_c1_0,0.7676 ± 0.0009,0.5490
+Clustering_Dynamic_k2,Clustering_Dynamic_k2_c0_10_c1_0,0.7638 ± 0.0011,0.5765,Clustering_Dynamic_k2_val_winner,0.7723 ± 0.0019,0.5782,Clustering_Dynamic_k2_c0_0_c1_0,0.7855 ± 0.0010,0.5627
+Seasonal_Binary_k2,Seasonal_Binary_k2_c0_0_c1_5,0.7566 ± 0.0014,0.5808,Seasonal_Binary_k2_val_winner,0.6909 ± 0.0020,0.5439,Seasonal_Binary_k2_c0_0_c1_0,0.7700 ± 0.0016,0.5744
+Trained_Gating_k2,Trained_Gating_k2_c0_5_c1_10,0.7227 ± 0.0009,0.5551,Trained_Gating_k2_val_winner,0.7220 ± 0.0014,0.5407,Trained_Gating_k2_c0_0_c1_0,0.7354 ± 0.0011,0.4906

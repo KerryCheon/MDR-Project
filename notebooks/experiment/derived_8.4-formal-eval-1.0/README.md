@@ -165,32 +165,31 @@ R² diff +0.0104 [-0.0188, 0.0414] p=0.532 — see notebook cell 13).
 
 ### Per-configuration summary (per-station median over seeds, then mean/median over the 7 stations)
 
-| config_label                           | delta_source   |   loso_mean_r2 |   loso_median_r2 |
-|:---------------------------------------|:---------------|---------------:|-----------------:|
-| Clustering_V0_Full_k2  c0=0, c1=10     | test           |         0.6430 |           0.6936 |
-| Clustering_V0_Full_k2  c0=0, c1=0      | none           |         0.6372 |           0.6936 |
-| Clustering_Backbone54_k2  c0=10, c1=10 | test           |         0.6236 |           0.6766 |
-| Clustering_Backbone54_k2  c0=0, c1=0   | none           |         0.6208 |           0.6868 |
-| Baseline_V0_50                         | global         |         0.5907 |           0.5709 |
-| Seasonal_Binary_k2  c0=0, c1=5         | test           |         0.5808 |           0.5894 |
-| Global_Single_54                       | global         |         0.5795 |           0.6269 |
-| Clustering_Dynamic_k2  c0=0, c1=10     | val            |         0.5782 |           0.5873 |
-| Clustering_Dynamic_k2  c0=10, c1=0     | test           |         0.5765 |           0.5183 |
-| Univariate_G_API_k2  c0=10, c1=0       | test           |         0.5751 |           0.5619 |
-| Seasonal_Binary_k2  c0=0, c1=0         | none           |         0.5744 |           0.5928 |
-| Univariate_G_API_k2  c0=10, c1=10      | val            |         0.5628 |           0.5623 |
-| Clustering_Dynamic_k2  c0=0, c1=0      | none           |         0.5627 |           0.6286 |
-| Trained_Gating_k2  c0=5, c1=10         | test           |         0.5551 |           0.5618 |
-| Univariate_G_API_k2  c0=0, c1=0        | none           |         0.5490 |           0.5508 |
-| Seasonal_Binary_k2  c0=10, c1=5        | val            |         0.5439 |           0.5752 |
-| Trained_Gating_k2  c0=10, c1=10        | val            |         0.5407 |           0.5227 |
-| Clustering_Backbone54_k2  c0=5, c1=10  | val            |         0.5161 |           0.4980 |
-| Clustering_V0_Full_k2  c0=10, c1=5     | val            |         0.5060 |           0.5278 |
-| Trained_Gating_k2  c0=0, c1=0          | none           |         0.4906 |           0.4339 |
+RMSE / MAE / bias are in m³/m³ (lower is better except bias sign); full precision in
+`loso_config_summary.csv`.
 
-LOSO RMSE / MAE / bias (mean over stations of per-station seed medians) in `loso_config_summary.csv`
-(e.g. V0_Full (0,10): RMSE 0.05566 / median 0.05121, MAE 0.04428 / 0.04160, bias 0.01562 / 0.01981;
-Global_54: RMSE 0.06102 / 0.05161, MAE 0.04966 / 0.04322, bias 0.02224 / 0.02513).
+| config_label                           | delta_source   |   loso_mean_r2 |   loso_mean_rmse |   loso_mean_mae |   loso_mean_bias |   loso_median_r2 |   loso_median_rmse |   loso_median_mae |   loso_median_bias |
+|:---------------------------------------|:---------------|---------------:|-----------------:|----------------:|-----------------:|-----------------:|-------------------:|------------------:|-------------------:|
+| Clustering_V0_Full_k2  c0=0, c1=10     | test           |         0.6430 |          0.05566 |         0.04428 |          0.01562 |           0.6936 |            0.05121 |           0.04160 |            0.01981 |
+| Clustering_V0_Full_k2  c0=0, c1=0      | none           |         0.6372 |          0.05605 |         0.04476 |          0.01528 |           0.6936 |            0.05121 |           0.04160 |            0.01981 |
+| Clustering_Backbone54_k2  c0=10, c1=10 | test           |         0.6236 |          0.05687 |         0.04656 |          0.01441 |           0.6766 |            0.05597 |           0.04668 |            0.01446 |
+| Clustering_Backbone54_k2  c0=0, c1=0   | none           |         0.6208 |          0.05705 |         0.04603 |          0.01519 |           0.6868 |            0.05121 |           0.04160 |            0.01981 |
+| Baseline_V0_50                         | global         |         0.5907 |          0.06011 |         0.04854 |          0.01682 |           0.5709 |            0.05765 |           0.04739 |            0.01980 |
+| Seasonal_Binary_k2  c0=0, c1=5         | test           |         0.5808 |          0.06145 |         0.04953 |          0.02084 |           0.5894 |            0.05716 |           0.04407 |            0.01607 |
+| Global_Single_54                       | global         |         0.5795 |          0.06102 |         0.04966 |          0.02224 |           0.6269 |            0.05161 |           0.04322 |            0.02513 |
+| Clustering_Dynamic_k2  c0=0, c1=10     | val            |         0.5782 |          0.06172 |         0.04980 |          0.02166 |           0.5873 |            0.05691 |           0.04492 |            0.01768 |
+| Clustering_Dynamic_k2  c0=10, c1=0     | test           |         0.5765 |          0.06094 |         0.04985 |          0.02205 |           0.5183 |            0.05581 |           0.04506 |            0.02107 |
+| Univariate_G_API_k2  c0=10, c1=0       | test           |         0.5751 |          0.06162 |         0.05024 |          0.02219 |           0.5619 |            0.05582 |           0.04770 |            0.01892 |
+| Seasonal_Binary_k2  c0=0, c1=0         | none           |         0.5744 |          0.06189 |         0.05034 |          0.02130 |           0.5928 |            0.05762 |           0.04664 |            0.01507 |
+| Univariate_G_API_k2  c0=10, c1=10      | val            |         0.5628 |          0.06265 |         0.05054 |          0.02212 |           0.5623 |            0.05912 |           0.04666 |            0.01744 |
+| Clustering_Dynamic_k2  c0=0, c1=0      | none           |         0.5627 |          0.06243 |         0.05101 |          0.02187 |           0.6286 |            0.05997 |           0.04765 |            0.01848 |
+| Trained_Gating_k2  c0=5, c1=10         | test           |         0.5551 |          0.06178 |         0.04688 |          0.01900 |           0.5618 |            0.05767 |           0.04070 |            0.01351 |
+| Univariate_G_API_k2  c0=0, c1=0        | none           |         0.5490 |          0.06340 |         0.05133 |          0.02169 |           0.5508 |            0.06392 |           0.04803 |            0.01736 |
+| Seasonal_Binary_k2  c0=10, c1=5        | val            |         0.5439 |          0.06394 |         0.05183 |          0.01953 |           0.5752 |            0.06208 |           0.04990 |            0.01407 |
+| Trained_Gating_k2  c0=10, c1=10        | val            |         0.5407 |          0.06304 |         0.04839 |          0.02034 |           0.5227 |            0.05910 |           0.04285 |            0.01998 |
+| Clustering_Backbone54_k2  c0=5, c1=10  | val            |         0.5161 |          0.06564 |         0.05176 |          0.02081 |           0.4980 |            0.06427 |           0.05242 |            0.00943 |
+| Clustering_V0_Full_k2  c0=10, c1=5     | val            |         0.5060 |          0.06659 |         0.05233 |          0.02036 |           0.5278 |            0.06958 |           0.05542 |            0.00836 |
+| Trained_Gating_k2  c0=0, c1=0          | none           |         0.4906 |          0.06669 |         0.05290 |          0.03004 |           0.4339 |            0.06019 |           0.04839 |            0.03213 |
 
 ### Focused LOSO pairwise tests (R²; wins "k of 7 stations", two-sided sign test, paired t / Wilcoxon on the 7 per-station medians)
 
