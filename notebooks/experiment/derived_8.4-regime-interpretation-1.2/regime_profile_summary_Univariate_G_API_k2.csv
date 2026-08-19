@@ -1,0 +1,16 @@
+feature,median_cluster0,median_cluster1,rank_biserial_r
+soil_moisture_5cm,0.164,0.267,-0.394
+precip_mm,0.0,3.5,-0.51
+G_API,12.2517,74.9427,-1.0
+G_rain_sum_7d,5.9,55.0,-0.89
+LST_modis,292.6201,276.635,0.661
+SMAP_sm_pm_interp,0.3059,0.3594,-0.271
+G_DSLR,2.0,0.0,0.484
+F_NDVI,0.4145,0.4313,0.064
+latitude,47.42,47.51,-0.202
+longitude,-121.2555,-121.5343,0.395
+elev,1160.5261,1205.0942,0.049
+slope,18.1494,18.1494,-0.018
+J_soil_texture_usda_b0,7.0,7.0,-0.042
+J_lc_code,10.0,10.0,0.137
+J_bio_bio13,204.0,391.0,-0.428

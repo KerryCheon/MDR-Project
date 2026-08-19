@@ -1,0 +1,3 @@
+cluster,n_stations,median_J_clay_wfrac_b0,median_J_clay_wfrac_b30,median_J_clay_wfrac_b100,median_J_sand_wfrac_b0,median_J_sand_wfrac_b100,median_J_soil_texture_usda_b0,median_K_sand_clay_ratio_b0,median_K_aspect_cos,median_J_lc_code,median_elev,median_slope,median_clim_SMAP_sm_pm_interp,median_clim_F_NDVI,median_clim_F_NDMI,median_clim_F_MSI,median_clim_LST_modis
+0,5,8.0,8.0,9.0,51.0,58.0,7.0,6.375,-0.5,10.0,1125.0,10.0,0.37,0.537,0.491,0.368,281.059
+1,2,21.5,23.5,23.0,33.0,35.0,7.0,1.538,-0.883,20.0,934.5,9.0,0.179,0.322,0.058,0.933,290.9
