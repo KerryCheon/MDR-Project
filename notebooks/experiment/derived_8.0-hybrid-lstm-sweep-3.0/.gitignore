@@ -1,0 +1,4 @@
+artifacts/
+artifacts_smoke/
+models/
+__pycache__/
