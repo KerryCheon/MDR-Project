@@ -22,6 +22,7 @@ from .pipes.parse_pipe import ParsePipe
 from .pipes.clean_pipe import CleanPipe
 from .pipes.merge_pipe import MergePipe
 from .pipes.satellite_pipe import SatellitePipe
+from .pipes.optimized_satellite_pipe import OptimizedSatellitePipe
 from .pipes.temporal_fill_pipe import TemporalFillPipe
 from .pipes.whittaker_pipe import WhittakerPipe
 from .pipes.feature_pipe import FeaturePipe
@@ -49,7 +50,14 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
         cleaned = CleanPipe(config=station_cfg["clean"]).run(parsed)
         merged = MergePipe(config=station_cfg["merge"]).run(cleaned)
 
-        with_sat = SatellitePipe(config=global_cfg, station_name=station_name).run(merged)
+        sat_cfg = global_cfg.get("satellite", {})
+        use_v2 = (
+            sat_cfg.get("version") == "v2"
+            or sat_cfg.get("use_optimized", False)
+            or station_cfg.get("satellite", {}).get("version") == "v2"
+        )
+        SatPipeCls = OptimizedSatellitePipe if use_v2 else SatellitePipe
+        with_sat = SatPipeCls(config=global_cfg, station_name=station_name).run(merged)
         with_weather = WeatherPipe(config=global_cfg, station_name=station_name).run(with_sat)
 
         filled = TemporalFillPipe(config=global_cfg["temporal_fill"]).run(with_weather)
