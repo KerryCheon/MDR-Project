@@ -23,5 +23,12 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["pipeline"]
+packages = [
+    "pipeline",
+    "pipeline.pipes",
+    "pipeline.utils",
+    "pipeline.imputers",
+    "pipeline.validation",
+    "pipeline.smoothing",
+]
 package-dir = {"pipeline" = "."}

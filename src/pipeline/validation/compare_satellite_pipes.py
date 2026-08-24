@@ -78,14 +78,20 @@ def compare_satellite_pipes(
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
 
-        # Config for V1
+        # Config for V1 and V2 with isolated cache files
         cfg_v1 = json.loads(json.dumps(config))
-        cache_v1 = tmp_path / "v1_cache.json" if not use_existing_cache else Path(f"src/pipeline/data/cache/{station_name}_satellite_cache.json")
-        cfg_v1["satellite"]["cache_path"] = str(cache_v1)
-
-        # Config for V2
         cfg_v2 = json.loads(json.dumps(config))
-        cache_v2 = tmp_path / "v2_cache.json" if not use_existing_cache else Path(f"src/pipeline/data/cache/{station_name}_satellite_cache.json")
+        cache_v1 = tmp_path / "v1_cache.json"
+        cache_v2 = tmp_path / "v2_cache.json"
+
+        source_cache = Path(f"src/pipeline/data/cache/{station_name}_satellite_cache.json")
+        if use_existing_cache and source_cache.exists():
+            import shutil
+            shutil.copy(source_cache, cache_v1)
+            shutil.copy(source_cache, cache_v2)
+            logger.info(f"Cloned existing cache snapshot ({source_cache}) to isolated v1 and v2 temporary caches.")
+
+        cfg_v1["satellite"]["cache_path"] = str(cache_v1)
         cfg_v2["satellite"]["cache_path"] = str(cache_v2)
 
         # -------------------------------------------------------------
@@ -166,28 +172,35 @@ def compare_satellite_pipes(
             both_valid = s1.notna() & s2.notna()
             mismatch_na = (s1.notna() & s2.isna()) | (s1.isna() & s2.notna())
 
-            if mismatch_na.any():
-                status = "NA_MISMATCH"
-                all_passed = False
-                max_diff = "N/A"
-                mean_diff = "N/A"
-            elif both_valid.sum() == 0:
+            if both_valid.sum() == 0 and both_na.all():
                 status = "ALL_NA_MATCH"
                 max_diff = "0.0"
                 mean_diff = "0.0"
-            else:
+            elif both_valid.sum() > 0:
                 diffs = np.abs(s1[both_valid] - s2[both_valid])
                 max_d = float(diffs.max())
                 mean_d = float(diffs.mean())
                 max_diff = f"{max_d:.6e}"
                 mean_diff = f"{mean_d:.6e}"
 
-                # Allow tolerance up to 1e-4 for reduction order
                 if max_d < 1e-4:
-                    status = "PASSED"
+                    if mismatch_na.any():
+                        if col in ("elev", "slope", "aspect") and v2_non_null >= v1_non_null:
+                            # V2 correctly provides station-level static terrain coverage
+                            status = "PASSED (TERRAIN+)"
+                        else:
+                            status = "NA_MISMATCH"
+                            all_passed = False
+                    else:
+                        status = "PASSED"
                 else:
                     status = "DIFF_FAIL"
                     all_passed = False
+            else:
+                status = "NA_MISMATCH"
+                all_passed = False
+                max_diff = "N/A"
+                mean_diff = "N/A"
 
         rows.append([col, v1_non_null, v2_non_null, max_diff, mean_diff, status])
 

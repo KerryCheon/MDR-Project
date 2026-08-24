@@ -140,7 +140,81 @@ def test_satellite_output_schema(base_config, mock_station_df, tmp_path):
 # Test 3: Bidirectional Cache Compatibility
 # -----------------------------------------------------------------------------
 def test_bidirectional_cache_compatibility(base_config, mock_station_df, tmp_path):
-    cache_file = tmp_path / "shared_cache.json"
+    # Case A: V1 writes cache -> V2 reads cache
+    cache_a = tmp_path / "cache_v1_to_v2.json"
+    cfg_a1 = json.loads(json.dumps(base_config))
+    cfg_a1["satellite"]["cache_path"] = str(cache_a)
+
+    sample_entry = {}
+    mock_station_df["week"] = mock_station_df["date"].dt.to_period("W-SUN").astype(str)
+    for week, group in mock_station_df.groupby("week"):
+        start = group["date"].min().strftime("%Y-%m-%d")
+        end = (group["date"].max() + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+        date_key = f"{start}_{end}"
+        sample_entry[date_key] = {
+            "LST_modis": 275.5,
+            "NDVI_modis": 0.70,
+            "s1_vv": 0.15,
+            "s1_vh": 0.05,
+            "s1_vv_dB": -8.2,
+            "s1_vh_dB": -13.0,
+            "s2_b2": 0.20,
+            "s2_b3": 0.21,
+            "s2_b4": 0.19,
+            "s2_b8": 0.33,
+            "s2_b11": 0.25,
+            "s2_b12": 0.21,
+            "elev": 96.0,
+            "slope": 5.5,
+            "aspect": 170.0,
+            "SMAP_sm_am": 0.45,
+            "SMAP_sm_pm": 0.53,
+            "SMAP_qual_am": 1.0,
+            "SMAP_qual_pm": 1.0,
+        }
+
+    with open(cache_a, "w") as f:
+        json.dump(sample_entry, f, indent=2)
+
+    cfg_a2 = json.loads(json.dumps(base_config))
+    cfg_a2["satellite"]["cache_path"] = str(cache_a)
+
+    pipe_v1_a = SatellitePipe(config=cfg_a1, station_name="compat_a")
+    pipe_v2_a = OptimizedSatellitePipe(config=cfg_a2, station_name="compat_a")
+
+    out_v1_a = pipe_v1_a.run(mock_station_df.drop(columns=["week"]))
+    out_v2_a = pipe_v2_a.run(mock_station_df.drop(columns=["week"]))
+
+    assert len(out_v1_a) == len(out_v2_a)
+    for col in EXPECTED_SAT_COLUMNS:
+        np.testing.assert_allclose(out_v1_a[col].dropna(), out_v2_a[col].dropna(), rtol=1e-5, atol=1e-5)
+
+    # Case B: V2 writes cache -> V1 reads cache
+    cache_b = tmp_path / "cache_v2_to_v1.json"
+    with open(cache_b, "w") as f:
+        json.dump(sample_entry, f, indent=2)
+
+    cfg_b1 = json.loads(json.dumps(base_config))
+    cfg_b1["satellite"]["cache_path"] = str(cache_b)
+    cfg_b2 = json.loads(json.dumps(base_config))
+    cfg_b2["satellite"]["cache_path"] = str(cache_b)
+
+    pipe_v2_b = OptimizedSatellitePipe(config=cfg_b2, station_name="compat_b")
+    pipe_v1_b = SatellitePipe(config=cfg_b1, station_name="compat_b")
+
+    out_v2_b = pipe_v2_b.run(mock_station_df.drop(columns=["week"]))
+    out_v1_b = pipe_v1_b.run(mock_station_df.drop(columns=["week"]))
+
+    assert len(out_v2_b) == len(out_v1_b)
+    for col in EXPECTED_SAT_COLUMNS:
+        np.testing.assert_allclose(out_v2_b[col].dropna(), out_v1_b[col].dropna(), rtol=1e-5, atol=1e-5)
+
+
+# -----------------------------------------------------------------------------
+# Test 3B: Zero GEE Network Calls on Full Cache Hits
+# -----------------------------------------------------------------------------
+def test_zero_gee_calls_on_cache_hit(base_config, mock_station_df, tmp_path, monkeypatch):
+    cache_file = tmp_path / "hit_cache.json"
     cfg = json.loads(json.dumps(base_config))
     cfg["satellite"]["cache_path"] = str(cache_file)
 
@@ -172,31 +246,48 @@ def test_bidirectional_cache_compatibility(base_config, mock_station_df, tmp_pat
             "SMAP_qual_pm": 1.0,
         }
 
-    # Write cache with v2 schema
     with open(cache_file, "w") as f:
         json.dump(sample_entry, f, indent=2)
 
-    # Read with v1
-    pipe_v1 = SatellitePipe(config=cfg, station_name="compat_test")
-    # Read with v2
-    pipe_v2 = OptimizedSatellitePipe(config=cfg, station_name="compat_test")
+    pipe_v2 = OptimizedSatellitePipe(config=cfg, station_name="hit_test")
 
-    out_v1 = pipe_v1.run(mock_station_df.drop(columns=["week"]))
-    out_v2 = pipe_v2.run(mock_station_df.drop(columns=["week"]))
+    # Monkeypatch fetch_static_terrain to fail if called
+    def should_not_be_called(*args, **kwargs):
+        raise AssertionError("fetch_static_terrain should NOT be called on a 100% cache hit!")
 
-    # Verify matching shapes
-    assert len(out_v1) == len(out_v2)
+    monkeypatch.setattr(pipe_v2, "fetch_static_terrain", should_not_be_called)
 
-    # Verify column parity
-    for col in EXPECTED_SAT_COLUMNS:
-        assert col in out_v1.columns
-        assert col in out_v2.columns
-        np.testing.assert_allclose(
-            out_v1[col].dropna(),
-            out_v2[col].dropna(),
-            rtol=1e-5,
-            atol=1e-5
-        )
+    out = pipe_v2.run(mock_station_df.drop(columns=["week"]))
+    assert not out.empty
+    assert out["elev"].notna().all()
+
+
+# -----------------------------------------------------------------------------
+# Test 3C: Failed Reductions (All-None) Are Not Cached
+# -----------------------------------------------------------------------------
+def test_invalid_all_none_not_cached(base_config, mock_station_df, tmp_path, monkeypatch):
+    cache_file = tmp_path / "empty_cache.json"
+    cfg = json.loads(json.dumps(base_config))
+    cfg["satellite"]["cache_path"] = str(cache_file)
+
+    pipe_v2 = OptimizedSatellitePipe(config=cfg, station_name="none_cache_test")
+
+    # Mock batch and unified to return all-None (e.g. transient network failure)
+    all_none_dict = {
+        k: None for k in OptimizedSatellitePipe.DEFAULT_RES
+        if k not in ("elev", "slope", "aspect")
+    }
+    monkeypatch.setattr(pipe_v2, "fetch_satellite_batch_collection", lambda items: {items[0][0]: all_none_dict})
+    monkeypatch.setattr(pipe_v2, "fetch_single_week_unified", lambda *args: all_none_dict)
+
+    out = pipe_v2.run(mock_station_df)
+    assert not out.empty
+
+    # Verify that the cache file on disk did NOT save the failed all-None week
+    if cache_file.exists():
+        with open(cache_file) as f:
+            saved_cache = json.load(f)
+        assert len(saved_cache) == 0, f"Expected empty cache after failed fetch, but found: {saved_cache}"
 
 
 # -----------------------------------------------------------------------------

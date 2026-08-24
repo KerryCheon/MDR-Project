@@ -9,11 +9,14 @@ import pandas as pd
 def extract_reference_samples(
     csv_path: Path,
     out_json_path: Path,
+    station_name: str = None,
     n_samples: int = 5
 ) -> dict:
     """Extracts reference weekly satellite samples from an existing final.csv file."""
     if not csv_path.exists():
         raise FileNotFoundError(f"Source CSV not found: {csv_path}")
+
+    resolved_station = station_name or csv_path.parent.name
 
     df = pd.read_csv(csv_path)
     df["date"] = pd.to_datetime(df["date"])
@@ -32,7 +35,7 @@ def extract_reference_samples(
     grouped = df.groupby("week")
 
     samples = {
-        "station_name": "quinault",
+        "station_name": resolved_station,
         "latitude": float(df["latitude"].median()),
         "longitude": float(df["longitude"].median()),
         "weeks": {}

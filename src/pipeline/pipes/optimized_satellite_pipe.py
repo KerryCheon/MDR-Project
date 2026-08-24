@@ -2,11 +2,14 @@
 # optimized_satellite_pipe.py
 # Optimized Satellite Pipe (Sentinel-1, Sentinel-2, MODIS, SMAP, SRTM DEM)
 # Features:
-# 1. Single-shot static terrain extraction (elevation, slope, aspect)
+# 1. Single-shot static terrain extraction with zero GEE calls on full cache hits
 # 2. Server-side multi-sensor dictionary unification (1 RPC per week in single-week mode)
-# 3. Temporal batching via ee.FeatureCollection server-side reduction (1 RPC per 52-week chunk)
-# 4. Automatic fallback to single-week unified fetching on batch failure
-# 5. 100% cache format and schema compatibility with baseline SatellitePipe
+# 3. Temporal batching via ee.FeatureCollection server-side reduction (1 RPC per 26-week chunk)
+# 4. Strict dynamic data validation before caching (skips all-None failed reductions)
+# 5. Per-week median coordinate semantics matching baseline SatellitePipe
+# 6. Automatic fallback to single-week unified fetching on batch failure
+# 7. Incremental periodic cache saving
+# 8. 100% cache format and schema compatibility with baseline SatellitePipe
 
 import ee
 import pandas as pd
@@ -32,6 +35,7 @@ class OptimizedSatellitePipe:
     SMAP_006 = "NASA/SMAP/SPL3SMP_E/006"
 
     REQUIRED_SMAP_KEYS = {"SMAP_sm_am", "SMAP_sm_pm", "SMAP_qual_am", "SMAP_qual_pm"}
+    TERRAIN_KEYS = {"elev", "slope", "aspect"}
 
     DEFAULT_RES = {
         "LST_modis": None,
@@ -67,9 +71,10 @@ class OptimizedSatellitePipe:
         self.cache_path = Path(cache_template.format(station=self.station_name))
         self.logger.info(f"Satellite cache path set to: {self.cache_path}")
 
-        # Batch chunk size (weeks per GEE FeatureCollection reduction)
+        # Batch chunk size (capped between 1 and 52 weeks, default 26)
         sat_cfg = self.config.get("satellite", {})
-        self.batch_chunk_size = int(sat_cfg.get("batch_chunk_size", 52))
+        configured_chunk = int(sat_cfg.get("batch_chunk_size", 26))
+        self.batch_chunk_size = max(1, min(52, configured_chunk))
         self.use_server_batching = bool(sat_cfg.get("use_server_batching", True))
 
         initialize_ee(self.logger)
@@ -104,6 +109,18 @@ class OptimizedSatellitePipe:
             self.logger.warning(f"[{self.station_name}] Failed to fetch static terrain: {e}")
 
         return terrain_res
+
+    def _extract_terrain_from_cache(self, cache: dict) -> dict:
+        """Attempts to extract cached static terrain from existing cache entries."""
+        terrain = {"elev": None, "slope": None, "aspect": None}
+        for entry in cache.values():
+            if isinstance(entry, dict):
+                for k in self.TERRAIN_KEYS:
+                    if terrain[k] is None and entry.get(k) is not None:
+                        terrain[k] = float(entry[k])
+                if all(terrain[k] is not None for k in self.TERRAIN_KEYS):
+                    break
+        return terrain
 
     def _parse_dynamic_props(self, props: dict) -> dict:
         """Helper to convert raw GEE reduction properties to scaled satellite features."""
@@ -293,29 +310,25 @@ class OptimizedSatellitePipe:
 
     def fetch_satellite_batch_collection(
         self,
-        lat: float,
-        lon: float,
-        week_items: list[tuple[str, str, str]]
+        week_items: list[tuple[str, str, str, float, float]]
     ) -> dict[str, dict]:
         """Fetches dynamic satellite data for a batch of weeks in a single GEE FeatureCollection reduction.
 
         Args:
-            lat: Latitude
-            lon: Longitude
-            week_items: List of tuples (date_key, start_date, end_date)
+            week_items: List of tuples (date_key, start_date, end_date, lat, lon)
 
         Returns:
             Dictionary mapping date_key -> feature dictionary
         """
-        point = ee.Geometry.Point([lon, lat])
-        buffer = point.buffer(1000)
-
         features = []
-        for date_key, start_date, end_date in week_items:
+        for date_key, start_date, end_date, lat, lon in week_items:
             start_dt = datetime.strptime(start_date, "%Y-%m-%d") - timedelta(days=3)
             end_dt = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=3)
             padded_start = start_dt.strftime("%Y-%m-%d")
             padded_end = end_dt.strftime("%Y-%m-%d")
+
+            point = ee.Geometry.Point([lon, lat])
+            buffer = point.buffer(1000)
 
             feat = ee.Feature(
                 buffer,
@@ -408,14 +421,31 @@ class OptimizedSatellitePipe:
         fc_info = reduced_fc.getInfo() or {}
 
         results = {}
+        returned_keys = set()
         for feature in fc_info.get("features", []):
             props = feature.get("properties", {})
             date_key = props.get("date_key")
             if date_key:
+                returned_keys.add(date_key)
                 parsed_features = self._parse_dynamic_props(props)
                 results[date_key] = parsed_features
 
+        # Log any missing date keys
+        expected_keys = {item[0] for item in week_items}
+        missing_keys = expected_keys - returned_keys
+        if missing_keys:
+            self.logger.debug(f"[{self.station_name}] Batch omitted {len(missing_keys)} date keys: {missing_keys}")
+
         return results
+
+    def _save_cache_file(self, cache: dict):
+        """Helper to write cache file to disk."""
+        self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            with open(self.cache_path, "w") as f:
+                json.dump(cache, f, indent=2)
+        except Exception as e:
+            self.logger.warning(f"[{self.station_name}] Failed to save cache: {e}")
 
     def run(self, df: pd.DataFrame) -> pd.DataFrame:
         """Executes the optimized satellite feature pipeline."""
@@ -437,80 +467,101 @@ class OptimizedSatellitePipe:
         df["week"] = df["date"].dt.to_period("W-SUN").astype(str)
         grouped = df.groupby("week")
 
-        lat = float(df["latitude"].median())
-        lon = float(df["longitude"].median())
-
-        # Step 1: Fetch static terrain features once per station
-        terrain_stats = self.fetch_static_terrain(lat, lon)
-
-        # Step 2: Categorize needed fetches
-        full_needed: list[tuple[str, str, str]] = []
-        smap_needed: list[tuple[str, str, str]] = []
+        # Step 1: Categorize needed fetches with per-week median coordinates
+        full_needed: list[tuple[str, str, str, float, float]] = []
+        smap_needed: list[tuple[str, str, str, float, float]] = []
 
         for week, group in grouped:
             start = group["date"].min().strftime("%Y-%m-%d")
             end = (group["date"].max() + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
             date_key = f"{start}_{end}"
+            lat = float(group["latitude"].median())
+            lon = float(group["longitude"].median())
 
             if date_key not in cache:
-                full_needed.append((date_key, start, end))
+                full_needed.append((date_key, start, end, lat, lon))
             else:
                 entry = cache.get(date_key, {})
                 if not self.REQUIRED_SMAP_KEYS.issubset(set(entry.keys())):
-                    smap_needed.append((date_key, start, end))
+                    smap_needed.append((date_key, start, end, lat, lon))
+
+        # Step 2: Static terrain extraction (gated to zero GEE calls on full cache hit)
+        terrain_stats = self._extract_terrain_from_cache(cache)
+        terrain_complete = all(terrain_stats.get(k) is not None for k in self.TERRAIN_KEYS)
+
+        if not terrain_complete and (full_needed or smap_needed or len(cache) == 0):
+            # Fetch from GEE using median station coordinates
+            rep_lat = float(df["latitude"].median())
+            rep_lon = float(df["longitude"].median())
+            fetched_terrain = self.fetch_static_terrain(rep_lat, rep_lon)
+            for k in self.TERRAIN_KEYS:
+                if terrain_stats.get(k) is None:
+                    terrain_stats[k] = fetched_terrain.get(k)
+        elif terrain_complete:
+            self.logger.debug(f"[{self.station_name}] Reusing cached static terrain: {terrain_stats}")
 
         # Step 3: Fetch full dynamic satellite features
+        successful_fetches = 0
         if full_needed:
             self.logger.info(
                 f"[{self.station_name}] Fetching full satellite features for {len(full_needed)} uncached weeks..."
             )
 
             if self.use_server_batching:
-                # Chunk into batches (e.g. 52 weeks = 1 year per batch)
-                chunk_size = max(1, self.batch_chunk_size)
+                chunk_size = self.batch_chunk_size
                 chunks = [full_needed[i:i + chunk_size] for i in range(0, len(full_needed), chunk_size)]
 
                 with tqdm(total=len(full_needed), desc=f"SatelliteV2 ({self.station_name})") as pbar:
                     for chunk in chunks:
                         try:
-                            batch_results = self.fetch_satellite_batch_collection(lat, lon, chunk)
+                            batch_results = self.fetch_satellite_batch_collection(chunk)
                             for date_key, new_data in batch_results.items():
                                 is_valid = any(v is not None for v in new_data.values()) if new_data else False
                                 if is_valid:
                                     cache[date_key] = {**terrain_stats, **new_data}
-                                else:
-                                    cache[date_key] = {**terrain_stats, **new_data}
+                                    successful_fetches += 1
                             pbar.update(len(chunk))
                         except Exception as e:
                             self.logger.warning(
                                 f"[{self.station_name}] Batch collection failed ({e}). Falling back to unified weekly fetches."
                             )
-                            # Fallback to ThreadPoolExecutor of single-week unified calls
                             with ThreadPoolExecutor(max_workers=4) as ex:
                                 futures = {
                                     ex.submit(self.fetch_single_week_unified, lat, lon, s, end_d): dk
-                                    for dk, s, end_d in chunk
+                                    for dk, s, end_d, lat, lon in chunk
                                 }
                                 for future in as_completed(futures):
                                     dk = futures[future]
                                     try:
                                         new_data = future.result() or {}
-                                        cache[dk] = {**terrain_stats, **new_data}
+                                        is_valid = any(v is not None for v in new_data.values()) if new_data else False
+                                        if is_valid:
+                                            cache[dk] = {**terrain_stats, **new_data}
+                                            successful_fetches += 1
                                     except Exception as week_e:
                                         self.logger.warning(f"[{self.station_name}] Unified fetch failed for {dk}: {week_e}")
                                     pbar.update(1)
+
+                        # Periodic cache flush after each chunk
+                        if successful_fetches > 0:
+                            self._save_cache_file(cache)
             else:
                 # Direct thread pool of unified weekly calls
                 with ThreadPoolExecutor(max_workers=4) as ex:
                     futures = {
                         ex.submit(self.fetch_single_week_unified, lat, lon, s, end_d): dk
-                        for dk, s, end_d in full_needed
+                        for dk, s, end_d, lat, lon in full_needed
                     }
                     for future in tqdm(as_completed(futures), total=len(futures), desc=f"SatelliteV2 ({self.station_name})"):
                         dk = futures[future]
                         try:
                             new_data = future.result() or {}
-                            cache[dk] = {**terrain_stats, **new_data}
+                            is_valid = any(v is not None for v in new_data.values()) if new_data else False
+                            if is_valid:
+                                cache[dk] = {**terrain_stats, **new_data}
+                                successful_fetches += 1
+                                if successful_fetches % 20 == 0:
+                                    self._save_cache_file(cache)
                         except Exception as e:
                             self.logger.warning(f"[{self.station_name}] Unified fetch failed for {dk}: {e}")
 
@@ -522,31 +573,27 @@ class OptimizedSatellitePipe:
             with ThreadPoolExecutor(max_workers=4) as ex:
                 futures = {
                     ex.submit(self.fetch_smap_only, lat, lon, s, end_d): dk
-                    for dk, s, end_d in smap_needed
+                    for dk, s, end_d, lat, lon in smap_needed
                 }
                 for future in tqdm(as_completed(futures), total=len(futures), desc=f"SMAP ({self.station_name})"):
                     dk = futures[future]
                     try:
                         smap_data = future.result() or {}
-                        cache.setdefault(dk, {})
-                        cache[dk].update(smap_data)
+                        is_valid = any(v is not None for v in smap_data.values()) if smap_data else False
+                        if is_valid:
+                            cache.setdefault(dk, {})
+                            cache[dk].update(smap_data)
                     except Exception as e:
                         self.logger.warning(f"[{self.station_name}] SMAP fetch failed for {dk}: {e}")
 
         # Ensure static terrain is populated across all cache entries
         for date_key in cache:
-            for k in ("elev", "slope", "aspect"):
+            for k in self.TERRAIN_KEYS:
                 if cache[date_key].get(k) is None and terrain_stats.get(k) is not None:
                     cache[date_key][k] = terrain_stats[k]
 
-        # Step 5: Save updated cache
-        self.cache_path.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            with open(self.cache_path, "w") as f:
-                json.dump(cache, f, indent=2)
-            self.logger.debug(f"[{self.station_name}] Saved cache with {len(cache)} entries.")
-        except Exception as e:
-            self.logger.warning(f"[{self.station_name}] Failed to save cache: {e}")
+        # Step 5: Final save of updated cache
+        self._save_cache_file(cache)
 
         # Step 6: Assemble satellite dataframe
         sat = []
@@ -573,5 +620,5 @@ class OptimizedSatellitePipe:
         return merged
 
 
-# Alias for versioning
+# Alias for backward compatibility
 SatellitePipeV2 = OptimizedSatellitePipe

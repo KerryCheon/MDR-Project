@@ -17,7 +17,6 @@ __all__ = [
     "MergePipe",
     "SatellitePipe",
     "OptimizedSatellitePipe",
-    "SatellitePipeV2",
     "TemporalFillPipe",
     "WhittakerPipe",
     "FeaturePipe",
