@@ -222,8 +222,8 @@ class OptimizedSatellitePipe:
                 .filterDate(padded_start, padded_end)
                 .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", 40))
                 .select(["B2", "B3", "B4", "B8", "B11", "B12"])
+                .map(lambda img: img.divide(10000))
                 .mean()
-                .divide(10000)
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=buffer, scale=20, bestEffort=True)
             )
 
@@ -385,8 +385,8 @@ class OptimizedSatellitePipe:
                 .filterDate(s, e)
                 .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", 40))
                 .select(["B2", "B3", "B4", "B8", "B11", "B12"])
+                .map(lambda img: img.divide(10000))
                 .mean()
-                .divide(10000)
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=geom, scale=20, bestEffort=True)
             )
 
@@ -401,20 +401,20 @@ class OptimizedSatellitePipe:
             )
 
             return feat.set({
-                "lst_val": lst.get("LST_Day_1km"),
-                "ndvi_val": ndvi.get("NDVI"),
-                "s1_vv": s1.get("VV"),
-                "s1_vh": s1.get("VH"),
-                "s2_b2": s2.get("B2"),
-                "s2_b3": s2.get("B3"),
-                "s2_b4": s2.get("B4"),
-                "s2_b8": s2.get("B8"),
-                "s2_b11": s2.get("B11"),
-                "s2_b12": s2.get("B12"),
-                "smap_sm_am": smap.get("soil_moisture_am"),
-                "smap_sm_pm": smap.get("soil_moisture_pm"),
-                "smap_qual_am": smap.get("retrieval_qual_flag_am"),
-                "smap_qual_pm": smap.get("retrieval_qual_flag_pm"),
+                "lst_val": ee.Dictionary(lst).get("LST_Day_1km", None),
+                "ndvi_val": ee.Dictionary(ndvi).get("NDVI", None),
+                "s1_vv": ee.Dictionary(s1).get("VV", None),
+                "s1_vh": ee.Dictionary(s1).get("VH", None),
+                "s2_b2": ee.Dictionary(s2).get("B2", None),
+                "s2_b3": ee.Dictionary(s2).get("B3", None),
+                "s2_b4": ee.Dictionary(s2).get("B4", None),
+                "s2_b8": ee.Dictionary(s2).get("B8", None),
+                "s2_b11": ee.Dictionary(s2).get("B11", None),
+                "s2_b12": ee.Dictionary(s2).get("B12", None),
+                "smap_sm_am": ee.Dictionary(smap).get("soil_moisture_am", None),
+                "smap_sm_pm": ee.Dictionary(smap).get("soil_moisture_pm", None),
+                "smap_qual_am": ee.Dictionary(smap).get("retrieval_qual_flag_am", None),
+                "smap_qual_pm": ee.Dictionary(smap).get("retrieval_qual_flag_pm", None),
             })
 
         reduced_fc = fc.map(extract_week_features)

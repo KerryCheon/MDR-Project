@@ -1,0 +1,100 @@
+{
+  "source": "processed station CSVs (Out-of-State evaluated for MDR-Project)",
+  "derived_features": "350+ lags, rolling stats, GEE remote-sensing, LIA, and static features matching derived_8.4",
+  "train_years": [
+    2017,
+    2018,
+    2019,
+    2020
+  ],
+  "val_years": [
+    2021,
+    2022
+  ],
+  "test_years": [
+    2023,
+    2024,
+    2025
+  ],
+  "lia_csv": "data/splits/derived_8.4-oos/LIA/stations_lia.csv",
+  "stations": [
+    "Boulder_14_W",
+    "Clackamas_Lake_398",
+    "Corvallis_10_SSW",
+    "John_Day_35_WNW",
+    "Lander_11_SSE",
+    "Murphy_10_W",
+    "Redding_12_WNW",
+    "Riley_10_WSW",
+    "Rock_Springs_721",
+    "Wolf_Point_29_ENE"
+  ],
+  "rows": {
+    "train": 11667,
+    "val": 5487,
+    "test": 8022,
+    "total": 25176
+  },
+  "rows_by_station": {
+    "Boulder_14_W": {
+      "train": 855,
+      "val": 416,
+      "test": 526,
+      "total": 1797
+    },
+    "Clackamas_Lake_398": {
+      "train": 692,
+      "val": 723,
+      "test": 998,
+      "total": 2413
+    },
+    "Corvallis_10_SSW": {
+      "train": 1455,
+      "val": 671,
+      "test": 333,
+      "total": 2459
+    },
+    "John_Day_35_WNW": {
+      "train": 1425,
+      "val": 670,
+      "test": 1060,
+      "total": 3155
+    },
+    "Lander_11_SSE": {
+      "train": 1049,
+      "val": 481,
+      "test": 540,
+      "total": 2070
+    },
+    "Murphy_10_W": {
+      "train": 1285,
+      "val": 621,
+      "test": 1013,
+      "total": 2919
+    },
+    "Redding_12_WNW": {
+      "train": 1344,
+      "val": 481,
+      "test": 1094,
+      "total": 2919
+    },
+    "Riley_10_WSW": {
+      "train": 1193,
+      "val": 572,
+      "test": 878,
+      "total": 2643
+    },
+    "Rock_Springs_721": {
+      "train": 1461,
+      "val": 720,
+      "test": 1096,
+      "total": 3277
+    },
+    "Wolf_Point_29_ENE": {
+      "train": 908,
+      "val": 132,
+      "test": 484,
+      "total": 1524
+    }
+  }
+}

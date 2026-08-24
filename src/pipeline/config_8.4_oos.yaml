@@ -1,0 +1,532 @@
+# ===========================================================
+# Multi-Station MDR Pipeline Configuration: derived_8.4-oos
+# ===========================================================
+# Out-of-State Stations for Spatial Performance Evaluation
+# Years: 2016-2025
+# ===========================================================
+
+stations:
+  # -----------------------------------------------------------
+  # STATION 1: USCRN John Day 35 WNW (OR)
+  # -----------------------------------------------------------
+  uscrn_john_day_35_wnw:
+    request:
+      base_url: null
+      station: "John_Day_35_WNW"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/John-Day-35-WNW/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/John-Day-35-WNW/"
+      out_dir: "src/pipeline/data/processed/john_day"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "John_Day_35_WNW"
+      latitude: 44.55600
+      longitude: -119.64590
+      elevation: 684.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/john_day/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 2: USCRN Corvallis 10 SSW (OR)
+  # -----------------------------------------------------------
+  uscrn_corvallis_10_ssw:
+    request:
+      base_url: null
+      station: "Corvallis_10_SSW"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Corvallis-10-SSW/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Corvallis-10-SSW/"
+      out_dir: "src/pipeline/data/processed/corvallis"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Corvallis_10_SSW"
+      latitude: 44.41850
+      longitude: -123.32570
+      elevation: 95.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/corvallis/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 3: USCRN Riley 10 WSW (OR)
+  # -----------------------------------------------------------
+  uscrn_riley_10_wsw:
+    request:
+      base_url: null
+      station: "Riley_10_WSW"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Riley-10-WSW/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Riley-10-WSW/"
+      out_dir: "src/pipeline/data/processed/riley"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Riley_10_WSW"
+      latitude: 43.47110
+      longitude: -119.69170
+      elevation: 1397.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/riley/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 4: USCRN Murphy 10 W (ID)
+  # -----------------------------------------------------------
+  uscrn_murphy_10_w:
+    request:
+      base_url: null
+      station: "Murphy_10_W"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Murphy-10-W/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Murphy-10-W/"
+      out_dir: "src/pipeline/data/processed/murphy"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Murphy_10_W"
+      latitude: 43.20440
+      longitude: -116.75050
+      elevation: 1204.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/murphy/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 5: USCRN Redding 12 WNW (CA)
+  # -----------------------------------------------------------
+  uscrn_redding_12_wnw:
+    request:
+      base_url: null
+      station: "Redding_12_WNW"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Redding-12-WNW/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Redding-12-WNW/"
+      out_dir: "src/pipeline/data/processed/redding"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Redding_12_WNW"
+      latitude: 40.65070
+      longitude: -122.60680
+      elevation: 432.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/redding/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 6: USCRN Boulder 14 W (CO)
+  # -----------------------------------------------------------
+  uscrn_boulder_14_w:
+    request:
+      base_url: null
+      station: "Boulder_14_W"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Boulder-14-W/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Boulder-14-W/"
+      out_dir: "src/pipeline/data/processed/boulder"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Boulder_14_W"
+      latitude: 40.03540
+      longitude: -105.54090
+      elevation: 2996.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/boulder/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 7: USCRN Lander 11 SSE (WY)
+  # -----------------------------------------------------------
+  uscrn_lander_11_sse:
+    request:
+      base_url: null
+      station: "Lander_11_SSE"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Lander-11-SSE/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Lander-11-SSE/"
+      out_dir: "src/pipeline/data/processed/lander"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Lander_11_SSE"
+      latitude: 42.67540
+      longitude: -108.66860
+      elevation: 1760.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/lander/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 8: USCRN Wolf Point 29 ENE (MT)
+  # -----------------------------------------------------------
+  uscrn_wolf_point_29_ene:
+    request:
+      base_url: null
+      station: "Wolf_Point_29_ENE"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/Wolf-Point-29-ENE/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/Wolf-Point-29-ENE/"
+      out_dir: "src/pipeline/data/processed/wolf_point"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Wolf_Point_29_ENE"
+      latitude: 48.30820
+      longitude: -105.10180
+      elevation: 636.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/wolf_point/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 9: SNOTEL Clackamas Lake #398 (OR)
+  # -----------------------------------------------------------
+  snotel_clackamas_lake:
+    request:
+      base_url: null
+      station: "Clackamas_Lake_398"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/ClackamasLake/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/ClackamasLake/"
+      out_dir: "src/pipeline/data/processed/clackamas_lake"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Clackamas_Lake_398"
+      latitude: 45.09658
+      longitude: -121.75443
+      elevation: 1036.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/clackamas_lake/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 10: SNOTEL Rock Springs #721 (OR)
+  # -----------------------------------------------------------
+  snotel_rock_springs:
+    request:
+      base_url: null
+      station: "Rock_Springs_721"
+      start_year: 2016
+      end_year: 2025
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/RockSprings/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/RockSprings/"
+      out_dir: "src/pipeline/data/processed/rock_springs"
+      drop_duplicates: true
+      snotel_mode: true
+      station: "Rock_Springs_721"
+      latitude: 44.00883
+      longitude: -118.83842
+      elevation: 1612.0
+      add_rolling_rain: true
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/rock_springs/final.csv"
+      format: "csv"
+      index: false
+
+# ===========================================================
+# GLOBAL SECTIONS
+# ===========================================================
+
+temporal_fill:
+  interpolate_cols:
+    - LST_modis
+    - NDVI_modis
+    - s1_vv
+    - s1_vh
+    - s2_b2
+    - s2_b3
+    - s2_b4
+    - s2_b8
+    - s2_b11
+    - s2_b12
+    - SMAP_sm_am
+    - SMAP_sm_pm
+
+  min_known_required: 15
+
+  max_gap_days: 30
+  switch_gap: 4
+  regression_window: 7
+
+whittaker:
+  lambda: 5000
+  target_columns: ["NDVI_modis", "SMAP_sm_am"]
+
+weather:
+  cache_path: "src/pipeline/data/cache/{station}_weather_cache.pkl"
+  timezone: "auto"
+  chunk_years: 1
+  timeout_seconds: 60
+  hourly_vars: ["rain", "precipitation"]
+  rain_col: "rain_mm"
+  precip_col: "precip_mm"
+
+satellite:
+  version: "v2"
+  use_optimized: true
+  batch_chunk_size: 26
+  use_server_batching: true
+  cache_path: "src/pipeline/data/cache/{station}_satellite_cache.json"
+  interpolate_level: "bands"
+
+logging:
+  level: "INFO"
+  log_to_file: true
+  file_path: "src/pipeline/logs/pipeline.log"
+  imputer_file_path: "src/pipeline/logs/imputer.log"
+  imputer_level: "DEBUG"
+  validator_file_path: "src/pipeline/logs/validator.log"
+  validator_level: "INFO"
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+  datefmt: "%Y-%m-%d %H:%M:%S"
+  max_bytes: 10485760
+  backup_count: 5
+
+imputer:
+  enabled:
+    linear_interp: true
+    ffill_bfill: true
+    rolling_mean: true
+    climatology: true
+    xgboost: true
+    knn: true
+    gaussian_process: true
+    seasonal_naive: true
+
+  base_weights:
+    linear_model: 0.25
+    spline: 0.20
+    gaussian_process: 0.15
+    xgboost: 0.10
+    knn: 0.08
+    ffill_bfill: 0.07
+    linear_interp: 0.06
+    rolling_mean: 0.05
+    climatology: 0.02
+    seasonal_naive: 0.02
+
+  linear_interp:
+    tau_days: 7.0
+
+  linear_model:
+    enabled: true
+    min_known: 15
+    use_cross_features: true
+
+  ffill_bfill:
+    tau_days: 3.0
+
+  rolling_mean:
+    window: 7
+
+  climatology:
+    min_count_for_high_conf: 10
+
+  xgboost:
+    min_known: 30
+
+  knn:
+    n_neighbors: 5
+    distance_weighting: true
+
+  gaussian_process:
+    length_scale: 20.0
+    noise_level: 0.5
+
+  seasonal_naive:
+    min_count_for_high_conf: 10
+    use_median: true
+
+  spline:
+    smooth: 0.5
+    degree: 3
+    extrap_penalty: 0.3
+
+  ndvi_max_gap: 10
+  tau_gap: 10
+
+  high_freq_feat:
+    - first_difference
+    - second_difference
+    - temporal_gradient
+    - spectral_entropy
+
+  outlier_factor: 3.0
+
+validator:
+  n_folds: 5
+  mask_fraction: 0.1
+  random_seed: 42

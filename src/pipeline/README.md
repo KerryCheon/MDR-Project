@@ -91,7 +91,7 @@ To download and set up the raw files:
 2. Register for a free account and log in.
 3. Select the **SNOTEL** network.
 4. Set date range to 2016/1/1 to 2026/6/1 (currently the pipeline will parse all years in the downloaded .stm files regardless of the years specified in the config file).
-5. Set coordinate bounds to Latitude 45.6~49, Longitude	-124.3~-117.0397 to include only stations in Washington state.
+5. Set coordinate bounds to Latitude 45.6~49, Longitude	-124.3~-117.0397 to include only stations in Washington state. (40~49 and -125~-105 for the out-of-state stations set)
 6. Set Sensor Depth to 5cm~6cm (the pipeline currently only uses the 5cm soil moisture sensor).
 7. Request a download and configure the following options:
    - **Choose Format:** Variables stored in separate files (Header+values) (zipped)
