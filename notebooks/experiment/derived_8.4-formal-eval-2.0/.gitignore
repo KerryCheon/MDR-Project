@@ -1,0 +1,8 @@
+models/*
+predictions/*
+predictions_spatial/*
+artifacts/*
+*.log
+*.out
+*.err
+__pycache__/
