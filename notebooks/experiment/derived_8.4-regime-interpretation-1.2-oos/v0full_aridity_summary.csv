@@ -1,0 +1,11 @@
+station_id,cluster,annual_mean_T_C,annual_precip_P_mm,driest_month_precip_mm,precip_seasonality_BIO15,PET_thornthwaite_mm,aridity_index_P_over_PET,AI_class,de_martonne_P_over_Tplus10,DMI_class,longitude
+Clackamas_Lake_398,0,6.5,1782.0,23.0,61.0,477.3,3.733,humid,108.0,very humid,-121.7544
+Corvallis_10_SSW,0,11.1,1129.0,13.0,68.0,610.0,1.851,humid,53.51,humid,-123.3257
+Redding_12_WNW,1,15.0,1370.0,7.0,80.0,860.0,1.593,humid,54.8,humid,-122.6068
+Boulder_14_W,1,1.4,620.0,38.0,17.0,406.3,1.526,humid,54.39,humid,-105.5409
+Rock_Springs_721,1,4.0,390.0,16.0,31.0,487.9,0.799,sub-humid,27.86,sub-humid,-118.8384
+Wolf_Point_29_ENE,1,5.4,327.0,7.0,70.0,615.6,0.531,dry sub-humid,21.23,sub-humid,-105.1018
+John_Day_35_WNW,1,10.3,299.0,12.0,30.0,657.6,0.455,semi-arid,14.73,semi-arid,-119.6459
+Murphy_10_W,1,8.5,293.0,9.0,28.0,608.5,0.482,semi-arid,15.84,semi-arid,-116.7505
+Riley_10_WSW,1,7.2,269.0,12.0,26.0,562.7,0.478,semi-arid,15.64,semi-arid,-119.6917
+Lander_11_SSE,1,6.6,262.0,10.0,50.0,610.0,0.429,semi-arid,15.78,semi-arid,-108.6686

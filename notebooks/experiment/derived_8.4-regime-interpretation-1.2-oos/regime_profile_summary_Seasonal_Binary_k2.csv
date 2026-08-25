@@ -1,0 +1,14 @@
+feature,median_cluster0,median_cluster1,rank_biserial_r
+soil_moisture_5cm,0.1,0.201,0.593
+precip_mm,0.0,0.3,0.251
+G_API,7.0821,19.8571,0.499
+G_rain_sum_7d,3.2,13.4,0.389
+LST_modis,302.2863,280.0068,-0.864
+SMAP_sm_pm_interp,0.1435,0.2383,0.609
+G_DSLR,3.0,1.0,-0.336
+latitude,43.4711,44.0088,0.084
+longitude,-118.8384,-119.6459,-0.209
+elev,1205.5446,1073.4358,-0.141
+slope,9.5007,9.5007,0.042
+J_soil_texture_usda_b0,7.0,7.0,-0.026
+J_lc_code,30.0,30.0,0.066
