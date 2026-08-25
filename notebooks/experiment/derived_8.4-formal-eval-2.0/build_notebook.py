@@ -54,6 +54,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
 EXP_DIR = Path(".").resolve()
 PROJECT_ROOT = (EXP_DIR.parents[2]).resolve()
@@ -450,19 +452,27 @@ print(df_summary.to_markdown(index=False, floatfmt=".4f"))
 
 # 2. Pairwise Hypothesis Testing Table
 pairs_focused = [
-    # Two-Regime vs Global
-    ("Clustering_Backbone54_k2_c0_0_c1_0", "Global_Single_54", "Clustering (54) vs Global-54", "Two-Regime vs Global"),
-    ("Clustering_V0_Full_k2_c0_0_c1_0", "Global_Single_54", "Clustering (V0) vs Global-54", "Two-Regime vs Global"),
-    ("Clustering_Backbone54_k2_c0_0_c1_0", "Baseline_V0_50", "Clustering (54) vs Baseline-50", "Two-Regime vs Baseline"),
-    ("Clustering_V0_Full_k2_c0_0_c1_0", "Baseline_V0_50", "Clustering (V0) vs Baseline-50", "Two-Regime vs Baseline"),
-    ("Clustering_Dynamic_k2_c0_0_c1_0", "Global_Single_54", "Clustering (Dynamic) vs Global-54", "Two-Regime vs Global"),
+    # Seasonal Binary vs Single-Regime Global
+    ("Seasonal_Binary_k2_c0_0_c1_0", "Global_Single_54", "Seasonal Binary vs Global-54", "Seasonal vs Global"),
+    ("Seasonal_Binary_k2_c0_0_c1_0", "Baseline_V0_50", "Seasonal Binary vs Baseline-50", "Seasonal vs Baseline"),
     
-    # Clustering vs Trained Gating
+    # Seasonal Binary vs Two-Regime Clustering
+    ("Seasonal_Binary_k2_c0_0_c1_0", "Clustering_Backbone54_k2_c0_0_c1_0", "Seasonal Binary vs Clustering (54)", "Seasonal vs Clustering"),
+    ("Seasonal_Binary_k2_c0_0_c1_0", "Clustering_V0_Full_k2_c0_0_c1_0", "Seasonal Binary vs Clustering (V0)", "Seasonal vs Clustering"),
+    
+    # Two-Regime Clustering vs Global
+    ("Clustering_Backbone54_k2_c0_0_c1_0", "Global_Single_54", "Clustering (54) vs Global-54", "Clustering vs Global"),
+    ("Clustering_V0_Full_k2_c0_0_c1_0", "Global_Single_54", "Clustering (V0) vs Global-54", "Clustering vs Global"),
+    ("Clustering_Backbone54_k2_c0_0_c1_0", "Baseline_V0_50", "Clustering (54) vs Baseline-50", "Clustering vs Baseline"),
+    ("Clustering_V0_Full_k2_c0_0_c1_0", "Baseline_V0_50", "Clustering (V0) vs Baseline-50", "Clustering vs Baseline"),
+    ("Clustering_Dynamic_k2_c0_0_c1_0", "Global_Single_54", "Clustering (Dynamic) vs Global-54", "Clustering vs Global"),
+    
+    # Two-Regime vs Supervised Trained Gating
+    ("Seasonal_Binary_k2_c0_0_c1_0", "Trained_Gating_k2_c0_0_c1_0", "Seasonal Binary vs Trained Gating", "Seasonal vs Gating"),
     ("Clustering_Backbone54_k2_c0_0_c1_0", "Trained_Gating_k2_c0_0_c1_0", "Clustering (54) vs Trained Gating", "Clustering vs Gating"),
     ("Clustering_V0_Full_k2_c0_0_c1_0", "Trained_Gating_k2_c0_0_c1_0", "Clustering (V0) vs Trained Gating", "Clustering vs Gating"),
     ("Clustering_Dynamic_k2_c0_0_c1_0", "Trained_Gating_k2_c0_0_c1_0", "Clustering (Dynamic) vs Trained Gating", "Clustering vs Gating"),
-    ("Seasonal_Binary_k2_c0_0_c1_0", "Trained_Gating_k2_c0_0_c1_0", "Seasonal Binary vs Trained Gating", "Heuristic vs Gating"),
-    ("Univariate_G_API_k2_c0_0_c1_0", "Trained_Gating_k2_c0_0_c1_0", "Univariate G_API vs Trained Gating", "Heuristic vs Gating"),
+    ("Univariate_G_API_k2_c0_0_c1_0", "Trained_Gating_k2_c0_0_c1_0", "Univariate G_API vs Trained Gating", "Univariate vs Gating"),
     
     # Global vs Gating
     ("Global_Single_54", "Trained_Gating_k2_c0_0_c1_0", "Global-54 vs Trained Gating", "Global vs Gating"),
@@ -505,7 +515,110 @@ pivot_focused.to_csv(EXP_DIR / "spatial_focused_no_delta_per_station_r2.csv")
 
 print()
 print("### Table 3: Per-Station R² Matrix across 10 Out-of-State Stations (No Deltas)")
-print(pivot_focused.to_markdown(floatfmt=".3f"))'''))
+print(pivot_focused.to_markdown(floatfmt=".3f"))
+
+# 4. Table 4: Cluster Distance & OOD Domain Shift Diagnostics (WA Baseline + 10 OOS Stations)
+scaler_54 = StandardScaler()
+X_tr_54 = scaler_54.fit_transform(data.trainval[data.shared_backbone_54].fillna(data.trainval[data.shared_backbone_54].mean()))
+km_54 = KMeans(n_clusters=2, random_state=42, n_init=10).fit(X_tr_54)
+c0_54, c1_54 = km_54.cluster_centers_
+
+# Washington in-distribution baseline reference
+d0_tr = np.linalg.norm(X_tr_54 - c0_54, axis=1)
+d1_tr = np.linalg.norm(X_tr_54 - c1_54, axis=1)
+wa_mean_d = float(np.minimum(d0_tr, d1_tr).mean())
+wa_std_d = float(np.minimum(d0_tr, d1_tr).std())
+
+pred_dir = EXP_DIR / "predictions"
+f_cl = pred_dir / "Clustering_Backbone54_k2_c0_0_c1_0__s42__full_preds.npy"
+f_se = pred_dir / "Seasonal_Binary_k2_c0_0_c1_0__s42__full_preds.npy"
+f_gl = pred_dir / "Global_Single_54__s42__full_preds.npy"
+
+p_cl = np.load(f_cl) if f_cl.exists() else None
+p_se = np.load(f_se) if f_se.exists() else None
+p_gl = np.load(f_gl) if f_gl.exists() else None
+
+from sklearn.metrics import r2_score
+
+wa_rows = []
+for st_id in sorted(data.test["station_id"].unique()):
+    sub = data.test[data.test["station_id"] == st_id]
+    X_st = scaler_54.transform(sub[data.shared_backbone_54].fillna(data.trainval[data.shared_backbone_54].mean()))
+    d0_st = np.linalg.norm(X_st - c0_54, axis=1)
+    d1_st = np.linalg.norm(X_st - c1_54, axis=1)
+    d_c = np.minimum(d0_st, d1_st)
+    d_s = np.maximum(d0_st, d1_st)
+    pred_c = km_54.predict(X_st)
+    
+    idx = (data.test["station_id"] == st_id).to_numpy()
+    y_true = data.test.loc[idx, data.target].to_numpy()
+    
+    r2_cl_val = r2_score(y_true, p_cl[idx]) if p_cl is not None else np.nan
+    r2_se_val = r2_score(y_true, p_se[idx]) if p_se is not None else np.nan
+    r2_gl_val = r2_score(y_true, p_gl[idx]) if p_gl is not None else np.nan
+    
+    c0_pct = (pred_c == 0).mean() * 100
+    c1_pct = (pred_c == 1).mean() * 100
+    
+    wa_rows.append({
+        "Group": "WA (In-Dist Baseline)",
+        "Station": st_id,
+        "Clustering R²": r2_cl_val,
+        "Seasonal R²": r2_se_val,
+        "Global R²": r2_gl_val,
+        "Dist to Closest": float(d_c.mean()),
+        "Dist to 2nd Closest": float(d_s.mean()),
+        "Margin (2nd − Closest)": float((d_s - d_c).mean()),
+        "Ambiguity Ratio": float((d_c / d_s).mean()),
+        "OOD Z-Score (vs WA)": float((d_c.mean() - wa_mean_d) / wa_std_d),
+        "Cluster Allocation (C0 / C1)": f"{c0_pct:.0f}% / {c1_pct:.0f}%",
+        "Target Mean (m³/m³)": float(sub[data.target].mean()),
+        "Target Std": float(sub[data.target].std()),
+    })
+
+# Out-of-State Stations
+r2_backbone_oos = st_med[st_med["config_id"] == "Clustering_Backbone54_k2_c0_0_c1_0"].groupby("station")["r2"].median()
+r2_global_oos = st_med[st_med["config_id"] == "Global_Single_54"].groupby("station")["r2"].median()
+r2_seasonal_oos = st_med[st_med["config_id"] == "Seasonal_Binary_k2_c0_0_c1_0"].groupby("station")["r2"].median()
+
+X_oos_54 = scaler_54.transform(data.oos_all[data.shared_backbone_54].fillna(data.trainval[data.shared_backbone_54].mean()))
+d0_oos = np.linalg.norm(X_oos_54 - c0_54, axis=1)
+d1_oos = np.linalg.norm(X_oos_54 - c1_54, axis=1)
+d_c_oos = np.minimum(d0_oos, d1_oos)
+d_s_oos = np.maximum(d0_oos, d1_oos)
+pred_c_oos = km_54.predict(X_oos_54)
+
+oos_rows = []
+for st_id in sorted(data.oos_all["station_id"].unique()):
+    sub_mask = (data.oos_all["station_id"] == st_id).to_numpy()
+    sub_df = data.oos_all.iloc[sub_mask]
+    d_c = d_c_oos[sub_mask]
+    d_s = d_s_oos[sub_mask]
+    c0_pct = (pred_c_oos[sub_mask] == 0).mean() * 100
+    c1_pct = (pred_c_oos[sub_mask] == 1).mean() * 100
+    
+    oos_rows.append({
+        "Group": "OOS (Unseen Transfer)",
+        "Station": st_id,
+        "Clustering R²": float(r2_backbone_oos.get(st_id, np.nan)),
+        "Seasonal R²": float(r2_seasonal_oos.get(st_id, np.nan)),
+        "Global R²": float(r2_global_oos.get(st_id, np.nan)),
+        "Dist to Closest": float(d_c.mean()),
+        "Dist to 2nd Closest": float(d_s.mean()),
+        "Margin (2nd − Closest)": float((d_s - d_c).mean()),
+        "Ambiguity Ratio": float((d_c / d_s).mean()),
+        "OOD Z-Score (vs WA)": float((d_c.mean() - wa_mean_d) / wa_std_d),
+        "Cluster Allocation (C0 / C1)": f"{c0_pct:.0f}% / {c1_pct:.0f}%",
+        "Target Mean (m³/m³)": float(sub_df[data.target].mean()),
+        "Target Std": float(sub_df[data.target].std()),
+    })
+
+df_diag_all = pd.concat([pd.DataFrame(wa_rows), pd.DataFrame(oos_rows)], ignore_index=True)
+df_diag_all.to_csv(EXP_DIR / "spatial_focused_no_delta_station_cluster_distances.csv", index=False)
+
+print()
+print("### Table 4: Station Distance to Clusters & OOD Domain Shift Diagnostics (WA Baseline + 10 OOS Stations)")
+print(df_diag_all.to_markdown(index=False, floatfmt=".3f"))'''))
 
 # 21. Figures md
 cells.append(md_cell("""# Figures generation

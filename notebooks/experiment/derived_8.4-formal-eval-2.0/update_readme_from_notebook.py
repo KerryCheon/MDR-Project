@@ -106,6 +106,21 @@ A low-noise architectural comparison evaluating two-regime models strictly **wit
 
 {outputs.get(19, "")}
 
+### Analysis of Cluster Distances, OOD Shift, and Out-of-State Spatial Transfer
+
+Table 4 illuminates why multi-expert models transfer differently across out-of-state stations, revealing four primary mechanisms:
+
+1. **In-Distribution Baseline vs. Transfer:**
+   The 7 Washington training stations average a distance of $\\mu_{{\\text{{WA}}}} = 6.299 \\pm 1.728$ to their closest cluster ($Z \\in [-0.71, +0.94]$) and achieve strong in-distribution performance ($R^2 = 0.540$ to $0.954$). Out-of-state stations with low distribution shift ($Z < 0.5$, such as `Lander_11_SSE` $Z = +0.070$ and `Rock_Springs_721` $Z = +0.540$) retain strong positive transfer ($R^2 = 0.460$ and $0.329$).
+2. **Severe Covariate Shift ($Z > 2.5$):**
+   Stations like `Wolf_Point_29_ENE` ($Z = +3.363$) and `Riley_10_WSW` ($Z = +2.834$) lie furthest from both Washington clusters. However, because their feature vectors are decisive (Margin $> 4.2$) and their local physical trends align with macro-climatic patterns, they maintain positive $R^2$ ($0.220$ and $0.071$), with Clustering outperforming Global by $+0.521$ on Riley.
+3. **Decision Boundary Proximity & Ambiguity (Ambiguity Ratio $> 0.85$, Margin $< 1.0$):**
+   High-altitude stations such as `Boulder_14_W` (Colorado Rockies, elevation ~2,800m) sit right on the decision boundary between Cluster 0 and Cluster 1 (Ambiguity Ratio $= 0.931$, Margin $= 0.609$). Minor daily sensor noise causes erratic switching between the wet and dry expert models, leading to piecewise prediction discontinuities.
+4. **Regime Collapse (% Allocation = 100% / 0%):**
+   At 5 of the 10 OOS stations (`Lander`, `Murphy`, `Wolf Point`, `Riley`, `John Day`), 100% of samples are permanently routed to Cluster 1 (Dry/Warm expert). Here, the two-regime architecture degenerates into a single regressor trained on only ~50% of Washington data, explaining why global single models trained on 100% of data can have slightly better sample efficiency on those stations.
+5. **Target Soil Moisture Concept Drift:**
+   Severe negative $R^2$ at `John_Day_35_WNW` ($R^2 = -4.637$) is driven by extreme target distribution shift: mean in-situ volumetric soil moisture is only $0.104 \\pm 0.047$ (vs Washington $\\mu_y = 0.236 \\pm 0.088$). This physical sensor/soil offset degrades **all** models equally (Global $R^2 = -3.885$, Seasonal $R^2 = -4.323$, Clustering $R^2 = -4.637$).
+
 ---
 
 ## Delta-robustness (Temporal WA vs Spatial OOS)

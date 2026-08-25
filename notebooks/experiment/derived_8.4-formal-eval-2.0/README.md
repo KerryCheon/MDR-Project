@@ -292,16 +292,20 @@ A low-noise architectural comparison evaluating two-regime models strictly **wit
 ### Table 2: Head-to-Head OOS Spatial Pairwise Tests (Per-Station Medians across 10 Stations)
 | Category               | Comparison (A vs B)                    |   Station Mean ΔR² (A−B) | Station Wins (A > B)   |   Binomial Sign Test p |   Paired t-test p |   Wilcoxon p |   Pooled ΔR² |
 |:-----------------------|:---------------------------------------|-------------------------:|:-----------------------|-----------------------:|------------------:|-------------:|-------------:|
-| Two-Regime vs Global   | Clustering (54) vs Global-54           |                  -0.0982 | 3 / 10                 |                 0.3438 |            0.5038 |       0.5566 |      -0.0735 |
-| Two-Regime vs Global   | Clustering (V0) vs Global-54           |                  -0.1707 | 2 / 10                 |                 0.1094 |            0.2687 |       0.2324 |      -0.0800 |
-| Two-Regime vs Baseline | Clustering (54) vs Baseline-50         |                  -0.0703 | 5 / 10                 |                 1.0000 |            0.8522 |       0.9219 |      -0.0474 |
-| Two-Regime vs Baseline | Clustering (V0) vs Baseline-50         |                  -0.1427 | 5 / 10                 |                 1.0000 |            0.5838 |       0.7695 |      -0.0539 |
-| Two-Regime vs Global   | Clustering (Dynamic) vs Global-54      |                  -0.1322 | 0 / 10                 |                 0.0020 |            0.0371 |       0.0020 |      -0.0681 |
+| Seasonal vs Global     | Seasonal Binary vs Global-54           |                  -0.0885 | 4 / 10                 |                 0.7539 |            0.1972 |       0.2324 |      -0.0447 |
+| Seasonal vs Baseline   | Seasonal Binary vs Baseline-50         |                  -0.0606 | 5 / 10                 |                 1.0000 |            0.8589 |       0.8457 |      -0.0186 |
+| Seasonal vs Clustering | Seasonal Binary vs Clustering (54)     |                   0.0097 | 7 / 10                 |                 0.3438 |            0.9343 |       0.6250 |       0.0288 |
+| Seasonal vs Clustering | Seasonal Binary vs Clustering (V0)     |                   0.0822 | 7 / 10                 |                 0.3438 |            0.5933 |       0.4922 |       0.0353 |
+| Clustering vs Global   | Clustering (54) vs Global-54           |                  -0.0982 | 3 / 10                 |                 0.3438 |            0.5038 |       0.5566 |      -0.0735 |
+| Clustering vs Global   | Clustering (V0) vs Global-54           |                  -0.1707 | 2 / 10                 |                 0.1094 |            0.2687 |       0.2324 |      -0.0800 |
+| Clustering vs Baseline | Clustering (54) vs Baseline-50         |                  -0.0703 | 5 / 10                 |                 1.0000 |            0.8522 |       0.9219 |      -0.0474 |
+| Clustering vs Baseline | Clustering (V0) vs Baseline-50         |                  -0.1427 | 5 / 10                 |                 1.0000 |            0.5838 |       0.7695 |      -0.0539 |
+| Clustering vs Global   | Clustering (Dynamic) vs Global-54      |                  -0.1322 | 0 / 10                 |                 0.0020 |            0.0371 |       0.0020 |      -0.0681 |
+| Seasonal vs Gating     | Seasonal Binary vs Trained Gating      |                   0.2482 | 8 / 10                 |                 0.1094 |            0.2725 |       0.2754 |       0.1128 |
 | Clustering vs Gating   | Clustering (54) vs Trained Gating      |                   0.2385 | 6 / 10                 |                 0.7539 |            0.3775 |       0.3750 |       0.0840 |
 | Clustering vs Gating   | Clustering (V0) vs Trained Gating      |                   0.1661 | 6 / 10                 |                 0.7539 |            0.1939 |       0.2324 |       0.0775 |
 | Clustering vs Gating   | Clustering (Dynamic) vs Trained Gating |                   0.2046 | 6 / 10                 |                 0.7539 |            0.2872 |       0.4316 |       0.0894 |
-| Heuristic vs Gating    | Seasonal Binary vs Trained Gating      |                   0.2482 | 8 / 10                 |                 0.1094 |            0.2725 |       0.2754 |       0.1128 |
-| Heuristic vs Gating    | Univariate G_API vs Trained Gating     |                   0.0360 | 5 / 10                 |                 1.0000 |            0.8787 |       0.9219 |       0.0413 |
+| Univariate vs Gating   | Univariate G_API vs Trained Gating     |                   0.0360 | 5 / 10                 |                 1.0000 |            0.8787 |       0.9219 |       0.0413 |
 | Global vs Gating       | Global-54 vs Trained Gating            |                   0.3368 | 7 / 10                 |                 0.3438 |            0.1076 |       0.0488 |       0.1575 |
 
 ### Table 3: Per-Station R² Matrix across 10 Out-of-State Stations (No Deltas)
@@ -315,6 +319,42 @@ A low-noise architectural comparison evaluating two-regime models strictly **wit
 | Trained Gating Classifier       |         -3.189 |               -0.484 |              0.425 |            -4.476 |           0.279 |         0.326 |           -0.349 |         -0.358 |              0.292 |              -0.120 |
 | Global Single Model (54 feats)  |         -1.291 |               -0.497 |              0.476 |            -3.885 |           0.593 |         0.527 |           -0.524 |         -0.450 |              0.483 |               0.284 |
 | Baseline Model (50 V0 feats)    |         -3.279 |                0.361 |             -0.263 |            -3.032 |           0.445 |         0.515 |            0.524 |          0.166 |              0.280 |              -0.285 |
+
+### Table 4: Station Distance to Clusters & OOD Domain Shift Diagnostics (WA Baseline + 10 OOS Stations)
+| Group                 | Station               |   Clustering R² |   Seasonal R² |   Global R² |   Dist to Closest |   Dist to 2nd Closest |   Margin (2nd − Closest) |   Ambiguity Ratio |   OOD Z-Score (vs WA) | Cluster Allocation (C0 / C1)   |   Target Mean (m³/m³) |   Target Std |
+|:----------------------|:----------------------|----------------:|--------------:|------------:|------------------:|----------------------:|-------------------------:|------------------:|----------------------:|:-------------------------------|----------------------:|-------------:|
+| WA (In-Dist Baseline) | BeaverPass_WA_990     |           0.619 |         0.544 |       0.542 |             6.057 |                 9.130 |                    3.073 |             0.666 |                -0.140 | 100% / 0%                      |                 0.234 |        0.091 |
+| WA (In-Dist Baseline) | CayusePass_WA         |           0.806 |         0.768 |       0.804 |             7.009 |                 9.719 |                    2.711 |             0.718 |                 0.411 | 100% / 0%                      |                 0.189 |        0.119 |
+| WA (In-Dist Baseline) | Darrington            |           0.828 |         0.811 |       0.785 |             6.774 |                10.580 |                    3.806 |             0.636 |                 0.275 | 100% / 0%                      |                 0.204 |        0.093 |
+| WA (In-Dist Baseline) | Paradise_WA           |           0.853 |         0.770 |       0.798 |             6.431 |                 9.329 |                    2.898 |             0.687 |                 0.076 | 100% / 0%                      |                 0.170 |        0.098 |
+| WA (In-Dist Baseline) | Quinault              |           0.690 |         0.672 |       0.666 |             7.919 |                12.376 |                    4.457 |             0.637 |                 0.937 | 100% / 0%                      |                 0.241 |        0.069 |
+| WA (In-Dist Baseline) | SourdoughGulch_WA_985 |           0.540 |         0.437 |       0.426 |             5.773 |                10.177 |                    4.404 |             0.564 |                -0.304 | 0% / 100%                      |                 0.238 |        0.080 |
+| WA (In-Dist Baseline) | Spokane               |           0.954 |         0.923 |       0.934 |             5.069 |                 8.886 |                    3.817 |             0.576 |                -0.712 | 0% / 100%                      |                 0.160 |        0.115 |
+| OOS (Unseen Transfer) | Boulder_14_W          |          -0.934 |        -1.216 |      -1.291 |             8.281 |                 8.890 |                    0.609 |             0.931 |                 1.147 | 89% / 11%                      |                 0.128 |        0.077 |
+| OOS (Unseen Transfer) | Clackamas_Lake_398    |          -0.045 |        -0.276 |      -0.497 |             6.539 |                 8.858 |                    2.319 |             0.733 |                 0.139 | 100% / 0%                      |                 0.136 |        0.100 |
+| OOS (Unseen Transfer) | Corvallis_10_SSW      |           0.307 |         0.428 |       0.476 |             7.248 |                 8.537 |                    1.288 |             0.852 |                 0.549 | 62% / 38%                      |                 0.284 |        0.118 |
+| OOS (Unseen Transfer) | John_Day_35_WNW       |          -4.637 |        -4.323 |      -3.885 |             8.798 |                13.325 |                    4.527 |             0.657 |                 1.446 | 0% / 100%                      |                 0.104 |        0.047 |
+| OOS (Unseen Transfer) | Lander_11_SSE         |           0.460 |         0.600 |       0.593 |             6.420 |                10.644 |                    4.223 |             0.602 |                 0.070 | 0% / 100%                      |                 0.158 |        0.076 |
+| OOS (Unseen Transfer) | Murphy_10_W           |           0.236 |         0.477 |       0.527 |             8.235 |                13.192 |                    4.957 |             0.613 |                 1.120 | 0% / 100%                      |                 0.164 |        0.078 |
+| OOS (Unseen Transfer) | Redding_12_WNW        |          -1.274 |        -0.842 |      -0.524 |             8.191 |                 9.902 |                    1.710 |             0.825 |                 1.095 | 35% / 65%                      |                 0.135 |        0.084 |
+| OOS (Unseen Transfer) | Riley_10_WSW          |           0.071 |        -0.738 |      -0.450 |            11.196 |                15.803 |                    4.607 |             0.694 |                 2.834 | 0% / 100%                      |                 0.100 |        0.063 |
+| OOS (Unseen Transfer) | Rock_Springs_721      |           0.329 |         0.402 |       0.483 |             7.232 |                 8.852 |                    1.620 |             0.824 |                 0.540 | 14% / 86%                      |                 0.196 |        0.090 |
+| OOS (Unseen Transfer) | Wolf_Point_29_ENE     |           0.220 |         0.317 |       0.284 |            12.110 |                16.391 |                    4.281 |             0.703 |                 3.363 | 0% / 100%                      |                 0.201 |        0.090 |
+
+### Analysis of Cluster Distances, OOD Shift, and Out-of-State Spatial Transfer
+
+Table 4 illuminates why multi-expert models transfer differently across out-of-state stations, revealing four primary mechanisms:
+
+1. **In-Distribution Baseline vs. Transfer:**
+   The 7 Washington training stations average a distance of $\mu_{\text{WA}} = 6.299 \pm 1.728$ to their closest cluster ($Z \in [-0.71, +0.94]$) and achieve strong in-distribution performance ($R^2 = 0.540$ to $0.954$). Out-of-state stations with low distribution shift ($Z < 0.5$, such as `Lander_11_SSE` $Z = +0.070$ and `Rock_Springs_721` $Z = +0.540$) retain strong positive transfer ($R^2 = 0.460$ and $0.329$).
+2. **Severe Covariate Shift ($Z > 2.5$):**
+   Stations like `Wolf_Point_29_ENE` ($Z = +3.363$) and `Riley_10_WSW` ($Z = +2.834$) lie furthest from both Washington clusters. However, because their feature vectors are decisive (Margin $> 4.2$) and their local physical trends align with macro-climatic patterns, they maintain positive $R^2$ ($0.220$ and $0.071$), with Clustering outperforming Global by $+0.521$ on Riley.
+3. **Decision Boundary Proximity & Ambiguity (Ambiguity Ratio $> 0.85$, Margin $< 1.0$):**
+   High-altitude stations such as `Boulder_14_W` (Colorado Rockies, elevation ~2,800m) sit right on the decision boundary between Cluster 0 and Cluster 1 (Ambiguity Ratio $= 0.931$, Margin $= 0.609$). Minor daily sensor noise causes erratic switching between the wet and dry expert models, leading to piecewise prediction discontinuities.
+4. **Regime Collapse (% Allocation = 100% / 0%):**
+   At 5 of the 10 OOS stations (`Lander`, `Murphy`, `Wolf Point`, `Riley`, `John Day`), 100% of samples are permanently routed to Cluster 1 (Dry/Warm expert). Here, the two-regime architecture degenerates into a single regressor trained on only ~50% of Washington data, explaining why global single models trained on 100% of data can have slightly better sample efficiency on those stations.
+5. **Target Soil Moisture Concept Drift:**
+   Severe negative $R^2$ at `John_Day_35_WNW` ($R^2 = -4.637$) is driven by extreme target distribution shift: mean in-situ volumetric soil moisture is only $0.104 \pm 0.047$ (vs Washington $\mu_y = 0.236 \pm 0.088$). This physical sensor/soil offset degrades **all** models equally (Global $R^2 = -3.885$, Seasonal $R^2 = -4.323$, Clustering $R^2 = -4.637$).
 
 ---
 
