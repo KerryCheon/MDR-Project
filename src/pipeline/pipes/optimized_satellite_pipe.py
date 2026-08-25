@@ -142,16 +142,17 @@ class OptimizedSatellitePipe:
             out["s1_vv_dB"] = float(vv_db)
             out["s1_vv"] = float(10 ** (float(vv_db) / 10))
 
+        # Sentinel-1 SAR (dB and linear scale)
         vh_db = props.get("s1_vh")
         if vh_db is not None:
             out["s1_vh_dB"] = float(vh_db)
             out["s1_vh"] = float(10 ** (float(vh_db) / 10))
 
-        # Sentinel-2 Bands
+        # Sentinel-2 Bands (scale factor 1/10000)
         for band in ["b2", "b3", "b4", "b8", "b11", "b12"]:
             val = props.get(f"s2_{band}")
             if val is not None:
-                out[f"s2_{band}"] = float(val)
+                out[f"s2_{band}"] = float(val) / 10000.0
 
         # SMAP Soil Moisture and Quality Flags
         sm_am = props.get("smap_sm_am")
@@ -183,6 +184,9 @@ class OptimizedSatellitePipe:
 
         out = {k: None for k in self.DEFAULT_RES if k not in ("elev", "slope", "aspect")}
 
+        def _safe_get(d, key):
+            return ee.Algorithms.If(d.contains(key), d.get(key), None)
+
         try:
             # 1. MODIS LST
             lst_stats = (
@@ -204,12 +208,14 @@ class OptimizedSatellitePipe:
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=buffer, scale=250, bestEffort=True)
             )
 
-            # 3. Sentinel-1 SAR
+            # 3. Sentinel-1 SAR (filter for dual-polarization passes)
             s1_stats = (
                 ee.ImageCollection(self.S1_GRD)
                 .filterBounds(buffer)
                 .filterDate(padded_start, padded_end)
                 .filter(ee.Filter.eq("instrumentMode", "IW"))
+                .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VV"))
+                .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VH"))
                 .select(["VV", "VH"])
                 .mean()
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=buffer, scale=30, bestEffort=True)
@@ -222,7 +228,6 @@ class OptimizedSatellitePipe:
                 .filterDate(padded_start, padded_end)
                 .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", 40))
                 .select(["B2", "B3", "B4", "B8", "B11", "B12"])
-                .map(lambda img: img.divide(10000))
                 .mean()
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=buffer, scale=20, bestEffort=True)
             )
@@ -237,22 +242,22 @@ class OptimizedSatellitePipe:
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=buffer, scale=9000, bestEffort=True)
             )
 
-            # Combine into a single server-side dictionary
+            # Combine into a single server-side dictionary using safe key extraction
             combined_dict = ee.Dictionary({
-                "lst_val": lst_stats.get("LST_Day_1km"),
-                "ndvi_val": ndvi_stats.get("NDVI"),
-                "s1_vv": s1_stats.get("VV"),
-                "s1_vh": s1_stats.get("VH"),
-                "s2_b2": s2_stats.get("B2"),
-                "s2_b3": s2_stats.get("B3"),
-                "s2_b4": s2_stats.get("B4"),
-                "s2_b8": s2_stats.get("B8"),
-                "s2_b11": s2_stats.get("B11"),
-                "s2_b12": s2_stats.get("B12"),
-                "smap_sm_am": smap_stats.get("soil_moisture_am"),
-                "smap_sm_pm": smap_stats.get("soil_moisture_pm"),
-                "smap_qual_am": smap_stats.get("retrieval_qual_flag_am"),
-                "smap_qual_pm": smap_stats.get("retrieval_qual_flag_pm"),
+                "lst_val": _safe_get(lst_stats, "LST_Day_1km"),
+                "ndvi_val": _safe_get(ndvi_stats, "NDVI"),
+                "s1_vv": _safe_get(s1_stats, "VV"),
+                "s1_vh": _safe_get(s1_stats, "VH"),
+                "s2_b2": _safe_get(s2_stats, "B2"),
+                "s2_b3": _safe_get(s2_stats, "B3"),
+                "s2_b4": _safe_get(s2_stats, "B4"),
+                "s2_b8": _safe_get(s2_stats, "B8"),
+                "s2_b11": _safe_get(s2_stats, "B11"),
+                "s2_b12": _safe_get(s2_stats, "B12"),
+                "smap_sm_am": _safe_get(smap_stats, "soil_moisture_am"),
+                "smap_sm_pm": _safe_get(smap_stats, "soil_moisture_pm"),
+                "smap_qual_am": _safe_get(smap_stats, "retrieval_qual_flag_am"),
+                "smap_qual_pm": _safe_get(smap_stats, "retrieval_qual_flag_pm"),
             })
 
             props = combined_dict.getInfo() or {}
@@ -347,6 +352,9 @@ class OptimizedSatellitePipe:
             e = feat.get("end")
             geom = feat.geometry()
 
+            def _safe_get(d, key):
+                return ee.Algorithms.If(d.contains(key), d.get(key), None)
+
             # 1. MODIS LST
             lst = (
                 ee.ImageCollection(self.MODIS_LST)
@@ -367,12 +375,14 @@ class OptimizedSatellitePipe:
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=geom, scale=250, bestEffort=True)
             )
 
-            # 3. Sentinel-1 SAR
+            # 3. Sentinel-1 SAR (filter for dual-polarization passes)
             s1 = (
                 ee.ImageCollection(self.S1_GRD)
                 .filterBounds(geom)
                 .filterDate(s, e)
                 .filter(ee.Filter.eq("instrumentMode", "IW"))
+                .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VV"))
+                .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VH"))
                 .select(["VV", "VH"])
                 .mean()
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=geom, scale=30, bestEffort=True)
@@ -385,7 +395,6 @@ class OptimizedSatellitePipe:
                 .filterDate(s, e)
                 .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", 40))
                 .select(["B2", "B3", "B4", "B8", "B11", "B12"])
-                .map(lambda img: img.divide(10000))
                 .mean()
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=geom, scale=20, bestEffort=True)
             )
@@ -401,20 +410,20 @@ class OptimizedSatellitePipe:
             )
 
             return feat.set({
-                "lst_val": ee.Dictionary(lst).get("LST_Day_1km", None),
-                "ndvi_val": ee.Dictionary(ndvi).get("NDVI", None),
-                "s1_vv": ee.Dictionary(s1).get("VV", None),
-                "s1_vh": ee.Dictionary(s1).get("VH", None),
-                "s2_b2": ee.Dictionary(s2).get("B2", None),
-                "s2_b3": ee.Dictionary(s2).get("B3", None),
-                "s2_b4": ee.Dictionary(s2).get("B4", None),
-                "s2_b8": ee.Dictionary(s2).get("B8", None),
-                "s2_b11": ee.Dictionary(s2).get("B11", None),
-                "s2_b12": ee.Dictionary(s2).get("B12", None),
-                "smap_sm_am": ee.Dictionary(smap).get("soil_moisture_am", None),
-                "smap_sm_pm": ee.Dictionary(smap).get("soil_moisture_pm", None),
-                "smap_qual_am": ee.Dictionary(smap).get("retrieval_qual_flag_am", None),
-                "smap_qual_pm": ee.Dictionary(smap).get("retrieval_qual_flag_pm", None),
+                "lst_val": _safe_get(lst, "LST_Day_1km"),
+                "ndvi_val": _safe_get(ndvi, "NDVI"),
+                "s1_vv": _safe_get(s1, "VV"),
+                "s1_vh": _safe_get(s1, "VH"),
+                "s2_b2": _safe_get(s2, "B2"),
+                "s2_b3": _safe_get(s2, "B3"),
+                "s2_b4": _safe_get(s2, "B4"),
+                "s2_b8": _safe_get(s2, "B8"),
+                "s2_b11": _safe_get(s2, "B11"),
+                "s2_b12": _safe_get(s2, "B12"),
+                "smap_sm_am": _safe_get(smap, "soil_moisture_am"),
+                "smap_sm_pm": _safe_get(smap, "soil_moisture_pm"),
+                "smap_qual_am": _safe_get(smap, "retrieval_qual_flag_am"),
+                "smap_qual_pm": _safe_get(smap, "retrieval_qual_flag_pm"),
             })
 
         reduced_fc = fc.map(extract_week_features)

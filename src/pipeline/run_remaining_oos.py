@@ -7,6 +7,8 @@ from src.pipeline.utils.config import load_config
 from src.pipeline.utils.logger import get_logger, setup_logger
 
 STATIONS_TO_RUN = [
+    'uscrn_john_day_35_wnw',
+    'uscrn_corvallis_10_ssw',
     'uscrn_riley_10_wsw',
     'uscrn_murphy_10_w',
     'uscrn_redding_12_wnw',

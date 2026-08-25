@@ -47,7 +47,7 @@ class TemporalFillPipe:
 
         # Features that SHOULD NOT be interpolated
         self.no_interpolate_cols = [
-            "Rain_sat"   # fast-changing weather variable -> use masking, no guessing
+            "Rain_sat",   # fast-changing weather variable -> use masking, no guessing
             "rain_mm",
             "precip_mm",
         ]

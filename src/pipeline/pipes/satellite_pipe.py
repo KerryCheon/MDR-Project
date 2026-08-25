@@ -191,6 +191,8 @@ class SatellitePipe:
                 .filterBounds(buffer)
                 .filterDate(padded_start, padded_end)
                 .filter(ee.Filter.eq("instrumentMode", "IW"))
+                .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VV"))
+                .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VH"))
                 .select(["VV", "VH"])
             )
             if s1.size().getInfo() > 0:
@@ -236,7 +238,7 @@ class SatellitePipe:
 
         # ------- DEM Elevation, Slope, Aspect -------
         try:
-            dem = ee.Image(self.SRTM_DEM).clip(buffer)
+            dem = ee.Image(self.SRTM_DEM)
 
             elev = dem.reduceRegion(
                 reducer=ee.Reducer.mean(),

@@ -399,6 +399,7 @@ def test_downstream_pipe_compatibility(base_config, mock_station_df, tmp_path):
     # 2. Run Temporal Fill Pipe
     filled_df = TemporalFillPipe(config=cfg.get("temporal_fill"), station_name="downstream_test").run(sat_df)
     assert not filled_df.empty
+    assert "rain_mm_mask" in filled_df.columns, "rain_mm_mask should be created by TemporalFillPipe"
 
     # 3. Run Whittaker Pipe
     smooth_df = WhittakerPipe(config=cfg.get("whittaker"), station_name="downstream_test").run(filled_df)
@@ -422,3 +423,26 @@ def test_empty_and_none_dataframe_handling(base_config):
     assert pipe.run(None) is None
     empty_df = pd.DataFrame()
     assert pipe.run(empty_df).empty
+
+
+# -----------------------------------------------------------------------------
+# Test 7: Partial Sensor Properties Parsing
+# -----------------------------------------------------------------------------
+def test_partial_sensor_properties_parsing(base_config):
+    pipe = OptimizedSatellitePipe(config=base_config, station_name="partial_test")
+    # Simulate partial GEE response where only LST and SMAP are present, other sensors are None
+    partial_props = {
+        "lst_val": 14000.0,
+        "smap_sm_am": 0.35,
+        "smap_qual_am": 0.0,
+        "s2_b2": 1500.0,
+    }
+    parsed = pipe._parse_dynamic_props(partial_props)
+    assert parsed["LST_modis"] == pytest.approx(280.0)
+    assert parsed["SMAP_sm_am"] == pytest.approx(0.35)
+    assert parsed["s2_b2"] == pytest.approx(0.15)
+    assert parsed["NDVI_modis"] is None
+    assert parsed["s1_vv"] is None
+    assert parsed["s1_vh"] is None
+    assert parsed["s2_b3"] is None
+
