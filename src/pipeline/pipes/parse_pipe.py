@@ -14,6 +14,11 @@ try:
 except ImportError:
     SNOTELPipe = None
 
+try:
+    from .ece_pipe import ECEPipe
+except ImportError:
+    ECEPipe = None
+
 class ParsePipe:
     FILE_GLOB = "uscrn_*.txt"
     NA_VALUE = -9999.0
@@ -61,8 +66,26 @@ class ParsePipe:
         # SNOTEL mode: parse local .stm files.
         if self.config.get("snotel_mode", False):
             return self._parse_snotel()
+        elif self.config.get("ece_mode", False):
+            return self._parse_ece()
         else:
             return self._parse_uscrn()
+
+    def _parse_ece(self):
+        # pre:  raw ECE CSV files exist in in_dir
+        # post: returns DataFrame with standardized daily 24-hour mean soil moisture
+        # desc: Delegates to ECEPipe for complete in-situ ECE sensor parsing
+
+        if ECEPipe is None:
+            self.logger.error(
+                f"[{self.station_name}] ECEPipe not available. "
+                f"Please ensure ece_pipe.py is in the pipes/ directory."
+            )
+            return pd.DataFrame()
+
+        self.logger.info(f"[{self.station_name}] Using ECE pipe for data processing")
+        ece_pipe = ECEPipe(config=self.config)
+        return ece_pipe.run()
 
     def _build_manual_scaffold(self):
         # pre:  manual_mode is enabled with lat/lon and date bounds in parse config

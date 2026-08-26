@@ -1,0 +1,52 @@
+{
+  "source": "In-situ ECE soil moisture sensors (Washington state BBG and Renton deployment)",
+  "derived_features": "350+ lags, rolling stats, GEE remote-sensing, LIA, and static features matching derived_8.4",
+  "evaluation_dates": "2026-07-20 to 2026-08-19 (excluding partial start Jul 19, partial end Aug 20, missing Aug 1)",
+  "lia_csv": "data/splits/derived_8.4-ece/LIA/stations_lia.csv",
+  "stations": [
+    "ECE_BBG_Lost_Meadow",
+    "ECE_BBG_Main_St",
+    "ECE_Renton_Garden_North",
+    "ECE_Renton_Garden_Shed",
+    "ECE_Renton_Home"
+  ],
+  "columns_count": 499,
+  "rows": {
+    "train": 0,
+    "val": 0,
+    "test": 150,
+    "total": 150
+  },
+  "rows_by_station": {
+    "ECE_BBG_Lost_Meadow": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    },
+    "ECE_BBG_Main_St": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    },
+    "ECE_Renton_Garden_North": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    },
+    "ECE_Renton_Garden_Shed": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    },
+    "ECE_Renton_Home": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    }
+  }
+}

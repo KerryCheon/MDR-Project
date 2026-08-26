@@ -35,11 +35,14 @@ def run_pipeline_for_station(station_name, station_cfg, global_cfg):
 
     is_snotel = station_cfg.get("parse", {}).get("snotel_mode", False)
     is_manual = station_cfg.get("parse", {}).get("manual_mode", False)
+    is_ece = station_cfg.get("parse", {}).get("ece_mode", False)
 
     try:
-        # Skip HTTP download for SNOTEL and manual/scaffold stations.
+        # Skip HTTP download for SNOTEL, ECE, and manual/scaffold stations.
         if is_snotel:
             logger.info(f"[{station_name}] SNOTEL mode: skipping RequestPipe (using local .stm files).") 
+        elif is_ece:
+            logger.info(f"[{station_name}] ECE mode: skipping RequestPipe (using local ECE CSV files).")
         elif is_manual:
             logger.info(f"[{station_name}] Manual mode: skipping RequestPipe (using synthetic date/coord scaffold).")
         else:

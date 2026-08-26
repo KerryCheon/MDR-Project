@@ -1,0 +1,305 @@
+# ===========================================================
+# Multi-Station MDR Pipeline Configuration: derived_8.4-ece
+# ===========================================================
+# In-situ ECE Soil Moisture Sensors (Washington State)
+# Evaluation Period: July 20 – August 19, 2026
+# ===========================================================
+
+stations:
+  # -----------------------------------------------------------
+  # STATION 1: ECE BBG Main St (Device 8)
+  # -----------------------------------------------------------
+  ece_bbg_main_st:
+    request:
+      base_url: null
+      station: "ECE_BBG_Main_St"
+      start_year: 2026
+      end_year: 2026
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/_ECE/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/_ECE/"
+      raw_file: "src/pipeline/data/raw/_ECE/Soil Moisture Data (July 19 – August 20, 2026)(Main St (BBG)).csv"
+      out_dir: "src/pipeline/data/processed/ece_bbg_main_st"
+      drop_duplicates: true
+      ece_mode: true
+      station: "ECE_BBG_Main_St"
+      latitude: 47.6098164
+      longitude: -122.1824678
+      elevation: 51.0
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/ece_bbg_main_st/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 2: ECE BBG Lost Meadow (Device 10)
+  # -----------------------------------------------------------
+  ece_bbg_lost_meadow:
+    request:
+      base_url: null
+      station: "ECE_BBG_Lost_Meadow"
+      start_year: 2026
+      end_year: 2026
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/_ECE/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/_ECE/"
+      raw_file: "src/pipeline/data/raw/_ECE/Soil Moisture Data (July 19 – August 20, 2026)(Lost Meadow Trail (BBG)).csv"
+      out_dir: "src/pipeline/data/processed/ece_bbg_lost_meadow"
+      drop_duplicates: true
+      ece_mode: true
+      station: "ECE_BBG_Lost_Meadow"
+      latitude: 47.6072232
+      longitude: -122.1795066
+      elevation: 52.0
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/ece_bbg_lost_meadow/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 3: ECE Renton Home (Device 11)
+  # -----------------------------------------------------------
+  ece_renton_home:
+    request:
+      base_url: null
+      station: "ECE_Renton_Home"
+      start_year: 2026
+      end_year: 2026
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/_ECE/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/_ECE/"
+      raw_file: "src/pipeline/data/raw/_ECE/Soil Moisture Data (July 19 – August 20, 2026)(Renton Home).csv"
+      out_dir: "src/pipeline/data/processed/ece_renton_home"
+      drop_duplicates: true
+      ece_mode: true
+      station: "ECE_Renton_Home"
+      latitude: 47.4887385
+      longitude: -122.1446671
+      elevation: 136.0
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/ece_renton_home/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 4: ECE Renton Garden North (Device 9)
+  # -----------------------------------------------------------
+  ece_renton_garden_north:
+    request:
+      base_url: null
+      station: "ECE_Renton_Garden_North"
+      start_year: 2026
+      end_year: 2026
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/_ECE/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/_ECE/"
+      raw_file: "src/pipeline/data/raw/_ECE/Soil Moisture Data (July 19 – August 20, 2026)(Renton SG (North)).csv"
+      out_dir: "src/pipeline/data/processed/ece_renton_garden_north"
+      drop_duplicates: true
+      ece_mode: true
+      station: "ECE_Renton_Garden_North"
+      latitude: 47.4962798
+      longitude: -122.1406354
+      elevation: 157.0
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/ece_renton_garden_north/final.csv"
+      format: "csv"
+      index: false
+
+  # -----------------------------------------------------------
+  # STATION 5: ECE Renton Garden Shed (Device 12)
+  # -----------------------------------------------------------
+  ece_renton_garden_shed:
+    request:
+      base_url: null
+      station: "ECE_Renton_Garden_Shed"
+      start_year: 2026
+      end_year: 2026
+      timeout: 20
+      min_bytes: 500
+      out_dir: "src/pipeline/data/raw/_ECE/"
+
+    parse:
+      in_dir: "src/pipeline/data/raw/_ECE/"
+      raw_file: "src/pipeline/data/raw/_ECE/Soil Moisture Data (July 19 – August 20, 2026)(Renton SG (Shed)).csv"
+      out_dir: "src/pipeline/data/processed/ece_renton_garden_shed"
+      drop_duplicates: true
+      ece_mode: true
+      station: "ECE_Renton_Garden_Shed"
+      latitude: 47.4958091
+      longitude: -122.1407765
+      elevation: 157.0
+      col_indices: {}
+
+    clean:
+      drop_missing: false
+      fillna_value: null
+      keep_columns: []
+
+    merge:
+      on_columns: ["station_id", "date"]
+      how: "outer"
+
+    save:
+      out_path: "src/pipeline/data/processed/ece_renton_garden_shed/final.csv"
+      format: "csv"
+      index: false
+
+# ===========================================================
+# Global Pipeline Configurations
+# ===========================================================
+logging:
+  level: "INFO"
+  format: "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+  log_to_file: false
+  log_file: "src/pipeline/logs/pipeline.log"
+
+satellite:
+  version: "v2"
+  use_optimized: true
+  batch_chunk_size: 26
+  use_server_batching: true
+  cache_path: "src/pipeline/data/cache/{station}_satellite_cache.json"
+
+weather:
+  cache_path: "src/pipeline/data/cache/{station}_weather_cache.pkl"
+  timezone: "auto"
+  chunk_years: 1
+  timeout_seconds: 60
+  hourly_vars:
+    - "rain"
+    - "precipitation"
+  rain_col: "rain_mm"
+  precip_col: "precip_mm"
+
+temporal_fill:
+  interpolate_cols:
+    - "LST_modis"
+    - "NDVI_modis"
+    - "s1_vv"
+    - "s1_vh"
+    - "s2_b2"
+    - "s2_b3"
+    - "s2_b4"
+    - "s2_b8"
+    - "s2_b11"
+    - "s2_b12"
+    - "SMAP_sm_am"
+    - "SMAP_sm_pm"
+  min_known_required: 4
+  imputation_order:
+    - "spline"
+    - "ema"
+    - "rolling_mean"
+    - "climatology"
+    - "xgboost"
+    - "knn"
+    - "gaussian_process"
+    - "seasonal_naive"
+
+  ema:
+    tau_days: 3.0
+
+  rolling_mean:
+    window: 7
+
+  climatology:
+    min_count_for_high_conf: 5
+
+  xgboost:
+    min_known: 10
+
+  knn:
+    n_neighbors: 3
+    distance_weighting: true
+
+  gaussian_process:
+    length_scale: 20.0
+    noise_level: 0.5
+
+  seasonal_naive:
+    min_count_for_high_conf: 5
+    use_median: true
+
+  spline:
+    smooth: 0.5
+    degree: 3
+    extrap_penalty: 0.3
+
+  ndvi_max_gap: 10
+  tau_gap: 10
+
+  high_freq_feat:
+    - first_difference
+    - second_difference
+    - temporal_gradient
+    - spectral_entropy
+
+  outlier_factor: 3.0
+
+whittaker:
+  target_columns:
+    - "NDVI_modis"
+    - "NDVI"
+  lambda: 5000
+
+validator:
+  n_folds: 5
+  mask_fraction: 0.1
+  random_seed: 42
