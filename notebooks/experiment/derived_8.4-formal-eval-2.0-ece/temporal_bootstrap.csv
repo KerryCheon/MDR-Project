@@ -1,0 +1,13 @@
+A,B,metric,diff_mean,diff CI,bootstrap_p
+Clustering_V0_Full_k2_c0_0_c1_10,Global_Single_54,R2,0.036266685465668067,"[0.01869, 0.05901]",0.0005
+Clustering_V0_Full_k2_c0_0_c1_10,Global_Single_54,RMSE,-0.004039497857017119,"[-0.00635, -0.00217]",0.0005
+Clustering_V0_Full_k2_c0_0_c1_10,Global_Single_54,BIAS,-0.004056744399652144,"[-0.00623, -0.00201]",0.0005
+Clustering_Backbone54_k2_c0_10_c1_10,Global_Single_54,R2,0.010703991679278817,"[-0.01252, 0.03555]",0.374
+Clustering_Backbone54_k2_c0_10_c1_10,Global_Single_54,RMSE,-0.0011420313328419245,"[-0.00366, 0.00143]",0.374
+Clustering_Backbone54_k2_c0_10_c1_10,Global_Single_54,BIAS,-0.0033381951833044436,"[-0.00565, -0.00107]",0.007
+Clustering_V0_Full_k2_c0_0_c1_10,Trained_Gating_k2_c0_5_c1_10,R2,0.09268781204590891,"[0.05821, 0.13511]",0.0005
+Clustering_V0_Full_k2_c0_0_c1_10,Trained_Gating_k2_c0_5_c1_10,RMSE,-0.009701022732329893,"[-0.01284, -0.00668]",0.0005
+Clustering_V0_Full_k2_c0_0_c1_10,Trained_Gating_k2_c0_5_c1_10,BIAS,-0.008953387455750866,"[-0.01322, -0.00502]",0.0005
+Clustering_Backbone54_k2_c0_10_c1_10,Baseline_V0_50,R2,0.02915198461230239,"[0.01077, 0.04939]",0.001
+Clustering_Backbone54_k2_c0_10_c1_10,Baseline_V0_50,RMSE,-0.003098068490104745,"[-0.00503, -0.00108]",0.001
+Clustering_Backbone54_k2_c0_10_c1_10,Baseline_V0_50,BIAS,-0.0026738770199324965,"[-0.00557, 0.00032]",0.079

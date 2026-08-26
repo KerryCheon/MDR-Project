@@ -1,0 +1,16 @@
+Category,Comparison (A vs B),Station Mean ΔR² (A−B),Station Wins (A > B),Binomial Sign Test p,Paired t-test p,Wilcoxon p,Pooled ΔR²
+Seasonal vs Global,Seasonal Binary vs Global-54,3.199626873969211,3 / 5,1.0,0.16998416426923735,0.3125,0.027614035496465406
+Seasonal vs Baseline,Seasonal Binary vs Baseline-50,306.8449689651849,4 / 5,0.375,0.22827227051471952,0.125,1.49824837996394
+Seasonal vs Clustering,Seasonal Binary vs Clustering (54),1585.3943387361628,5 / 5,0.0625,0.22439398374752675,0.0625,8.890482505522478
+Seasonal vs Clustering,Seasonal Binary vs Clustering (V0),1164.6075761340794,4 / 5,0.375,0.3285161744399524,0.125,5.332470994878959
+Clustering vs Global,Clustering (54) vs Global-54,-1582.1947118621936,0 / 5,0.0625,0.22465722848672268,0.0625,-8.862868470026012
+Clustering vs Global,Clustering (V0) vs Global-54,-1161.4079492601104,1 / 5,0.375,0.3290244350397946,0.125,-5.3048569593824935
+Clustering vs Baseline,Clustering (54) vs Baseline-50,-1278.549369770978,0 / 5,0.0625,0.22396032175068956,0.0625,-7.392234125558537
+Clustering vs Baseline,Clustering (V0) vs Baseline-50,-857.7626071688949,2 / 5,1.0,0.3616158003604634,0.625,-3.834222614915019
+Clustering vs Global,Clustering (Dynamic) vs Global-54,3.6162154409316587,4 / 5,0.375,0.30847768988535174,0.3125,0.09739879214658698
+Seasonal vs Gating,Seasonal Binary vs Trained Gating,353.5941985893763,4 / 5,0.375,0.19781150183792473,0.125,2.0693929424993973
+Clustering vs Gating,Clustering (54) vs Trained Gating,-1231.8001401467868,0 / 5,0.0625,0.23219236503259336,0.0625,-6.8210895630230794
+Clustering vs Gating,Clustering (V0) vs Trained Gating,-811.0133775447033,3 / 5,1.0,0.3812177598953771,0.8125,-3.2630780523795613
+Clustering vs Gating,Clustering (Dynamic) vs Trained Gating,354.0107871563388,4 / 5,0.375,0.1920631800447072,0.125,2.139177699149519
+Univariate vs Gating,Univariate G_API vs Trained Gating,362.05578611272557,4 / 5,0.375,0.19436067306188431,0.125,2.154992810882296
+Global vs Gating,Global-54 vs Trained Gating,350.3945717154071,4 / 5,0.375,0.1987568307013232,0.125,2.041778907002932
