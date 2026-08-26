@@ -11,7 +11,7 @@ import pandas as pd
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, WhiteKernel
 
-from pipeline.Pipeline.imputers.base import BaseImputer
+from pipeline.imputers.base import BaseImputer
 
 class GaussianProcessImputer(BaseImputer):
     # desc: Smooth temporal model using RBF kernel + noise term.

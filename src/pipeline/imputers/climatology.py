@@ -4,7 +4,7 @@
 
 import pandas as pd
 import numpy as np
-from pipeline.Pipeline.imputers.base import BaseImputer
+from pipeline.imputers.base import BaseImputer
 
 class ClimatologyImputer(BaseImputer):
     # desc: Seasonal DOY filling. Strong for long gaps.

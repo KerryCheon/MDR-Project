@@ -6,9 +6,9 @@ import pandas as pd
 import numpy as np
 from typing import List
 
-from pipeline.Pipeline.imputers.base import BaseImputer
-from pipeline.Pipeline.utils.config import load_config
-from pipeline.Pipeline.utils.logger import get_logger
+from pipeline.imputers.base import BaseImputer
+from pipeline.utils.config import load_config
+from pipeline.utils.logger import get_logger
 
 class VotingImputer:
     # desc: Combines multiple imputers into a single voted result.

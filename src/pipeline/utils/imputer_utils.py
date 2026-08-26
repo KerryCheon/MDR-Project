@@ -5,17 +5,17 @@
 import pandas as pd
 import numpy as np
 
-from pipeline.Pipeline.imputers.voting import VotingImputer
-from pipeline.Pipeline.imputers.interpolation import LinearInterpolationImputer
-from pipeline.Pipeline.imputers.fbfill import ForwardBackwardImputer
-from pipeline.Pipeline.imputers.smoothing import RollingMeanImputer
-from pipeline.Pipeline.imputers.climatology import ClimatologyImputer
-from pipeline.Pipeline.imputers.linear_model import LinearModelImputer
-from pipeline.Pipeline.imputers.xgb_model import XGBImputer
-from pipeline.Pipeline.imputers.gaussian_regression import GaussianProcessImputer
-from pipeline.Pipeline.imputers.knn_temporal import KNNImputer
-from pipeline.Pipeline.imputers.seasonal_naive import SeasonalNaiveImputer
-from pipeline.Pipeline.imputers.spline_interpolation import SplineImputer
+from pipeline.imputers.voting import VotingImputer
+from pipeline.imputers.interpolation import LinearInterpolationImputer
+from pipeline.imputers.fbfill import ForwardBackwardImputer
+from pipeline.imputers.smoothing import RollingMeanImputer
+from pipeline.imputers.climatology import ClimatologyImputer
+from pipeline.imputers.linear_model import LinearModelImputer
+from pipeline.imputers.xgb_model import XGBImputer
+from pipeline.imputers.gaussian_regression import GaussianProcessImputer
+from pipeline.imputers.knn_temporal import KNNImputer
+from pipeline.imputers.seasonal_naive import SeasonalNaiveImputer
+from pipeline.imputers.spline_interpolation import SplineImputer
 
 def _validate_inputs(df, col, logger):
     # pre:  df must have 'date' column and 'col' to impute

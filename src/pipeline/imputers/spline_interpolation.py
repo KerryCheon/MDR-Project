@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import UnivariateSpline
 
-from pipeline.Pipeline.imputers.base import BaseImputer
+from pipeline.imputers.base import BaseImputer
 
 class SplineImputer(BaseImputer):
     # desc: Smooth cubic-spline imputer for continuous temporal signals.

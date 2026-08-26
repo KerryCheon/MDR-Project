@@ -4,7 +4,7 @@
 
 import pandas as pd
 import numpy as np
-from pipeline.Pipeline.imputers.base import BaseImputer
+from pipeline.imputers.base import BaseImputer
 from xgboost import XGBRegressor
 
 class XGBImputer(BaseImputer):
@@ -107,7 +107,7 @@ class XGBImputer(BaseImputer):
         df["DOY_sin"] = np.sin(2 * np.pi * df["day_of_year"] / 365)
         df["DOY_cos"] = np.cos(2 * np.pi * df["day_of_year"] / 365)
 
-        X_pred = df[self.features].fillna(method="ffill").fillna(method="bfill")
+        X_pred = df[self.features].ffill().bfill()
         preds = self.model.predict(X_pred)
 
         self.logger.debug("generated xgb predictions")

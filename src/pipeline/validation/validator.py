@@ -10,8 +10,8 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 
-from Temporal.Pipeline.utils.config import load_config
-from Temporal.Pipeline.utils.logger import get_logger
+from pipeline.utils.config import load_config
+from pipeline.utils.logger import get_logger
 
 class ValidationRunner:
     # desc: Runs validation of imputation by masking real values

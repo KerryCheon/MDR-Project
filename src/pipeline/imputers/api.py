@@ -2,12 +2,12 @@
 # Nov 16th 2025
 # voting.py
 
-from pipeline.Pipeline.utils.config import load_config
-from pipeline.Pipeline.utils.logger import get_logger
+from pipeline.utils.config import load_config
+from pipeline.utils.logger import get_logger
 
-from pipeline.Pipeline.records.daily_records import DailyRecordBuilder
+from pipeline.records.daily_records import DailyRecordBuilder
 
-from pipeline.Pipeline.utils.imputer_utils import (
+from pipeline.utils.imputer_utils import (
     _run_diagnostics,
     _validate_inputs,
     _prepare_dataframe,
@@ -19,7 +19,7 @@ from pipeline.Pipeline.utils.imputer_utils import (
     _apply_feature_engineering,
 )
 
-from pipeline.Pipeline.validation.validator import (
+from pipeline.validation.validator import (
     ValidationRunner,
     attach_gap_metadata,
     compute_all_gap_lengths,

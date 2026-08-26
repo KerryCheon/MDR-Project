@@ -15,6 +15,8 @@ dependencies = [
     "shap>=0.52.0",
     "statsmodels>=0.14.6",
     "tabulate>=0.10.0",
+    "earthengine-api>=1.5.0",
+    "pipeline",
     "torch>=2.11.0",
     "torchvision>=0.26.0",
     "xgboost>=3.2.0",
@@ -52,6 +54,7 @@ conflicts = [
 ]
 
 [tool.uv.sources]
+pipeline = { path = "../src/pipeline", editable = true }
 torch = [
   { index = "pytorch-cpu", extra = "cpu" },
   { index = "pytorch-cu128", extra = "cu128" },

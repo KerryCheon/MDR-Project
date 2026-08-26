@@ -10,7 +10,7 @@
 import numpy as np
 import pandas as pd
 
-from pipeline.Pipeline.imputers.base import BaseImputer
+from pipeline.imputers.base import BaseImputer
 
 class SeasonalNaiveImputer(BaseImputer):
     # desc: Day-of-Year historical lookup imputer (seasonal persistence)

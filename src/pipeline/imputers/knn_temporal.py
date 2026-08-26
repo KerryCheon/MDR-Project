@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from sklearn.neighbors import KNeighborsRegressor
 
-from pipeline.Pipeline.imputers.base import BaseImputer
+from pipeline.imputers.base import BaseImputer
 
 class KNNImputer(BaseImputer):
     # desc: K-Nearest Neighbors imputer for temporal data
@@ -37,7 +37,7 @@ class KNNImputer(BaseImputer):
 
         mask = ~values.isna()
 
-        t = pd.to_datetime(dates[mask]).view("int64") / 86400_000_000_000
+        t = pd.to_datetime(dates[mask]).astype("int64") / 86400_000_000_000
         self.train_dates = t.astype("float64").to_numpy()
 
         self.train_vals = values[mask].to_numpy()
@@ -87,7 +87,7 @@ class KNNImputer(BaseImputer):
             conf[~values.isna()] = 1.0
             return out, conf
 
-        t_test = s_dates.view("int64") / 86400_000_000_000
+        t_test = s_dates.astype("int64") / 86400_000_000_000
         X_test = np.asarray(t_test, dtype="float64").reshape(-1, 1)
 
         preds = self.model.predict(X_test)

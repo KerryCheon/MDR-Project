@@ -5,7 +5,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from pipeline.Pipeline.imputers.base import BaseImputer
+from pipeline.imputers.base import BaseImputer
 
 class LinearModelImputer(BaseImputer):
     # desc: Linear regression imputer using temporal encodings and optional cross-feature predictors.
@@ -109,7 +109,7 @@ class LinearModelImputer(BaseImputer):
         df["DOY_sin"] = np.sin(2 * np.pi * df["day_of_year"] / 365)
         df["DOY_cos"] = np.cos(2 * np.pi * df["day_of_year"] / 365)
 
-        X_pred = df[self.features].fillna(method="ffill").fillna(method="bfill")
+        X_pred = df[self.features].ffill().bfill()
         preds = self.model.predict(X_pred)
 
         self.logger.debug("generated predictions from linear model")
