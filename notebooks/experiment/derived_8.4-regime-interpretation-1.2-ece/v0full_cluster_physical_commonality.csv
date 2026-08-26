@@ -1,0 +1,16 @@
+attribute,median_cluster0,median_cluster1,within_cluster_MAD,between_cluster_gap_in_pooled_SD
+K_aspect_cos,0.225,-0.662,0.168,1.76
+J_clay_wfrac_b0,21.0,18.0,0.5,1.32
+annual_precip_P_mm,1227.0,1100.0,40.5,1.18
+de_martonne_P_over_Tplus10,60.44,53.205,2.342,1.17
+aridity_index_P_over_PET,1.806,1.601,0.066,1.17
+elev,157.0,94.0,21.0,1.15
+clim_F_NDVI,0.549,0.489,0.006,1.04
+longitude,-122.141,-122.162,0.009,0.99
+precip_seasonality_BIO15,50.0,51.5,0.75,0.91
+latitude,47.496,47.548,0.03,0.82
+J_clay_wfrac_b100,25.0,22.5,0.25,0.76
+slope,2.0,3.5,1.25,0.62
+clim_F_NDMI,0.164,0.164,0.012,0.04
+clim_F_MSI,0.719,0.718,0.018,0.02
+clim_SMAP_sm_pm_interp,0.0,0.0,0.0,0.0

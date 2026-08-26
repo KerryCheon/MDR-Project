@@ -1,0 +1,6 @@
+strategy,ece_sizes_c0_c1,mean_purity_ece,dominant_stations_per_cluster,top_separating_feature
+Clustering_V0_Full_k2,89 (59.3%) / 61 (40.7%),0.953,"c0: ECE_BBG_Main_St, ECE_Renton_Garden_North, ECE_Renton_Garden_Shed; c1: ECE_BBG_Lost_Meadow, ECE_Renton_Home",J_aspect_deg (r=-0.928)
+Clustering_Dynamic_k2,150 (100.0%),1.0,"c0: ECE_BBG_Lost_Meadow, ECE_BBG_Main_St, ECE_Renton_Garden_North, ECE_Renton_Garden_Shed, ECE_Renton_Home",None (single cluster)
+Seasonal_Binary_k2,150 (100.0%),1.0,"c0: ECE_BBG_Lost_Meadow, ECE_BBG_Main_St, ECE_Renton_Garden_North, ECE_Renton_Garden_Shed, ECE_Renton_Home",None (single cluster)
+Univariate_G_API_k2,150 (100.0%),1.0,"c0: ECE_BBG_Lost_Meadow, ECE_BBG_Main_St, ECE_Renton_Garden_North, ECE_Renton_Garden_Shed, ECE_Renton_Home",None (single cluster)
+Trained_Gating_k2,120 (80.0%) / 30 (20.0%),0.8,"c0: ECE_BBG_Lost_Meadow, ECE_BBG_Main_St, ECE_Renton_Garden_North, ECE_Renton_Garden_Shed, ECE_Renton_Home",V_ema_G_API_kobs30 (r=-0.997)

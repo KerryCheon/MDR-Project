@@ -1,0 +1,6 @@
+station_id,cluster,annual_mean_T_C,annual_precip_P_mm,driest_month_precip_mm,precip_seasonality_BIO15,PET_thornthwaite_mm,aridity_index_P_over_PET,AI_class,de_martonne_P_over_Tplus10,DMI_class,longitude
+ECE_Renton_Garden_North,0,10.3,1227.0,31.0,50.0,679.3,1.806,Humid,60.44,Very humid,-122.1406
+ECE_Renton_Garden_Shed,0,10.3,1227.0,31.0,50.0,679.3,1.806,Humid,60.44,Very humid,-122.1408
+ECE_BBG_Main_St,0,11.0,1018.0,24.0,53.0,694.2,1.466,Humid,48.48,Humid,-122.1825
+ECE_Renton_Home,1,10.4,1181.0,29.0,50.0,681.4,1.733,Humid,57.89,Humid,-122.1447
+ECE_BBG_Lost_Meadow,1,11.0,1019.0,24.0,53.0,694.2,1.468,Humid,48.52,Humid,-122.1795

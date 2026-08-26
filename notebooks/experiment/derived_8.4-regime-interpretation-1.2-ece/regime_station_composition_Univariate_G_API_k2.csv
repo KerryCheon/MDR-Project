@@ -1,0 +1,6 @@
+station_id,n,share_c0,share_c1,dominant_cluster,purity,longitude,latitude
+ECE_BBG_Lost_Meadow,30,1.0,0.0,0,1.0,-122.1795066,47.6072232
+ECE_BBG_Main_St,30,1.0,0.0,0,1.0,-122.1824678,47.6098164
+ECE_Renton_Garden_North,30,1.0,0.0,0,1.0,-122.1406354,47.4962798
+ECE_Renton_Garden_Shed,30,1.0,0.0,0,1.0,-122.1407765,47.4958091
+ECE_Renton_Home,30,1.0,0.0,0,1.0,-122.1446671,47.4887385
