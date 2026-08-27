@@ -1,0 +1,6 @@
+raw_file,total_subminute_samples,raw_adc_min,raw_adc_mean,raw_adc_max,raw_adc_std,moisture_pct_min,moisture_pct_mean,moisture_pct_max,moisture_pct_std,zero_moisture_sample_count,negative_sample_count,adc_moisture_pearson_r,calibration_status
+"Soil Moisture Data (July 19 – August 20, 2026)(Lost Meadow Trail (BBG)).csv",20747,5194.0,10765.444757383117,12363.0,903.0353910548919,2.24,5.7336782811619855,17.94,1.9776349374291073,0,0,-0.999998943836616,Normal dynamic range
+"Soil Moisture Data (July 19 – August 20, 2026)(Main St (BBG)).csv",13646,9729.0,10865.64625,11981.0,357.8583771104826,2.22,5.551730147058824,8.95,1.0700271418947642,0,0,-0.9999963463911933,Normal dynamic range
+"Soil Moisture Data (July 19 – August 20, 2026)(Renton Home).csv",13258,10395.0,11121.739676976993,12174.0,282.45618023079254,0.0,1.7808014627456956,3.62,0.6884044087522095,330,0,-0.9955107042711846,Bottoms out at 0.0% (Device 11)
+"Soil Moisture Data (July 19 – August 20, 2026)(Renton SG (North)).csv",15362,5567.0,9099.300950369588,11690.0,1354.9215797996928,9.0,15.684828202420599,24.8,3.4957239843541186,0,0,-0.9999996588610519,Normal dynamic range
+"Soil Moisture Data (July 19 – August 20, 2026)(Renton SG (Shed)).csv",12038,9420.0,10732.082566798073,11735.0,418.8247372398136,4.58,7.57603920280333,11.49,1.2506637133115603,0,0,-0.999997344202095,Normal dynamic range

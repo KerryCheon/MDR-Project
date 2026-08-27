@@ -1,0 +1,11 @@
+feature_category,feature_name,renton_garden_north,renton_garden_shed,bbg_main_st,bbg_lost_meadow,scale_resolution_context
+Geographic Proximity,Separation Distance,0.0 m (Reference),53.4 meters apart,0.0 m (Reference),363.9 meters apart,Sub-grid micro-scale (< 100m)
+Ground Truth Target,soil_moisture_5cm (Mean ± Std),0.1549 ± 0.0264 (15.5%),0.0758 ± 0.0046 (7.6%),0.0556 ± 0.0057 (5.6%),0.0580 ± 0.0078 (5.8%),2.04× Divergence at 53m vs 1.04× at 364m
+Dynamic Weather,precip_mm (30-day Mean),0.6967 mm,0.6967 mm (100% Identical),0.4633 mm,0.4633 mm (100% Identical),Open-Meteo ERA5 Grid (~11 km)
+Dynamic Weather,G_API (Antecedent Precip Index),6.3825 mm,6.3825 mm (100% Identical),4.2020 mm,4.2020 mm (100% Identical),Weather Grid (~11 km)
+Satellite Thermal,LST_modis (Day LST Kelvin),300.01 K,300.04 K (Diff 0.03 K),299.00 K,298.71 K (Diff 0.29 K),"MODIS Thermal Grid (1,000 m)"
+Satellite SAR,s1_vv (Sentinel-1 Backscatter),0.1146,0.1147 (Diff 0.0001),0.1428,0.1261 (Diff 0.0167),Sentinel-1 SAR Grid (30 m)
+Static Topography,elev (Elevation SRTM),152.51 m,152.52 m (Diff 0.01 m),40.96 m,38.03 m (Diff 2.93 m),SRTM DEM Grid (30 m)
+Static Topography,slope (Slope Degrees),4.11°,4.00° (Diff 0.11°),5.18°,5.63° (Diff 0.45°),SRTM DEM Slope (30 m)
+Static Soil,J_clay_wfrac_b0 (Topsoil Clay %),21.0%,21.0% (Identical),16.0%,19.0% (Diff 3.0%),OpenLandMap Soil Grid (250 m)
+Static Bioclimatic,BIO12 (Annual Precipitation),1227.0 mm,1227.0 mm (Identical),1018.0 mm,1019.0 mm (Diff 1.0 mm),"WorldClim Grid (1,000 m)"

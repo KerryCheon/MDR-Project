@@ -1,0 +1,12 @@
+evaluation_domain,dataset,model_architecture,r2_mean,r2_median,rmse_mean,mae_mean,bias_mean,notes
+In-Distribution Temporal (2023-2025),"derived_8.4 (WA Test, 7 stations)",Clustering_V0_Full_k2,0.8126,0.8128,0.0441,0.0339,0.0066,State-of-the-art in-distribution regional baseline
+In-Distribution Temporal (2023-2025),"derived_8.4 (WA Test, 7 stations)",Global_Single_54,0.7798,0.7797,0.0478,0.0369,0.01,Single-regime baseline
+In-Distribution Temporal (2023-2025),"derived_8.4 (WA Test, 7 stations)",Baseline_V0_50,0.7593,0.7594,0.0499,0.0383,0.0096,Locked 50-feature baseline
+Out-of-State Spatial Transfer (2017-2025),derived_8.4-oos (5 stations in OR/ID/CA),Clustering_Dynamic_k2,0.3521,0.364,0.0617,0.0487,0.0368,Top spatial performer on unseen regions
+Out-of-State Spatial Transfer (2017-2025),derived_8.4-oos (5 stations in OR/ID/CA),Global_Single_54,0.3472,0.3551,0.062,0.049,0.0347,Global single model on OOS
+Out-of-State Spatial Transfer (2017-2025),derived_8.4-oos (5 stations in OR/ID/CA),Baseline_V0_50,0.3204,0.332,0.0631,0.0505,0.0096,Baseline 50 on OOS
+In-Situ ECE Spatial Transfer (2026),derived_8.4-ece (5 stations in WA),Univariate_G_API_k2,-169.4859,-30.3436,0.0479,0.0447,0.0147,"Top in-situ performer (pooled R² = -0.237, RMSE better than OOS!)"
+In-Situ ECE Spatial Transfer (2026),derived_8.4-ece (5 stations in WA),Clustering_Dynamic_k2,-177.5309,-37.8208,0.0483,0.0454,0.0173,"Dynamic clustering (pooled R² = -0.253, RMSE better than OOS!)"
+In-Situ ECE Spatial Transfer (2026),derived_8.4-ece (5 stations in WA),Global_Single_54,-181.1471,-38.6626,0.0511,0.0467,0.0169,"Global single (pooled R² = -0.350, RMSE better than OOS!)"
+In-Situ ECE Spatial Transfer (2026),derived_8.4-ece (5 stations in WA),Clustering_V0_Full_k2,-1342.5551,-73.3724,0.1004,0.0955,0.0713,Static MoE failure due to wet-mountain routing trap
+In-Situ ECE Spatial Transfer (2026),derived_8.4-ece (5 stations in WA),Clustering_Backbone54_k2,-1763.3418,-843.3092,0.1441,0.1386,0.1309,Severe static MoE routing trap (+0.13 bias)

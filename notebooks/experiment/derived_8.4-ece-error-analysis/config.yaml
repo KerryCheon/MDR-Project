@@ -1,0 +1,46 @@
+# config.yaml for derived_8.4-ece-error-analysis
+experiment_name: "derived_8.4-ece-error-analysis"
+description: "Comprehensive error analysis and diagnostic report on in-situ ECE soil moisture sensor evaluation."
+
+paths:
+  data_splits:
+    ece_test: "data/splits/derived_8.4-ece/test.csv"
+    wa_train: "data/splits/derived_8.4/train.csv"
+    wa_val: "data/splits/derived_8.4/val.csv"
+    wa_test: "data/splits/derived_8.4/test.csv"
+  raw_ece_dir: "src/pipeline/data/raw/_ECE/"
+  processed_ece_dir: "src/pipeline/data/processed/"
+  
+  experiments:
+    formal_eval_ece: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/"
+    regime_interp_ece: "notebooks/experiment/derived_8.4-regime-interpretation-1.2-ece/"
+    additional_eval_ece: "notebooks/experiment/derived_8.4-ece-additional-eval-1.0/"
+    formal_eval_oos: "notebooks/experiment/derived_8.4-formal-eval-2.0/"
+
+ece_stations:
+  - "ECE_BBG_Main_St"
+  - "ECE_BBG_Lost_Meadow"
+  - "ECE_Renton_Home"
+  - "ECE_Renton_Garden_North"
+  - "ECE_Renton_Garden_Shed"
+
+wa_stations:
+  - "BeaverPass_WA_990"
+  - "CayusePass_WA"
+  - "Darrington"
+  - "Paradise_WA"
+  - "Quinault"
+  - "SourdoughGulch_WA_985"
+  - "Spokane"
+
+key_models:
+  - "Clustering_V0_Full_k2"
+  - "Clustering_Backbone54_k2"
+  - "Clustering_Dynamic_k2"
+  - "Seasonal_Binary_k2"
+  - "Univariate_G_API_k2"
+  - "Trained_Gating_k2"
+  - "Global_Single_54"
+  - "Baseline_V0_50"
+  - "d80_weighted"
+  - "d84_weighted"
