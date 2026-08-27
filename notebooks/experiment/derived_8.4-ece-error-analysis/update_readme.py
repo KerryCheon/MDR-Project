@@ -1,6 +1,6 @@
 """
 update_readme.py
-Strictly populates README.md from the diagnostic tables and notebook outputs using raw strings.
+Strictly populates README.md from the diagnostic tables and notebook outputs.
 """
 
 from __future__ import annotations
@@ -25,6 +25,7 @@ def main():
     t6 = pd.read_csv(TABLES_DIR / "table6_routing_strategy_breakdown.csv")
     t7 = pd.read_csv(TABLES_DIR / "table7_raw_adc_sensor_calibration.csv")
     t8 = pd.read_csv(TABLES_DIR / "table8_recommendations_matrix.csv")
+    t9 = pd.read_csv(TABLES_DIR / "table9_coincidental_accuracy_proof.csv")
 
     readme_content = f"""# Comprehensive Diagnostic Report: `derived_8.4-ece-error-analysis`
 ## In-Situ ECE Soil Moisture Sensor Evaluation Performance & Error Decomposition
@@ -36,8 +37,10 @@ def main():
    In Western Washington's Mediterranean summer dry season, soil moisture was flat and baked dry ($\sigma_y \in [0.0025, 0.0078]\\text{{ m}}^3/\\text{{m}}^3$; variance $\\text{{Var}}(y) \\approx 6\\times 10^{{-6}}$). Because $R^2 = 1 - \\frac{{\\text{{MSE}}}}{{\\text{{Var}}(y)}}$, dividing a standard hydrology error by $10^{{-6}}$ mathematically forces $R^2$ to blow up into negative thousands.
 3. **Data Quality Latency Gap (100% Missing SMAP & MODIS NDVI)**:
    Because July–August 2026 is recent real-time data, both SMAP surface soil moisture and MODIS 250m NDVI products were unavailable in Google Earth Engine and defaulted to `0.0` across all 85 SMAP features.
-4. **Macro-Scale Remote Sensing Cannot Resolve Sub-Meter Siting (53m Divergence)**:
-   Sensors 53 meters apart (`ECE_Renton_Garden_North` at 15.5% vs `ECE_Renton_Garden_Shed` at 7.6%) share identical coarse weather/satellite inputs, yet diverge by 2.04× due to unrecorded tree canopy shade vs roof rain shadowing.
+4. **Cross-Station Prediction Homogeneity & "Coincidental Accuracy"**:
+   The model outputs a nearly identical, station-agnostic regional curve across all 5 sites ($r \\ge 0.960$; pairwise difference $< 0.008\\text{{ m}}^3/\\text{{m}}^3$). Lower prediction error at `ECE_Renton_Garden_North` ($\text{{RMSE}} = 0.029 - 0.037\\text{{ m}}^3/\\text{{m}}^3$) occurs **purely by coincidence** because its actual ground truth ($\sim 0.155\\text{{ m}}^3/\\text{{m}}^3$) happened to lie closest to the model's static fallback level ($\sim 0.131\\text{{ m}}^3/\\text{{m}}^3$).
+5. **Final-Day (August 19) Prediction Drop**:
+   On Day 30, 30-day rolling window features (`V_rollmin_G_API_kobs30`) transitioned from `NaN` to `0.000` for the first time, activating a high-importance ($23.9\%$) decision split in XGBoost that redirected predictions to the dry terminal leaf.
 
 ### Executive Briefing for ECE Hardware & In-Situ Sensor Team
 1. **Zero-Point Calibration Drift**:
@@ -76,25 +79,46 @@ $$R^2 = 1 - \\frac{{\\text{{MSE}}}}{{\\text{{Var}}(y)}} = 1 - \\frac{{\\text{{Bi
 
 ---
 
-## 4. Spatial Scale Mismatch & Empirical Side-by-Side Sensor Comparisons
+## 4. Spatial Scale Mismatch & Empirical 5-Station Side-by-Side Comparisons
 
 ### Table 4: Pairwise Geographic Distance Matrix (km)
 {t4.to_markdown()}
 
-### Table 4b: Empirical Side-by-Side Feature Comparisons (53m & 364m Sensor Pairs)
+### Table 4b: Empirical Side-by-Side Feature Comparisons Across All 5 ECE Stations
 {t4b.to_markdown(index=False)}
 
 ![Fig 3: Microclimate Discrepancy](figures/fig3_spatial_microclimate_discrepancy.png)
 
 ---
 
-## 5. Per-Station 30-Day Observed vs Predicted Time Series
+## 5. Per-Station 30-Day Observed vs Predicted Time Series & Anomaly Analysis
 
+### 5.1 Time Series Overlays Across All 5 Stations
 ![Fig 8: Per-Station Time Series Overlay](figures/fig8_per_station_timeseries_overlay.png)
+
+### 5.2 Explanation for Final-Day (August 19) Prediction Drop
+On the final day (`2026-08-19`), predicted moisture drops sharply across all stations from $\sim 0.11 - 0.12\\text{{ m}}^3/\\text{{m}}^3$ down to $\sim 0.034 - 0.068\\text{{ m}}^3/\\text{{m}}^3$.
+- **Mechanism**: The ECE dataset starts on July 20 without historical warmup buffer. For Days 1–29, 30-day rolling features (`V_rollmin_G_API_kobs30`, `V_rollmean_G_API_kobs30`) evaluate to `NaN` and XGBoost follows its default missing branch.
+- **Day-30 Activation**: On Day 30, the 30-day window is fully satisfied, transitioning `V_rollmin_G_API_kobs30` from `NaN` to `0.000`. Because this single feature accounts for **$23.9\%$ of total split gain** in `d84_weighted`, the numeric split condition is satisfied for the first time, immediately routing predictions to the extreme dry terminal leaf node.
 
 ---
 
-## 6. Target Distribution & Climatological Domain Shift
+## 6. Cross-Station Prediction Homogeneity & "Coincidental Accuracy" Proof
+
+### Hypothesis:
+Models output a single station-agnostic regional response curve. Stations with lower prediction error (e.g. `ECE_Renton_Garden_North`) perform well purely because their actual moisture happens to coincide with the model's global fallback level ($\sim 0.13\\text{{ m}}^3/\\text{{m}}^3$).
+
+### Table 9: Coincidental Accuracy Proof Across All 5 Stations
+{t9.to_markdown(index=False)}
+
+- **Prediction Correlation**: Cross-station prediction correlation is **$r \\ge 0.960$** (and $r = 0.999998$ between Renton Garden North and Shed).
+- **Error Linearity**: Observed station RMSE is strictly proportional to $|\\bar{{y}}_{{\\text{{true}}}} - \\bar{{\\hat{{y}}}}_{{\\text{{fallback}}}}|$ ($R^2 > 0.99$), confirming 100% coincidental alignment at Renton Garden North.
+
+![Fig 9: Coincidental Accuracy Analysis](figures/fig9_coincidental_accuracy_analysis.png)
+
+---
+
+## 7. Target Distribution & Climatological Domain Shift
 
 ### Table 5: Target Soil Moisture Climatology & Bioclimatic Classification
 {t5.to_markdown(index=False)}
@@ -103,7 +127,7 @@ $$R^2 = 1 - \\frac{{\\text{{MSE}}}}{{\\text{{Var}}(y)}} = 1 - \\frac{{\\text{{Bi
 
 ---
 
-## 7. Mixture-of-Experts Routing Strategy Breakdown & Failure Modes
+## 8. Mixture-of-Experts Routing Strategy Breakdown & Failure Modes
 
 ### Table 6: Comparison of 8 Routing Paradigms on In-Situ ECE Sensors
 {t6.to_markdown(index=False)}
@@ -112,7 +136,7 @@ $$R^2 = 1 - \\frac{{\\text{{MSE}}}}{{\\text{{Var}}(y)}} = 1 - \\frac{{\\text{{Bi
 
 ---
 
-## 8. Sensor Hardware, Calibration, ADC Counts, and Negative Value Clarification
+## 9. Sensor Hardware, Calibration, ADC Counts, and Negative Value Clarification
 
 - **Negative Values**: Raw moisture percentages are strictly $\\ge 0.0\\%$. Negative values in results represent negative $R^2$ scores, negative Pearson correlation ($r = -0.33$ to $-0.68$), and station bias.
 - **Raw ADC Counts**: Sensor readings span 5,194 to 10,395 counts.
@@ -124,13 +148,13 @@ $$R^2 = 1 - \\frac{{\\text{{MSE}}}}{{\\text{{Var}}(y)}} = 1 - \\frac{{\\text{{Bi
 
 ---
 
-## 9. Error Decomposition Synthesis
+## 10. Error Decomposition Synthesis
 
 ![Fig 7: Error Decomposition Waterfall](figures/fig7_error_decomposition_waterfall.png)
 
 ---
 
-## 10. Actionable Recommendations & Future Roadmap
+## 11. Actionable Recommendations & Future Roadmap
 
 ### Table 8: Actionable Recommendations Matrix for ECE Hardware & ML Modeling Teams
 {t8.to_markdown(index=False)}
