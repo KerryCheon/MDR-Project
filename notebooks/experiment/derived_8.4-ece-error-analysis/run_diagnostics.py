@@ -1,7 +1,7 @@
 """
 run_diagnostics.py
 Comprehensive diagnostic and statistical computation engine for derived_8.4-ece-error-analysis.
-Generates all 9 analytical tables (including expanded 30-row Table 4b) and 9 publication figures.
+Generates all 11 analytical tables and 9 publication figures.
 """
 
 from __future__ import annotations
@@ -9,11 +9,13 @@ from __future__ import annotations
 import os
 import glob
 import json
+import yaml
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from scipy.stats import gaussian_kde
+import xgboost as xgb
 
 # Set style for publication quality
 plt.style.use('seaborn-v0_8-whitegrid' if 'seaborn-v0_8-whitegrid' in plt.style.available else 'default')
@@ -391,9 +393,7 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
         else:
             pred_stats[st] = {"pred_mean": np.nan, "bias": np.nan, "rmse": np.nan, "r2": np.nan}
 
-    # Generate 30-row comprehensive comparative matrix
     rows = [
-        # --- 1. Siting & Hardware Deployment ---
         {
             "category": "1. Siting & Hardware",
             "attribute": "Site Micro-Habitat",
@@ -434,7 +434,6 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
             "ECE_Renton_Home": "838.8 m (to Shed)",
             "scale_and_source": "Haversine Geodesic Distance",
         },
-        # --- 2. Ground Truth Target Climatology ---
         {
             "category": "2. Ground Truth Target",
             "attribute": "Soil Moisture (Mean ± Std)",
@@ -475,7 +474,6 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
             "ECE_Renton_Home": "[10,395, 12,174] counts",
             "scale_and_source": "12-bit ADC Sensor Counts",
         },
-        # --- 3. Dynamic Weather & Hydrology ---
         {
             "category": "3. Dynamic Weather",
             "attribute": "Daily Precip precip_mm (30-day Mean)",
@@ -526,7 +524,6 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
             "ECE_Renton_Home": f"{r_home['G_DSLR'].mean():.1f} days (3.9 days)",
             "scale_and_source": "Drought Persistence Index",
         },
-        # --- 4. Satellite Optical & Thermal ---
         {
             "category": "4. Satellite Thermal & Optical",
             "attribute": "Day LST Kelvin LST_modis",
@@ -607,7 +604,6 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
             "ECE_Renton_Home": f"{r_home['F_NDMI'].mean():.4f}",
             "scale_and_source": "Canopy Moisture Content (20 m)",
         },
-        # --- 5. Satellite Synthetic Aperture Radar (SAR) ---
         {
             "category": "5. Satellite SAR",
             "attribute": "Sentinel-1 VV Backscatter s1_vv",
@@ -638,7 +634,6 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
             "ECE_Renton_Home": f"{(r_home['s1_vh']/r_home['s1_vv']).mean():.4f}",
             "scale_and_source": "Vegetation Volume Scattering",
         },
-        # --- 6. Static Topography & Geomorphology ---
         {
             "category": "6. Static Topography",
             "attribute": "Elevation elev (m above sea level)",
@@ -669,7 +664,6 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
             "ECE_Renton_Home": f"{r_home['aspect'].iloc[0]:.1f}° (SE)",
             "scale_and_source": "SRTM Aspect Grid (30 m)",
         },
-        # --- 7. Static Soil Physical Texture ---
         {
             "category": "7. Static Soil Texture",
             "attribute": "Topsoil (0cm) Clay J_clay_wfrac_b0",
@@ -700,7 +694,6 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
             "ECE_Renton_Home": "44.0%",
             "scale_and_source": "OpenLandMap / SoilGrids (250 m)",
         },
-        # --- 8. Static Bioclimatic Climatology ---
         {
             "category": "8. Static Bioclimatic",
             "attribute": "BIO01: Annual Mean Temperature",
@@ -761,7 +754,6 @@ def generate_table4_spatial_proximity_and_side_by_side(data):
             "ECE_Renton_Home": f"{r_home['J_bio_bio18'].iloc[0]} mm",
             "scale_and_source": "WorldClim Historical (1,000 m)",
         },
-        # --- 9. Model Output & Diagnostic Evaluation ---
         {
             "category": "9. Model Evaluation",
             "attribute": "Predicted Mean (d84_weighted)",
@@ -1105,7 +1097,159 @@ def generate_table9_coincidental_accuracy(data):
     print("Table 9 saved.")
     return df_t9
 
-def plot_kde(ax, data, label, color, linestyle='-', linewidth=2, fill=False):
+def generate_table10_soil_texture_all_stations(data):
+    print("Generating Table 10: Soil Texture Analysis Across All 12 Project Stations...")
+    wa_all = data["wa_all"]
+    ece_test = data["ece_test"]
+    
+    def classify_usda(c, s):
+        si = 100 - (c + s)
+        if s >= 85 and si + 1.5 * c < 15:
+            return "Sand"
+        elif s >= 70 and s <= 90 and si + 1.5 * c >= 15 and si + 2 * c < 30:
+            return "Loamy sand"
+        elif (c < 20 and s > 52 and si + 2 * c >= 30) or (c < 7 and si < 50 and s > 43 and s <= 52 and c < 20):
+            return "Sandy loam"
+        elif (c >= 7 and c < 27) and (si >= 28 and si < 50) and (s <= 52):
+            return "Loam"
+        elif (si >= 50 and c >= 12 and c < 27) or (si >= 50 and si <= 80 and c < 12):
+            return "Silt loam"
+        elif si >= 80 and c < 12:
+            return "Silt"
+        elif c >= 20 and c < 35 and si < 28 and s > 45:
+            return "Sandy clay loam"
+        elif c >= 27 and c < 40 and s >= 20 and s <= 45:
+            return "Clay loam"
+        elif c >= 27 and c < 40 and s < 20:
+            return "Silty clay loam"
+        elif c >= 35 and s > 45:
+            return "Sandy clay"
+        elif c >= 40 and si >= 40:
+            return "Silty clay"
+        elif c >= 40 and s <= 45 and si < 40:
+            return "Clay"
+        else:
+            return "Loam"
+
+    rows = []
+    
+    # 7 WA Training Stations
+    for st, df in wa_all.groupby("station_id"):
+        clay = df["J_clay_wfrac_b0"].iloc[0]
+        sand = df["J_sand_wfrac_b0"].iloc[0]
+        silt = 100 - (clay + sand)
+        clay30 = df["J_clay_wfrac_b30"].iloc[0]
+        usda_code = df["J_soil_texture_usda_b0"].iloc[0]
+        calc_usda = classify_usda(clay, sand)
+        
+        rows.append({
+            "station_id": st,
+            "dataset_role": "WA Training Reference (7 st)",
+            "raw_reported_soil_type": f"SNOTEL / SCAN HydraProbe ({calc_usda})",
+            "topsoil_sand_pct": sand,
+            "topsoil_silt_pct": silt,
+            "topsoil_clay_pct": clay,
+            "subsoil_clay30_pct": clay30,
+            "openlandmap_usda_code": usda_code,
+            "calculated_usda_class": calc_usda,
+            "training_domain_overlap": "Present in Training Pool (SNOTEL Baseline)",
+        })
+        
+    # 5 ECE In-situ Stations
+    raw_ece_soil = {
+        "ECE_BBG_Lost_Meadow": "Sandy loam",
+        "ECE_BBG_Main_St": "Sandy loam",
+        "ECE_Renton_Garden_North": "Loam",
+        "ECE_Renton_Garden_Shed": "Sandy loam",
+        "ECE_Renton_Home": "Loam",
+    }
+    
+    for st, df in ece_test.groupby("station_id"):
+        clay = df["J_clay_wfrac_b0"].iloc[0]
+        sand = df["J_sand_wfrac_b0"].iloc[0]
+        silt = 100 - (clay + sand)
+        clay30 = df["J_clay_wfrac_b30"].iloc[0]
+        usda_code = df["J_soil_texture_usda_b0"].iloc[0]
+        calc_usda = classify_usda(clay, sand)
+        raw_type = raw_ece_soil.get(st, "Unknown")
+        
+        overlap_note = "Matches Loam Training Profile (Darrington/Quinault)" if raw_type == "Loam" else "Matches Sandy Loam Training Profile (BeaverPass/CayusePass)"
+        
+        rows.append({
+            "station_id": st,
+            "dataset_role": "ECE In-Situ Sensor Deployment",
+            "raw_reported_soil_type": f"Raw CSV Header: {raw_type}",
+            "topsoil_sand_pct": sand,
+            "topsoil_silt_pct": silt,
+            "topsoil_clay_pct": clay,
+            "subsoil_clay30_pct": clay30,
+            "openlandmap_usda_code": usda_code,
+            "calculated_usda_class": calc_usda,
+            "training_domain_overlap": overlap_note,
+        })
+        
+    df_t10 = pd.DataFrame(rows)
+    df_t10.to_csv(os.path.join(TABLES_DIR, "table10_soil_texture_all_stations.csv"), index=False)
+    print("Table 10 saved.")
+    return df_t10
+
+def generate_table11_soil_override_sensitivity(data):
+    print("Generating Table 11: Counterfactual Soil Feature Override Sensitivity Test...")
+    cfg_path = os.path.join(PROJECT_ROOT, "notebooks/experiment/derived_8.4-ece-additional-eval-1.0/config.yaml")
+    with open(cfg_path) as f:
+        cfg = yaml.safe_load(f)
+
+    features = cfg["feature_columns"]
+    ece_test = data["ece_test"]
+    
+    model_dir = os.path.join(PROJECT_ROOT, "notebooks/experiment/derived_8.4-ece-additional-eval-1.0/models")
+    model_files = sorted(glob.glob(os.path.join(model_dir, "*.json")))
+    
+    if not model_files:
+        print("Warning: No JSON model files found. Skipping Table 11 generation.")
+        return None
+        
+    X_orig = ece_test[features].copy()
+
+    # Counterfactual: Override Sandy Loam stations to 55% sand, 10% clay (Sandy loam)
+    ece_overridden = ece_test.copy()
+    sandy_stations = ["ECE_BBG_Main_St", "ECE_BBG_Lost_Meadow", "ECE_Renton_Garden_Shed"]
+    mask = ece_overridden["station_id"].isin(sandy_stations)
+    ece_overridden.loc[mask, "J_sand_wfrac_b0"] = 55
+    ece_overridden.loc[mask, "J_clay_wfrac_b0"] = 10
+    X_overridden = ece_overridden[features].copy()
+
+    results = []
+    for mf in model_files:
+        mname = os.path.basename(mf).replace(".json", "")
+        arch = mname.split("__")[0]
+        seed = mname.split("__")[-1].replace("s", "")
+        
+        bst = xgb.Booster()
+        bst.load_model(mf)
+        
+        p_orig = bst.predict(xgb.DMatrix(X_orig))
+        p_over = bst.predict(xgb.DMatrix(X_overridden))
+        
+        diff = p_over - p_orig
+        
+        results.append({
+            "model_architecture": arch,
+            "seed": int(seed),
+            "mean_orig_pred": np.mean(p_orig),
+            "mean_overridden_pred": np.mean(p_over),
+            "mean_abs_diff": np.mean(np.abs(diff)),
+            "max_abs_diff": np.max(np.abs(diff)),
+            "mean_diff_sandy_stations": np.mean(diff[mask]),
+            "pct_change_sandy_stations": (np.mean(diff[mask]) / np.mean(p_orig[mask])) * 100,
+        })
+
+    df_t11 = pd.DataFrame(results)
+    df_t11.to_csv(os.path.join(TABLES_DIR, "table11_soil_override_sensitivity.csv"), index=False)
+    print("Table 11 saved.")
+    return df_t11
+
+def plot_kde(ax, data, label, color, linestyle="-", linewidth=2, fill=False):
     data_clean = np.asarray(data)[~np.isnan(data)]
     if len(data_clean) < 2 or np.std(data_clean) == 0:
         ax.axvline(np.mean(data_clean), color=color, linestyle=linestyle, linewidth=linewidth, label=label)
@@ -1447,7 +1591,6 @@ def generate_all_figures(data):
         pvt_w = pred_df.pivot(index="date", columns="station_id", values="d84_w")
         pvt_true = pred_df.pivot(index="date", columns="station_id", values="y_true")
         
-        # Subplot A: Overlay of all 5 prediction curves (showing near-identical output)
         dates = pd.to_datetime(pvt_w.index)
         for st, color in zip(pvt_w.columns, ['tab:blue', 'tab:cyan', 'tab:green', 'tab:olive', 'tab:orange']):
             axes[0].plot(dates, pvt_w[st], label=f"Pred: {st.replace('ECE_', '')}", color=color, linewidth=1.8)
@@ -1458,7 +1601,6 @@ def generate_all_figures(data):
         axes[0].legend(fontsize=8)
         axes[0].xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
         
-        # Subplot B: Station RMSE strictly as a function of distance from prediction fallback level
         global_fallback = pvt_w.values.mean()
         st_names = []
         dists = []
@@ -1500,6 +1642,8 @@ def main():
     generate_table7_raw_adc_calibration(data)
     generate_table8_recommendations()
     generate_table9_coincidental_accuracy(data)
+    generate_table10_soil_texture_all_stations(data)
+    generate_table11_soil_override_sensitivity(data)
     generate_all_figures(data)
     print("=== ALL DIAGNOSTICS, TABLES, AND FIGURES SUCCESSFULLY GENERATED ===")
 

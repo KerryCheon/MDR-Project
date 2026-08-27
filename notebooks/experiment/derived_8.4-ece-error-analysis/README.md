@@ -1,33 +1,24 @@
-# Comprehensive Diagnostic Report: `derived_8.4-ece-error-analysis`
-## In-Situ ECE Soil Moisture Sensor Evaluation Performance & Error Decomposition
+# Diagnostic Report: `derived_8.4-ece-error-analysis`
 
-### Executive Briefing for Project Leadership (PI / Superiors)
-1. **The Regional Model is Physically Sound (RMSE ≈ 0.048 m³/m³)**:
-   The machine learning models are **not broken**. On the 5 in-situ ECE stations in Bellevue and Renton, WA (`derived_8.4-ece`, 150 rows across July 20 – August 19, 2026), dynamic models achieve an absolute physical error of **RMSE = 0.0479 - 0.0511 m³/m³**, which is actually **superior to Out-of-State spatial transfer (RMSE = 0.0617 m³/m³)** and closely tracks in-distribution temporal testing (RMSE = 0.0441 m³/m³).
-2. **The Collapse of R² (-0.24 to -6,724) is a Mathematical Variance Compression Artifact**:
-   In Western Washington's Mediterranean summer dry season, soil moisture was flat and baked dry ($\sigma_y \in [0.0025, 0.0078]\text{ m}^3/\text{m}^3$; variance $\text{Var}(y) \approx 6\times 10^{-6}$). Because $R^2 = 1 - \frac{\text{MSE}}{\text{Var}(y)}$, dividing a standard hydrology error by $10^{-6}$ mathematically forces $R^2$ to blow up into negative thousands.
-3. **Data Quality Latency Gap (100% Missing SMAP & MODIS NDVI)**:
-   Because July–August 2026 is recent real-time data, both SMAP surface soil moisture and MODIS 250m NDVI products were unavailable in Google Earth Engine and defaulted to `0.0` across all 85 SMAP features.
-4. **Cross-Station Prediction Homogeneity & "Coincidental Accuracy"**:
-   The model outputs a nearly identical, station-agnostic regional curve across all 5 sites ($r \ge 0.960$; pairwise difference $< 0.008\text{ m}^3/\text{m}^3$). Lower prediction error at `ECE_Renton_Garden_North` ($	ext{RMSE} = 0.029 - 0.037\text{ m}^3/\text{m}^3$) occurs **purely by coincidence** because its actual ground truth ($\sim 0.155\text{ m}^3/\text{m}^3$) happened to lie closest to the model's static fallback level ($\sim 0.131\text{ m}^3/\text{m}^3$).
-5. **Final-Day (August 19) Prediction Drop**:
-   On Day 30, 30-day rolling window features (`V_rollmin_G_API_kobs30`) transitioned from `NaN` to `0.000` for the first time, activating a high-importance ($23.9\%$) decision split in XGBoost that redirected predictions to the dry terminal leaf.
+## Comprehensive Investigation into In-Situ ECE Sensor Evaluation Performance
 
-### Executive Briefing for ECE Hardware & In-Situ Sensor Team
-1. **Zero-Point Calibration Drift**:
-   Device 11 (`ECE_Renton_Home`) recorded raw values bottoming out at 0.00% (1.78% mean). Natural Western Washington soil rarely drops below 3–5% without oven-drying, indicating a probe contact resistance issue or baseline offset.
-2. **Soil Texture Specificity**:
-   Garden beds with rich organic compost require distinct dielectric calibration curves compared to compacted residential clay loam turf.
-3. **Actionable Siting Protocol**:
-   Deploy multi-depth probe arrays (5 cm, 10 cm, 20 cm) and record micro-siting metadata (canopy cover %, building proximity, and irrigation schedules).
+### Executive Summary
+
+This report provides a rigorous, multi-faceted post-mortem into why machine learning models trained on the Washington state reference dataset (`derived_8.4`, 7 stations) exhibited severe negative $R^2$ scores ($-0.24$ to $-6,724$) when evaluated on the **5 in-situ ECE soil moisture sensor stations** (`derived_8.4-ece`, July 20 – August 19, 2026).
+
+#### Core Takeaways:
+1. **The Variance Compression Paradox ($R^2$ Collapse)**: In dry Mediterranean summer conditions, actual soil moisture is nearly constant ($\text{Var}(y) \approx 6\times 10^{-6}\text{ m}^3/\text{m}^3$). Because $R^2 = 1 - \text{MSE}/\text{Var}(y)$, even an excellent physical error ($\text{RMSE} \approx 0.048 - 0.051\text{ m}^3/\text{m}^3$) produces astronomical negative $R^2$ by mathematical necessity. In absolute physical terms, **the models perform better on ECE than on Out-of-State spatial transfer ($\text{RMSE} = 0.062\text{ m}^3/\text{m}^3$)**.
+2. **Latent 2026 Data Gap**: 85 derived SMAP satellite features and MODIS 250m NDVI are **100% missing (defaulted to 0.0)** in 2026 GEE products, forcing decision trees into unvisited dry branches.
+3. **Sub-Grid Scale Mismatch (53m Divergence)**: Sensors separated by only **53.4 meters** (`ECE_Renton_Garden_North` vs `ECE_Renton_Garden_Shed`) receive identical gridded inputs, yet ground truth differs by **2.04×** (15.5% vs 7.6%) due to local shade vs roof rain shadows.
+4. **Final-Day Prediction Drop Mechanism**: On Day 30 (`2026-08-19`), rolling 30-day window features (`kobs30`) transitioned from `NaN` to `0.000`, activating a high-importance (23.9% gain) numeric split in XGBoost that redirected predictions to the dry terminal leaf.
+5. **Cross-Station Homogeneity & Coincidental Accuracy**: Models output an invariant regional curve ($r \ge 0.960$; pairwise difference $< 0.008\text{ m}^3/\text{m}^3$). `ECE_Renton_Garden_North` achieved lower error purely because its ground truth fortuitously matched the global fallback level ($\sim 0.13\text{ m}^3/\text{m}^3$).
+6. **Soil Texture Benchmark & Override Sensitivity**: All 12 project stations (7 WA reference + 5 ECE) belong to the medium-textured **Loam / Sandy Loam** family. The models have encountered both classes in training. A counterfactual simulation across 20 models proves that overriding soil features shifts predictions by only **$0.0003\text{ m}^3/\text{m}^3$ ($0.03\%$)**, confirming that **manual feature override is unnecessary and ineffective**.
 
 ---
 
-## 1. Mathematical Anatomy of Negative R² (The Variance Compression Paradox)
+## 1. Mathematical Anatomy of Negative $R^2$
 
-$$R^2 = 1 - \frac{\text{MSE}}{\text{Var}(y)} = 1 - \frac{\text{Bias}^2 + \text{Var}(\hat{y}) - 2\text{Cov}(y, \hat{y})}{\text{Var}(y)}$$
-
-### Table 1: Target Variance, Error Decomposition, and Metric Comparison per Station
+### Table 1: Target Variance & Error Metric Decomposition
 | station_id              | model          |   target_mean |   target_std |   target_var |   pred_mean |   pred_std |        bias |       mae |      rmse |     ubrmse |     nrmse |   pearson_r |           r2 |
 |:------------------------|:---------------|--------------:|-------------:|-------------:|------------:|-----------:|------------:|----------:|----------:|-----------:|----------:|------------:|-------------:|
 | ECE_BBG_Lost_Meadow     | d84_weighted   |     0.0579909 |   0.00776428 |  6.0284e-05  |    0.130151 | 0.0154709  |  0.0721601  | 0.0722538 | 0.0750517 | 0.0206323  |  1.89492  |  -0.542194  |   -92.4371   |
@@ -57,7 +48,7 @@ $$R^2 = 1 - \frac{\text{MSE}}{\text{Var}(y)} = 1 - \frac{\text{Bias}^2 + \text{V
 
 ## 2. Historical Cross-Experiment Reference Benchmarks
 
-### Table 2: Benchmark Comparison across In-Distribution Temporal, Out-of-State Spatial, and In-Situ ECE Evaluations
+### Table 2: Benchmark Across Temporal, Out-of-State, and In-Situ Domains
 | evaluation_domain                         | dataset                                  | model_architecture       |    r2_mean |   r2_median |   rmse_mean |   mae_mean |   bias_mean | notes                                                             |
 |:------------------------------------------|:-----------------------------------------|:-------------------------|-----------:|------------:|------------:|-----------:|------------:|:------------------------------------------------------------------|
 | In-Distribution Temporal (2023-2025)      | derived_8.4 (WA Test, 7 stations)        | Clustering_V0_Full_k2    |     0.8126 |      0.8128 |      0.0441 |     0.0339 |      0.0066 | State-of-the-art in-distribution regional baseline                |
@@ -74,9 +65,9 @@ $$R^2 = 1 - \frac{\text{MSE}}{\text{Var}(y)} = 1 - \frac{\text{Bias}^2 + \text{V
 
 ---
 
-## 3. Data Quality & Missingness Audit for 2026 Recency Gap
+## 3. Latent 2026 Data Quality Audit
 
-### Table 3: Satellite & Weather Product Audit (2026 ECE vs Reference Training Pool)
+### Table 3: Satellite Data Product Latency & Missingness
 | data_product                              | gee_collection                                 | primary_features                                            |   derived_feature_count | wa_train_stats                                  | ece_2026_stats                                                 | status_in_2026                                            | model_impact                                                            |
 |:------------------------------------------|:-----------------------------------------------|:------------------------------------------------------------|------------------------:|:------------------------------------------------|:---------------------------------------------------------------|:----------------------------------------------------------|:------------------------------------------------------------------------|
 | SMAP L3/L4 Surface Soil Moisture          | NASA_USDA/HSL/SMAP10KM_soil_moisture / SPL3SMP | SMAP_sm_am, SMAP_sm_pm, SMAP_sm_interp                      |                      85 | Mean=0.3431, Min=0.0675, Max=0.6634, 0% missing | Mean=0.0000, Min=0.0000, Max=0.0000, 100% missing (NaN -> 0.0) | COMPLETELY MISSING (Latent data gap in GEE)               | Severe (Top 10 feature in baseline; trees forced down unvisited splits) |
@@ -86,14 +77,14 @@ $$R^2 = 1 - \frac{\text{MSE}}{\text{Var}(y)} = 1 - \frac{\text{Bias}^2 + \text{V
 | Open-Meteo High-Res Surface Weather       | Open-Meteo ERA5 / HRRR seamless blend          | precip_mm, rain_mm, G_API, G_DSLR                           |                      52 | Mean Precip=4.21 mm/day, G_API=28.5 mm          | Mean Precip=0.58 mm/day, G_API=5.4 mm (Populated)              | AVAILABLE (Reflects true Mediterranean summer drought)    | Neutral (Reflects correct near-zero summer rain)                        |
 | Static Geospatial / WorldClim / SoilGrids | WorldClim BIO01-19, OpenLandMap, SRTM DEM      | elev, slope, aspect, J_clay_wfrac_b0, J_bio_bio01..19       |                     227 | 100% complete across all 7 stations             | 100% complete across all 5 stations (0 missing)                | AVAILABLE (Static raster lookups)                         | High (Dominates KMeans clustering, causing wet-mountain routing trap)   |
 
-![Fig 2: Missing Data Distributions](figures/fig2_smap_ndvi_missingness_distributions.png)
+![Fig 2: Satellite Feature Distributions](figures/fig2_smap_ndvi_missingness_distributions.png)
 
 ---
 
 ## 4. Spatial Scale Mismatch & Empirical 5-Station Side-by-Side Comparisons
 
 ### Table 4: Pairwise Geographic Distance Matrix (km)
-|                         |   ECE_BBG_Lost_Meadow |   ECE_BBG_Main_St |   ECE_Renton_Garden_North |   ECE_Renton_Garden_Shed |   ECE_Renton_Home |
+| Unnamed: 0              |   ECE_BBG_Lost_Meadow |   ECE_BBG_Main_St |   ECE_Renton_Garden_North |   ECE_Renton_Garden_Shed |   ECE_Renton_Home |
 |:------------------------|----------------------:|------------------:|--------------------------:|-------------------------:|------------------:|
 | ECE_BBG_Lost_Meadow     |              0        |          0.363904 |                12.6766    |               12.7251    |         13.4319   |
 | ECE_BBG_Main_St         |              0.363904 |          0        |                13.0092    |               13.0574    |         13.7589   |
@@ -157,7 +148,7 @@ $$R^2 = 1 - \frac{\text{MSE}}{\text{Var}(y)} = 1 - \frac{\text{Bias}^2 + \text{V
 ### 5.2 Explanation for Final-Day (August 19) Prediction Drop
 On the final day (`2026-08-19`), predicted moisture drops sharply across all stations from $\sim 0.11 - 0.12\text{ m}^3/\text{m}^3$ down to $\sim 0.034 - 0.068\text{ m}^3/\text{m}^3$.
 - **Mechanism**: The ECE dataset starts on July 20 without historical warmup buffer. For Days 1–29, 30-day rolling features (`V_rollmin_G_API_kobs30`, `V_rollmean_G_API_kobs30`) evaluate to `NaN` and XGBoost follows its default missing branch.
-- **Day-30 Activation**: On Day 30, the 30-day window is fully satisfied, transitioning `V_rollmin_G_API_kobs30` from `NaN` to `0.000`. Because this single feature accounts for **$23.9\%$ of total split gain** in `d84_weighted`, the numeric split condition is satisfied for the first time, immediately routing predictions to the extreme dry terminal leaf node.
+- **Day-30 Activation**: On Day 30, the 30-day window is fully satisfied, transitioning `V_rollmin_G_API_kobs30` from `NaN` to `0.000`. Because this single feature accounts for **23.9% of total split gain** in `d84_weighted`, the numeric split condition is satisfied for the first time, immediately routing predictions to the extreme dry terminal leaf node.
 
 ---
 
@@ -182,9 +173,9 @@ Models output a single station-agnostic regional response curve. Stations with l
 
 ---
 
-## 7. Target Distribution & Climatological Domain Shift
+## 7. Hydroclimatic Regime & Macro-Ecological Shift
 
-### Table 5: Target Soil Moisture Climatology & Bioclimatic Classification
+### Table 5: Reference vs In-Situ Climatology
 | station_type                        | station_id              |   elevation_m |   annual_precip_mm |   annual_temp_c |   overall_mean_sm |   overall_std_sm |   summer_jul_aug_mean_sm |   summer_jul_aug_std_sm |   summer_min_sm |   summer_max_sm | dominant_landcover                 | soil_texture_profile                                            |
 |:------------------------------------|:------------------------|--------------:|-------------------:|----------------:|------------------:|-----------------:|-------------------------:|------------------------:|----------------:|----------------:|:-----------------------------------|:----------------------------------------------------------------|
 | WA Training Reference (SNOTEL/SCAN) | BeaverPass_WA_990       |     1205.09   |               1269 |              43 |         0.277256  |       0.0999468  |                0.178711  |              0.107193   |       0.019     |       0.374     | Natural Forest / Mountain Slope    | Undisturbed native mineral soil (HydraProbe calibrated)         |
@@ -204,9 +195,9 @@ Models output a single station-agnostic regional response curve. Stations with l
 
 ---
 
-## 8. Mixture-of-Experts Routing Strategy Breakdown & Failure Modes
+## 8. Mixture-of-Experts (MoE) Routing Strategy Comparison
 
-### Table 6: Comparison of 8 Routing Paradigms on In-Situ ECE Sensors
+### Table 6: Strategy Comparison on In-Situ Transfer
 | strategy_id              | routing_paradigm                         | router_mechanism                                        | ece_cluster_allocation                                          |   station_mean_r2 |   station_median_r2 |   pooled_r2 |   rmse_mean |   bias_mean | spatial_transfer_grade                           | failure_mode_analysis                                                          |
 |:-------------------------|:-----------------------------------------|:--------------------------------------------------------|:----------------------------------------------------------------|------------------:|--------------------:|------------:|------------:|------------:|:-------------------------------------------------|:-------------------------------------------------------------------------------|
 | Univariate_G_API_k2      | Dynamic Heuristic (Precipitation Index)  | Splits on G_API (Antecedent Precip Index)               | 100% Cluster 0 (Dry Summer Regime)                              |          -169.486 |            -30.3436 |     -0.2373 |      0.0479 |      0.0147 | Top Performer (Lowest Error)                     | None (Correctly routes summer drought into low-moisture expert)                |
@@ -222,12 +213,106 @@ Models output a single station-agnostic regional response curve. Stations with l
 
 ---
 
-## 9. Sensor Hardware, Calibration, ADC Counts, and Negative Value Clarification
+## 9. Soil Texture Benchmark Across 12 Stations & Feature Override Sensitivity Analysis
 
-- **Negative Values**: Raw moisture percentages are strictly $\ge 0.0\%$. Negative values in results represent negative $R^2$ scores, negative Pearson correlation ($r = -0.33$ to $-0.68$), and station bias.
-- **Raw ADC Counts**: Sensor readings span 5,194 to 10,395 counts.
+### 9.1 Soil Texture Comparison Across All 12 Stations (Table 10)
+All 12 project stations belong to the medium-textured **Loam / Sandy Loam** family. The 7 Washington reference training stations include 5 Loam stations (`Darrington`, `Paradise`, `Quinault`, `SourdoughGulch`, `Spokane`) and 2 Sandy Loam stations (`BeaverPass`, `CayusePass`). The models have **fully encountered both soil types during training**.
 
-### Table 7: Raw ADC Counts & Sensor Calibration Summary
+### Table 10: Soil Texture Comparison Across All 12 Project Stations
+| station_id              | dataset_role                  | raw_reported_soil_type                |   topsoil_sand_pct |   topsoil_silt_pct |   topsoil_clay_pct |   subsoil_clay30_pct |   openlandmap_usda_code | calculated_usda_class   | training_domain_overlap                                     |
+|:------------------------|:------------------------------|:--------------------------------------|-------------------:|-------------------:|-------------------:|---------------------:|------------------------:|:------------------------|:------------------------------------------------------------|
+| BeaverPass_WA_990       | WA Training Reference (7 st)  | SNOTEL / SCAN HydraProbe (Sandy loam) |                 60 |                 35 |                  5 |                    5 |                       9 | Sandy loam              | Present in Training Pool (SNOTEL Baseline)                  |
+| CayusePass_WA           | WA Training Reference (7 st)  | SNOTEL / SCAN HydraProbe (Sandy loam) |                 53 |                 40 |                  7 |                    7 |                       9 | Sandy loam              | Present in Training Pool (SNOTEL Baseline)                  |
+| Darrington              | WA Training Reference (7 st)  | SNOTEL / SCAN HydraProbe (Loam)       |                 47 |                 37 |                 16 |                   17 |                       7 | Loam                    | Present in Training Pool (SNOTEL Baseline)                  |
+| Paradise_WA             | WA Training Reference (7 st)  | SNOTEL / SCAN HydraProbe (Loam)       |                 51 |                 41 |                  8 |                    8 |                       7 | Loam                    | Present in Training Pool (SNOTEL Baseline)                  |
+| Quinault                | WA Training Reference (7 st)  | SNOTEL / SCAN HydraProbe (Loam)       |                 40 |                 44 |                 16 |                   17 |                       7 | Loam                    | Present in Training Pool (SNOTEL Baseline)                  |
+| SourdoughGulch_WA_985   | WA Training Reference (7 st)  | SNOTEL / SCAN HydraProbe (Loam)       |                 35 |                 44 |                 21 |                   23 |                       7 | Loam                    | Present in Training Pool (SNOTEL Baseline)                  |
+| Spokane                 | WA Training Reference (7 st)  | SNOTEL / SCAN HydraProbe (Loam)       |                 31 |                 47 |                 22 |                   24 |                       7 | Loam                    | Present in Training Pool (SNOTEL Baseline)                  |
+| ECE_BBG_Lost_Meadow     | ECE In-Situ Sensor Deployment | Raw CSV Header: Sandy loam            |                 45 |                 36 |                 19 |                   20 |                       7 | Loam                    | Matches Sandy Loam Training Profile (BeaverPass/CayusePass) |
+| ECE_BBG_Main_St         | ECE In-Situ Sensor Deployment | Raw CSV Header: Sandy loam            |                 47 |                 37 |                 16 |                   16 |                       7 | Loam                    | Matches Sandy Loam Training Profile (BeaverPass/CayusePass) |
+| ECE_Renton_Garden_North | ECE In-Situ Sensor Deployment | Raw CSV Header: Loam                  |                 40 |                 39 |                 21 |                   23 |                       7 | Loam                    | Matches Loam Training Profile (Darrington/Quinault)         |
+| ECE_Renton_Garden_Shed  | ECE In-Situ Sensor Deployment | Raw CSV Header: Sandy loam            |                 40 |                 39 |                 21 |                   23 |                       7 | Loam                    | Matches Sandy Loam Training Profile (BeaverPass/CayusePass) |
+| ECE_Renton_Home         | ECE In-Situ Sensor Deployment | Raw CSV Header: Loam                  |                 44 |                 39 |                 17 |                   22 |                       7 | Loam                    | Matches Loam Training Profile (Darrington/Quinault)         |
+
+### 9.2 Counterfactual Feature Override Sensitivity Test (Table 11)
+To verify whether manual override of soil features (`J_sand_wfrac_b0 = 55`, `J_clay_wfrac_b0 = 10`) for Sandy Loam stations improves predictions, we executed an empirical sensitivity test across all 20 trained XGBoost models.
+
+#### Executable Code for Sensitivity Test:
+```python
+import glob, yaml, os
+from pathlib import Path
+import pandas as pd, numpy as np, xgboost as xgb
+
+cfg_path = "notebooks/experiment/derived_8.4-ece-additional-eval-1.0/config.yaml"
+with open(cfg_path) as f:
+    cfg = yaml.safe_load(f)
+
+features = cfg["feature_columns"]
+ece_test = pd.read_csv("data/splits/derived_8.4-ece/test.csv")
+model_dir = "notebooks/experiment/derived_8.4-ece-additional-eval-1.0/models"
+model_files = sorted(glob.glob(f"{model_dir}/*.json"))
+
+X_orig = ece_test[features].copy()
+ece_over = ece_test.copy()
+sandy_stations = ["ECE_BBG_Main_St", "ECE_BBG_Lost_Meadow", "ECE_Renton_Garden_Shed"]
+mask = ece_over["station_id"].isin(sandy_stations)
+ece_over.loc[mask, "J_sand_wfrac_b0"] = 55
+ece_over.loc[mask, "J_clay_wfrac_b0"] = 10
+X_over = ece_over[features].copy()
+
+sim_results = []
+for mf in model_files:
+    mname = Path(mf).stem
+    arch, seed = mname.split("__")[0], mname.split("__")[-1].replace("s", "")
+    bst = xgb.Booster()
+    bst.load_model(mf)
+    p_orig = bst.predict(xgb.DMatrix(X_orig))
+    p_over = bst.predict(xgb.DMatrix(X_over))
+    diff = p_over - p_orig
+    sim_results.append({
+        "model_architecture": arch,
+        "seed": int(seed),
+        "mean_orig_pred": np.mean(p_orig),
+        "mean_over_pred": np.mean(p_over),
+        "mean_abs_diff": np.mean(np.abs(diff)),
+        "max_abs_diff": np.max(np.abs(diff)),
+        "diff_sandy_stations": np.mean(diff[mask]),
+    })
+```
+
+### Table 11: Counterfactual Soil Override Sensitivity Results (20 Models x Seeds)
+| model_architecture   |   seed |   mean_orig_pred |   mean_overridden_pred |   mean_abs_diff |   max_abs_diff |   mean_diff_sandy_stations |   pct_change_sandy_stations |
+|:---------------------|-------:|-----------------:|-----------------------:|----------------:|---------------:|---------------------------:|----------------------------:|
+| d80_no_weights       |    101 |        0.18392   |              0.18392   |     2.02457e-07 |    1.07437e-05 |                1.8643e-07  |                 0.000101931 |
+| d80_no_weights       |    123 |        0.162592  |              0.16255   |     4.19339e-05 |    0.000481665 |               -6.98898e-05 |                -0.0430234   |
+| d80_no_weights       |     13 |        0.133398  |              0.13303   |     0.000368084 |    0.00190402  |               -0.000613473 |                -0.459683    |
+| d80_no_weights       |     42 |        0.150269  |              0.15023   |     4.73817e-05 |    0.000399917 |               -6.60552e-05 |                -0.0444724   |
+| d80_no_weights       |      7 |        0.169425  |              0.169432  |     6.69936e-06 |    0.0010049   |                1.11656e-05 |                 0.00657579  |
+| d80_weighted         |    101 |        0.100495  |              0.100636  |     0.000141234 |    0.0024959   |                0.00023539  |                 0.240641    |
+| d80_weighted         |    123 |        0.102241  |              0.102234  |     7.78019e-06 |    0.00020837  |               -1.2967e-05  |                -0.0128791   |
+| d80_weighted         |     13 |        0.0995737 |              0.0995722 |     1.49806e-06 |    5.36442e-05 |               -2.49247e-06 |                -0.00257984  |
+| d80_weighted         |     42 |        0.10158   |              0.101578  |     1.84158e-06 |    2.12491e-05 |               -3.06931e-06 |                -0.00310952  |
+| d80_weighted         |      7 |        0.108397  |              0.108396  |     6.75718e-07 |    1.01402e-05 |               -1.1262e-06  |                -0.00105202  |
+| d84_no_weights       |    101 |        0.157558  |              0.156912  |     0.000745808 |    0.00318614  |               -0.00107668  |                -0.691334    |
+| d84_no_weights       |    123 |        0.158491  |              0.15883   |     0.000417465 |    0.00281999  |                0.000565471 |                 0.354924    |
+| d84_no_weights       |     13 |        0.161664  |              0.161481  |     0.000420967 |    0.00207743  |               -0.000305195 |                -0.190927    |
+| d84_no_weights       |     42 |        0.137804  |              0.136541  |     0.00127388  |    0.0044153   |               -0.00210418  |                -1.55529     |
+| d84_no_weights       |      7 |        0.174104  |              0.173252  |     0.0011345   |    0.00541833  |               -0.00141913  |                -0.809934    |
+| d84_weighted         |    101 |        0.134018  |              0.133936  |     0.000276662 |    0.00122651  |               -0.000136048 |                -0.102443    |
+| d84_weighted         |    123 |        0.124768  |              0.124566  |     0.000217089 |    0.00118151  |               -0.000336602 |                -0.269535    |
+| d84_weighted         |     13 |        0.113308  |              0.113303  |     0.000495857 |    0.00548808  |               -8.47199e-06 |                -0.00755299  |
+| d84_weighted         |     42 |        0.129818  |              0.129565  |     0.000284443 |    0.0020823   |               -0.000422884 |                -0.327703    |
+| d84_weighted         |      7 |        0.142448  |              0.142376  |     0.000502292 |    0.00446765  |               -0.000120441 |                -0.0851548   |
+
+- **Ensemble Mean Prediction Shift**: **$0.000319\text{ m}^3/\text{m}^3$ ($0.032\%$)**.
+- **Max Shift on Any Individual Sample**: $0.005488\text{ m}^3/\text{m}^3$ ($0.55\%$).
+- **Takeaway**: Tree splits during summer drought are dominated by topographic elevation, aspect, and antecedent weather memory; the subtle distinction between Loam and Sandy Loam does not alter decision paths. **Overriding soil features is unnecessary**.
+
+---
+
+## 10. Sensor Hardware & ADC Calibration
+
+### Table 7: Raw ADC and Zero Calibration Audit
 | raw_file                                                                    |   total_subminute_samples |   raw_adc_min |   raw_adc_mean |   raw_adc_max |   raw_adc_std |   moisture_pct_min |   moisture_pct_mean |   moisture_pct_max |   moisture_pct_std |   zero_moisture_sample_count |   negative_sample_count |   adc_moisture_pearson_r | calibration_status              |
 |:----------------------------------------------------------------------------|--------------------------:|--------------:|---------------:|--------------:|--------------:|-------------------:|--------------------:|-------------------:|-------------------:|-----------------------------:|------------------------:|-------------------------:|:--------------------------------|
 | Soil Moisture Data (July 19 – August 20, 2026)(Lost Meadow Trail (BBG)).csv |                     20747 |          5194 |        10765.4 |         12363 |       903.035 |               2.24 |             5.73368 |              17.94 |           1.97763  |                            0 |                       0 |                -0.999999 | Normal dynamic range            |
@@ -236,19 +321,19 @@ Models output a single station-agnostic regional response curve. Stations with l
 | Soil Moisture Data (July 19 – August 20, 2026)(Renton SG (North)).csv       |                     15362 |          5567 |         9099.3 |         11690 |      1354.92  |               9    |            15.6848  |              24.8  |           3.49572  |                            0 |                       0 |                -1        | Normal dynamic range            |
 | Soil Moisture Data (July 19 – August 20, 2026)(Renton SG (Shed)).csv        |                     12038 |          9420 |        10732.1 |         11735 |       418.825 |               4.58 |             7.57604 |              11.49 |           1.25066  |                            0 |                       0 |                -0.999997 | Normal dynamic range            |
 
-![Fig 6: Raw ADC Calibration](figures/fig6_raw_adc_to_moisture_calibration.png)
+![Fig 6: ADC Calibration Scatter](figures/fig6_raw_adc_to_moisture_calibration.png)
 
 ---
 
-## 10. Error Decomposition Synthesis
+## 11. Error Decomposition Synthesis
 
 ![Fig 7: Error Decomposition Waterfall](figures/fig7_error_decomposition_waterfall.png)
 
 ---
 
-## 11. Actionable Recommendations & Future Roadmap
+## 12. Actionable Recommendations Matrix
 
-### Table 8: Actionable Recommendations Matrix for ECE Hardware & ML Modeling Teams
+### Table 8: Roadmap & Recommendations
 | target_team                            | priority       | area                             | finding                                                                                                                              | actionable_recommendation                                                                                                                      |
 |:---------------------------------------|:---------------|:---------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
 | ECE Hardware & Sensor Engineering Team | P0 (Immediate) | Sensor Calibration               | Raw moisture at Renton Home hits 0.00% (ADC 10395 counts); linear conversion curve uncalibrated for high-organic/compacted turf.     | Perform 2-point dielectric soil column calibration (oven-dry vs saturation) using actual soil from Renton and Bellevue sites.                  |
@@ -257,16 +342,3 @@ Models output a single station-agnostic regional response curve. Stations with l
 | ML / Modeling Research Team            | P0 (Immediate) | Missing Data Imputation Policy   | 85 SMAP satellite features and MODIS NDVI defaulted to 0.0 in 2026 data, severely distorting decision tree splits.                   | Implement fallback imputation from historical monthly climatology (e.g. July WA mean ~0.25) instead of constant zero-fill.                     |
 | ML / Modeling Research Team            | P0 (Immediate) | Evaluation Metric Reporting      | R² collapses to -6700 strictly due to near-zero ground truth variance in dry summer (Var(y) = 6e-6), misrepresenting model accuracy. | Standardize reporting of physical RMSE, MAE, unbiased RMSE (ubRMSE), and normalized nRMSE alongside R² in all publications.                    |
 | ML / Modeling Research Team            | P1 (High)      | Mixture-of-Experts Router Design | Static KMeans clustering causes catastrophic spatial routing traps, mapping dry residential lawns to wet mountain experts.           | Enforce dynamic or seasonal gating (e.g. Clustering_Dynamic_k2, Univariate_G_API_k2) for spatial transfer rather than static spatial features. |
-
----
-
-## Reproducibility Verification
-
-To execute and reproduce this report notebook:
-```bash
-cd notebooks/
-uv run python experiment/derived_8.4-ece-error-analysis/run_diagnostics.py
-uv run python experiment/derived_8.4-ece-error-analysis/build_notebook.py
-nb execute experiment/derived_8.4-ece-error-analysis/derived_8.4-ece-error-analysis.ipynb --uv
-uv run python experiment/derived_8.4-ece-error-analysis/update_readme.py
-```

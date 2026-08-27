@@ -43,30 +43,36 @@ Loads required scientific libraries, verifies directory structure, and initializ
 
     cells.append(make_cell("code", r"""import os
 import sys
+import glob
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import yaml
+import xgboost as xgb
 from IPython.display import Image, display
 
-# Experiment root
-EXP_DIR = Path.cwd()
-if not (EXP_DIR / "config.yaml").exists():
-    # If run from notebooks/ root
-    EXP_DIR = Path.cwd() / "experiment" / "derived_8.4-ece-error-analysis"
+# Find project root robustly
+cur = Path.cwd().resolve()
+while cur != cur.parent:
+    if (cur / "data" / "splits").exists() and (cur / "notebooks").exists():
+        PROJECT_ROOT = cur
+        break
+    cur = cur.parent
 
+EXP_DIR = PROJECT_ROOT / "notebooks/experiment/derived_8.4-ece-error-analysis"
 TABLES_DIR = EXP_DIR / "tables"
 FIGURES_DIR = EXP_DIR / "figures"
 
 with open(EXP_DIR / "config.yaml", "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
 
+print(f"Project Root: {PROJECT_ROOT}")
 print(f"Loaded Diagnostic Report Configuration: {config['experiment_name']}")
 print(f"Tables Directory: {TABLES_DIR}")
 print(f"Figures Directory: {FIGURES_DIR}")
 """))
 
-    # Cell 2: Section 1 Narrative - Variance Compression
+    # Cell 2: Section 2 - Variance Compression
     cells.append(make_cell("markdown", r"""## 2. Mathematical Anatomy of Negative $R^2$ (The Variance Compression Paradox)
 
 The Nash-Sutcliffe Efficiency ($R^2$) is defined as:
@@ -84,7 +90,7 @@ display(t1)
 display(Image(filename=str(FIGURES_DIR / "fig1_r2_variance_compression_anatomy.png")))
 """))
 
-    # Cell 3: Section 2 - Historical Benchmarks
+    # Cell 3: Section 3 - Historical Benchmarks
     cells.append(make_cell("markdown", r"""## 3. Historical Cross-Experiment Reference Benchmarks
 
 To contextualize the ECE evaluation, we benchmark performance across three distinct operational domains:
@@ -99,108 +105,158 @@ print("=== TABLE 2: CROSS-EXPERIMENT BENCHMARK (TEMPORAL vs OOS vs ECE) ===")
 display(t2)
 """))
 
-    # Cell 4: Section 3 - Missing Satellite Data Audit
-    cells.append(make_cell("markdown", r"""## 4. Data Quality & Missingness Audit for 2026 Recency Gap
+    # Cell 4: Section 4 - Missing Data Audit
+    cells.append(make_cell("markdown", r"""## 4. Latent Data Quality Gap in 2026: Missing Satellite Products
 
-Because July–August 2026 is the most recent dataset ever processed in the project, latency in satellite data products created two severe data gaps in Google Earth Engine:
-1. **SMAP L3/L4 Surface Soil Moisture**: Completely missing ($30/30$ NaNs per station) in GEE image collections, resulting in all 85 derived SMAP features defaulting to `0.0`. In training, SMAP has mean $\approx 0.343\text{ m}^3/\text{m}^3$ (range $0.07 - 0.68$).
-2. **MODIS 250m NDVI (`NDVI_modis`)**: Completely missing ($30/30$ NaNs per station) due to 16-day compositing delay, defaulting to `0.0`.
-
-These features represent over $20\%$ of model split decisions in baseline architectures, forcing decision tree traversals down unvisited out-of-range leaf paths."""))
+An audit of the pipeline features reveals a significant data latency gap for recent 2026 observations:
+- **SMAP L3/L4 Surface Soil Moisture**: 85 derived features are **100% missing (NaN imputed to 0.0)** because SMAP products had not yet been ingested into Google Earth Engine for July/August 2026.
+- **MODIS 250m NDVI**: 12 derived features are **100% missing (imputed to 0.0)**.
+- **Impact**: In tree-based models, defaulting 97 top-tier satellite features to `0.0` forces tree traversals down unvisited decision splits, creating an artificial dry-bias offset."""))
 
     cells.append(make_cell("code", r"""t3 = pd.read_csv(TABLES_DIR / "table3_missing_data_audit.csv")
-print("=== TABLE 3: SATELLITE & WEATHER PRODUCT AUDIT (2026 vs TRAINING) ===")
+print("=== TABLE 3: 2026 MISSING SATELLITE DATA PRODUCT AUDIT ===")
 display(t3)
 display(Image(filename=str(FIGURES_DIR / "fig2_smap_ndvi_missingness_distributions.png")))
 """))
 
-    # Cell 5: Section 4 - Spatial Scale Mismatch
+    # Cell 5: Section 5 - Spatial Proximity & Table 4b
     cells.append(make_cell("markdown", r"""## 5. Spatial Scale Mismatch & Empirical 5-Station Side-by-Side Comparisons
 
-Macro-scale remote sensing and weather grids operate at resolutions of $1\text{ km}$ (MODIS), $11\text{ km}$ (Open-Meteo ERA5), and $9–36\text{ km}$ (SMAP).
-In contrast, the in-situ ECE sensors are deployed within sub-meter micro-habitats:
-- `ECE_Renton_Garden_North` vs `ECE_Renton_Garden_Shed` are only **53.4 meters apart**.
-- Their macro-weather and satellite reflectance inputs are virtually $100\%$ identical.
-- Yet ground truth moisture is **$15.49\%$ (North)** vs **$7.58\%$ (Shed)** — a **$2.04\times$ divergence** caused by unmodelled tree shade, rich garden compost, and roof eaves rain shadowing."""))
+Sensors deployed in close proximity receive nearly identical gridded satellite and weather inputs, but exhibit dramatically different in-situ soil moisture due to sub-meter siting micro-climates:
+- `ECE_Renton_Garden_North` (15.5% mean) vs `ECE_Renton_Garden_Shed` (7.6% mean) are separated by **only 53.4 meters**.
+- Gridded inputs (ERA5 rain, MODIS LST, SRTM elevation) are identical or near-identical, yet ground truth differs by **2.04×** due to localized shading and eaves rain shadowing.
+- Table 4b details all 30 empirical features across all 5 deployment stations."""))
 
     cells.append(make_cell("code", r"""t4 = pd.read_csv(TABLES_DIR / "table4_spatial_proximity_inputs.csv", index_col=0)
 t4b = pd.read_csv(TABLES_DIR / "table4b_side_by_side_sensor_pairs.csv")
-print("=== TABLE 4: PAIRWISE GEOGRAPHIC DISTANCE MATRIX (KM) ===")
+print("=== TABLE 4: PAIRWISE GEODESIC DISTANCE MATRIX (KM) ===")
 display(t4)
-print("\n=== TABLE 4B: EMPIRICAL SIDE-BY-SIDE FEATURE COMPARISONS ACROSS ALL 5 STATIONS ===")
+print("\n=== TABLE 4B: EMPIRICAL SIDE-BY-SIDE FEATURE COMPARISONS (ALL 5 STATIONS) ===")
 display(t4b)
 display(Image(filename=str(FIGURES_DIR / "fig3_spatial_microclimate_discrepancy.png")))
 """))
 
-    # Cell 6: Section 5 - Per-Station 30-Day Time Series
-    cells.append(make_cell("markdown", r"""## 6. Per-Station 30-Day Ground Truth vs Model Prediction Time Series
+    # Cell 6: Section 6 - Time Series Overlays & Day 30 Drop
+    cells.append(make_cell("markdown", r"""## 6. Per-Station 30-Day Observed vs Predicted Time Series & Anomaly Analysis
 
-Daily time series overlays comparing ground truth measurements against multi-seed average predictions from major model architectures across July 20 to August 19, 2026.
-Because dynamic inputs are low/missing, models predict a near-constant baseline ($\sim 0.10 - 0.16\text{ m}^3/\text{m}^3$), which aligns well with Renton Garden North ($15.5\%$) but creates substantial systematic positive bias at dry sites ($1.8\% - 5.8\%$)."""))
+### 6.1 Time Series Overlays Across All 5 Stations
+Line charts comparing actual ground-truth moisture against multi-seed predictions for `d84_weighted`, `d80_weighted`, and `d84_no_weights`.
+
+### 6.2 Explanation for Final-Day (August 19) Prediction Drop
+On the final day (`2026-08-19`), predicted moisture drops sharply across all stations from $\sim 0.11 - 0.12\text{ m}^3/\text{m}^3$ down to $\sim 0.034 - 0.068\text{ m}^3/\text{m}^3$.
+- **Root Cause**: The ECE dataset starts on July 20 without historical warmup buffer. For Days 1–29, 30-day rolling window features (`V_rollmin_G_API_kobs30`, `V_rollmean_G_API_kobs30`) evaluate to `NaN` and XGBoost follows its default missing branch.
+- **Day-30 Activation**: On Day 30, exactly 30 days accumulated, transitioning `V_rollmin_G_API_kobs30` from `NaN` to `0.000`. Because this single feature represents **23.9% of total feature importance** in `d84_weighted`, the activation of the numeric split `V_rollmin_G_API_kobs30 <= threshold` immediately routes predictions to the extreme dry terminal leaf node."""))
 
     cells.append(make_cell("code", r"""display(Image(filename=str(FIGURES_DIR / "fig8_per_station_timeseries_overlay.png")))
 """))
 
-    # Cell 7: Section 5b - Day-30 Warmup Drop
-    cells.append(make_cell("markdown", r"""## 7. Analysis of the Final-Day (August 19) Prediction Drop
-
-In the 30-day time-series plots, all models exhibit a sharp drop in predicted soil moisture on the final day (`2026-08-19`) from $\sim 0.11 - 0.12\text{ m}^3/\text{m}^3$ down to $\sim 0.034 - 0.068\text{ m}^3/\text{m}^3$.
-
-### Root Cause: 30-Day Rolling Window Warmup Boundary Transition
-1. **The Rolling Window Lag**: The ECE dataset begins on July 20, 2026 without prior historical buffer days. Consequently, for Days 1 through 29 (July 20 to August 18), all 30-day rolling window features (`V_rollmin_G_API_kobs30`, `V_rollmean_G_API_kobs30`, `V_rollmin_LST_modis_kobs30`, `SMAP_sm_am_interp_rollmean30`) evaluate to `NaN`.
-2. **XGBoost Missing-Value Routing**: During Days 1–29, tree traversals hit splits on these 30-day rolling features and take the default `missing_value` branch, outputting the general summer median value ($\sim 0.11 - 0.13\text{ m}^3/\text{m}^3$).
-3. **Day-30 Transition (NaN -> 0.000)**: On Day 30 (`2026-08-19`), exactly 30 daily observations have accumulated. Features like `V_rollmin_G_API_kobs30` transition from `NaN` to `0.000000` for the first time.
-4. **Massive Feature Importance Activation**: Because `V_rollmin_G_API_kobs30` accounts for **$23.9\%$ of total split gain** in `d84_weighted` (and `V_rollmin_LST_modis_kobs30` accounts for **$27.8\%$** in `d80_weighted`), the sudden presence of a valid numeric value ($0.0$) satisfies the condition `V_rollmin_G_API_kobs30 <= threshold`, actively routing tree traversals to the extreme dry terminal leaf node.
-
-This confirms that the drop is an artifact of the 30-day feature pipeline warmup boundary rather than a real meteorological event."""))
-
-    # Cell 8: Section 5c - Cross-Station Homogeneity & Coincidental Accuracy
-    cells.append(make_cell("markdown", r"""## 8. Cross-Station Prediction Homogeneity & The "Coincidental Accuracy" Proof
+    # Cell 7: Section 7 - Coincidental Accuracy Proof
+    cells.append(make_cell("markdown", r"""## 7. Cross-Station Prediction Homogeneity & "Coincidental Accuracy" Proof
 
 ### Hypothesis:
-The models are essentially predicting a single station-agnostic regional response curve across all 5 deployment sites. Stations with lower error (e.g. `ECE_Renton_Garden_North`) perform better not because the model possesses genuine site-specific sensitivity, but purely because that station's actual moisture level happens to coincide with the model's regional fallback level ($\sim 0.13\text{ m}^3/\text{m}^3$).
+The models output a single station-agnostic regional response curve. Stations with lower prediction error (e.g. `ECE_Renton_Garden_North`) perform well purely because their actual moisture happens to coincide with the model's global fallback level ($\sim 0.13\text{ m}^3/\text{m}^3$).
 
-### Quantitative Proof:
-1. **Cross-Station Prediction Correlation $r \ge 0.960$**:
-   - Between `ECE_Renton_Garden_North` and `ECE_Renton_Garden_Shed` (53m apart), prediction correlation is **$r = 0.999998$** with a mean absolute difference of **$0.000016\text{ m}^3/\text{m}^3$** ($0.0016\%$).
-   - Between Renton and Bellevue (13km apart), prediction correlation is **$r = 0.960 - 0.975$** with a pairwise difference $< 0.008\text{ m}^3/\text{m}^3$.
-2. **Error Dictated Strictly by Fallback Distance**:
-   - At `ECE_Renton_Garden_North`, where ground truth happens to be $\bar{y} = 0.155\text{ m}^3/\text{m}^3$, distance from fallback is only $|0.155 - 0.131| = 0.024\text{ m}^3/\text{m}^3 \implies \text{RMSE} = 0.037\text{ m}^3/\text{m}^3$, $R^2 \approx -0.98$.
-   - At `ECE_Renton_Home`, ground truth is $\bar{y} = 0.018\text{ m}^3/\text{m}^3 \implies |0.018 - 0.129| = 0.111\text{ m}^3/\text{m}^3 \implies \text{RMSE} = 0.113\text{ m}^3/\text{m}^3$, $R^2 \approx -1985$.
-   - Observed station RMSE correlates $1:1$ with distance to the global fallback level ($R^2_{\text{dist}} > 0.99$)."""))
+### Proof:
+1. **Prediction Correlation**: Cross-station prediction correlation is **$r \ge 0.960$** across all 5 stations (and $r = 0.999998$ between Renton Garden North and Shed).
+2. **Error Linearity**: Observed station RMSE is strictly proportional to $|\bar{y}_{\text{true}} - \bar{\hat{y}}_{\text{fallback}}|$ ($R^2 > 0.99$), confirming 100% coincidental alignment at Renton Garden North."""))
 
     cells.append(make_cell("code", r"""t9 = pd.read_csv(TABLES_DIR / "table9_coincidental_accuracy_proof.csv")
-print("=== TABLE 9: COINCIDENTAL ACCURACY PROOF ACROSS 5 STATIONS ===")
+print("=== TABLE 9: COINCIDENTAL ACCURACY PROOF ACROSS ALL 5 STATIONS ===")
 display(t9)
 display(Image(filename=str(FIGURES_DIR / "fig9_coincidental_accuracy_analysis.png")))
 """))
 
-    # Cell 9: Section 6 - Target Distribution & Domain Shift
-    cells.append(make_cell("markdown", r"""## 9. Target Distribution & Climatological Domain Shift
+    # Cell 8: Section 8 - Target Climatology & Domain Shift
+    cells.append(make_cell("markdown", r"""## 8. Target Climatology & Macro-Ecological Domain Shift
 
-The 7 Washington reference stations (SNOTEL/SCAN) are located in high-elevation montane/forest environments (e.g. CayusePass, Paradise, Darrington) with high annual rainfall ($1,000 - 3,500\text{ mm}$) and deep organic soil layers that retain moisture ($\mu = 0.217\text{ m}^3/\text{m}^3$).
-The ECE deployment sites represent Puget Sound lowland residential turf, manicured garden beds, and built-up areas that dry down rapidly to $1.8\% - 5.8\%$ in Mediterranean summer."""))
+Comparison between the 7 high-elevation mountain SNOTEL stations in training and the 5 low-elevation urban/garden ECE sensor sites:
+- **Elevation**: Training mean $= 890\text{ m}$ vs ECE mean $= 83\text{ m}$.
+- **Precipitation**: Training mean $= 1,850\text{ mm/yr}$ vs ECE mean $= 1,130\text{ mm/yr}$.
+- **Soil & Siting**: Undisturbed forest mineral soils vs residential turf and garden mulch."""))
 
     cells.append(make_cell("code", r"""t5 = pd.read_csv(TABLES_DIR / "table5_target_climatology_shift.csv")
-print("=== TABLE 5: TARGET CLIMATOLOGY & HYDROCLIMATIC PROFILES ===")
+print("=== TABLE 5: HYDROCLIMATIC PROFILE & DOMAIN SHIFT ===")
 display(t5)
 display(Image(filename=str(FIGURES_DIR / "fig4_target_distribution_domain_shift.png")))
 """))
 
-    # Cell 10: Section 7 - Routing Strategies & MoE Traps
-    cells.append(make_cell("markdown", r"""## 10. Routing Strategy Comparison & MoE Failure Modes
+    # Cell 9: Section 9 - Mixture of Experts Breakdown
+    cells.append(make_cell("markdown", r"""## 9. Mixture-of-Experts (MoE) Routing Strategy Comparison
 
-Evaluating the 8 routing architectures reveals why static KMeans clustering fails catastrophically under out-of-distribution spatial transfer:
-- `Clustering_V0_Full_k2` and `Clustering_Backbone54_k2` route `ECE_Renton_Home` and `ECE_BBG_Lost_Meadow` to Cluster 1 (the wet mountain regime trained on Paradise/CayusePass). The wet expert predicts $0.22 - 0.25\text{ m}^3/\text{m}^3$ for a site at $0.018\text{ m}^3/\text{m}^3$, driving $R^2$ to $-6,724$.
-- Dynamic routers (`Clustering_Dynamic_k2`, `Univariate_G_API_k2`, `Seasonal_Binary_k2`) route $100\%$ of summer samples to the dry regime (Cluster 0), avoiding static misrouting and achieving $\text{RMSE} = 0.0479\text{ m}^3/\text{m}^3$."""))
+Evaluating 8 different routing paradigms on the ECE dataset:
+- **Dynamic Routers** (`Univariate_G_API_k2`, `Clustering_Dynamic_k2`, `Seasonal_Binary_k2`): Successfully route 100% of samples into the dry summer regime, achieving optimal RMSE ($0.0479 - 0.0503\text{ m}^3/\text{m}^3$).
+- **Static MoE Routing Trap** (`Clustering_V0_Full_k2`, `Clustering_Backbone54_k2`): Static geographic features dominate the KMeans clustering space, erroneously routing low-elevation dry residential lawns (`ECE_Renton_Home`) to the wet mountain expert ($R^2 = -6,724$, $\text{Bias} = +0.13\text{ m}^3/\text{m}^3$)."""))
 
     cells.append(make_cell("code", r"""t6 = pd.read_csv(TABLES_DIR / "table6_routing_strategy_breakdown.csv")
-print("=== TABLE 6: ROUTING STRATEGY COMPARISON ACROSS 5 ECE SENSORS ===")
+print("=== TABLE 6: MOE ROUTING STRATEGY COMPARISON ON ECE DATA ===")
 display(t6)
 display(Image(filename=str(FIGURES_DIR / "fig5_routing_strategy_ece_comparison.png")))
 """))
 
-    # Cell 11: Section 8 - Sensor Hardware & Calibration
+    # Cell 10: Section 10 - Soil Texture Benchmark & Counterfactual Sensitivity Test
+    cells.append(make_cell("markdown", r"""## 10. Soil Texture Benchmark Across 12 Stations & Feature Override Sensitivity Analysis
+
+### 10.1 Soil Texture Comparison Across All 12 Stations (Table 10)
+We benchmark the soil types and percentage-based physical properties across all 7 Washington training reference stations and all 5 in-situ ECE stations:
+- **Training Set Composition**: 5 stations are **Loam** (`Darrington`, `Paradise`, `Quinault`, `SourdoughGulch`, `Spokane` — 71.4% of training rows), and 2 stations are **Sandy Loam** (`BeaverPass`, `CayusePass` — 28.6% of training rows).
+- **Encountered Soil Types**: The models have **definitely encountered both Loam and Sandy Loam** during training.
+
+### 10.2 Counterfactual Feature Override Sensitivity Test (Table 11)
+To determine whether manual feature override is worthwhile, we execute a counterfactual simulation across all 20 trained XGBoost models (5 seeds $\times$ 4 architectures), overriding the soil features for all 3 Sandy Loam stations (`ECE_BBG_Main_St`, `ECE_BBG_Lost_Meadow`, `ECE_Renton_Garden_Shed`) to $55\%$ Sand and $10\%$ Clay."""))
+
+    cells.append(make_cell("code", r"""# Executable Counterfactual Sensitivity Test across all 20 models and seeds
+cfg_path = PROJECT_ROOT / "notebooks/experiment/derived_8.4-ece-additional-eval-1.0/config.yaml"
+with open(cfg_path) as f:
+    cfg = yaml.safe_load(f)
+
+features = cfg["feature_columns"]
+ece_test = pd.read_csv(PROJECT_ROOT / "data/splits/derived_8.4-ece/test.csv")
+model_dir = PROJECT_ROOT / "notebooks/experiment/derived_8.4-ece-additional-eval-1.0/models"
+model_files = sorted(glob.glob(str(model_dir / "*.json")))
+
+X_orig = ece_test[features].copy()
+ece_over = ece_test.copy()
+sandy_stations = ["ECE_BBG_Main_St", "ECE_BBG_Lost_Meadow", "ECE_Renton_Garden_Shed"]
+mask = ece_over["station_id"].isin(sandy_stations)
+ece_over.loc[mask, "J_sand_wfrac_b0"] = 55
+ece_over.loc[mask, "J_clay_wfrac_b0"] = 10
+X_over = ece_over[features].copy()
+
+sim_results = []
+for mf in model_files:
+    mname = Path(mf).stem
+    arch, seed = mname.split("__")[0], mname.split("__")[-1].replace("s", "")
+    bst = xgb.Booster()
+    bst.load_model(mf)
+    p_orig = bst.predict(xgb.DMatrix(X_orig))
+    p_over = bst.predict(xgb.DMatrix(X_over))
+    diff = p_over - p_orig
+    sim_results.append({
+        "model_architecture": arch,
+        "seed": int(seed),
+        "mean_orig_pred": np.mean(p_orig),
+        "mean_over_pred": np.mean(p_over),
+        "mean_abs_diff": np.mean(np.abs(diff)),
+        "max_abs_diff": np.max(np.abs(diff)),
+        "diff_sandy_stations": np.mean(diff[mask]),
+    })
+
+sim_df = pd.DataFrame(sim_results)
+print("=== COUNTERFACTUAL OVERRIDE SENSITIVITY TEST SUMMARY ===")
+print(f"Total Models Evaluated: {len(sim_df)}")
+print(f"Mean Prediction Shift Across Ensemble: {sim_df['mean_abs_diff'].mean():.6f} m3/m3 ({sim_df['mean_abs_diff'].mean()*100:.4f}%)")
+print(f"Max Prediction Shift on Any Sample:     {sim_df['max_abs_diff'].max():.6f} m3/m3 ({sim_df['max_abs_diff'].max()*100:.4f}%)")
+print(f"Mean Shift on Sandy Loam Stations:     {sim_df['diff_sandy_stations'].mean():+.6f} m3/m3 ({sim_df['diff_sandy_stations'].mean()*100:+.4f}%)")
+
+t10 = pd.read_csv(TABLES_DIR / "table10_soil_texture_all_stations.csv")
+t11 = pd.read_csv(TABLES_DIR / "table11_soil_override_sensitivity.csv")
+print("\n=== TABLE 10: SOIL TEXTURE BENCHMARK ACROSS ALL 12 STATIONS ===")
+display(t10)
+print("\n=== TABLE 11: COUNTERFACTUAL OVERRIDE SENSITIVITY BREAKDOWN ===")
+display(t11)
+"""))
+
+    # Cell 11: Section 11 - Sensor Hardware & Calibration
     cells.append(make_cell("markdown", r"""## 11. Sensor Hardware, Calibration & Negative Value Clarification
 
 Analysis of raw sensor recordings and ADC counts:
@@ -213,7 +269,7 @@ display(t7)
 display(Image(filename=str(FIGURES_DIR / "fig6_raw_adc_to_moisture_calibration.png")))
 """))
 
-    # Cell 12: Section 9 - Error Decomposition Waterfall
+    # Cell 12: Section 12 - Error Decomposition Waterfall
     cells.append(make_cell("markdown", r"""## 12. Error Decomposition Synthesis
 
 Synthesis of error contributions illustrating how a baseline physical error ($\text{ubRMSE} \approx 0.048\text{ m}^3/\text{m}^3$) combined with siting bias ($+0.06\text{ m}^3/\text{m}^3$) and missing satellite data produces large negative $R^2$ when divided by near-zero ground truth variance."""))
@@ -221,7 +277,7 @@ Synthesis of error contributions illustrating how a baseline physical error ($\t
     cells.append(make_cell("code", r"""display(Image(filename=str(FIGURES_DIR / "fig7_error_decomposition_waterfall.png")))
 """))
 
-    # Cell 13: Section 10 - Actionable Recommendations
+    # Cell 13: Section 13 - Recommendations Matrix
     cells.append(make_cell("markdown", r"""## 13. Actionable Recommendations & Future Roadmap
 
 Specific protocols and recommendations tailored for the ECE Hardware Engineering Team and the ML / Modeling Research Team."""))
@@ -231,8 +287,8 @@ print("=== TABLE 8: ACTIONABLE RECOMMENDATIONS MATRIX ===")
 display(t8)
 """))
 
-    # Write notebook
-    nb_dict = {
+    # Assemble notebook
+    notebook = {
         "cells": cells,
         "metadata": {
             "kernelspec": {
@@ -241,12 +297,7 @@ display(t8)
                 "name": "python3",
             },
             "language_info": {
-                "codemirror_mode": {"name": "ipython", "version": 3},
-                "file_extension": ".py",
-                "mimetype": "text/x-python",
                 "name": "python",
-                "nbconvert_exporter": "python",
-                "pygments_lexer": "ipython3",
                 "version": "3.12.0",
             },
         },
@@ -255,7 +306,7 @@ display(t8)
     }
 
     with open(NOTEBOOK_PATH, "w", encoding="utf-8") as f:
-        json.dump(nb_dict, f, indent=2)
+        json.dump(notebook, f, indent=2)
 
     print(f"Successfully generated notebook at: {NOTEBOOK_PATH}")
 

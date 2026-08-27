@@ -1,0 +1,13 @@
+station_id,dataset_role,raw_reported_soil_type,topsoil_sand_pct,topsoil_silt_pct,topsoil_clay_pct,subsoil_clay30_pct,openlandmap_usda_code,calculated_usda_class,training_domain_overlap
+BeaverPass_WA_990,WA Training Reference (7 st),SNOTEL / SCAN HydraProbe (Sandy loam),60,35,5,5,9,Sandy loam,Present in Training Pool (SNOTEL Baseline)
+CayusePass_WA,WA Training Reference (7 st),SNOTEL / SCAN HydraProbe (Sandy loam),53,40,7,7,9,Sandy loam,Present in Training Pool (SNOTEL Baseline)
+Darrington,WA Training Reference (7 st),SNOTEL / SCAN HydraProbe (Loam),47,37,16,17,7,Loam,Present in Training Pool (SNOTEL Baseline)
+Paradise_WA,WA Training Reference (7 st),SNOTEL / SCAN HydraProbe (Loam),51,41,8,8,7,Loam,Present in Training Pool (SNOTEL Baseline)
+Quinault,WA Training Reference (7 st),SNOTEL / SCAN HydraProbe (Loam),40,44,16,17,7,Loam,Present in Training Pool (SNOTEL Baseline)
+SourdoughGulch_WA_985,WA Training Reference (7 st),SNOTEL / SCAN HydraProbe (Loam),35,44,21,23,7,Loam,Present in Training Pool (SNOTEL Baseline)
+Spokane,WA Training Reference (7 st),SNOTEL / SCAN HydraProbe (Loam),31,47,22,24,7,Loam,Present in Training Pool (SNOTEL Baseline)
+ECE_BBG_Lost_Meadow,ECE In-Situ Sensor Deployment,Raw CSV Header: Sandy loam,45,36,19,20,7,Loam,Matches Sandy Loam Training Profile (BeaverPass/CayusePass)
+ECE_BBG_Main_St,ECE In-Situ Sensor Deployment,Raw CSV Header: Sandy loam,47,37,16,16,7,Loam,Matches Sandy Loam Training Profile (BeaverPass/CayusePass)
+ECE_Renton_Garden_North,ECE In-Situ Sensor Deployment,Raw CSV Header: Loam,40,39,21,23,7,Loam,Matches Loam Training Profile (Darrington/Quinault)
+ECE_Renton_Garden_Shed,ECE In-Situ Sensor Deployment,Raw CSV Header: Sandy loam,40,39,21,23,7,Loam,Matches Sandy Loam Training Profile (BeaverPass/CayusePass)
+ECE_Renton_Home,ECE In-Situ Sensor Deployment,Raw CSV Header: Loam,44,39,17,22,7,Loam,Matches Loam Training Profile (Darrington/Quinault)
