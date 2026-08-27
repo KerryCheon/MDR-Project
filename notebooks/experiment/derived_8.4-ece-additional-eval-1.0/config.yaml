@@ -1,0 +1,113 @@
+experiment:
+  name: "derived_8.4-ece-additional-eval-1.0"
+  description: "Comparative evaluation of MDR-v25 models trained on derived_8.0 (5 stations) vs derived_8.4 (7 stations) on in-situ ECE sensor data"
+  author: "Jakob Balkovec"
+  date: "2026-08-26"
+
+datasets:
+  root: "../../../data/splits"
+  derived_8_0: "derived_8.0"
+  derived_8_4: "derived_8.4"
+  derived_8_4_ece: "derived_8.4-ece"
+
+target_column: "soil_moisture_5cm"
+
+meta_columns:
+  - "station_id"
+  - "date"
+  - "longitude"
+  - "latitude"
+
+feature_columns:
+  - "SMAP_sm_pm_interp_ema02"
+  - "V_rollmin_LST_modis_kobs30"
+  - "D_sin_DOY"
+  - "G_rain_sum_3d"
+  - "V_ema_G_API_kobs7"
+  - "V_rollmin_G_API_kobs30"
+  - "G_rain_sum_7d"
+  - "C_lag_LST_modis_kobs30"
+  - "C_lag_G_API_kobs1"
+  - "V_ema_G_API_kobs14"
+  - "V_rollmean_G_API_kobs14"
+  - "G_API"
+  - "G_DSLR"
+  - "SMAP_ampm_diff_interp"
+  - "V_rollmax_G_API_kobs30"
+  - "V_ema_G_API_kobs30"
+  - "V_rollmean_s2_b11_kobs7"
+  - "V_ema_LST_modis_kobs7"
+  - "V_rollmean_G_API_kobs7"
+  - "C_lag_s2_b11_kobs30"
+  - "A_d_E_SAR_diff_kobs14"
+  - "C_lag_LST_modis_kobs6"
+  - "A_d_LST_modis_kobs14"
+  - "A_d_SMAP_sm_interp_kobs14"
+  - "V_rollstd_SMAP_sm_interp_kobs30"
+  - "SMAP_sm_interp_grad7"
+  - "year_frac"
+  - "sin_year"
+  - "cos_year"
+  - "API_x_year"
+  - "SMAP_x_year"
+  - "slope"
+  - "elev"
+  - "K_slope_sin"
+  - "K_slope_cos"
+  - "K_aspect_cos"
+  - "J_clay_wfrac_b0"
+  - "J_sand_wfrac_b0"
+
+seeds:
+  - 42
+  - 7
+  - 13
+  - 101
+  - 123
+
+model_params:
+  no_weights:
+    objective: "reg:absoluteerror"
+    subsample: 0.9
+    colsample_bytree: 0.8
+    max_depth: 8
+    min_child_weight: 2
+    n_estimators: 5500
+    learning_rate: 0.04
+    reg_lambda: 1.5
+    reg_alpha: 0.03
+    gamma: 0.0
+  weighted:
+    objective: "reg:pseudohubererror"
+    subsample: 0.9
+    colsample_bytree: 0.8
+    max_depth: 8
+    min_child_weight: 2
+    n_estimators: 5500
+    learning_rate: 0.04
+    reg_lambda: 1.5
+    reg_alpha: 0.03
+    gamma: 0.0
+    weight_beta: 0.2
+
+configurations:
+  - config_id: "d80_no_weights"
+    train_dataset: "derived_8.0"
+    model_type: "no_weights"
+    description: "MDR-v25 Drift (No Weights) trained on derived_8.0 (5 WA stations)"
+    n_stations: 5
+  - config_id: "d80_weighted"
+    train_dataset: "derived_8.0"
+    model_type: "weighted"
+    description: "MDR-v25 Drift (Weighted beta=0.2) trained on derived_8.0 (5 WA stations)"
+    n_stations: 5
+  - config_id: "d84_no_weights"
+    train_dataset: "derived_8.4"
+    model_type: "no_weights"
+    description: "MDR-v25 Drift (No Weights) trained on derived_8.4 (7 WA stations)"
+    n_stations: 7
+  - config_id: "d84_weighted"
+    train_dataset: "derived_8.4"
+    model_type: "weighted"
+    description: "MDR-v25 Drift (Weighted beta=0.2) trained on derived_8.4 (7 WA stations)"
+    n_stations: 7
