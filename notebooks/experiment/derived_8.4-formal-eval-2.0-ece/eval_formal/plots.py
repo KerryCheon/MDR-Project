@@ -216,3 +216,190 @@ def plot_spatial_station_bars(per_station_df: pd.DataFrame, cfg_frame: pd.DataFr
     fig.savefig(path, dpi=150)
     plt.close(fig)
     return path
+
+
+ECE_MODEL_COLORS = {
+    "Baseline_V0_50": "#d62728",                       # Crimson Red
+    "Global_Single_54": "#2ca02c",                     # Forest Green
+    "Clustering_V0_Full_k2_c0_0_c1_10": "#1f77b4",     # Steel Blue (Headline MoE)
+    "Clustering_Backbone54_k2_c0_10_c1_10": "#ff7f0e", # Dark Orange (Backbone MoE)
+    "Trained_Gating_k2_c0_5_c1_10": "#9467bd",         # Purple (Gating MoE)
+    "Seasonal_Binary_k2_c0_0_c1_5": "#8c564b",         # Brown (Seasonal MoE)
+    "Clustering_Dynamic_k2_c0_10_c1_0": "#17becf",     # Cyan (Dynamic MoE)
+}
+
+ECE_MODEL_LINESTYLES = {
+    "Baseline_V0_50": "--",
+    "Global_Single_54": "-.",
+    "Clustering_V0_Full_k2_c0_0_c1_10": "-",
+    "Clustering_Backbone54_k2_c0_10_c1_10": ":",
+    "Trained_Gating_k2_c0_5_c1_10": "--",
+    "Seasonal_Binary_k2_c0_0_c1_5": "-.",
+    "Clustering_Dynamic_k2_c0_10_c1_0": ":",
+}
+
+DEFAULT_ECE_PLOT_CONFIGS = [
+    "Baseline_V0_50",
+    "Global_Single_54",
+    "Clustering_V0_Full_k2_c0_0_c1_10",
+    "Clustering_Backbone54_k2_c0_10_c1_10",
+    "Trained_Gating_k2_c0_5_c1_10",
+]
+
+
+def plot_ece_station_timeseries(
+    ece_df: pd.DataFrame,
+    config: dict,
+    cfg_frame: pd.DataFrame,
+    out_dir: Path,
+    *,
+    config_ids: list[str] | None = None,
+    seeds: list[int] | None = None,
+    predictions_dir: Path | None = None,
+    show_std: bool = True,
+) -> list[Path]:
+    """Plot chronological line charts of actual ground truth vs model predictions for each ECE station.
+
+    Generates:
+      1. spatial_ece_station_timeseries_predictions.png (combined 5-station multi-panel figure)
+      2. spatial_ece_timeseries_{station}.png (individual per-station high-resolution figures)
+    """
+    import matplotlib.dates as mdates
+
+    preds_dir = predictions_dir or (out_dir / Path(config.get("spatial", {}).get("predictions_dir", "predictions_spatial")))
+    seed_list = seeds or list(config.get("seeds", {}).get("spatial", [42]))
+    cfg_ids = config_ids or DEFAULT_ECE_PLOT_CONFIGS
+    stations = sorted(ece_df["station_id"].unique())
+    target_col = str(config.get("data", {}).get("target", "soil_moisture_5cm"))
+
+    generated_paths = []
+
+    # 1. Combined Multi-Panel Figure (5 rows, 1 per station)
+    fig, axes = plt.subplots(len(stations), 1, figsize=(14, 3.2 * len(stations)), sharex=True)
+    if len(stations) == 1:
+        axes = [axes]
+
+    for ax, station in zip(axes, stations):
+        mask = (ece_df["station_id"] == station).to_numpy()
+        sub = ece_df.iloc[mask].copy()
+        dates = pd.to_datetime(sub["date"])
+        y_true = sub[target_col].to_numpy(dtype=float)
+
+        # Plot observed ground truth
+        ax.plot(
+            dates, y_true,
+            color="black", marker="o", markersize=4.5, linewidth=2.2,
+            label="Observed In-Situ Ground Truth", zorder=6
+        )
+
+        # Plot model predictions (mean across seeds ± std ribbon)
+        for cid in cfg_ids:
+            pred_list = []
+            for s in seed_list:
+                pred_path = preds_dir / f"{cid}__s{s}__ece_preds.npy"
+                if pred_path.exists():
+                    p = np.load(pred_path)[mask]
+                    pred_list.append(p)
+
+            if not pred_list:
+                continue
+
+            pred_matrix = np.array(pred_list)  # (n_seeds, n_samples)
+            mean_pred = np.mean(pred_matrix, axis=0)
+            std_pred = np.std(pred_matrix, axis=0)
+
+            col = ECE_MODEL_COLORS.get(cid, "#555555")
+            ls = ECE_MODEL_LINESTYLES.get(cid, "-")
+            label = _label(cid, cfg_frame)
+
+            ax.plot(
+                dates, mean_pred,
+                color=col, linestyle=ls, linewidth=1.8,
+                label=f"{label} (mean)", alpha=0.9, zorder=5
+            )
+            if show_std and len(pred_list) > 1:
+                ax.fill_between(
+                    dates, mean_pred - std_pred, mean_pred + std_pred,
+                    color=col, alpha=0.10, zorder=4
+                )
+
+        clean_st = station.replace("ECE_", "").replace("_", " ")
+        ax.set_title(f"Station: {clean_st} ({station})", fontweight="bold", fontsize=12, pad=6)
+        ax.set_ylabel("Soil Moisture ($m^3/m^3$)", fontsize=11)
+        ax.grid(True, linestyle="--", alpha=0.35)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
+        ax.xaxis.set_major_locator(mdates.DayLocator(interval=3))
+
+    axes[0].legend(
+        loc="upper center", bbox_to_anchor=(0.5, 1.38),
+        ncol=3, fontsize=9.5, frameon=True, fancybox=True, shadow=False
+    )
+    axes[-1].set_xlabel("Date (2026)", fontsize=11)
+    fig.tight_layout()
+
+    combined_path = out_dir / "spatial_ece_station_timeseries_predictions.png"
+    fig.savefig(combined_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    generated_paths.append(combined_path)
+
+    # 2. Individual Per-Station Figures
+    for station in stations:
+        mask = (ece_df["station_id"] == station).to_numpy()
+        sub = ece_df.iloc[mask].copy()
+        dates = pd.to_datetime(sub["date"])
+        y_true = sub[target_col].to_numpy(dtype=float)
+
+        st_fig, st_ax = plt.subplots(figsize=(11, 5.5))
+        st_ax.plot(
+            dates, y_true,
+            color="black", marker="o", markersize=5, linewidth=2.4,
+            label="Observed In-Situ Ground Truth", zorder=6
+        )
+
+        for cid in cfg_ids:
+            pred_list = []
+            for s in seed_list:
+                pred_path = preds_dir / f"{cid}__s{s}__ece_preds.npy"
+                if pred_path.exists():
+                    p = np.load(pred_path)[mask]
+                    pred_list.append(p)
+
+            if not pred_list:
+                continue
+
+            pred_matrix = np.array(pred_list)
+            mean_pred = np.mean(pred_matrix, axis=0)
+            std_pred = np.std(pred_matrix, axis=0)
+
+            col = ECE_MODEL_COLORS.get(cid, "#555555")
+            ls = ECE_MODEL_LINESTYLES.get(cid, "-")
+            label = _label(cid, cfg_frame)
+
+            st_ax.plot(
+                dates, mean_pred,
+                color=col, linestyle=ls, linewidth=1.9,
+                label=f"{label} (mean across 30 seeds)", alpha=0.9, zorder=5
+            )
+            if show_std and len(pred_list) > 1:
+                st_ax.fill_between(
+                    dates, mean_pred - std_pred, mean_pred + std_pred,
+                    color=col, alpha=0.12, zorder=4
+                )
+
+        clean_st = station.replace("ECE_", "").replace("_", " ")
+        st_ax.set_title(f"In-Situ Soil Moisture Time Series: {clean_st} ({station})", fontweight="bold", fontsize=13, pad=10)
+        st_ax.set_ylabel("Soil Moisture ($m^3/m^3$)", fontsize=12)
+        st_ax.set_xlabel("Date (2026)", fontsize=12)
+        st_ax.grid(True, linestyle="--", alpha=0.35)
+        st_ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
+        st_ax.xaxis.set_major_locator(mdates.DayLocator(interval=3))
+        st_ax.legend(loc="best", fontsize=10, frameon=True)
+        st_fig.tight_layout()
+
+        st_path = out_dir / f"spatial_ece_timeseries_{station}.png"
+        st_fig.savefig(st_path, dpi=300, bbox_inches="tight")
+        plt.close(st_fig)
+        generated_paths.append(st_path)
+
+    return generated_paths
+

@@ -649,6 +649,9 @@ for cid in ["Clustering_V0_Full_k2_c0_0_c1_10", "Clustering_Backbone54_k2_c0_10_
 plots.plot_delta_robustness(temporal, spatial, cfg, EXP_DIR, metric="r2")
 plots.plot_delta_robustness(temporal, spatial, cfg, EXP_DIR, metric="rmse")
 
+# 6. In-Situ ECE Station time series (Actual vs Model Predictions)
+plots.plot_ece_station_timeseries(data.ece_all, config, cfg, EXP_DIR)
+
 print("[Plots] All figures written to", EXP_DIR)
 print(sorted(p.name for p in EXP_DIR.glob("*.png")))'''))
 

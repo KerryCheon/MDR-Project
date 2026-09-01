@@ -140,6 +140,8 @@ Table 4 illuminates the transfer characteristics and physical domain shifts enco
 
 ![Spatial ECE seed boxplot](spatial_seed_boxplot_r2.png)
 
+![ECE Station Timeseries Predictions](spatial_ece_station_timeseries_predictions.png)
+
 ![Delta robustness R2](delta_robustness_r2.png)
 
 ![Delta robustness RMSE](delta_robustness_rmse.png)
