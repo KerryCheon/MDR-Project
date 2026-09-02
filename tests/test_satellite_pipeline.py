@@ -446,3 +446,17 @@ def test_partial_sensor_properties_parsing(base_config):
     assert parsed["s1_vh"] is None
     assert parsed["s2_b3"] is None
 
+
+def test_smap_quality_metadata_does_not_erase_finite_retrieval(base_config):
+    pipe = OptimizedSatellitePipe(config=base_config, station_name="smap_quality_test")
+    parsed = pipe._parse_dynamic_props({
+        "smap_sm_am": 0.35,
+        "smap_sm_pm": 0.37,
+        "smap_qual_am": 1.0,
+        "smap_qual_pm": 1.0,
+    })
+
+    assert parsed["SMAP_sm_am"] == pytest.approx(0.35)
+    assert parsed["SMAP_sm_pm"] == pytest.approx(0.37)
+    assert parsed["SMAP_qual_am"] == pytest.approx(1.0)
+    assert parsed["SMAP_qual_pm"] == pytest.approx(1.0)

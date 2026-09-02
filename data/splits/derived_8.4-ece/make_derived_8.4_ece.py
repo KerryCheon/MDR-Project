@@ -8,6 +8,8 @@ from __future__ import annotations
 import os
 import sys
 import json
+import argparse
+import shutil
 import numpy as np
 import pandas as pd
 import yaml
@@ -106,6 +108,21 @@ ECE_STATIONS = [
 ]
 
 
+def prepare_smap_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Preserve SMAP retrieval-band missingness without inventing zeros."""
+    out = df.copy()
+    for suffix in ("am", "pm"):
+        raw_col = f"SMAP_sm_{suffix}"
+        value_col = f"SMAP_sm_{suffix}_interp"
+        if value_col not in out.columns:
+            source = out[raw_col] if raw_col in out.columns else pd.Series(np.nan, index=out.index)
+            out[value_col] = pd.to_numeric(source, errors="coerce")
+        else:
+            out[value_col] = pd.to_numeric(out[value_col], errors="coerce")
+
+    return out
+
+
 def load_processed_stations(config_path: str, project_root: str) -> pd.DataFrame:
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Config file not found at: {config_path}")
@@ -134,15 +151,7 @@ def load_processed_stations(config_path: str, project_root: str) -> pd.DataFrame
         if "station_id" in df.columns:
             df["station_id"] = df["station_id"].astype(str)
 
-        # Ensure SMAP interp columns exist
-        if "SMAP_sm_am_interp" not in df.columns:
-            df["SMAP_sm_am_interp"] = pd.to_numeric(df.get("SMAP_sm_am", 0.0), errors="coerce").fillna(0.0)
-        if "SMAP_sm_pm_interp" not in df.columns:
-            df["SMAP_sm_pm_interp"] = pd.to_numeric(df.get("SMAP_sm_pm", 0.0), errors="coerce").fillna(0.0)
-
-        # Fill SMAP if all NaN
-        df["SMAP_sm_am_interp"] = df["SMAP_sm_am_interp"].fillna(0.0)
-        df["SMAP_sm_pm_interp"] = df["SMAP_sm_pm_interp"].fillna(0.0)
+        df = prepare_smap_columns(df)
 
         unique_ids = df["station_id"].unique()
         if len(unique_ids) > 0 and unique_ids[0] in ECE_STATIONS:
@@ -408,7 +417,18 @@ def merge_static_features(df: pd.DataFrame, static_path: str) -> pd.DataFrame:
     return merged
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Build a quality-aware derived_8.4 ECE evaluation split.")
+    parser.add_argument(
+        "--out-dir",
+        default="data/splits/derived_8.4-ece-v2-native-missing",
+        help="Versioned output directory; the source derived_8.4-ece split is never overwritten by default.",
+    )
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, "..", "..", ".."))
     config_path = os.path.join(project_root, "src", "pipeline", "config_8.4_ece.yaml")
@@ -473,7 +493,8 @@ def main():
     val_df = pd.DataFrame(columns=ref_cols)
 
     # 5. Save outputs
-    out_dir = script_dir
+    out_dir = os.path.abspath(os.path.join(project_root, args.out_dir))
+    os.makedirs(out_dir, exist_ok=True)
     train_path = os.path.join(out_dir, "train.csv")
     val_path   = os.path.join(out_dir, "val.csv")
     test_path  = os.path.join(out_dir, "test.csv")
@@ -489,9 +510,12 @@ def main():
     # Copy config.yaml into split directory for reproducibility
     with open(config_path, "r", encoding="utf-8") as f_in, open(dest_config_path, "w", encoding="utf-8") as f_out:
         f_out.write(f_in.read())
+    shutil.copy2(os.path.join(script_dir, "dataset_metadata.py"), os.path.join(out_dir, "dataset_metadata.py"))
 
     meta = {
         "source": "In-situ ECE soil moisture sensors (Washington state BBG and Renton deployment)",
+        "missing_data_policy": "Native NaN from the SMAP retrieval-band mask; quality flags retained as diagnostics; no zero fill",
+        "builder": os.path.relpath(__file__, project_root),
         "derived_features": "350+ lags, rolling stats, GEE remote-sensing, LIA, and static features matching derived_8.4",
         "evaluation_dates": "2026-07-20 to 2026-08-19 (excluding partial start Jul 19, partial end Aug 20, missing Aug 1)",
         "lia_csv": os.path.relpath(lia_path, project_root),

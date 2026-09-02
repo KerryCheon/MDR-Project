@@ -1,0 +1,36 @@
+experiment:
+  name: "derived_8.4-ece-smap-ablation-1.0"
+  objective: "Measure the causal impact of the ECE SMAP zero-fill defect and compare operational missing-data policies."
+  parent_evaluation: "derived_8.4-ece-additional-eval-1.0"
+
+datasets:
+  training: "data/splits/derived_8.4"
+  ece_zero_filled: "data/splits/derived_8.4-ece"
+  ece_native_missing: "data/splits/derived_8.4-ece-v2-native-missing"
+
+target_column: "soil_moisture_5cm"
+seeds: [42, 7, 13, 101, 123]
+
+block_masking:
+  block_days: 30
+  fraction: 0.20
+
+model_params:
+  objective: "reg:pseudohubererror"
+  subsample: 0.9
+  colsample_bytree: 0.8
+  max_depth: 8
+  min_child_weight: 2
+  n_estimators: 5500
+  learning_rate: 0.04
+  reg_lambda: 1.5
+  reg_alpha: 0.03
+  gamma: 0.0
+  weight_beta: 0.2
+
+strategies:
+  - zero_filled_existing_policy
+  - native_missing_existing_training
+  - training_month_climatology
+  - no_smap_retrained
+  - block_masked_retrained

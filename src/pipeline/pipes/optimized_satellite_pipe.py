@@ -154,15 +154,11 @@ class OptimizedSatellitePipe:
             if val is not None:
                 out[f"s2_{band}"] = float(val) / 10000.0
 
-        # SMAP Soil Moisture and Quality Flags
-        sm_am = props.get("smap_sm_am")
-        if sm_am is not None:
-            out["SMAP_sm_am"] = float(sm_am)
-
-        sm_pm = props.get("smap_sm_pm")
-        if sm_pm is not None:
-            out["SMAP_sm_pm"] = float(sm_pm)
-
+        # SMAP Soil Moisture and Quality Flags. Preserve the quality metadata,
+        # but use the retrieval band's own mask as the availability authority.
+        # Historical caches contain finite retrievals with non-zero bit-field
+        # values, so treating every non-zero flag as hard-missing would erase
+        # legitimate observations.
         q_am = props.get("smap_qual_am")
         if q_am is not None:
             out["SMAP_qual_am"] = float(q_am)
@@ -170,6 +166,14 @@ class OptimizedSatellitePipe:
         q_pm = props.get("smap_qual_pm")
         if q_pm is not None:
             out["SMAP_qual_pm"] = float(q_pm)
+
+        sm_am = props.get("smap_sm_am")
+        if sm_am is not None:
+            out["SMAP_sm_am"] = float(sm_am)
+
+        sm_pm = props.get("smap_sm_pm")
+        if sm_pm is not None:
+            out["SMAP_sm_pm"] = float(sm_pm)
 
         return out
 

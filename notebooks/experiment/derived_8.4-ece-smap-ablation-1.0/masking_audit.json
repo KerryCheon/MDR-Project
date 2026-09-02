@@ -1,0 +1,27 @@
+[
+  {
+    "seed": 42,
+    "masked_rows": 2987,
+    "training_rows": 14608
+  },
+  {
+    "seed": 7,
+    "masked_rows": 2995,
+    "training_rows": 14608
+  },
+  {
+    "seed": 13,
+    "masked_rows": 2948,
+    "training_rows": 14608
+  },
+  {
+    "seed": 101,
+    "masked_rows": 2971,
+    "training_rows": 14608
+  },
+  {
+    "seed": 123,
+    "masked_rows": 2995,
+    "training_rows": 14608
+  }
+]
