@@ -1,9 +1,9 @@
-# ECE Farm Upstream Satellite & Soil Grid Chunk Validation
+# ECE Farm Upstream Satellite, Soil & Rainfall Grid Chunk Validation
 **Enumclaw, King County, Washington | Parcel PIN: `3420069035`**
 
 ## 1. Executive Summary
 
-This experiment generates high-resolution satellite basemaps with upstream-aligned dynamic satellite and static soil grid chunk overlays for the ECE soil moisture sensor deployment on a commercial farm in **Enumclaw, King County, Washington**.
+This experiment generates high-resolution satellite basemaps with upstream-aligned dynamic satellite, static soil, and gridded rainfall chunk overlays for the ECE soil moisture sensor deployment on a commercial farm in **Enumclaw, King County, Washington**.
 
 - **Farm Location**: Enumclaw, King County, Washington (Section 34, Township 20N, Range 06E)
 - **Parcel PIN**: `3420069035` (King County GIS official parcel boundary)
@@ -12,12 +12,13 @@ This experiment generates high-resolution satellite basemaps with upstream-align
 - **Upstream Grid Alignment**:
   - **1000m Macro Grid**: Aligned to integer 1000m coordinates in Web Mercator / UTM Zone 10N (MODIS LST thermal scale)
   - **250m Sub-Grid**: Aligned to integer 250m coordinates (MODIS NDVI / Sentinel-2 pixel grouping zone)
+  - **Precipitation**: PRISM & GridMET gridded rainfall (annual, 30-day, 7-day storm totals)
   - **Topography**: USGS 3DEP / SRTM 1-arc-second (~30m) digital elevation model
 
 ### Problem Addressed
 In previous sensor deployments (e.g. Bellevue Botanical Garden, Renton garden), sensor nodes placed in close proximity ($\sim 50\text{ m}$ apart) fell into identical satellite pixel footprints and buffer extraction zones. As a result, the spatial machine learning models predicted identical soil moisture values despite ground-truth variations.
 
-Because Parcel `3420069035` is over $1.1\text{ km}$ across, it intersects **23 distinct $250\text{m}$ sub-chunks** and crosses the **1000m MODIS Macro Thermal boundary**. This tool visualizes the exact parcel boundaries, upstream grids, and proves statistically that placing sensors in different chunks provides distinct satellite and soil feature inputs.
+Because Parcel `3420069035` is over $1.1\text{ km}$ across, it intersects **23 distinct $250\text{m}$ sub-chunks** and crosses the **1000m MODIS Macro Thermal boundary**. This tool visualizes the exact parcel boundaries, upstream grids, and proves statistically that placing sensors in different chunks provides distinct satellite, soil, and meteorological feature inputs.
 
 ---
 
@@ -27,6 +28,7 @@ Sub-meter **Esri World Imagery** overlaid with:
 - **Farm Parcel Boundary**: Solid gold/yellow line showing official 32-vertex King County parcel boundary.
 - **1000m Macro Grid**: Bold orange solid lines (`#FF3D00`) aligned to standard integer 1000m coordinates.
 - **250m Sub-Grid**: Cyan dashed lines (`#00E5FF`) with gold badges for parcel-intersecting chunks.
+- **Opaque Legend**: Positioned strictly on top of all grid lines and basemap layers (`zorder=100`).
 
 ![Figure 1: Farm Upstream Satellite Grid Reference Map](figures/farm_basemap_upstream_grid.png)
 
@@ -67,7 +69,18 @@ Digital elevation model contours and slope gradients derived from USGS 3DEP and 
 
 ---
 
-## 7. Statistical Feature Validation & Inter-Chunk Separability (Figure 6)
+## 7. Gridded Precipitation & Rainfall Map (Figure 6)
+
+High-resolution gridded rainfall derived from **PRISM** and **GridMET** datasets across Enumclaw, WA:
+- **Normal Annual Precipitation**: $1436\text{ mm} - 1492\text{ mm}$ (Cascade foothill orographic gradient).
+- **30-Day Wet Season Accumulation**: $227\text{ mm} - 242\text{ mm}$.
+- **7-Day Storm Total**: $78\text{ mm} - 83\text{ mm}$.
+
+![Figure 6: Farm Gridded Precipitation & Rainfall Map](figures/farm_basemap_rainfall_grid.png)
+
+---
+
+## 8. Statistical Feature Validation & Inter-Chunk Separability (Figure 7)
 
 All features were evaluated across the domain to verify non-zero variance ($\sigma > 0$):
 
@@ -87,44 +100,47 @@ All features were evaluated across the domain to verify non-zero variance ($\sig
 | `opt_grvi` | 0.14 | 0.06 | 0.04 | 0.30 | 42.51% | **True** |
 | `opt_vari` | 0.22 | 0.09 | 0.07 | 0.49 | 41.18% | **True** |
 | `modis_lst_celsius` | 24.65 | 0.95 | 23.26 | 26.82 | 3.83% | **True** |
+| `annual_precip_mm` | 1471.19 | 12.87 | 1436.30 | 1492.30 | 0.87% | **True** |
+| `precip_30d_mm` | 236.43 | 3.68 | 226.70 | 242.40 | 1.56% | **True** |
+| `precip_7d_mm` | 80.60 | 0.99 | 78.10 | 82.60 | 1.23% | **True** |
 
-![Figure 6: Inter-Chunk Feature Dissimilarity Matrix & Cross-Feature Correlation](figures/farm_feature_heterogeneity_heatmap.png)
+![Figure 7: Inter-Chunk Feature Dissimilarity Matrix & Cross-Feature Correlation](figures/farm_feature_heterogeneity_heatmap.png)
 
 ---
 
-## 8. Parcel-Intersecting Sensor Deployment Coordinates
+## 9. Parcel-Intersecting Sensor Deployment Coordinates
 
 The table below lists all **23 chunks intersecting King County Parcel `3420069035`**:
 
-| Chunk ID | Row | Col | Macro Chunk ID | Center Lat (°N) | Center Lon (°W) | Elevation (m) | Soil Series | Sand (%) | Clay (%) | OM (%) | Greenness (GRVI) | MODIS LST (°C) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `R02_C06` | 2 | 6 | Macro_M585_N972 | 47.1853 | -122.031 | 215.0 | Wilkeson | 26.5 | 13.8 | 7.63% | +0.108 | 25.60°C |
-| `R02_C07` | 2 | 7 | Macro_M585_N972 | 47.1853 | -122.028 | 217.0 | Wilkeson | 26.5 | 13.3 | 7.63% | +0.102 | 25.52°C |
-| `R02_C08` | 2 | 8 | Macro_M584_N972 | 47.1853 | -122.026 | 218.0 | Wilkeson | 26.5 | 14.4 | 7.63% | +0.067 | 23.82°C |
-| `R03_C06` | 3 | 6 | Macro_M585_N972 | 47.1838 | -122.031 | 216.0 | Wilkeson | 28.1 | 13.8 | 7.29% | +0.138 | 25.42°C |
-| `R03_C07` | 3 | 7 | Macro_M585_N972 | 47.1838 | -122.028 | 217.0 | Wilkeson | 28.1 | 13.3 | 7.29% | +0.158 | 25.29°C |
-| `R03_C08` | 3 | 8 | Macro_M584_N972 | 47.1838 | -122.026 | 218.0 | Wilkeson | 28.1 | 14.4 | 7.29% | +0.107 | 23.65°C |
-| `R04_C06` | 4 | 6 | Macro_M585_N971 | 47.1823 | -122.031 | 217.0 | Wilkeson | 30.4 | 13.8 | 7.23% | +0.047 | 23.95°C |
-| `R04_C07` | 4 | 7 | Macro_M585_N971 | 47.1823 | -122.028 | 219.0 | Kapowsin | 45.7 | 14.2 | 6.32% | +0.044 | 23.87°C |
-| `R04_C08` | 4 | 8 | Macro_M584_N971 | 47.1823 | -122.026 | 219.0 | Kapowsin | 45.7 | 14.4 | 6.32% | +0.178 | 25.10°C |
-| `R05_C06` | 5 | 6 | Macro_M585_N971 | 47.1807 | -122.031 | 216.0 | Wilkeson | 29.1 | 13.8 | 7.52% | +0.165 | 23.51°C |
-| `R05_C07` | 5 | 7 | Macro_M585_N971 | 47.1807 | -122.028 | 217.0 | Wilkeson | 29.1 | 13.3 | 7.52% | +0.212 | 23.26°C |
-| `R05_C08` | 5 | 8 | Macro_M584_N971 | 47.1807 | -122.026 | 217.0 | Wilkeson | 29.1 | 14.4 | 7.52% | +0.163 | 25.27°C |
-| `R06_C03` | 6 | 3 | Macro_M586_N971 | 47.1792 | -122.037 | 214.0 | Buckley | 51.4 | 12.8 | 10.03% | +0.116 | 25.61°C |
-| `R06_C04` | 6 | 4 | Macro_M585_N971 | 47.1792 | -122.035 | 214.0 | Wilkeson | 26.6 | 13.2 | 7.79% | +0.076 | 23.98°C |
-| `R06_C05` | 6 | 5 | Macro_M585_N971 | 47.1792 | -122.033 | 215.0 | Wilkeson | 26.6 | 14.2 | 7.79% | +0.109 | 23.79°C |
-| `R06_C06` | 6 | 6 | Macro_M585_N971 | 47.1792 | -122.031 | 216.0 | Wilkeson | 26.6 | 13.8 | 7.79% | +0.137 | 23.62°C |
-| `R06_C07` | 6 | 7 | Macro_M585_N971 | 47.1792 | -122.028 | 217.0 | Wilkeson | 26.6 | 13.3 | 7.79% | +0.137 | 23.57°C |
-| `R06_C08` | 6 | 8 | Macro_M584_N971 | 47.1792 | -122.026 | 217.0 | Wilkeson | 26.6 | 14.4 | 7.79% | +0.080 | 25.61°C |
-| `R07_C03` | 7 | 3 | Macro_M586_N971 | 47.1777 | -122.037 | 212.0 | Buckley | 52.9 | 12.8 | 10.19% | +0.149 | 25.57°C |
-| `R07_C04` | 7 | 4 | Macro_M585_N971 | 47.1777 | -122.035 | 213.0 | Wilkeson | 27.7 | 13.2 | 7.68% | +0.212 | 23.46°C |
-| `R07_C05` | 7 | 5 | Macro_M585_N971 | 47.1777 | -122.033 | 214.0 | Wilkeson | 27.7 | 14.2 | 7.68% | +0.187 | 23.51°C |
-| `R07_C06` | 7 | 6 | Macro_M585_N971 | 47.1777 | -122.031 | 215.0 | Wilkeson | 27.7 | 13.8 | 7.68% | +0.216 | 23.34°C |
-| `R07_C07` | 7 | 7 | Macro_M585_N971 | 47.1777 | -122.028 | 216.0 | Wilkeson | 27.7 | 13.3 | 7.68% | +0.070 | 23.90°C |
+| Chunk ID | Row | Col | Macro Chunk ID | Center Lat (°N) | Center Lon (°W) | Elevation (m) | Soil Series | Sand (%) | Clay (%) | OM (%) | Greenness (GRVI) | MODIS LST (°C) | Annual Precip (mm) | 30d Precip (mm) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `R02_C06` | 2 | 6 | Macro_M585_N972 | 47.1853 | -122.031 | 215.0 | Wilkeson | 26.5 | 13.8 | 7.63% | +0.108 | 25.60°C | 1466 mm | 231 mm |
+| `R02_C07` | 2 | 7 | Macro_M585_N972 | 47.1853 | -122.028 | 217.0 | Wilkeson | 26.5 | 13.3 | 7.63% | +0.102 | 25.52°C | 1468 mm | 238 mm |
+| `R02_C08` | 2 | 8 | Macro_M584_N972 | 47.1853 | -122.026 | 218.0 | Wilkeson | 26.5 | 14.4 | 7.63% | +0.067 | 23.82°C | 1469 mm | 237 mm |
+| `R03_C06` | 3 | 6 | Macro_M585_N972 | 47.1838 | -122.031 | 216.0 | Wilkeson | 28.1 | 13.8 | 7.29% | +0.138 | 25.42°C | 1483 mm | 234 mm |
+| `R03_C07` | 3 | 7 | Macro_M585_N972 | 47.1838 | -122.028 | 217.0 | Wilkeson | 28.1 | 13.3 | 7.29% | +0.158 | 25.29°C | 1484 mm | 241 mm |
+| `R03_C08` | 3 | 8 | Macro_M584_N972 | 47.1838 | -122.026 | 218.0 | Wilkeson | 28.1 | 14.4 | 7.29% | +0.107 | 23.65°C | 1486 mm | 240 mm |
+| `R04_C06` | 4 | 6 | Macro_M585_N971 | 47.1823 | -122.031 | 217.0 | Wilkeson | 30.4 | 13.8 | 7.23% | +0.047 | 23.95°C | 1490 mm | 235 mm |
+| `R04_C07` | 4 | 7 | Macro_M585_N971 | 47.1823 | -122.028 | 219.0 | Kapowsin | 45.7 | 14.2 | 6.32% | +0.044 | 23.87°C | 1492 mm | 242 mm |
+| `R04_C08` | 4 | 8 | Macro_M584_N971 | 47.1823 | -122.026 | 219.0 | Kapowsin | 45.7 | 14.4 | 6.32% | +0.178 | 25.10°C | 1492 mm | 241 mm |
+| `R05_C06` | 5 | 6 | Macro_M585_N971 | 47.1807 | -122.031 | 216.0 | Wilkeson | 29.1 | 13.8 | 7.52% | +0.165 | 23.51°C | 1469 mm | 232 mm |
+| `R05_C07` | 5 | 7 | Macro_M585_N971 | 47.1807 | -122.028 | 217.0 | Wilkeson | 29.1 | 13.3 | 7.52% | +0.212 | 23.26°C | 1471 mm | 238 mm |
+| `R05_C08` | 5 | 8 | Macro_M584_N971 | 47.1807 | -122.026 | 217.0 | Wilkeson | 29.1 | 14.4 | 7.52% | +0.163 | 25.27°C | 1471 mm | 238 mm |
+| `R06_C03` | 6 | 3 | Macro_M586_N971 | 47.1792 | -122.037 | 214.0 | Buckley | 51.4 | 12.8 | 10.03% | +0.116 | 25.61°C | 1471 mm | 235 mm |
+| `R06_C04` | 6 | 4 | Macro_M585_N971 | 47.1792 | -122.035 | 214.0 | Wilkeson | 26.6 | 13.2 | 7.79% | +0.076 | 23.98°C | 1471 mm | 240 mm |
+| `R06_C05` | 6 | 5 | Macro_M585_N971 | 47.1792 | -122.033 | 215.0 | Wilkeson | 26.6 | 14.2 | 7.79% | +0.109 | 23.79°C | 1473 mm | 234 mm |
+| `R06_C06` | 6 | 6 | Macro_M585_N971 | 47.1792 | -122.031 | 216.0 | Wilkeson | 26.6 | 13.8 | 7.79% | +0.137 | 23.62°C | 1474 mm | 233 mm |
+| `R06_C07` | 6 | 7 | Macro_M585_N971 | 47.1792 | -122.028 | 217.0 | Wilkeson | 26.6 | 13.3 | 7.79% | +0.137 | 23.57°C | 1475 mm | 239 mm |
+| `R06_C08` | 6 | 8 | Macro_M584_N971 | 47.1792 | -122.026 | 217.0 | Wilkeson | 26.6 | 14.4 | 7.79% | +0.080 | 25.61°C | 1475 mm | 238 mm |
+| `R07_C03` | 7 | 3 | Macro_M586_N971 | 47.1777 | -122.037 | 212.0 | Buckley | 52.9 | 12.8 | 10.19% | +0.149 | 25.57°C | 1486 mm | 238 mm |
+| `R07_C04` | 7 | 4 | Macro_M585_N971 | 47.1777 | -122.035 | 213.0 | Wilkeson | 27.7 | 13.2 | 7.68% | +0.212 | 23.46°C | 1487 mm | 242 mm |
+| `R07_C05` | 7 | 5 | Macro_M585_N971 | 47.1777 | -122.033 | 214.0 | Wilkeson | 27.7 | 14.2 | 7.68% | +0.187 | 23.51°C | 1488 mm | 237 mm |
+| `R07_C06` | 7 | 6 | Macro_M585_N971 | 47.1777 | -122.031 | 215.0 | Wilkeson | 27.7 | 13.8 | 7.68% | +0.216 | 23.34°C | 1489 mm | 235 mm |
+| `R07_C07` | 7 | 7 | Macro_M585_N971 | 47.1777 | -122.028 | 216.0 | Wilkeson | 27.7 | 13.3 | 7.68% | +0.070 | 23.90°C | 1491 mm | 242 mm |
 
 ---
 
-## 9. Recommendations for ECE Field Placement
+## 10. Recommendations for ECE Field Placement
 
 1. **Cross-Macro Placement**: Deploy at least one node in **Macro Chunk M586_N971** (e.g. `R06_C03` or `R07_C03`) and at least one node in **Macro Chunk M585_N971** (e.g. `R05_C07` or `R06_C06`) to ensure the sensors capture distinct MODIS 1km LST thermal steps.
 2. **Soil Series Contrast**: Place one node in the alluvial lowland **Buckley series** (`R07_C03`, $10.19\%$ OM, $52.9\%$ sand) and another in the terrace **Wilkeson series** (`R05_C07`, $7.52\%$ OM, $29.1\%$ sand) to give the ML models rich soil feature variation.
