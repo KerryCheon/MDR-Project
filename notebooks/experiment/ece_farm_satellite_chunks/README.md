@@ -1,99 +1,131 @@
-# ECE Farm Satellite Base Map & Grid Chunk Validation
+# ECE Farm Upstream Satellite & Soil Grid Chunk Validation
+**Enumclaw, King County, Washington | Parcel PIN: `3420069035`**
 
 ## 1. Executive Summary
 
-This experiment creates high-resolution satellite basemaps with dynamic satellite and static soil grid overlays for the new ECE soil moisture sensor deployment near Buckley / Enumclaw, Pierce County, Washington.
+This experiment generates high-resolution satellite basemaps with upstream-aligned dynamic satellite and static soil grid chunk overlays for the ECE soil moisture sensor deployment on a commercial farm in **Enumclaw, King County, Washington**.
 
-- **Farm Center Coordinates**: $47^\circ 10' 52.1''\text{ N}, 122^\circ 01' 56.5''\text{ W}$ ($47.181139^\circ\text{ N}, -122.032361^\circ\text{ W}$)
-- **Spatial Extent**: $2.0\text{ km} \times 2.0\text{ km}$ square bounding box ($\pm 1.0\text{ km}$ East-West and North-South from center)
-- **Bounding Box (WGS-84)**: $[47.1750^\circ\text{ N}, 47.1872^\circ\text{ N}]$, $[-122.0413^\circ\text{ W}, -122.0234^\circ\text{ W}]$
-- **Grid Partitions**: $8 \times 8 = 64$ chunks ($250\text{ m} \times 250\text{ m}$ per chunk)
+- **Farm Location**: Enumclaw, King County, Washington (Section 34, Township 20N, Range 06E)
+- **Parcel PIN**: `3420069035` (King County GIS official parcel boundary)
+- **Parcel Area**: $69.4\text{ acres}$ ($3,023,914.9\text{ sq ft}$, $32\text{ polygon vertices}$)
+- **Parcel Extent**: Lat $[47.17746^\circ\text{ N}, 47.18464^\circ\text{ N}]$, Lon $[-122.03737^\circ\text{ W}, -122.02688^\circ\text{ W}]$
+- **Upstream Grid Alignment**:
+  - **1000m Macro Grid**: Aligned to integer 1000m coordinates in Web Mercator / UTM Zone 10N (MODIS LST thermal scale)
+  - **250m Sub-Grid**: Aligned to integer 250m coordinates (MODIS NDVI / Sentinel-2 pixel grouping zone)
+  - **Topography**: USGS 3DEP / SRTM 1-arc-second (~30m) digital elevation model
 
-### Motivation & Problem Addressed
+### Problem Addressed
 In previous sensor deployments (e.g. Bellevue Botanical Garden, Renton garden), sensor nodes placed in close proximity ($\sim 50\text{ m}$ apart) fell into identical satellite pixel footprints and buffer extraction zones. As a result, the spatial machine learning models predicted identical soil moisture values despite ground-truth variations.
 
-Because this farm is large enough to span multiple satellite and soil chunks, this tool provides visual field reference maps and statistically proves that deploying sensors across different grid chunks supplies distinct satellite and soil feature vectors to the model.
+Because Parcel `3420069035` is over $1.1\text{ km}$ across, it intersects **23 distinct $250\text{m}$ sub-chunks** and crosses the **1000m MODIS Macro Thermal boundary**. This tool visualizes the exact parcel boundaries, upstream grids, and proves statistically that placing sensors in different chunks provides distinct satellite and soil feature inputs.
 
 ---
 
-## 2. Satellite Base Map & Dynamic Satellite Grid Overlay
+## 2. Upstream Satellite Base Map & Grid Reference (Figure 1)
 
-The base map uses high-resolution **Esri World Imagery** overlaid with $250\text{ m} \times 250\text{ m}$ operational satellite chunks (`R01_C01` to `R08_C08`) and $1000\text{ m}$ macro quadrants (MODIS LST scale). The exact farm center GPS reference is marked with a crosshair and coordinate callout.
+Sub-meter **Esri World Imagery** overlaid with:
+- **Farm Parcel Boundary**: Solid gold/yellow line showing official 32-vertex King County parcel boundary.
+- **1000m Macro Grid**: Bold orange solid lines (`#FF3D00`) aligned to standard integer 1000m coordinates.
+- **250m Sub-Grid**: Cyan dashed lines (`#00E5FF`) with gold badges for parcel-intersecting chunks.
 
-![Figure 1: Farm Satellite Base Map & 250m Reference Grid Chunks](figures/farm_basemap_satellite_grid.png)
+![Figure 1: Farm Upstream Satellite Grid Reference Map](figures/farm_basemap_upstream_grid.png)
 
 ---
 
-## 3. Static Soil Features & Texture Grid Overlay
+## 3. Static Soil Properties & Texture Grid Overlay (Figure 2)
 
-Soil properties are critical static predictors in MDR soil moisture models. We integrate **USDA NRCS SSURGO** soil survey map units and **ISRIC SoilGrids 250m** texture profiles:
-- **Buckley series** (`mukey: 300971`): Buckley gravelly loam, 0 to 3% slopes, poorly drained, high organic matter ($10.0\%$), bulk density $1.05\text{ g/cm}^3$.
-- **Wilkeson series** (`mukey: 300985`): Wilkeson silt loam, 0 to 6% slopes, moderately well drained, $58.0\%$ silt, $7.5\%$ OM, bulk density $1.15\text{ g/cm}^3$.
-- **Kapowsin series** (`mukey: 300962`): Kapowsin gravelly loam, 0 to 6% slopes, upland glacial till, bulk density $1.25\text{ g/cm}^3$.
+Integration of **USDA NRCS SSURGO** soil survey map units and **ISRIC SoilGrids 250m** depth profiles:
+- **Buckley series** (`mukey: 300971`): Rich alluvial lowland flat ($10.0\%$ OM, bulk density $1.05\text{ g/cm}^3$, poorly drained)
+- **Wilkeson series** (`mukey: 300985`): Silt loam terrace soil ($58.0\%$ silt, $7.5\%$ OM, bulk density $1.16\text{ g/cm}^3$, moderately well drained)
+- **Kapowsin series** (`mukey: 300962`): Upland glacial till ($14.5\%$ clay, bulk density $1.24\text{ g/cm}^3$)
 
 ![Figure 2: Farm Static Soil Features & Texture Grid Overlay](figures/farm_basemap_soil_grid.png)
 
 ---
 
-## 4. Topographical Elevation & Slope Profile
+## 4. Optical Vegetation & Surface Reflectance Grid (Figure 3)
 
-Across the $2.0\text{ km} \times 2.0\text{ km}$ territory, high-resolution topography (USGS 3DEP / Open-Meteo) reveals a $20+\text{ m}$ elevation gradient ($200.0\text{ m}$ in the lowland alluvial drainage channels to $220.0\text{ m}$ on the higher glaciated terraces).
+Chunk-level extraction of multi-band optical surface reflectance and vegetation indices (Green-Red Vegetation Index `GRVI`, Visible Atmospherically Resistant Index `VARI`, and RGB reflectance).
 
-![Figure 3: Farm Topographical Elevation Profile & Contours](figures/farm_terrain_elevation_slope.png)
+![Figure 3: Farm Optical Vegetation & Surface Reflectance Grid](figures/farm_basemap_optical_ndvi_grid.png)
 
 ---
 
-## 5. Statistical Feature Validation & Inter-Chunk Separability
+## 5. MODIS Thermal Land Surface Temperature (LST) Map (Figure 4)
 
-All dynamic satellite, static soil, and topographical features were extracted across all 64 grid chunks. Inter-chunk variance ($\sigma > 0$) and coefficient of variation ($CV$) were computed to verify feature differentiation:
+Thermal land surface temperature variations derived from MODIS MOD11A1 products across the 1000m macro thermal chunk boundary, demonstrating temperature discontinuities that occur when sensors cross 1km tiles.
+
+![Figure 4: Farm MODIS Thermal Land Surface Temperature Map](figures/farm_basemap_thermal_lst_grid.png)
+
+---
+
+## 6. Topographical Elevation & Slope Contours Map (Figure 5)
+
+Digital elevation model contours and slope gradients derived from USGS 3DEP and SRTM 1-arc-second data, illustrating hydrological drainage regimes across the farm parcel.
+
+![Figure 5: Farm Topographical Elevation Profile & Contours](figures/farm_basemap_terrain_dem_grid.png)
+
+---
+
+## 7. Statistical Feature Validation & Inter-Chunk Separability (Figure 6)
+
+All features were evaluated across the domain to verify non-zero variance ($\sigma > 0$):
 
 | Feature | Mean | Std | Min | Max | CV (%) | Distinct Values Confirmed |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `elevation_m` | 214.44 | 3.31 | 200.00 | 220.00 | 1.54% | **True** |
-| `slope_deg` | 0.49 | 0.59 | 0.11 | 3.01 | 120.42% | **True** |
-| `sand_pct` | 31.82 | 8.74 | 27.60 | 56.50 | 27.45% | **True** |
-| `clay_pct` | 13.31 | 0.62 | 11.30 | 13.90 | 4.67% | **True** |
-| `silt_pct` | 54.87 | 8.21 | 32.00 | 59.30 | 14.96% | **True** |
-| `organic_matter_pct` | 7.78 | 0.79 | 7.30 | 10.00 | 10.18% | **True** |
-| `bulk_density_g_cm3` | 1.18 | 0.04 | 1.05 | 1.21 | 3.48% | **True** |
-| `sand_clay_ratio` | 2.43 | 0.84 | 2.01 | 5.00 | 34.57% | **True** |
-| `opt_red_mean` | 82.53 | 12.55 | 49.60 | 116.00 | 15.21% | **True** |
-| `opt_green_mean` | 106.71 | 7.47 | 81.30 | 128.90 | 7.00% | **True** |
-| `opt_blue_mean` | 70.11 | 10.87 | 51.80 | 106.30 | 15.50% | **True** |
-| `opt_grvi` | 0.15 | 0.05 | 0.04 | 0.29 | 37.38% | **True** |
-| `opt_vari` | 0.23 | 0.09 | 0.07 | 0.47 | 37.83% | **True** |
+| `elevation_m` | 213.30 | 4.82 | 190.00 | 219.00 | 2.26% | **True** |
+| `slope_deg` | 0.63 | 0.93 | 0.00 | 5.80 | 149.54% | **True** |
+| `sand_pct` | 40.43 | 12.54 | 26.50 | 56.20 | 31.01% | **True** |
+| `clay_pct` | 13.25 | 0.93 | 11.60 | 15.00 | 7.04% | **True** |
+| `silt_pct` | 46.30 | 11.94 | 30.80 | 60.30 | 25.80% | **True** |
+| `organic_matter_pct` | 8.41 | 1.28 | 5.93 | 10.19 | 15.24% | **True** |
+| `bulk_density_g_cm3` | 1.12 | 0.07 | 1.03 | 1.25 | 6.07% | **True** |
+| `sand_clay_ratio` | 3.11 | 1.13 | 1.84 | 4.84 | 36.20% | **True** |
+| `opt_red_mean` | 79.83 | 14.12 | 46.50 | 134.30 | 17.68% | **True** |
+| `opt_green_mean` | 104.40 | 10.93 | 72.00 | 146.50 | 10.47% | **True** |
+| `opt_blue_mean` | 68.39 | 11.78 | 51.00 | 125.90 | 17.23% | **True** |
+| `opt_grvi` | 0.14 | 0.06 | 0.04 | 0.30 | 42.51% | **True** |
+| `opt_vari` | 0.22 | 0.09 | 0.07 | 0.49 | 41.18% | **True** |
+| `modis_lst_celsius` | 24.65 | 0.95 | 23.26 | 26.82 | 3.83% | **True** |
 
-![Figure 4: Inter-Chunk Feature Dissimilarity Matrix & Cross-Feature Correlation](figures/farm_feature_heterogeneity_heatmap.png)
-
----
-
-## 6. Field Deployment Reference Coordinates
-
-Representative sampling of chunk coordinates across the farm sectors (full database available in `farm_grid_chunks.csv`):
-
-| Chunk ID | Row | Col | Center Lat (°N) | Center Lon (°W) | Elevation (m) | Soil Series | Sand (%) | Clay (%) | OM (%) | Greenness (GRVI) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `R08_C01` | 8 | 1 | 47.17580 | -122.04022 | 213.0 | Wilkeson | 27.6 | 13.3 | 7.5 | 0.045 |
-| `R08_C05` | 8 | 5 | 47.17580 | -122.03124 | 215.0 | Wilkeson | 28.7 | 13.3 | 7.5 | 0.198 |
-| `R07_C01` | 7 | 1 | 47.17743 | -122.04022 | 200.0 | Buckley | 53.8 | 12.2 | 10.0 | 0.142 |
-| `R07_C05` | 7 | 5 | 47.17743 | -122.03124 | 215.0 | Wilkeson | 28.7 | 13.4 | 7.5 | 0.125 |
-| `R06_C01` | 6 | 1 | 47.17906 | -122.04022 | 200.0 | Buckley | 53.8 | 12.4 | 10.0 | 0.187 |
-| `R06_C05` | 6 | 5 | 47.17906 | -122.03124 | 215.0 | Wilkeson | 28.7 | 13.6 | 7.5 | 0.163 |
-| `R05_C01` | 5 | 1 | 47.18070 | -122.04022 | 216.0 | Wilkeson | 27.6 | 13.9 | 7.5 | 0.144 |
-| `R05_C05` | 5 | 5 | 47.18070 | -122.03124 | 215.0 | Wilkeson | 28.7 | 13.9 | 7.5 | 0.155 |
-| `R04_C01` | 4 | 1 | 47.18233 | -122.04022 | 216.0 | Wilkeson | 27.6 | 14.1 | 7.5 | 0.160 |
-| `R04_C05` | 4 | 5 | 47.18233 | -122.03124 | 216.0 | Wilkeson | 28.7 | 14.1 | 7.5 | 0.188 |
-| `R03_C01` | 3 | 1 | 47.18397 | -122.04022 | 216.0 | Wilkeson | 27.6 | 14.3 | 7.5 | 0.112 |
-| `R03_C05` | 3 | 5 | 47.18397 | -122.03124 | 217.0 | Wilkeson | 28.7 | 14.3 | 7.5 | 0.152 |
-| `R02_C01` | 2 | 1 | 47.18560 | -122.04022 | 211.0 | Buckley | 53.8 | 12.4 | 9.9 | 0.089 |
-| `R02_C05` | 2 | 5 | 47.18560 | -122.03124 | 217.0 | Wilkeson | 28.7 | 14.4 | 7.5 | 0.176 |
-| `R01_C01` | 1 | 1 | 47.18724 | -122.04022 | 211.0 | Buckley | 53.8 | 12.6 | 9.9 | 0.201 |
-| `R01_C05` | 1 | 5 | 47.18724 | -122.03124 | 217.0 | Wilkeson | 28.7 | 14.6 | 7.5 | 0.149 |
+![Figure 6: Inter-Chunk Feature Dissimilarity Matrix & Cross-Feature Correlation](figures/farm_feature_heterogeneity_heatmap.png)
 
 ---
 
-## 7. Field Placement Guidelines for ECE Team
+## 8. Parcel-Intersecting Sensor Deployment Coordinates
 
-1. **Inter-Chunk Spacing**: Avoid placing multiple sensor nodes inside the same $250\text{ m} \times 250\text{ m}$ chunk unless testing local micro-variance. Placing nodes at least $1$ chunk apart ($> 250\text{ m}$) ensures independent satellite feature sampling.
-2. **Soil Series Diversity**: Prioritize placing at least one sensor node in a **Buckley gravelly loam** chunk (e.g. `R07_C01`, `R06_C01`) and at least one node in a **Wilkeson silt loam** chunk (e.g. `R05_C05`, `R04_C05`) to capture contrasting soil texture and drainage behavior.
-3. **Topographical Distribution**: Place sensors across the elevation gradient ($200\text{m}$ lowland vs $217\text{m}$ upland) to validate how the model handles topographic drainage regimes.
+The table below lists all **23 chunks intersecting King County Parcel `3420069035`**:
+
+| Chunk ID | Row | Col | Macro Chunk ID | Center Lat (°N) | Center Lon (°W) | Elevation (m) | Soil Series | Sand (%) | Clay (%) | OM (%) | Greenness (GRVI) | MODIS LST (°C) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `R02_C06` | 2 | 6 | Macro_M585_N972 | 47.1853 | -122.031 | 215.0 | Wilkeson | 26.5 | 13.8 | 7.63% | +0.108 | 25.60°C |
+| `R02_C07` | 2 | 7 | Macro_M585_N972 | 47.1853 | -122.028 | 217.0 | Wilkeson | 26.5 | 13.3 | 7.63% | +0.102 | 25.52°C |
+| `R02_C08` | 2 | 8 | Macro_M584_N972 | 47.1853 | -122.026 | 218.0 | Wilkeson | 26.5 | 14.4 | 7.63% | +0.067 | 23.82°C |
+| `R03_C06` | 3 | 6 | Macro_M585_N972 | 47.1838 | -122.031 | 216.0 | Wilkeson | 28.1 | 13.8 | 7.29% | +0.138 | 25.42°C |
+| `R03_C07` | 3 | 7 | Macro_M585_N972 | 47.1838 | -122.028 | 217.0 | Wilkeson | 28.1 | 13.3 | 7.29% | +0.158 | 25.29°C |
+| `R03_C08` | 3 | 8 | Macro_M584_N972 | 47.1838 | -122.026 | 218.0 | Wilkeson | 28.1 | 14.4 | 7.29% | +0.107 | 23.65°C |
+| `R04_C06` | 4 | 6 | Macro_M585_N971 | 47.1823 | -122.031 | 217.0 | Wilkeson | 30.4 | 13.8 | 7.23% | +0.047 | 23.95°C |
+| `R04_C07` | 4 | 7 | Macro_M585_N971 | 47.1823 | -122.028 | 219.0 | Kapowsin | 45.7 | 14.2 | 6.32% | +0.044 | 23.87°C |
+| `R04_C08` | 4 | 8 | Macro_M584_N971 | 47.1823 | -122.026 | 219.0 | Kapowsin | 45.7 | 14.4 | 6.32% | +0.178 | 25.10°C |
+| `R05_C06` | 5 | 6 | Macro_M585_N971 | 47.1807 | -122.031 | 216.0 | Wilkeson | 29.1 | 13.8 | 7.52% | +0.165 | 23.51°C |
+| `R05_C07` | 5 | 7 | Macro_M585_N971 | 47.1807 | -122.028 | 217.0 | Wilkeson | 29.1 | 13.3 | 7.52% | +0.212 | 23.26°C |
+| `R05_C08` | 5 | 8 | Macro_M584_N971 | 47.1807 | -122.026 | 217.0 | Wilkeson | 29.1 | 14.4 | 7.52% | +0.163 | 25.27°C |
+| `R06_C03` | 6 | 3 | Macro_M586_N971 | 47.1792 | -122.037 | 214.0 | Buckley | 51.4 | 12.8 | 10.03% | +0.116 | 25.61°C |
+| `R06_C04` | 6 | 4 | Macro_M585_N971 | 47.1792 | -122.035 | 214.0 | Wilkeson | 26.6 | 13.2 | 7.79% | +0.076 | 23.98°C |
+| `R06_C05` | 6 | 5 | Macro_M585_N971 | 47.1792 | -122.033 | 215.0 | Wilkeson | 26.6 | 14.2 | 7.79% | +0.109 | 23.79°C |
+| `R06_C06` | 6 | 6 | Macro_M585_N971 | 47.1792 | -122.031 | 216.0 | Wilkeson | 26.6 | 13.8 | 7.79% | +0.137 | 23.62°C |
+| `R06_C07` | 6 | 7 | Macro_M585_N971 | 47.1792 | -122.028 | 217.0 | Wilkeson | 26.6 | 13.3 | 7.79% | +0.137 | 23.57°C |
+| `R06_C08` | 6 | 8 | Macro_M584_N971 | 47.1792 | -122.026 | 217.0 | Wilkeson | 26.6 | 14.4 | 7.79% | +0.080 | 25.61°C |
+| `R07_C03` | 7 | 3 | Macro_M586_N971 | 47.1777 | -122.037 | 212.0 | Buckley | 52.9 | 12.8 | 10.19% | +0.149 | 25.57°C |
+| `R07_C04` | 7 | 4 | Macro_M585_N971 | 47.1777 | -122.035 | 213.0 | Wilkeson | 27.7 | 13.2 | 7.68% | +0.212 | 23.46°C |
+| `R07_C05` | 7 | 5 | Macro_M585_N971 | 47.1777 | -122.033 | 214.0 | Wilkeson | 27.7 | 14.2 | 7.68% | +0.187 | 23.51°C |
+| `R07_C06` | 7 | 6 | Macro_M585_N971 | 47.1777 | -122.031 | 215.0 | Wilkeson | 27.7 | 13.8 | 7.68% | +0.216 | 23.34°C |
+| `R07_C07` | 7 | 7 | Macro_M585_N971 | 47.1777 | -122.028 | 216.0 | Wilkeson | 27.7 | 13.3 | 7.68% | +0.070 | 23.90°C |
+
+---
+
+## 9. Recommendations for ECE Field Placement
+
+1. **Cross-Macro Placement**: Deploy at least one node in **Macro Chunk M586_N971** (e.g. `R06_C03` or `R07_C03`) and at least one node in **Macro Chunk M585_N971** (e.g. `R05_C07` or `R06_C06`) to ensure the sensors capture distinct MODIS 1km LST thermal steps.
+2. **Soil Series Contrast**: Place one node in the alluvial lowland **Buckley series** (`R07_C03`, $10.19\%$ OM, $52.9\%$ sand) and another in the terrace **Wilkeson series** (`R05_C07`, $7.52\%$ OM, $29.1\%$ sand) to give the ML models rich soil feature variation.
+3. **Vegetation Density Spacing**: Space sensors between pasture areas with high greenness (`R07_C06` GRVI $= +0.216$) and tilled/crop areas with moderate greenness (`R04_C06` GRVI $= +0.047$).
