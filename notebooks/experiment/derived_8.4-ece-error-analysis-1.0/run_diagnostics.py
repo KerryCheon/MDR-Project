@@ -1,6 +1,6 @@
 """
 run_diagnostics.py
-Comprehensive diagnostic and statistical computation engine for derived_8.4-ece-error-analysis.
+Comprehensive diagnostic and statistical computation engine for derived_8.4-ece-error-analysis-1.0.
 Generates all 11 analytical tables and 9 publication figures.
 """
 

@@ -1,4 +1,4 @@
-# Diagnostic Report: `derived_8.4-ece-error-analysis`
+# Diagnostic Report: `derived_8.4-ece-error-analysis-1.0`
 
 ## Comprehensive Investigation into In-Situ ECE Sensor Evaluation Performance
 

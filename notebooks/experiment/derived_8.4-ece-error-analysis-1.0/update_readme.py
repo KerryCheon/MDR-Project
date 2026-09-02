@@ -31,7 +31,7 @@ def main():
     t10 = pd.read_csv(TABLES_DIR / "table10_soil_texture_all_stations.csv")
     t11 = pd.read_csv(TABLES_DIR / "table11_soil_override_sensitivity.csv")
 
-    readme_content = f"""# Diagnostic Report: `derived_8.4-ece-error-analysis`
+    readme_content = f"""# Diagnostic Report: `derived_8.4-ece-error-analysis-1.0`
 
 ## Comprehensive Investigation into In-Situ ECE Sensor Evaluation Performance
 

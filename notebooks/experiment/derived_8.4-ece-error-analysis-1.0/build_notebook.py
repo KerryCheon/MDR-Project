@@ -1,11 +1,11 @@
-"""Builds the reproducible derived_8.4-ece-error-analysis.ipynb notebook."""
+"""Builds the reproducible derived_8.4-ece-error-analysis-1.0.ipynb notebook."""
 
 import json
 from pathlib import Path
 import uuid
 
 EXP_DIR = Path(__file__).resolve().parent
-NOTEBOOK_PATH = EXP_DIR / "derived_8.4-ece-error-analysis.ipynb"
+NOTEBOOK_PATH = EXP_DIR / "derived_8.4-ece-error-analysis-1.0.ipynb"
 
 
 def make_cell(cell_type: str, source: str) -> dict:
@@ -29,7 +29,7 @@ def main():
     cells = []
 
     # Cell 0: Title & Executive Context
-    cells.append(make_cell("markdown", r"""# Diagnostic Report: `derived_8.4-ece-error-analysis`
+    cells.append(make_cell("markdown", r"""# Diagnostic Report: `derived_8.4-ece-error-analysis-1.0`
 ## Comprehensive Investigation into In-Situ ECE Sensor Evaluation Performance
 
 ### Executive Context
@@ -59,7 +59,7 @@ while cur != cur.parent:
         break
     cur = cur.parent
 
-EXP_DIR = PROJECT_ROOT / "notebooks/experiment/derived_8.4-ece-error-analysis"
+EXP_DIR = PROJECT_ROOT / "notebooks/experiment/derived_8.4-ece-error-analysis-1.0"
 TABLES_DIR = EXP_DIR / "tables"
 FIGURES_DIR = EXP_DIR / "figures"
 

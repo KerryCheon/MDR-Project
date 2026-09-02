@@ -1,5 +1,5 @@
-# config.yaml for derived_8.4-ece-error-analysis
-experiment_name: "derived_8.4-ece-error-analysis"
+# config.yaml for derived_8.4-ece-error-analysis-1.0
+experiment_name: "derived_8.4-ece-error-analysis-1.0"
 description: "Comprehensive error analysis and diagnostic report on in-situ ECE soil moisture sensor evaluation."
 
 paths:
