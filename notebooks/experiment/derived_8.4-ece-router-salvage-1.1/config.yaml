@@ -1,0 +1,57 @@
+experiment:
+  name: "derived_8.4-ece-router-salvage-1.1"
+  objective: "Repeat the 1.0 router-only salvage on the canonical derived_8.4_ece_v3 split and add single-regime global baselines."
+  constraint: "ECE strictly unseen; experts fit on WA trainval only; routing is the only inference-time change."
+  parent_evaluation: "derived_8.4-formal-eval-2.0-ece"
+  prior_experiment: "notebooks/experiment/derived_8.4-ece-router-salvage-1.0"
+  router_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/eval_formal/routers.py"
+  model_params_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/config.yaml"
+
+datasets:
+  training: "data/splits/derived_8.4"
+  ece_v3: "data/splits/derived_8.4_ece_v3"
+
+target_column: "soil_moisture_5cm"
+seeds: [42, 7, 13, 101, 123]
+
+# c0_0_c1_0 variants: identical 54-feature backbone, no delta additions.
+# The two families differ ONLY in router, so this isolates the routing trap.
+families:
+  - Clustering_V0_Full_k2
+  - Clustering_Backbone54_k2
+
+# Single-regime global references (fit on WA trainval only, direct prediction).
+# Global_Single_54: 54-feature shared backbone. Global_Single_50: 50 V0 features.
+baselines:
+  - Global_Single_54
+  - Global_Single_50
+
+policies:
+  - as_routed
+  - c0_only
+  - c1_only
+  - gapi_transplant
+  - dynamic_transplant
+  - seasonal
+  - margin_fallback
+  - direct
+
+# WA-only ambiguity threshold: fall back to the Global_Single_54 expert when the
+# static KMeans margin is below this WA-trainval percentile. Fit on WA only.
+margin_fallback:
+  wa_percentile: 5
+  fallback_reference: Global_Single_54
+
+model_params:
+  n_estimators: 2500
+  learning_rate: 0.005
+  max_depth: 9
+  min_child_weight: 8
+  gamma: 0.0
+  reg_lambda: 0.75
+  reg_alpha: 0.03
+  subsample: 0.9
+  colsample_bytree: 0.8
+  tree_method: hist
+  device: cpu
+  n_jobs: 1
