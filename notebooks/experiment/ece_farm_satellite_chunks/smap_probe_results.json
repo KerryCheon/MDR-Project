@@ -1,0 +1,6242 @@
+{
+  "ece_enumclaw_farm": {
+    "info": {
+      "name": "ECE Enumclaw Farm (Target)",
+      "lat": 47.181139,
+      "lon": -122.032361,
+      "type": "target_rural_farm"
+    },
+    "windows": {
+      "2025_spring": {
+        "start": "2025-04-01",
+        "end": "2025-04-30",
+        "n_images": 29,
+        "sm_am_mean": 0.3127107620239258,
+        "sm_pm_mean": 0.28046339750289917,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 14,
+        "finite_pm_count": 18,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-04-01",
+            "sm_am": 0.2887545973062515,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-02",
+            "sm_am": 0.348137304186821,
+            "sm_pm": 0.31722070276737213,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-04",
+            "sm_am": 0.37298770248889923,
+            "sm_pm": 0.3069361746311188,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-05",
+            "sm_am": null,
+            "sm_pm": 0.3806214779615402,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-07",
+            "sm_am": 0.4377614557743073,
+            "sm_pm": 0.2958229035139084,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-08",
+            "sm_am": null,
+            "sm_pm": 0.43597641587257385,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-09",
+            "sm_am": 0.3774848282337188,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-10",
+            "sm_am": 0.35041601955890656,
+            "sm_pm": 0.3436571955680847,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-12",
+            "sm_am": 0.3660206198692322,
+            "sm_pm": 0.31955863535404205,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-13",
+            "sm_am": null,
+            "sm_pm": 0.30944952368736267,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-15",
+            "sm_am": 0.3387002795934677,
+            "sm_pm": 0.34876058995723724,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-16",
+            "sm_am": null,
+            "sm_pm": 0.3656584918498993,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-17",
+            "sm_am": 0.2741972506046295,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-18",
+            "sm_am": 0.26361651718616486,
+            "sm_pm": 0.2675531879067421,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-20",
+            "sm_am": 0.27947768568992615,
+            "sm_pm": 0.25419180095195776,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-21",
+            "sm_am": null,
+            "sm_pm": 0.22083437442779538,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-23",
+            "sm_am": null,
+            "sm_pm": 0.2475452870130539,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-24",
+            "sm_am": null,
+            "sm_pm": 0.2806878387928009,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-25",
+            "sm_am": 0.2575531527400017,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-26",
+            "sm_am": 0.2444928660988808,
+            "sm_pm": 0.26428618282079697,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-28",
+            "sm_am": 0.2584025636315346,
+            "sm_pm": 0.1958397477865219,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-29",
+            "sm_am": null,
+            "sm_pm": 0.2477744221687317,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_summer": {
+        "start": "2025-07-01",
+        "end": "2025-07-31",
+        "n_images": 30,
+        "sm_am_mean": 0.16027456521987915,
+        "sm_pm_mean": 0.12252867221832275,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 15,
+        "finite_pm_count": 19,
+        "total_sampled_days": 30,
+        "daily_samples": [
+          {
+            "date": "2025-07-01",
+            "sm_am": 0.19123420119285583,
+            "sm_pm": 0.1771860495209694,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-02",
+            "sm_am": null,
+            "sm_pm": 0.17492544651031494,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-04",
+            "sm_am": 0.17760908603668213,
+            "sm_pm": 0.14843860268592837,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-05",
+            "sm_am": null,
+            "sm_pm": 0.15940855443477628,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-06",
+            "sm_am": 0.18950649350881577,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-07",
+            "sm_am": 0.16648904979228973,
+            "sm_pm": 0.1482413932681084,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-09",
+            "sm_am": 0.2065592035651207,
+            "sm_pm": 0.08376629650592804,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-10",
+            "sm_am": null,
+            "sm_pm": 0.11476116254925728,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-12",
+            "sm_am": 0.17278137058019635,
+            "sm_pm": 0.13166965171694756,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-13",
+            "sm_am": null,
+            "sm_pm": 0.13656431809067726,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-14",
+            "sm_am": 0.17235741019248962,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-15",
+            "sm_am": 0.1509813368320465,
+            "sm_pm": 0.14996828138828278,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-17",
+            "sm_am": 0.1806352138519287,
+            "sm_pm": 0.12597191706299785,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-18",
+            "sm_am": null,
+            "sm_pm": 0.14578285068273544,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-20",
+            "sm_am": 0.19705811887979507,
+            "sm_pm": 0.13995023444294932,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-21",
+            "sm_am": null,
+            "sm_pm": 0.1285603605210781,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-22",
+            "sm_am": 0.14559820294380188,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-23",
+            "sm_am": 0.16700685769319534,
+            "sm_pm": 0.1459045708179474,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-25",
+            "sm_am": 0.1851663514971733,
+            "sm_pm": 0.1389958523213863,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-26",
+            "sm_am": null,
+            "sm_pm": 0.14444410055875778,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-28",
+            "sm_am": 0.1689412072300911,
+            "sm_pm": 0.11531275138258935,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-29",
+            "sm_am": null,
+            "sm_pm": 0.148930162191391,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-30",
+            "sm_am": 0.14770692586898804,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_fall": {
+        "start": "2025-09-01",
+        "end": "2025-09-30",
+        "n_images": 29,
+        "sm_am_mean": 0.1819492131471634,
+        "sm_pm_mean": 0.1450256109237671,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 14,
+        "finite_pm_count": 18,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-09-01",
+            "sm_am": 0.17526405304670334,
+            "sm_pm": 0.16109438985586166,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-03",
+            "sm_am": 0.17413222044706345,
+            "sm_pm": 0.1599159762263298,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-04",
+            "sm_am": null,
+            "sm_pm": 0.1703251153230667,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-06",
+            "sm_am": 0.17208258807659146,
+            "sm_pm": 0.14733164012432098,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-07",
+            "sm_am": null,
+            "sm_pm": 0.14826853573322296,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-08",
+            "sm_am": 0.2619429156184196,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-09",
+            "sm_am": 0.21999457478523254,
+            "sm_pm": 0.19383634626865387,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-11",
+            "sm_am": 0.17589394748210907,
+            "sm_pm": 0.14514412730932236,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-12",
+            "sm_am": null,
+            "sm_pm": 0.16438200324773788,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-14",
+            "sm_am": 0.16715198010206223,
+            "sm_pm": 0.1798982247710228,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-15",
+            "sm_am": null,
+            "sm_pm": 0.1320591531693935,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-16",
+            "sm_am": 0.16407552361488342,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-17",
+            "sm_am": 0.1795145496726036,
+            "sm_pm": 0.18523454666137695,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-19",
+            "sm_am": 0.17720247805118564,
+            "sm_pm": 0.12075559049844743,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-20",
+            "sm_am": null,
+            "sm_pm": 0.15030977874994278,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-22",
+            "sm_am": 0.28142063319683075,
+            "sm_pm": 0.18616744875907898,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-23",
+            "sm_am": null,
+            "sm_pm": 0.20392282307147983,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-24",
+            "sm_am": 0.1988565623760223,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-25",
+            "sm_am": 0.20472560822963715,
+            "sm_pm": 0.16119732707738876,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-27",
+            "sm_am": 0.17799682915210727,
+            "sm_pm": 0.15872722864151,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-28",
+            "sm_am": null,
+            "sm_pm": 0.17783234268426895,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_pre_outage_spring": {
+        "start": "2026-04-01",
+        "end": "2026-05-05",
+        "n_images": 34,
+        "sm_am_mean": 0.31899121403694153,
+        "sm_pm_mean": 0.28507736325263977,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 17,
+        "finite_pm_count": 20,
+        "total_sampled_days": 34,
+        "daily_samples": [
+          {
+            "date": "2026-04-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-02",
+            "sm_am": 0.3421468436717987,
+            "sm_pm": 0.27663759887218475,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-03",
+            "sm_am": null,
+            "sm_pm": 0.3337827175855637,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-04",
+            "sm_am": 0.33721132576465607,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-05",
+            "sm_am": 0.31389541923999786,
+            "sm_pm": 0.36761847138404846,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-07",
+            "sm_am": 0.4092714190483093,
+            "sm_pm": 0.41321016848087305,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-08",
+            "sm_am": null,
+            "sm_pm": 0.3087254911661148,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-10",
+            "sm_am": 0.3065733313560486,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-11",
+            "sm_am": null,
+            "sm_pm": 0.30892258882522583,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-12",
+            "sm_am": 0.29769502580165863,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-13",
+            "sm_am": 0.3578070104122162,
+            "sm_pm": 0.2919572144746781,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-15",
+            "sm_am": 0.3673321604728699,
+            "sm_pm": 0.26188104599714285,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-16",
+            "sm_am": null,
+            "sm_pm": 0.2842079848051071,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-18",
+            "sm_am": 0.32983504235744476,
+            "sm_pm": 0.33324696123600006,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-19",
+            "sm_am": null,
+            "sm_pm": 0.34535644948482513,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-20",
+            "sm_am": 0.35211774706840515,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-21",
+            "sm_am": 0.372789591550827,
+            "sm_pm": 0.3492962121963501,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-23",
+            "sm_am": 0.35042996704578405,
+            "sm_pm": 0.28634329140186304,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-24",
+            "sm_am": null,
+            "sm_pm": 0.3087682723999024,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-26",
+            "sm_am": 0.37672775983810425,
+            "sm_pm": 0.24158298969268802,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-27",
+            "sm_am": null,
+            "sm_pm": 0.32926255464553833,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-28",
+            "sm_am": 0.3321772962808609,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-29",
+            "sm_am": 0.2649240046739578,
+            "sm_pm": 0.30760572850704193,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-30",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-01",
+            "sm_am": 0.24160027503967282,
+            "sm_pm": 0.23506609350442886,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-02",
+            "sm_am": null,
+            "sm_pm": 0.26467458903789515,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-04",
+            "sm_am": 0.2605976387858391,
+            "sm_pm": 0.2763299494981766,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_post_outage_aug": {
+        "start": "2026-08-01",
+        "end": "2026-08-25",
+        "n_images": 24,
+        "sm_am_mean": 0.1592564880847931,
+        "sm_pm_mean": 0.12208912521600723,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 12,
+        "finite_pm_count": 15,
+        "total_sampled_days": 24,
+        "daily_samples": [
+          {
+            "date": "2026-08-01",
+            "sm_am": null,
+            "sm_pm": 0.154782734811306,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-02",
+            "sm_am": 0.1742084175348282,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-03",
+            "sm_am": 0.19323524832725525,
+            "sm_pm": 0.13806146010756493,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-05",
+            "sm_am": 0.15184734016656876,
+            "sm_pm": 0.13905832916498184,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-06",
+            "sm_am": null,
+            "sm_pm": 0.13951262831687924,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-08",
+            "sm_am": 0.19337812811136246,
+            "sm_pm": 0.14079802855849266,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-09",
+            "sm_am": null,
+            "sm_pm": 0.14134008437395096,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-10",
+            "sm_am": 0.1527443453669548,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-11",
+            "sm_am": 0.178642638027668,
+            "sm_pm": 0.11383732408285141,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-13",
+            "sm_am": 0.15599152445793152,
+            "sm_pm": 0.13297462463378906,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-14",
+            "sm_am": null,
+            "sm_pm": 0.12873974442481995,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-16",
+            "sm_am": 0.18027445673942566,
+            "sm_pm": 0.1472373530268669,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-17",
+            "sm_am": null,
+            "sm_pm": 0.1390567049384117,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-18",
+            "sm_am": 0.1665484383702278,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-19",
+            "sm_am": 0.16401033103466034,
+            "sm_pm": 0.13610687106847763,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-21",
+            "sm_am": 0.16253774613142016,
+            "sm_pm": 0.14377356320619583,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-22",
+            "sm_am": null,
+            "sm_pm": 0.15339800715446472,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-24",
+            "sm_am": 0.1697787493467331,
+            "sm_pm": 0.11628171429038049,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      }
+    }
+  },
+  "ece_bbg_main_st": {
+    "info": {
+      "name": "ECE BBG Main St (Bellevue)",
+      "lat": 47.6098164,
+      "lon": -122.1824678,
+      "type": "urban_negative_control"
+    },
+    "windows": {
+      "2025_spring": {
+        "start": "2025-04-01",
+        "end": "2025-04-30",
+        "n_images": 29,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-04-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_summer": {
+        "start": "2025-07-01",
+        "end": "2025-07-31",
+        "n_images": 30,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 30,
+        "daily_samples": [
+          {
+            "date": "2025-07-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-30",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_fall": {
+        "start": "2025-09-01",
+        "end": "2025-09-30",
+        "n_images": 29,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-09-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_pre_outage_spring": {
+        "start": "2026-04-01",
+        "end": "2026-05-05",
+        "n_images": 34,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 34,
+        "daily_samples": [
+          {
+            "date": "2026-04-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-30",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_post_outage_aug": {
+        "start": "2026-08-01",
+        "end": "2026-08-25",
+        "n_images": 24,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 24,
+        "daily_samples": [
+          {
+            "date": "2026-08-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      }
+    }
+  },
+  "ece_renton_home": {
+    "info": {
+      "name": "ECE Renton Home (Renton)",
+      "lat": 47.489,
+      "lon": -122.195,
+      "type": "suburban_negative_control"
+    },
+    "windows": {
+      "2025_spring": {
+        "start": "2025-04-01",
+        "end": "2025-04-30",
+        "n_images": 29,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-04-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_summer": {
+        "start": "2025-07-01",
+        "end": "2025-07-31",
+        "n_images": 30,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 30,
+        "daily_samples": [
+          {
+            "date": "2025-07-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-30",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_fall": {
+        "start": "2025-09-01",
+        "end": "2025-09-30",
+        "n_images": 29,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-09-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_pre_outage_spring": {
+        "start": "2026-04-01",
+        "end": "2026-05-05",
+        "n_images": 34,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 34,
+        "daily_samples": [
+          {
+            "date": "2026-04-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-25",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-30",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_post_outage_aug": {
+        "start": "2026-08-01",
+        "end": "2026-08-25",
+        "n_images": 24,
+        "sm_am_mean": null,
+        "sm_pm_mean": null,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 0,
+        "finite_pm_count": 0,
+        "total_sampled_days": 24,
+        "daily_samples": [
+          {
+            "date": "2026-08-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      }
+    }
+  },
+  "wa_pullman_rural": {
+    "info": {
+      "name": "Pullman Agricultural Station",
+      "lat": 46.7325,
+      "lon": -117.18,
+      "type": "rural_positive_control"
+    },
+    "windows": {
+      "2025_spring": {
+        "start": "2025-04-01",
+        "end": "2025-04-30",
+        "n_images": 29,
+        "sm_am_mean": 0.20299271047115325,
+        "sm_pm_mean": 0.2080666095018387,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 17,
+        "finite_pm_count": 15,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-04-01",
+            "sm_am": 0.2692617941647768,
+            "sm_pm": 0.256602075882256,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-02",
+            "sm_am": null,
+            "sm_pm": 0.24459509924054143,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-03",
+            "sm_am": 0.23105881363153458,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-04",
+            "sm_am": 0.23000242095440626,
+            "sm_pm": 0.24247226491570475,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-06",
+            "sm_am": 0.20468644611537457,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-07",
+            "sm_am": 0.23346079606562853,
+            "sm_pm": 0.23586884979158643,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-09",
+            "sm_am": 0.2598270773887635,
+            "sm_pm": 0.2553941961377859,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-10",
+            "sm_am": null,
+            "sm_pm": 0.256259523332119,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-11",
+            "sm_am": 0.2147130472585559,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-12",
+            "sm_am": 0.22930631786584854,
+            "sm_pm": 0.22197717893868685,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-14",
+            "sm_am": 0.21707070525735617,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-15",
+            "sm_am": 0.2164452439174056,
+            "sm_pm": 0.20495829358696938,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-17",
+            "sm_am": 0.19841669127345085,
+            "sm_pm": 0.20290729496628043,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-18",
+            "sm_am": null,
+            "sm_pm": 0.20584840793162584,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-19",
+            "sm_am": 0.1794096613302827,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-20",
+            "sm_am": 0.1671736240386963,
+            "sm_pm": 0.18149711564183232,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-22",
+            "sm_am": 0.17052873503416777,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-23",
+            "sm_am": null,
+            "sm_pm": 0.15630171541124582,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-25",
+            "sm_am": 0.14485145173966885,
+            "sm_pm": 0.15414024237543342,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-26",
+            "sm_am": null,
+            "sm_pm": 0.16123773623257875,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-27",
+            "sm_am": 0.13601700216531754,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-28",
+            "sm_am": 0.13655155152082446,
+            "sm_pm": 0.1553206816315651,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_summer": {
+        "start": "2025-07-01",
+        "end": "2025-07-31",
+        "n_images": 30,
+        "sm_am_mean": 0.07243820428848266,
+        "sm_pm_mean": 0.06954685747623443,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 19,
+        "finite_pm_count": 15,
+        "total_sampled_days": 30,
+        "daily_samples": [
+          {
+            "date": "2025-07-01",
+            "sm_am": 0.062099401606246836,
+            "sm_pm": 0.07514759292826056,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-03",
+            "sm_am": 0.07586704939603806,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-04",
+            "sm_am": 0.07667130837216975,
+            "sm_pm": 0.05607648589648307,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-06",
+            "sm_am": 0.07249947497621179,
+            "sm_pm": 0.0563554740510881,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-07",
+            "sm_am": null,
+            "sm_pm": 0.08184270840138198,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-08",
+            "sm_am": 0.06902580009773374,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-09",
+            "sm_am": 0.08976757526397705,
+            "sm_pm": 0.05994185293093324,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-11",
+            "sm_am": 0.09175600670278072,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-12",
+            "sm_am": 0.0656143887899816,
+            "sm_pm": 0.06546313595026731,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-14",
+            "sm_am": 0.06688805902376771,
+            "sm_pm": 0.06558341579511762,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-15",
+            "sm_am": null,
+            "sm_pm": 0.08148953644558787,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-16",
+            "sm_am": 0.0615420793183148,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-17",
+            "sm_am": 0.06692362949252129,
+            "sm_pm": 0.06012329622171819,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-19",
+            "sm_am": 0.05578844295814634,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-20",
+            "sm_am": 0.06104964064434171,
+            "sm_pm": 0.05907370545901358,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-22",
+            "sm_am": 0.10788181098178029,
+            "sm_pm": 0.08174984715878963,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-23",
+            "sm_am": null,
+            "sm_pm": 0.09566545393317938,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-24",
+            "sm_am": 0.07060382422059774,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-25",
+            "sm_am": 0.06396363885141909,
+            "sm_pm": 0.06502300454303622,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-27",
+            "sm_am": 0.05663603846915066,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-28",
+            "sm_am": 0.0678224847652018,
+            "sm_pm": 0.04784977110102773,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-30",
+            "sm_am": 0.061759640695527196,
+            "sm_pm": 0.05887791351415217,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_fall": {
+        "start": "2025-09-01",
+        "end": "2025-09-30",
+        "n_images": 29,
+        "sm_am_mean": 0.09430264383554458,
+        "sm_pm_mean": 0.09951176643371581,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 18,
+        "finite_pm_count": 14,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-09-01",
+            "sm_am": null,
+            "sm_pm": 0.06785795371979475,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-02",
+            "sm_am": 0.0524084847420454,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-03",
+            "sm_am": 0.06209434685297311,
+            "sm_pm": 0.06810069922357798,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-05",
+            "sm_am": 0.052660181652754545,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-06",
+            "sm_am": 0.06020695180632175,
+            "sm_pm": 0.06170650594867766,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-08",
+            "sm_am": 0.0662125365342945,
+            "sm_pm": 0.06120171211659908,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-09",
+            "sm_am": null,
+            "sm_pm": 0.06497595482505858,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-10",
+            "sm_am": 0.0617055359762162,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-11",
+            "sm_am": 0.08604228962212801,
+            "sm_pm": 0.05085601820610463,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-13",
+            "sm_am": 0.14854045305401087,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-14",
+            "sm_am": 0.126219795551151,
+            "sm_pm": 0.15311596542596814,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-16",
+            "sm_am": 0.17410966847091913,
+            "sm_pm": 0.185042230412364,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-17",
+            "sm_am": null,
+            "sm_pm": 0.16113673988729715,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-18",
+            "sm_am": 0.12284761155024172,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-19",
+            "sm_am": 0.12496601324528456,
+            "sm_pm": 0.1302391504868865,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-21",
+            "sm_am": 0.08648297470062973,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-22",
+            "sm_am": 0.08695326326414943,
+            "sm_pm": 0.08633463643491267,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-24",
+            "sm_am": 0.07990945968776941,
+            "sm_pm": 0.09941903268918395,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-25",
+            "sm_am": null,
+            "sm_pm": 0.09186223056167364,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-26",
+            "sm_am": 0.07061952585354449,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-27",
+            "sm_am": 0.06314484472386539,
+            "sm_pm": 0.05393789522349834,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-28",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-29",
+            "sm_am": 0.06597198382951319,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_pre_outage_spring": {
+        "start": "2026-04-01",
+        "end": "2026-05-05",
+        "n_images": 34,
+        "sm_am_mean": 0.2212290436029434,
+        "sm_pm_mean": 0.2145246088504791,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 22,
+        "finite_pm_count": 16,
+        "total_sampled_days": 34,
+        "daily_samples": [
+          {
+            "date": "2026-04-01",
+            "sm_am": 0.17622111272066832,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-02",
+            "sm_am": 0.2781152166426182,
+            "sm_pm": 0.19143584463745356,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-04",
+            "sm_am": 0.23834286071360114,
+            "sm_pm": 0.2225571209564805,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-05",
+            "sm_am": null,
+            "sm_pm": 0.21525617130100724,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-06",
+            "sm_am": 0.2059606984257698,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-07",
+            "sm_am": 0.21870721690356731,
+            "sm_pm": 0.1937184687703848,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-09",
+            "sm_am": 0.18420721031725407,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-10",
+            "sm_am": 0.1978504592552781,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-12",
+            "sm_am": 0.1804645080119371,
+            "sm_pm": 0.18996908050030473,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-13",
+            "sm_am": null,
+            "sm_pm": 0.26592008024454117,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-14",
+            "sm_am": 0.2642020620405674,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-15",
+            "sm_am": 0.3099355846643448,
+            "sm_pm": 0.23620350845158097,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-17",
+            "sm_am": 0.24942064937204125,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-18",
+            "sm_am": 0.2519373632967472,
+            "sm_pm": 0.2379459301009774,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-20",
+            "sm_am": 0.2173514049500227,
+            "sm_pm": 0.22188842110335827,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-21",
+            "sm_am": null,
+            "sm_pm": 0.21538978908210993,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-22",
+            "sm_am": 0.21905969362705946,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-23",
+            "sm_am": 0.29217800684273243,
+            "sm_pm": 0.2706213407218456,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-25",
+            "sm_am": 0.20253890193998814,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-26",
+            "sm_am": 0.23461903538554907,
+            "sm_pm": 0.19819611497223377,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-28",
+            "sm_am": 0.19616725668311122,
+            "sm_pm": 0.1980310557410121,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-29",
+            "sm_am": null,
+            "sm_pm": 0.19777069706469771,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-30",
+            "sm_am": 0.19826915208250284,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-01",
+            "sm_am": 0.18944171629846096,
+            "sm_pm": 0.17757739685475826,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-03",
+            "sm_am": 0.18716302793473005,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-04",
+            "sm_am": 0.17508489824831486,
+            "sm_pm": 0.17361452337354422,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_post_outage_aug": {
+        "start": "2026-08-01",
+        "end": "2026-08-25",
+        "n_images": 24,
+        "sm_am_mean": 0.05850922390818596,
+        "sm_pm_mean": 0.062222442030906676,
+        "qual_am_mean": 1,
+        "qual_pm_mean": 1,
+        "finite_am_count": 15,
+        "finite_pm_count": 12,
+        "total_sampled_days": 24,
+        "daily_samples": [
+          {
+            "date": "2026-08-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-02",
+            "sm_am": 0.06009953282773495,
+            "sm_pm": 0.05303607555106282,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-03",
+            "sm_am": null,
+            "sm_pm": 0.04864823888055981,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-04",
+            "sm_am": 0.060884321108460426,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-05",
+            "sm_am": 0.04575982899405062,
+            "sm_pm": 0.05041028722189367,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-07",
+            "sm_am": 0.061103024752810604,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-08",
+            "sm_am": 0.05447306134738028,
+            "sm_pm": 0.0588832802604884,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-10",
+            "sm_am": 0.051113131921738386,
+            "sm_pm": 0.05654232297092676,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-11",
+            "sm_am": null,
+            "sm_pm": 0.059839405817911036,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-12",
+            "sm_am": 0.05228230590000748,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-13",
+            "sm_am": 0.060777391539886594,
+            "sm_pm": 0.05051683471538126,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-15",
+            "sm_am": 0.05772265302948654,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-16",
+            "sm_am": 0.059084501350298524,
+            "sm_pm": 0.07775023579597473,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-18",
+            "sm_am": 0.05879235500469804,
+            "sm_pm": 0.08196275727823378,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-19",
+            "sm_am": null,
+            "sm_pm": 0.06394499237649143,
+            "qual_am": 1,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-20",
+            "sm_am": 0.05736237042583525,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-21",
+            "sm_am": 0.05698922253213823,
+            "sm_pm": 0.07983609102666378,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-23",
+            "sm_am": 0.06028632586821914,
+            "sm_pm": null,
+            "qual_am": 0.5625,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-24",
+            "sm_am": 0.05718490015715361,
+            "sm_pm": 0.047339748591184616,
+            "qual_am": 0.5625,
+            "qual_pm": 0.5625,
+            "surface_flag_am": null
+          }
+        ]
+      }
+    }
+  },
+  "wa_lind_rural": {
+    "info": {
+      "name": "Lind Dryland Research Station",
+      "lat": 46.993,
+      "lon": -118.621,
+      "type": "rural_positive_control"
+    },
+    "windows": {
+      "2025_spring": {
+        "start": "2025-04-01",
+        "end": "2025-04-30",
+        "n_images": 29,
+        "sm_am_mean": 0.16072069108486176,
+        "sm_pm_mean": 0.1542207896709442,
+        "qual_am_mean": 0.6551724076271057,
+        "qual_pm_mean": 0.6206896305084229,
+        "finite_am_count": 13,
+        "finite_pm_count": 19,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-04-01",
+            "sm_am": 0.20234374701976776,
+            "sm_pm": 0.18554933369159698,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-02",
+            "sm_am": null,
+            "sm_pm": 0.20680318772792816,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-04",
+            "sm_am": 0.1855328530073166,
+            "sm_pm": 0.19741714000701904,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-05",
+            "sm_am": null,
+            "sm_pm": 0.2003132402896881,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-06",
+            "sm_am": 0.18598608672618866,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-07",
+            "sm_am": 0.24176986515522003,
+            "sm_pm": 0.17917878925800323,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-09",
+            "sm_am": 0.20774006843566895,
+            "sm_pm": 0.22059188783168793,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-10",
+            "sm_am": null,
+            "sm_pm": 0.2073899805545807,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-12",
+            "sm_am": 0.1751033514738083,
+            "sm_pm": 0.19433048367500305,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-13",
+            "sm_am": null,
+            "sm_pm": 0.18983356654644012,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-14",
+            "sm_am": 0.16416214406490326,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-15",
+            "sm_am": 0.15984496474266052,
+            "sm_pm": 0.1678757667541504,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-17",
+            "sm_am": 0.16018986701965332,
+            "sm_pm": 0.14174239337444305,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-18",
+            "sm_am": null,
+            "sm_pm": 0.14403295516967773,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-20",
+            "sm_am": 0.1366768777370453,
+            "sm_pm": 0.14084097743034363,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-21",
+            "sm_am": null,
+            "sm_pm": 0.1447584182024002,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-22",
+            "sm_am": 0.1213436871767044,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-23",
+            "sm_am": null,
+            "sm_pm": 0.1272110491991043,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-25",
+            "sm_am": 0.1030176654458046,
+            "sm_pm": 0.12395979464054108,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-26",
+            "sm_am": null,
+            "sm_pm": 0.11533355712890625,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-28",
+            "sm_am": 0.10152587294578552,
+            "sm_pm": 0.08914843946695328,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-04-29",
+            "sm_am": null,
+            "sm_pm": 0.09760940074920654,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_summer": {
+        "start": "2025-07-01",
+        "end": "2025-07-31",
+        "n_images": 30,
+        "sm_am_mean": 0.058718547224998474,
+        "sm_pm_mean": 0.06803442537784576,
+        "qual_am_mean": 0.5,
+        "qual_pm_mean": 0.36666667461395264,
+        "finite_am_count": 16,
+        "finite_pm_count": 19,
+        "total_sampled_days": 30,
+        "daily_samples": [
+          {
+            "date": "2025-07-01",
+            "sm_am": 0.051156990230083466,
+            "sm_pm": 0.07511959224939346,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-02",
+            "sm_am": null,
+            "sm_pm": 0.07286214083433151,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-03",
+            "sm_am": 0.052994485944509506,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-04",
+            "sm_am": 0.051877427846193314,
+            "sm_pm": 0.05040404200553894,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-05",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-06",
+            "sm_am": 0.050622958689928055,
+            "sm_pm": 0.051045190542936325,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-07",
+            "sm_am": null,
+            "sm_pm": 0.061054058372974396,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-08",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-09",
+            "sm_am": 0.056836921721696854,
+            "sm_pm": 0.07034996151924133,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-10",
+            "sm_am": null,
+            "sm_pm": 0.06907601654529572,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-11",
+            "sm_am": 0.060273073613643646,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-12",
+            "sm_am": 0.046350911259651184,
+            "sm_pm": 0.06428156048059464,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-13",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-14",
+            "sm_am": 0.06438738107681274,
+            "sm_pm": 0.07237190753221512,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-15",
+            "sm_am": null,
+            "sm_pm": 0.06877382099628448,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-16",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-17",
+            "sm_am": 0.059446852654218674,
+            "sm_pm": 0.05171358957886696,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-18",
+            "sm_am": null,
+            "sm_pm": 0.07446178793907166,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-19",
+            "sm_am": 0.05418591573834419,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-20",
+            "sm_am": 0.04831647872924805,
+            "sm_pm": 0.057466670870780945,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-21",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-22",
+            "sm_am": 0.07744994014501572,
+            "sm_pm": 0.07787758111953735,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-23",
+            "sm_am": null,
+            "sm_pm": 0.0693364366889,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-24",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-25",
+            "sm_am": 0.0560016892850399,
+            "sm_pm": 0.0666629895567894,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-26",
+            "sm_am": null,
+            "sm_pm": 0.06561935693025589,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-27",
+            "sm_am": 0.04886091873049736,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-28",
+            "sm_am": 0.048115167766809464,
+            "sm_pm": 0.060624152421951294,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-29",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-07-30",
+            "sm_am": 0.055612560361623764,
+            "sm_pm": 0.0760895386338234,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2025_fall": {
+        "start": "2025-09-01",
+        "end": "2025-09-30",
+        "n_images": 29,
+        "sm_am_mean": 0.06724291294813156,
+        "sm_pm_mean": 0.07596733421087265,
+        "qual_am_mean": 0.517241358757019,
+        "qual_pm_mean": 0.37931033968925476,
+        "finite_am_count": 14,
+        "finite_pm_count": 18,
+        "total_sampled_days": 29,
+        "daily_samples": [
+          {
+            "date": "2025-09-01",
+            "sm_am": null,
+            "sm_pm": 0.06620517373085022,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-02",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-03",
+            "sm_am": 0.0739242285490036,
+            "sm_pm": 0.07340266555547714,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-04",
+            "sm_am": null,
+            "sm_pm": 0.09262961894273758,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-05",
+            "sm_am": 0.07103210687637329,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-06",
+            "sm_am": 0.06838583946228027,
+            "sm_pm": 0.07667004317045212,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-07",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-08",
+            "sm_am": 0.053860142827034,
+            "sm_pm": 0.06759511679410934,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-09",
+            "sm_am": null,
+            "sm_pm": 0.054776474833488464,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-10",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-11",
+            "sm_am": 0.05802988260984421,
+            "sm_pm": 0.06032111495733261,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-12",
+            "sm_am": null,
+            "sm_pm": 0.05658541992306709,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-13",
+            "sm_am": 0.05474957078695297,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-14",
+            "sm_am": 0.04780516028404236,
+            "sm_pm": 0.05452943220734596,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-15",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-16",
+            "sm_am": 0.0697537288069725,
+            "sm_pm": 0.07823486626148224,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-17",
+            "sm_am": null,
+            "sm_pm": 0.07716336846351624,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-18",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-19",
+            "sm_am": 0.07085539400577545,
+            "sm_pm": 0.07551319897174835,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-20",
+            "sm_am": null,
+            "sm_pm": 0.07432390004396439,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-21",
+            "sm_am": 0.058700673282146454,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-22",
+            "sm_am": 0.06202441453933716,
+            "sm_pm": 0.06125825643539429,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-23",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-24",
+            "sm_am": 0.06026128679513931,
+            "sm_pm": 0.06595767289400101,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-25",
+            "sm_am": null,
+            "sm_pm": 0.07336419075727463,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-26",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-27",
+            "sm_am": 0.05100665241479874,
+            "sm_pm": 0.05466927960515022,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-28",
+            "sm_am": null,
+            "sm_pm": 0.07789003103971481,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2025-09-29",
+            "sm_am": 0.048412811011075974,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_pre_outage_spring": {
+        "start": "2026-04-01",
+        "end": "2026-05-05",
+        "n_images": 34,
+        "sm_am_mean": 0.13104863464832306,
+        "sm_pm_mean": 0.1451067328453064,
+        "qual_am_mean": 0.5,
+        "qual_pm_mean": 0.47058823704719543,
+        "finite_am_count": 18,
+        "finite_pm_count": 20,
+        "total_sampled_days": 34,
+        "daily_samples": [
+          {
+            "date": "2026-04-01",
+            "sm_am": 0.08654973655939102,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-02",
+            "sm_am": 0.19420376420021057,
+            "sm_pm": 0.16847744584083557,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-03",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-04",
+            "sm_am": 0.16784733533859253,
+            "sm_pm": 0.17422981560230255,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-05",
+            "sm_am": null,
+            "sm_pm": 0.1794455349445343,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-06",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-07",
+            "sm_am": 0.14561301469802856,
+            "sm_pm": 0.1695488840341568,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-08",
+            "sm_am": null,
+            "sm_pm": 0.15989840030670166,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-09",
+            "sm_am": 0.15004517138004303,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-10",
+            "sm_am": 0.13509926199913025,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-11",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-12",
+            "sm_am": 0.14840751886367798,
+            "sm_pm": 0.15192241966724396,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-13",
+            "sm_am": null,
+            "sm_pm": 0.15838494896888733,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-14",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-15",
+            "sm_am": 0.14111977815628052,
+            "sm_pm": 0.14035660028457642,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-16",
+            "sm_am": null,
+            "sm_pm": 0.16191942989826202,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-17",
+            "sm_am": 0.1450553685426712,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-18",
+            "sm_am": 0.13206098973751068,
+            "sm_pm": 0.14807972311973572,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-19",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-20",
+            "sm_am": 0.12308293581008911,
+            "sm_pm": 0.1357826143503189,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-21",
+            "sm_am": null,
+            "sm_pm": 0.1402493268251419,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-22",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-23",
+            "sm_am": 0.1788564920425415,
+            "sm_pm": 0.17772434651851654,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-24",
+            "sm_am": null,
+            "sm_pm": 0.17758281528949738,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-25",
+            "sm_am": 0.17319355905056,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-26",
+            "sm_am": 0.14968518912792206,
+            "sm_pm": 0.16079922020435333,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-27",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-28",
+            "sm_am": 0.1201644092798233,
+            "sm_pm": 0.14311878383159637,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-29",
+            "sm_am": null,
+            "sm_pm": 0.1293478161096573,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-04-30",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-01",
+            "sm_am": 0.09658464044332504,
+            "sm_pm": 0.1173456609249115,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-02",
+            "sm_am": null,
+            "sm_pm": 0.12801909446716309,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-03",
+            "sm_am": 0.10600679367780685,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-05-04",
+            "sm_am": 0.08617357164621353,
+            "sm_pm": 0.10309858620166779,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          }
+        ]
+      },
+      "2026_post_outage_aug": {
+        "start": "2026-08-01",
+        "end": "2026-08-25",
+        "n_images": 24,
+        "sm_am_mean": 0.05009535700082779,
+        "sm_pm_mean": 0.06452421098947525,
+        "qual_am_mean": 0.5,
+        "qual_pm_mean": 0.375,
+        "finite_am_count": 12,
+        "finite_pm_count": 15,
+        "total_sampled_days": 24,
+        "daily_samples": [
+          {
+            "date": "2026-08-01",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-02",
+            "sm_am": 0.041937246918678284,
+            "sm_pm": 0.054293159395456314,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-03",
+            "sm_am": null,
+            "sm_pm": 0.04978352412581444,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-04",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-05",
+            "sm_am": 0.03604485094547272,
+            "sm_pm": 0.05507605895400047,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-06",
+            "sm_am": null,
+            "sm_pm": 0.06621326506137848,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-07",
+            "sm_am": 0.04046889767050743,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-08",
+            "sm_am": 0.04234740883111954,
+            "sm_pm": 0.06696589291095734,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-09",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-10",
+            "sm_am": 0.04468617960810661,
+            "sm_pm": 0.05733871832489967,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-11",
+            "sm_am": null,
+            "sm_pm": 0.05976739525794983,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-12",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-13",
+            "sm_am": 0.04721974954009056,
+            "sm_pm": 0.053067903965711594,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-14",
+            "sm_am": null,
+            "sm_pm": 0.04929038882255554,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-15",
+            "sm_am": 0.04059869050979614,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-16",
+            "sm_am": 0.042971421033144,
+            "sm_pm": 0.05858714133501053,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-17",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-18",
+            "sm_am": 0.050241876393556595,
+            "sm_pm": 0.06779436767101288,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-19",
+            "sm_am": null,
+            "sm_pm": 0.06406505405902863,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-20",
+            "sm_am": null,
+            "sm_pm": null,
+            "qual_am": 1,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-21",
+            "sm_am": 0.05218886956572533,
+            "sm_pm": 0.06834934651851654,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-22",
+            "sm_am": null,
+            "sm_pm": 0.06974118947982788,
+            "qual_am": 1,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-23",
+            "sm_am": 0.0547613799571991,
+            "sm_pm": null,
+            "qual_am": 0,
+            "qual_pm": 1,
+            "surface_flag_am": null
+          },
+          {
+            "date": "2026-08-24",
+            "sm_am": 0.048252955079078674,
+            "sm_pm": 0.0469745509326458,
+            "qual_am": 0,
+            "qual_pm": 0,
+            "surface_flag_am": null
+          }
+        ]
+      }
+    }
+  }
+}

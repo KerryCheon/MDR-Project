@@ -1,0 +1,112 @@
+{
+  "warmup_w1": {
+    "start": "2026-06-20",
+    "end": "2026-06-27",
+    "padded_start": "2026-06-17",
+    "padded_end": "2026-06-30",
+    "n_images": 13,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "warmup_w2": {
+    "start": "2026-06-27",
+    "end": "2026-07-04",
+    "padded_start": "2026-06-24",
+    "padded_end": "2026-07-07",
+    "n_images": 13,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "warmup_w3": {
+    "start": "2026-07-04",
+    "end": "2026-07-11",
+    "padded_start": "2026-07-01",
+    "padded_end": "2026-07-14",
+    "n_images": 13,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "warmup_w4": {
+    "start": "2026-07-11",
+    "end": "2026-07-18",
+    "padded_start": "2026-07-08",
+    "padded_end": "2026-07-21",
+    "n_images": 13,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "warmup_w5": {
+    "start": "2026-07-18",
+    "end": "2026-07-20",
+    "padded_start": "2026-07-15",
+    "padded_end": "2026-07-23",
+    "n_images": 8,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "eval_w1": {
+    "start": "2026-07-20",
+    "end": "2026-07-27",
+    "padded_start": "2026-07-17",
+    "padded_end": "2026-07-30",
+    "n_images": 13,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "eval_w2": {
+    "start": "2026-07-27",
+    "end": "2026-08-03",
+    "padded_start": "2026-07-24",
+    "padded_end": "2026-08-06",
+    "n_images": 13,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "eval_w3": {
+    "start": "2026-08-03",
+    "end": "2026-08-10",
+    "padded_start": "2026-07-31",
+    "padded_end": "2026-08-13",
+    "n_images": 13,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "eval_w4": {
+    "start": "2026-08-10",
+    "end": "2026-08-17",
+    "padded_start": "2026-08-07",
+    "padded_end": "2026-08-20",
+    "n_images": 13,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  },
+  "eval_w5": {
+    "start": "2026-08-17",
+    "end": "2026-08-20",
+    "padded_start": "2026-08-14",
+    "padded_end": "2026-08-23",
+    "n_images": 9,
+    "SMAP_sm_am": null,
+    "SMAP_sm_pm": null,
+    "qual_am": 1,
+    "qual_pm": 1
+  }
+}

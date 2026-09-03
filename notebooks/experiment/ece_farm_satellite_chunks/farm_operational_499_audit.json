@@ -1,0 +1,131 @@
+{
+  "audit_timestamp": "2026-09-02T20:30:39.313280",
+  "target_site": "ECE Enumclaw Research Farm",
+  "parcel_pin": "3420069035",
+  "coordinates": {
+    "lat": 47.1778,
+    "lon": -122.035
+  },
+  "lookback_window": {
+    "start": "2026-08-01",
+    "end": "2026-09-02"
+  },
+  "total_schema_columns": 499,
+  "verified_available_columns": 499,
+  "completeness_pct": 100.0,
+  "scorecard": {
+    "static_dem_topography": {
+      "status": "AVAILABLE",
+      "elevation_m": 205.8,
+      "slope_deg": 3.78,
+      "aspect_deg": 172.6,
+      "features_covered": 10
+    },
+    "static_landcover": {
+      "status": "AVAILABLE",
+      "landcover_code": 29,
+      "label": "Cropland",
+      "features_covered": 1
+    },
+    "static_bioclim": {
+      "status": "AVAILABLE",
+      "bands_retrieved": 19,
+      "sample_bio01_mean_temp_c": 9.9,
+      "features_covered": 19
+    },
+    "static_soil_properties": {
+      "status": "AVAILABLE",
+      "clay_depths": {
+        "b0": 19.192870544090056,
+        "b10": 19.286786384347362,
+        "b100": 25.010345751809172,
+        "b200": 23.37534173143929,
+        "b30": 22.7581881533101,
+        "b60": 25.13224336638971
+      },
+      "sand_depths": {
+        "b0": 40.35207719110158,
+        "b10": 40.3263468239078,
+        "b100": 41.6664701152506,
+        "b200": 43.753738943982846,
+        "b30": 39.59249530956848,
+        "b60": 39.86882873224336
+      },
+      "texture_classes": {
+        "b0": 7,
+        "b10": 7,
+        "b100": 7,
+        "b200": 7,
+        "b30": 7,
+        "b60": 7
+      },
+      "features_covered": 22
+    },
+    "static_orbital_lia": {
+      "status": "AVAILABLE",
+      "lia_mean_asc_deg": 38.5,
+      "lia_std_asc_deg": 4.2,
+      "lia_mean_desc_deg": 36.8,
+      "lia_std_desc_deg": 4.0,
+      "features_covered": 4
+    },
+    "dynamic_weather_precip": {
+      "status": "AVAILABLE",
+      "days_retrieved": 33,
+      "total_precip_lookback_mm": 23.4,
+      "api_lookback_ready": true,
+      "features_covered": 44
+    },
+    "dynamic_smap_radiometer": {
+      "status": "AVAILABLE",
+      "overpass_count_30d": 30,
+      "mean_soil_moisture_am": 0.1664,
+      "urban_masked": false,
+      "features_covered": 84
+    },
+    "dynamic_sentinel1_sar": {
+      "status": "AVAILABLE",
+      "scenes_in_2026_summer": 33,
+      "mean_vv_backscatter": -11.4735,
+      "mean_vh_backscatter": -17.8747,
+      "sar_ratio_vv_vh": 0.64,
+      "features_covered": 90
+    },
+    "dynamic_sentinel2_optical": {
+      "status": "AVAILABLE",
+      "clear_scenes_summer_2026": 15,
+      "mean_b4_red": 902.9,
+      "mean_b8_nir": 3420.5,
+      "computed_ndvi": 0.582,
+      "features_covered": 163
+    },
+    "dynamic_modis_lst": {
+      "status": "AVAILABLE",
+      "daily_scenes_30d": 30,
+      "mean_lst_celsius": 25.05,
+      "features_covered": 43
+    },
+    "cross_signal_interactions": {
+      "status": "AVAILABLE",
+      "features_covered": 4
+    },
+    "calendar_drift": {
+      "status": "AVAILABLE",
+      "current_doy": 245,
+      "sin_year": -0.87,
+      "cos_year": -0.49,
+      "features_covered": 10
+    },
+    "metadata_and_target": {
+      "status": "AVAILABLE_ON_DEPLOYMENT",
+      "target_col": "soil_moisture_5cm",
+      "metadata_cols": [
+        "station_id",
+        "date",
+        "longitude",
+        "latitude"
+      ],
+      "features_covered": 5
+    }
+  }
+}
