@@ -26,6 +26,7 @@ from ..utils.gee import initialize_ee
 class OptimizedSatellitePipe:
     MODIS_LST = "MODIS/061/MOD11A1"
     MODIS_NDVI = "MODIS/061/MOD13A3"
+    MODIS_NDVI_16D = "MODIS/061/MOD13Q1"
 
     S1_GRD = "COPERNICUS/S1_GRD"
     S2_L2A = "COPERNICUS/S2_SR_HARMONIZED"
@@ -202,14 +203,28 @@ class OptimizedSatellitePipe:
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=buffer, scale=1000, bestEffort=True)
             )
 
-            # 2. MODIS NDVI
-            ndvi_stats = (
+            # 2. MODIS NDVI (with 16-day fallback if weekly window has no new reduction)
+            ndvi_col = (
                 ee.ImageCollection(self.MODIS_NDVI)
                 .filterBounds(buffer)
                 .filterDate(padded_start, padded_end)
                 .select(["NDVI"])
-                .mean()
-                .reduceRegion(reducer=ee.Reducer.mean(), geometry=buffer, scale=250, bestEffort=True)
+            )
+            fallback_ndvi_col = (
+                ee.ImageCollection(self.MODIS_NDVI_16D)
+                .filterBounds(buffer)
+                .filterDate("2025-01-01", padded_end)
+                .select(["NDVI"])
+                .sort("system:time_start", False)
+                .limit(1)
+            )
+            ndvi_img = ee.Algorithms.If(
+                ndvi_col.size().gt(0),
+                ndvi_col.mean(),
+                fallback_ndvi_col.first()
+            )
+            ndvi_stats = ee.Image(ndvi_img).reduceRegion(
+                reducer=ee.Reducer.mean(), geometry=buffer, scale=250, bestEffort=True
             )
 
             # 3. Sentinel-1 SAR (filter for dual-polarization passes)
@@ -369,14 +384,28 @@ class OptimizedSatellitePipe:
                 .reduceRegion(reducer=ee.Reducer.mean(), geometry=geom, scale=1000, bestEffort=True)
             )
 
-            # 2. MODIS NDVI
-            ndvi = (
+            # 2. MODIS NDVI (with 16-day fallback if weekly window has no new reduction)
+            ndvi_col = (
                 ee.ImageCollection(self.MODIS_NDVI)
                 .filterBounds(geom)
                 .filterDate(s, e)
                 .select(["NDVI"])
-                .mean()
-                .reduceRegion(reducer=ee.Reducer.mean(), geometry=geom, scale=250, bestEffort=True)
+            )
+            fallback_ndvi_col = (
+                ee.ImageCollection(self.MODIS_NDVI_16D)
+                .filterBounds(geom)
+                .filterDate("2025-01-01", e)
+                .select(["NDVI"])
+                .sort("system:time_start", False)
+                .limit(1)
+            )
+            ndvi_img = ee.Algorithms.If(
+                ndvi_col.size().gt(0),
+                ndvi_col.mean(),
+                fallback_ndvi_col.first()
+            )
+            ndvi = ee.Image(ndvi_img).reduceRegion(
+                reducer=ee.Reducer.mean(), geometry=geom, scale=250, bestEffort=True
             )
 
             # 3. Sentinel-1 SAR (filter for dual-polarization passes)
@@ -623,6 +652,16 @@ class OptimizedSatellitePipe:
         sat_df = pd.DataFrame(sat)
         if not sat_df.empty:
             sat_df["week"] = sat_df["week"].astype(str)
+            if "NDVI_modis" in sat_df.columns:
+                n_missing = int(sat_df["NDVI_modis"].isna().sum())
+                if n_missing > 0:
+                    sat_df["NDVI_modis"] = sat_df["NDVI_modis"].ffill().bfill()
+                    n_still = int(sat_df["NDVI_modis"].isna().sum())
+                    self.logger.warning(
+                        f"[{self.station_name}] WARNING: MODIS NDVI was missing for {n_missing} week(s) "
+                        f"due to upstream 16-day sampling/publication delay. Applied forward-fill from "
+                        f"last available observation (remaining missing: {n_still})."
+                    )
 
         merged = pd.merge(df, sat_df, on="week", how="left").drop(columns=["week"])
 

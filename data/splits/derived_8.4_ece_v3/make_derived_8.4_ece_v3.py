@@ -1,0 +1,583 @@
+# make_derived_8.4_ece_v3.py
+# Compiles derived_8.4_ece_v3 split dataset from processed in-situ ECE sensor stations.
+#
+# Key upgrades in v3:
+# 1. 30-day Warmup Scaffold (June 20 - July 19, 2026): All rolling statistics (API, NDVI, SAR, LST)
+#    are continuous and warm before evaluation begins, eliminating the Day 30 (Aug 19) drop.
+# 2. Strict Native-Missing SMAP Policy: All 85 SMAP columns are preserved as native NaN with masks=0,
+#    preventing false physical 0.0 values from biasing tree decision paths.
+# 3. Exact 499-column schema parity with derived_8.4.
+
+from __future__ import annotations
+
+import os
+import sys
+import json
+import argparse
+import shutil
+import numpy as np
+import pandas as pd
+import yaml
+
+# Append local path so we can import utils safely
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from utils.derived_features_all_math import (
+    compute_ndvi,
+    compute_ndmi,
+    compute_msi,
+    compute_sar_ratio,
+    compute_sar_diff,
+    compute_api,
+    compute_days_since_last_rain,
+    compute_rain_sums_days,
+    compute_time_since_last_spike_past_only,
+    series_lags,
+    series_diffs,
+    series_pct_change,
+    series_gradient_kobs,
+    rolling_mean,
+    rolling_std,
+    rolling_min,
+    rolling_max,
+    rolling_range,
+    rolling_cv,
+    rolling_corr,
+    rolling_fft_dom_freq_and_entropy,
+    rolling_mean_abs_change,
+    ema,
+    smm_index,
+    train_only_monthly_anomaly_global,
+    train_only_monthly_zscore_global,
+    add_smap_features,
+)
+
+DATE_COL = "date"
+GROUP_COL = "station_id"
+TARGET_COL = "soil_moisture_5cm"
+
+KEEP_META_COLS = ["station_id", "date", "longitude", "latitude"]
+
+BASE_COLS = [
+    "precip_mm",
+    "s1_vv",
+    "s1_vh",
+    "s2_b4",
+    "s2_b8",
+    "s2_b11",
+    "s2_b12",
+    "LST_modis",
+    "elev",
+    "slope",
+    "aspect",
+    "DOY",
+    "SMAP_sm_am_interp",
+    "SMAP_sm_pm_interp",
+]
+
+# Standard constants matching derived_8.4
+EPS = 1e-6
+RAIN_THR_MM = 0.5
+API_DECAY = 0.90
+SMM_ALPHA = 0.85
+
+KOBS_LONG = 5
+FFT_WIN = 30
+CORR_WINS = [7, 14]
+WIN_OBS_7 = 7
+WIN_OBS_14 = 14
+RAIN_SUM_DAYS = (3, 7, 30)
+
+SPIKE_COL = "s1_vv"
+SPIKE_Z_THR = 2.0
+
+PFX = {
+    "META": "M",
+    "BASE": "B",
+    "MET": "G",
+    "RAD": "E",
+    "OPT": "F",
+    "DYN": "A",
+    "VOL": "V",
+    "MEM": "C",
+    "SEA": "D",
+    "EVT": "I",
+}
+
+ECE_STATIONS = [
+    "ECE_BBG_Main_St",
+    "ECE_BBG_Lost_Meadow",
+    "ECE_Renton_Home",
+    "ECE_Renton_Garden_North",
+    "ECE_Renton_Garden_Shed",
+]
+
+
+def prepare_smap_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Ensure SMAP retrieval columns are properly initialized as NaN without physical zeros."""
+    out = df.copy()
+    for suffix in ("am", "pm"):
+        raw_col = f"SMAP_sm_{suffix}"
+        value_col = f"SMAP_sm_{suffix}_interp"
+        if value_col not in out.columns:
+            source = out[raw_col] if raw_col in out.columns else pd.Series(np.nan, index=out.index)
+            out[value_col] = pd.to_numeric(source, errors="coerce")
+        else:
+            out[value_col] = pd.to_numeric(out[value_col], errors="coerce")
+
+        # Guard: replace any accidental 0.0 with NaN
+        out[value_col] = out[value_col].replace(0.0, np.nan)
+        if raw_col in out.columns:
+            out[raw_col] = out[raw_col].replace(0.0, np.nan)
+
+    return out
+
+
+def load_processed_stations(config_path: str, project_root: str) -> pd.DataFrame:
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"Config file not found at: {config_path}")
+
+    with open(config_path, "r", encoding="utf-8") as f:
+        config = yaml.safe_load(f)
+
+    stations_cfg = config.get("stations", {})
+    frames = []
+
+    for key, cfg in stations_cfg.items():
+        save_cfg = cfg.get("save", {})
+        out_path = save_cfg.get("out_path")
+        if not out_path:
+            continue
+
+        full_out_path = os.path.join(project_root, out_path)
+        if not os.path.exists(full_out_path):
+            print(f"[WARN] Processed file missing for {key}: {full_out_path}")
+            continue
+
+        print(f"Reading processed data for {key} from {out_path}...")
+        df = pd.read_csv(full_out_path, low_memory=False)
+        df[DATE_COL] = pd.to_datetime(df[DATE_COL], errors="coerce")
+
+        if "station_id" in df.columns:
+            df["station_id"] = df["station_id"].astype(str)
+
+        df = prepare_smap_columns(df)
+
+        unique_ids = df["station_id"].unique()
+        if len(unique_ids) > 0 and unique_ids[0] in ECE_STATIONS:
+            frames.append(df)
+            print(f"  Added station: {unique_ids[0]} ({len(df)} total days: warmup + eval)")
+        else:
+            print(f"  Station {unique_ids} not in ECE list: {ECE_STATIONS}")
+
+    if not frames:
+        raise ValueError("No processed station files found! Ensure pipeline was run first.")
+
+    combined = pd.concat(frames, ignore_index=True)
+    return combined
+
+
+def add_derived_features(df: pd.DataFrame) -> pd.DataFrame:
+    print("Computing derived features across continuous time series (warmup + eval)...")
+    full = df.copy()
+
+    # Sort dates for chronological calculations
+    full = full.sort_values([GROUP_COL, DATE_COL]).reset_index(drop=True)
+
+    # Basic structural columns
+    full[f"{PFX['SEA']}_sin_DOY"] = np.sin(2 * np.pi * full["DOY"] / 365.0)
+    full[f"{PFX['SEA']}_cos_DOY"] = np.cos(2 * np.pi * full["DOY"] / 365.0)
+
+    # Vegetation/Moisture Indices
+    full[f"{PFX['OPT']}_NDVI"] = compute_ndvi(full, nir_col="s2_b8", red_col="s2_b4", eps=EPS)
+    full[f"{PFX['OPT']}_NDMI"] = compute_ndmi(full, nir_col="s2_b8", swir_col="s2_b11", eps=EPS)
+    full[f"{PFX['OPT']}_MSI"]  = compute_msi(full, swir_col="s2_b11", nir_col="s2_b8", eps=EPS)
+
+    # SAR features
+    full[f"{PFX['RAD']}_SAR_ratio"] = compute_sar_ratio(full, vv_col="s1_vv", vh_col="s1_vh", eps=EPS)
+    full[f"{PFX['RAD']}_SAR_diff"]  = compute_sar_diff(full, vv_col="s1_vv", vh_col="s1_vh")
+
+    # Weather metrics (Hydrological memory)
+    full[f"{PFX['MET']}_API"] = compute_api(
+        full, precip_col="precip_mm", decay=API_DECAY, group_col=GROUP_COL, date_col=DATE_COL
+    )
+    full[f"{PFX['MET']}_DSLR"] = compute_days_since_last_rain(
+        full, precip_col="precip_mm", threshold_mm=RAIN_THR_MM, group_col=GROUP_COL, date_col=DATE_COL
+    )
+    for d in RAIN_SUM_DAYS:
+        full[f"{PFX['MET']}_rain_sum_{d}d"] = compute_rain_sums_days(
+            full, precip_col="precip_mm", window_days=d, group_col=GROUP_COL, date_col=DATE_COL
+        )
+
+    # SMAP features
+    full = add_smap_features(
+        full,
+        group_col=GROUP_COL,
+        date_col=DATE_COL,
+        imputed=True,
+        make_combined=True,
+        combined_col="SMAP_sm_interp",
+        lags=(1, 7, 30),
+        roll_windows=(7, 30),
+        ema_alpha=0.2,
+        add_ampm_diff=True,
+    )
+
+    DIFF_KOBS_LIST = [1, 2, 5, 7, 14, 30]
+    GRAD_KOBS_LIST = [WIN_OBS_7, WIN_OBS_14, 30]
+    LAG_KOBS_LIST  = [1, 2, 5, 6, 12, 30]
+    WIN_LIST       = [WIN_OBS_7, WIN_OBS_14, 30]
+
+    dyn_signals = {
+        f"{PFX['MET']}_API": f"{PFX['MET']}_API",
+        f"{PFX['OPT']}_NDMI": f"{PFX['OPT']}_NDMI",
+        f"{PFX['RAD']}_SAR_ratio": f"{PFX['RAD']}_SAR_ratio",
+        "LST_modis": "LST_modis",
+        f"{PFX['OPT']}_NDVI": f"{PFX['OPT']}_NDVI",
+        f"{PFX['RAD']}_SAR_diff": f"{PFX['RAD']}_SAR_diff",
+        "s2_b11": "s2_b11",
+        "s2_b12": "s2_b12",
+    }
+    if "SMAP_sm_interp" in full.columns:
+        dyn_signals["SMAP_sm_interp"] = "SMAP_sm_interp"
+
+    print("Computing rolling stats, lags, and difference sequences over full warm window...")
+    for col in dyn_signals.values():
+        new_cols = {}
+        for k in DIFF_KOBS_LIST:
+            new_cols[f"{PFX['DYN']}_d_{col}_kobs{k}"] = series_diffs(
+                full, col=col, kobs=k, group_col=GROUP_COL, date_col=DATE_COL
+            )
+        for k in GRAD_KOBS_LIST:
+            new_cols[f"{PFX['DYN']}_grad_{col}_kobs{k}"] = series_gradient_kobs(
+                full, col=col, kobs=k, group_col=GROUP_COL, date_col=DATE_COL
+            )
+        new_cols[f"{PFX['DYN']}_pct_{col}"] = series_pct_change(
+            full, col=col, group_col=GROUP_COL, date_col=DATE_COL, eps=EPS
+        )
+        for w in WIN_LIST:
+            new_cols[f"{PFX['VOL']}_rollstd_{col}_kobs{w}"] = rolling_std(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, ddof=0, min_periods=w
+            )
+            new_cols[f"{PFX['VOL']}_rollrng_{col}_kobs{w}"] = rolling_range(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, min_periods=w
+            )
+            new_cols[f"{PFX['VOL']}_rollcv_{col}_kobs{w}"] = rolling_cv(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, eps=EPS, ddof=0, min_periods=w
+            )
+            new_cols[f"{PFX['VOL']}_rollmean_{col}_kobs{w}"] = rolling_mean(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, min_periods=w
+            )
+            new_cols[f"{PFX['VOL']}_rollmin_{col}_kobs{w}"] = rolling_min(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, min_periods=w
+            )
+            new_cols[f"{PFX['VOL']}_rollmax_{col}_kobs{w}"] = rolling_max(
+                full, col=col, window=w, group_col=GROUP_COL, date_col=DATE_COL, min_periods=w
+            )
+            new_cols[f"{PFX['VOL']}_ema_{col}_kobs{w}"] = ema(
+                full, col=col, alpha=2.0 / (w + 1.0), group_col=GROUP_COL, date_col=DATE_COL
+            )
+        for k in LAG_KOBS_LIST:
+            new_cols[f"{PFX['MEM']}_lag_{col}_kobs{k}"] = series_lags(
+                full, col=col, lag_kobs=k, group_col=GROUP_COL, date_col=DATE_COL
+            )
+        new_cols[f"{PFX['MEM']}_smm_{col}_alpha{SMM_ALPHA}_n{KOBS_LONG}"] = smm_index(
+            full, col=col, alpha=SMM_ALPHA, n_lags=KOBS_LONG, group_col=GROUP_COL, date_col=DATE_COL
+        )
+        full = pd.concat([full, pd.DataFrame(new_cols, index=full.index)], axis=1)
+
+    rad_cols = {}
+    rad_cols[f"{PFX['RAD']}_dVV_1"] = series_diffs(
+        full, col="s1_vv", kobs=1, group_col=GROUP_COL, date_col=DATE_COL
+    )
+    for w in CORR_WINS:
+        rad_cols[f"{PFX['RAD']}_rough_s1_vv_kobs{w}"] = rolling_mean_abs_change(
+            full, col="s1_vv", window=w, group_col=GROUP_COL, date_col=DATE_COL, past_only=True, min_periods=w
+        )
+        rad_cols[f"{PFX['RAD']}_rough_s1_vh_kobs{w}"] = rolling_mean_abs_change(
+            full, col="s1_vh", window=w, group_col=GROUP_COL, date_col=DATE_COL, past_only=True, min_periods=w
+        )
+    full = pd.concat([full, pd.DataFrame(rad_cols, index=full.index)], axis=1)
+
+    full[f"{PFX['EVT']}_ts_spike_{SPIKE_COL}"] = compute_time_since_last_spike_past_only(
+        full, diff_col=f"{PFX['RAD']}_dVV_1", zthr=SPIKE_Z_THR, group_col=GROUP_COL, date_col=DATE_COL, eps=EPS
+    )
+
+    corr_cols = {}
+    for w in CORR_WINS:
+        corr_cols[f"H_corr_{PFX['RAD']}_SAR_ratio__{PFX['OPT']}_NDMI_kobs{w}"] = rolling_corr(
+            full,
+            x_col=f"{PFX['RAD']}_SAR_ratio",
+            y_col=f"{PFX['OPT']}_NDMI",
+            window=w,
+            group_col=GROUP_COL,
+            date_col=DATE_COL,
+            min_periods=w,
+            past_only=True,
+        )
+        corr_cols[f"H_corr_LST_modis__{PFX['OPT']}_NDMI_kobs{w}"] = rolling_corr(
+            full,
+            x_col="LST_modis",
+            y_col=f"{PFX['OPT']}_NDMI",
+            window=w,
+            group_col=GROUP_COL,
+            date_col=DATE_COL,
+            min_periods=w,
+            past_only=True,
+        )
+    full = pd.concat([full, pd.DataFrame(corr_cols, index=full.index)], axis=1)
+
+    return full
+
+
+def add_drift_and_anomaly_features(df: pd.DataFrame, train_ref_df: pd.DataFrame) -> pd.DataFrame:
+    print("Computing drift and anomaly features...")
+    out = df.copy()
+    out["year"] = out[DATE_COL].dt.year.astype(int)
+
+    ref_min_year = 2017.0
+    ref_max_year = 2020.0
+    denom = ref_max_year - ref_min_year
+
+    out["year_frac"] = (out["year"] - ref_min_year) / denom
+    theta = 2 * np.pi * out["year_frac"]
+    out["sin_year"] = np.sin(theta)
+    out["cos_year"] = np.cos(theta)
+
+    api_col = f"{PFX['MET']}_API"
+    smap_col = "SMAP_sm_pm_interp_ema02"
+
+    if api_col in out.columns:
+        out["API_x_year"] = out[api_col] * out["year_frac"]
+    else:
+        out["API_x_year"] = np.nan
+
+    if smap_col in out.columns:
+        out["SMAP_x_year"] = out[smap_col] * out["year_frac"]
+    else:
+        out["SMAP_x_year"] = np.nan
+
+    print("Computing seasonal anomalies using baseline training climatology...")
+    for col in [f"{PFX['OPT']}_NDMI", f"{PFX['RAD']}_SAR_ratio", "LST_modis"]:
+        out[f"{PFX['SEA']}_sa_{col}"] = train_only_monthly_anomaly_global(train_ref_df, out, col=col, date_col=DATE_COL).values
+        out[f"{PFX['SEA']}_z_{col}"]  = train_only_monthly_zscore_global(train_ref_df, out, col=col, date_col=DATE_COL, eps=EPS).values
+
+    print("Computing rolling FFT features...")
+    for sig in [f"{PFX['OPT']}_NDMI", f"{PFX['RAD']}_SAR_ratio", "LST_modis"]:
+        dom, ent = rolling_fft_dom_freq_and_entropy(
+            out, col=sig, window=FFT_WIN, group_col=GROUP_COL, date_col=DATE_COL, past_only=True, eps=1e-12
+        )
+        out[f"{PFX['SEA']}_fft_dom_{sig}_kobs{FFT_WIN}"] = dom
+        out[f"{PFX['SEA']}_fft_ent_{sig}_kobs{FFT_WIN}"] = ent
+
+    dslr_col = f"{PFX['MET']}_DSLR"
+    out[f"{PFX['MET']}_DSLR_isnan"] = out[dslr_col].isna().astype(int).values
+
+    return out
+
+
+def merge_lia(df: pd.DataFrame, lia_path: str) -> pd.DataFrame:
+    print("Merging Local Incident Angle (LIA) features...")
+    if not os.path.exists(lia_path):
+        raise FileNotFoundError(f"LIA CSV not found at: {lia_path}")
+
+    lia = pd.read_csv(lia_path)
+    lia_cols = ["station_id", "lia_mean_asc_deg", "lia_std_asc_deg", "lia_mean_desc_deg", "lia_std_desc_deg"]
+
+    lia = lia[lia_cols].copy()
+    lia["station_id"] = lia["station_id"].astype(str)
+    df["station_id"] = df["station_id"].astype(str)
+
+    merged = df.merge(lia, on="station_id", how="left")
+
+    miss_rate = merged["lia_mean_asc_deg"].isna().mean()
+    if miss_rate > 0:
+        missing_stations = sorted(merged.loc[merged["lia_mean_asc_deg"].isna(), "station_id"].unique().tolist())
+        raise ValueError(f"LIA merge produced missing values (rate={miss_rate:.4%}) for stations: {missing_stations}")
+
+    print("  LIA merge successful.")
+    return merged
+
+
+def merge_static_features(df: pd.DataFrame, static_path: str) -> pd.DataFrame:
+    print("Merging station static features...")
+    if not os.path.exists(static_path):
+        raise FileNotFoundError(f"Static features CSV not found at: {static_path}")
+
+    static_df = pd.read_csv(static_path)
+
+    drop_cols = ["latitude", "longitude", "landcover_label"]
+    drop_cols = [c for c in drop_cols if c in static_df.columns]
+    if drop_cols:
+        static_df = static_df.drop(columns=drop_cols)
+
+    static_df["station_id"] = static_df["station_id"].astype(str)
+    df["station_id"] = df["station_id"].astype(str)
+
+    merged = df.merge(static_df, on="station_id", how="left")
+
+    if "J_lc_code" in merged.columns:
+        miss_rate = merged["J_lc_code"].isna().mean()
+        if miss_rate > 0:
+            missing_stations = sorted(merged.loc[merged["J_lc_code"].isna(), "station_id"].unique().tolist())
+            raise ValueError(f"Static features merge produced missing values for stations: {missing_stations}")
+
+    print("  Static features merge successful.")
+    return merged
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Build derived_8.4_ece_v3 evaluation split.")
+    parser.add_argument(
+        "--out-dir",
+        default="data/splits/derived_8.4_ece_v3",
+        help="Output directory for the new split.",
+    )
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, "..", "..", ".."))
+    config_path = os.path.join(project_root, "src", "pipeline", "config_8.4_ece_v3.yaml")
+    train_ref_path = os.path.join(project_root, "data", "splits", "derived_8.4", "train.csv")
+
+    print(f"Project root: {project_root}")
+    print(f"Loading processed ECE stations from config: {config_path}")
+
+    combined_df = load_processed_stations(config_path, project_root)
+    print(f"Total initial rows loaded (warmup + evaluation): {len(combined_df)}")
+
+    expected_cols = KEEP_META_COLS + BASE_COLS + [TARGET_COL]
+    missing = sorted(list(set(expected_cols) - set(combined_df.columns)))
+    if missing:
+        raise ValueError(f"Missing required columns in processed data: {missing}")
+
+    combined_df = combined_df[expected_cols].copy()
+
+    # Compute derived features across the FULL trajectory (warmup scaffold + evaluation)
+    # This ensures that rolling windows (API, NDVI, LST, SAR) are fully populated before July 20!
+    df_derived = add_derived_features(combined_df)
+
+    # Merge LIA features
+    lia_path = os.path.join(script_dir, "LIA", "stations_lia.csv")
+    df_lia = merge_lia(df_derived, lia_path)
+
+    # Merge static features
+    static_path = os.path.join(script_dir, "station_static_features.csv")
+    df_static = merge_static_features(df_lia, static_path)
+
+    # Load baseline training split for monthly climatology
+    print(f"Loading training climatology reference from {train_ref_path}...")
+    train_ref_df = pd.read_csv(train_ref_path, low_memory=False)
+    train_ref_df[DATE_COL] = pd.to_datetime(train_ref_df[DATE_COL], errors="coerce")
+
+    # Compute drift terms and seasonal anomalies
+    full_trajectory_df = add_drift_and_anomaly_features(df_static, train_ref_df)
+
+    # ── Filter strictly to the 150 ground truth evaluation rows (Jul 20 – Aug 19, 2026) ──
+    EVAL_START = pd.Timestamp("2026-07-20")
+    EVAL_END   = pd.Timestamp("2026-08-19")
+    eval_mask = (
+        (full_trajectory_df[DATE_COL] >= EVAL_START)
+        & (full_trajectory_df[DATE_COL] <= EVAL_END)
+        & full_trajectory_df[TARGET_COL].notna()
+        & (full_trajectory_df[TARGET_COL] > 0.0)
+    )
+    test_df = full_trajectory_df[eval_mask].copy()
+    print(f"\nFiltered to evaluation dates: {len(test_df)} rows kept (dropped {len(full_trajectory_df) - len(test_df)} warmup/invalid rows)")
+
+    # ── Strict Native-Missing SMAP Policy ──
+    # Ensure all SMAP value columns are native NaN and all mask columns are 0
+    smap_columns = [col for col in test_df.columns if "SMAP" in col]
+    smap_mask_cols = [col for col in smap_columns if col.endswith("_mask")]
+    smap_val_cols  = [col for col in smap_columns if col not in smap_mask_cols]
+
+    test_df[smap_val_cols] = np.nan
+    test_df[smap_mask_cols] = 0
+    print(f"Applied native-missing policy to {len(smap_columns)} SMAP columns ({len(smap_val_cols)} values -> NaN, {len(smap_mask_cols)} masks -> 0)")
+
+    # Schema alignment with derived_8.4
+    ref_cols = list(train_ref_df.columns)
+    missing_in_ece = [c for c in ref_cols if c not in test_df.columns]
+    extra_in_ece = [c for c in test_df.columns if c not in ref_cols]
+
+    if missing_in_ece:
+        print(f"[WARN] Filling missing columns with NaN to match exact 499 schema: {missing_in_ece}")
+        for c in missing_in_ece:
+            test_df[c] = np.nan
+
+    if extra_in_ece:
+        print(f"[INFO] Dropping extra columns not in reference schema: {extra_in_ece}")
+        test_df = test_df.drop(columns=extra_in_ece)
+
+    # Reorder test_df to match exact reference column order
+    test_df = test_df[ref_cols].copy()
+
+    # Empty train and val with exact schema
+    train_df = pd.DataFrame(columns=ref_cols)
+    val_df   = pd.DataFrame(columns=ref_cols)
+
+    # Save outputs
+    out_dir = os.path.abspath(os.path.join(project_root, args.out_dir))
+    os.makedirs(out_dir, exist_ok=True)
+    train_path = os.path.join(out_dir, "train.csv")
+    val_path   = os.path.join(out_dir, "val.csv")
+    test_path  = os.path.join(out_dir, "test.csv")
+    eval_path  = os.path.join(out_dir, "eval.csv")
+    meta_path  = os.path.join(out_dir, "split_meta.json")
+    dest_config_path = os.path.join(out_dir, "config.yaml")
+
+    train_df.to_csv(train_path, index=False)
+    val_df.to_csv(val_path, index=False)
+    test_df.to_csv(test_path, index=False)
+    test_df.to_csv(eval_path, index=False)
+
+    # Copy config.yaml and dataset_metadata.py for reproducibility
+    with open(config_path, "r", encoding="utf-8") as f_in, open(dest_config_path, "w", encoding="utf-8") as f_out:
+        f_out.write(f_in.read())
+    meta_src = os.path.join(script_dir, "dataset_metadata.py")
+    meta_dst = os.path.join(out_dir, "dataset_metadata.py")
+    if os.path.abspath(meta_src) != os.path.abspath(meta_dst):
+        shutil.copy2(meta_src, meta_dst)
+
+    meta = {
+        "dataset_version": "derived_8.4_ece_v3",
+        "source": "In-situ ECE soil moisture sensors (Washington state BBG and Renton deployment)",
+        "warmup_period": "2026-06-20 to 2026-07-19 (30-day continuous scaffold for rolling window initialization)",
+        "evaluation_dates": "2026-07-20 to 2026-08-19 (excluding partial start Jul 19, partial end Aug 20, missing Aug 1)",
+        "missing_data_policy": "Strict native NaN for SMAP retrievals (empirically confirmed permanently masked on GEE for Puget Sound urban coordinates); observation masks set to 0; no zero fill",
+        "modis_ndvi_policy": "16-day sampling fallback from latest available observation when weekly reduction is unpopulated due to upstream publication latency",
+        "builder": os.path.relpath(__file__, project_root),
+        "columns_count": int(len(test_df.columns)),
+        "rows": {
+            "train": 0,
+            "val": 0,
+            "test": int(len(test_df)),
+            "total": int(len(test_df)),
+        },
+        "rows_by_station": {
+            st: {
+                "train": 0,
+                "val": 0,
+                "test": int((test_df["station_id"] == st).sum()),
+                "total": int((test_df["station_id"] == st).sum()),
+            } for st in sorted(list(test_df["station_id"].unique()))
+        }
+    }
+
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=2)
+
+    print("\nSaved derived_8.4_ece_v3 split successfully:")
+    print(f"  Train: {train_path} ({len(train_df)} rows)")
+    print(f"  Val:   {val_path} ({len(val_df)} rows)")
+    print(f"  Test:  {test_path} ({len(test_df)} rows)")
+    print(f"  Eval:  {eval_path} ({len(test_df)} rows)")
+    print(f"  Columns: {len(test_df.columns)} (matching derived_8.4)")
+    print(f"  Metadata: {meta_path}")
+
+
+if __name__ == "__main__":
+    main()

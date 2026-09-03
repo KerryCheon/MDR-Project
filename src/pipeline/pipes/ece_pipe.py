@@ -141,6 +141,27 @@ class ECEPipe:
 
         daily["date"] = pd.to_datetime(daily["date"])
 
+        warmup_start = self.config.get("warmup_start_date")
+        warmup_end = self.config.get("warmup_end_date")
+        if warmup_start and warmup_end:
+            scaffold_dates = pd.date_range(warmup_start, warmup_end, freq="D")
+            scaffold = pd.DataFrame({
+                "date": scaffold_dates,
+                "sample_count": 0,
+                "soil_moisture_pct": np.nan,
+                "soil_moisture_5cm": np.nan,
+                "station_id": self.station_name,
+                "latitude": float(lat) if lat is not None else np.nan,
+                "longitude": float(lon) if lon is not None else np.nan,
+            })
+            if self.elevation is not None:
+                scaffold["elevation"] = float(self.elevation)
+            daily = pd.concat([scaffold, daily], ignore_index=True)
+            self.logger.info(
+                f"[{self.station_name}] Prepending {len(scaffold)} warmup scaffold days "
+                f"({warmup_start} to {warmup_end}) for rolling feature continuity"
+            )
+
         # Sort chronologically
         daily = daily.sort_values("date").reset_index(drop=True)
 

@@ -1,0 +1,48 @@
+{
+  "dataset_version": "derived_8.4_ece_v3",
+  "source": "In-situ ECE soil moisture sensors (Washington state BBG and Renton deployment)",
+  "warmup_period": "2026-06-20 to 2026-07-19 (30-day continuous scaffold for rolling window initialization)",
+  "evaluation_dates": "2026-07-20 to 2026-08-19 (excluding partial start Jul 19, partial end Aug 20, missing Aug 1)",
+  "missing_data_policy": "Strict native NaN for SMAP retrievals (empirically confirmed permanently masked on GEE for Puget Sound urban coordinates); observation masks set to 0; no zero fill",
+  "modis_ndvi_policy": "16-day sampling fallback from latest available observation when weekly reduction is unpopulated due to upstream publication latency",
+  "builder": "data/splits/derived_8.4_ece_v3/make_derived_8.4_ece_v3.py",
+  "columns_count": 499,
+  "rows": {
+    "train": 0,
+    "val": 0,
+    "test": 150,
+    "total": 150
+  },
+  "rows_by_station": {
+    "ECE_BBG_Lost_Meadow": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    },
+    "ECE_BBG_Main_St": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    },
+    "ECE_Renton_Garden_North": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    },
+    "ECE_Renton_Garden_Shed": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    },
+    "ECE_Renton_Home": {
+      "train": 0,
+      "val": 0,
+      "test": 30,
+      "total": 30
+    }
+  }
+}
