@@ -1,0 +1,553 @@
+{
+  "wa_thresholds": {
+    "v0": 1.9559823212899237,
+    "backbone": 1.5480887296641908
+  },
+  "seeds": [
+    {
+      "seed": 42,
+      "policies": {
+        "Clustering_V0_Full_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.5933333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.98
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          }
+        },
+        "Clustering_Backbone54_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.17333333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 0.0,
+              "fallback_share": 0.9666666666666667,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.6866666666666666
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 1.0,
+              "fallback_share": 0.8066666666666666,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 7,
+      "policies": {
+        "Clustering_V0_Full_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.5933333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.98
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          }
+        },
+        "Clustering_Backbone54_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.17333333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 0.0,
+              "fallback_share": 0.9666666666666667,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.6866666666666666
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 1.0,
+              "fallback_share": 0.8066666666666666,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 13,
+      "policies": {
+        "Clustering_V0_Full_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.5933333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.98
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          }
+        },
+        "Clustering_Backbone54_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.17333333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 0.0,
+              "fallback_share": 0.9666666666666667,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.6866666666666666
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 1.0,
+              "fallback_share": 0.8066666666666666,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 101,
+      "policies": {
+        "Clustering_V0_Full_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.5933333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.98
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          }
+        },
+        "Clustering_Backbone54_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.17333333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 0.0,
+              "fallback_share": 0.9666666666666667,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.6866666666666666
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 1.0,
+              "fallback_share": 0.8066666666666666,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "policies": {
+        "Clustering_V0_Full_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.5933333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.98
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": NaN,
+              "fallback_share": 1.0,
+              "wa_margin_p5": 1.9559823212899237
+            }
+          }
+        },
+        "Clustering_Backbone54_k2": {
+          "zero": {
+            "as_routed": {
+              "c0_share": 0.17333333333333334
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 0.0,
+              "fallback_share": 0.9666666666666667,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          },
+          "native": {
+            "as_routed": {
+              "c0_share": 0.6866666666666666
+            },
+            "c0_only": {
+              "c0_share": 1.0
+            },
+            "c1_only": {
+              "c0_share": 0.0
+            },
+            "gapi_transplant": {
+              "c0_share": 1.0
+            },
+            "dynamic_transplant": {
+              "c0_share": 1.0
+            },
+            "seasonal": {
+              "c0_share": 1.0
+            },
+            "margin_fallback": {
+              "c0_share": 1.0,
+              "fallback_share": 0.8066666666666666,
+              "wa_margin_p5": 1.5480887296641908
+            }
+          }
+        }
+      }
+    }
+  ]
+}
