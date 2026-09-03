@@ -21,3 +21,7 @@ prism_annual_precip_mm,1475.84,7.69,1456.9,1488.8,0.52,True
 prism_precip_30d_mm,236.39,2.5,232.7,240.8,1.06,True
 prism_precip_7d_mm,80.75,0.5,79.8,81.8,0.62,True
 precip_delta_openmeteo_minus_prism_mm,94.76,7.69,81.8,113.7,8.11,True
+smap_sm_mean_spring_m3_m3,0.31,0.0,0.31,0.31,0.0,False
+smap_sm_mean_summer_m3_m3,0.16,0.0,0.16,0.16,0.0,False
+smap_sm_aug2026_am_m3_m3,0.16,0.0,0.16,0.16,0.0,False
+smap_sm_aug2026_pm_m3_m3,0.12,0.0,0.12,0.12,0.0,False
