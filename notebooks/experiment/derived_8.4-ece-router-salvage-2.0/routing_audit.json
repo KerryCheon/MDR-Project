@@ -12,7 +12,7 @@
     "backbone": 0.25
   },
   "tau_miss_rate": 0.1,
-  "config_code_hash": "aadd273640ed1cba",
+  "config_code_hash": "330d2d3ef7fa93a2",
   "calibration": [
     {
       "family": "Clustering_V0_Full_k2",
@@ -300,6 +300,13 @@
             "wa_margin_p5": 1.5480887296641908,
             "wa_margin_median": 3.6499401378874268
           }
+        },
+        "Global_Single_54": {
+          "direct": {
+            "n_features": 54,
+            "deployable": true,
+            "reference_only": true
+          }
         }
       }
     },
@@ -490,6 +497,13 @@
             "temperature": 0.25,
             "wa_margin_p5": 1.5480887296641908,
             "wa_margin_median": 3.6499401378874268
+          }
+        },
+        "Global_Single_54": {
+          "direct": {
+            "n_features": 54,
+            "deployable": true,
+            "reference_only": true
           }
         }
       }
@@ -682,6 +696,13 @@
             "wa_margin_p5": 1.5480887296641908,
             "wa_margin_median": 3.6499401378874268
           }
+        },
+        "Global_Single_54": {
+          "direct": {
+            "n_features": 54,
+            "deployable": true,
+            "reference_only": true
+          }
         }
       }
     },
@@ -873,6 +894,13 @@
             "wa_margin_p5": 1.5480887296641908,
             "wa_margin_median": 3.6499401378874268
           }
+        },
+        "Global_Single_54": {
+          "direct": {
+            "n_features": 54,
+            "deployable": true,
+            "reference_only": true
+          }
         }
       }
     },
@@ -1063,6 +1091,13 @@
             "temperature": 0.25,
             "wa_margin_p5": 1.5480887296641908,
             "wa_margin_median": 3.6499401378874268
+          }
+        },
+        "Global_Single_54": {
+          "direct": {
+            "n_features": 54,
+            "deployable": true,
+            "reference_only": true
           }
         }
       }

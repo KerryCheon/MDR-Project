@@ -3,11 +3,14 @@
 Automatic missingness-aware MoE routing bandaid for
 `Clustering_V0_Full_k2` and `Clustering_Backbone54_k2`
 (`c0_0_c1_0`, 54 backbone features, no deltas) on the canonical
-`derived_8.4_ece_v3` split. No target is used at deploy time and no
-prediction ever leaves the MoE: every row is a convex combo
-`w0*E0 + w1*E1` of the SAME two frozen regime experts (hard routing
-is the special case `w in {0, 1}`). `c0_only` is a MANUAL oracle
-ceiling (`deployable=false`), kept only to quantify the remaining gap.
+`derived_8.4_ece_v3` split, plus the single-regime `Global_Single_54`
+baseline reference (`policy=direct`, 54 backbone features). No target
+is used at deploy time and no MoE prediction ever leaves the MoE:
+every MoE row is a convex combo `w0*E0 + w1*E1` of the SAME two
+frozen regime experts (hard routing is the special case `w in {0, 1}`).
+`c0_only` is a MANUAL oracle ceiling (`deployable=false`), kept only
+to quantify the remaining gap. `Global_Single_54` is a deployable
+reference row only, never used as a fallback.
 
 WA margin p5 thresholds: `{'v0': 1.9559823212899237, 'backbone': 1.5480887296641908}`.
 WA margin medians: `{'v0': 3.576934535557384, 'backbone': 3.6499401378874268}`.
@@ -21,7 +24,7 @@ Two versioned splits (see `config.yaml`):
 
 1. Training — `data/splits/derived_8.4` (7 WA reference stations).
    `train.csv` + `val.csv` concatenated as `trainval` (14,608 rows,
-   2017–2022). Routers and experts fit here only. WA `train`/`val` are
+   2017–2022). Routers, experts, AND the `Global_Single_54` baseline fit here only. WA `train`/`val` are
    additionally used as a fit/score split for the WA-only temperature
    and gate calibration. The WA `test.csv` (2023–2025) is NOT used.
 2. ECE eval — `data/splits/derived_8.4_ece_v3`, `test.csv` only
@@ -31,10 +34,13 @@ Two versioned splits (see `config.yaml`):
    NDVI 16-day fallback. Evaluation only — never used for fitting,
    thresholds, temperature, or gating decisions.
 
-Every reported number is (2 families x 7 policies) x 5 seeds
+Every reported number is (2 families x 7 policies + 1 baseline) x 5 seeds
 on the single `v3` input. `deployable=false` marks the manual oracle.
+`rmse_change_vs_as_routed` and `rmse_gap_vs_oracle_c0` are NaN for the
+baseline (no `as_routed` / `c0_only` exists in its family) — compare it
+directly by `rmse_mean`.
 
-## Routing policies (all reuse the SAME frozen experts)
+## Routing policies (MoE rows reuse the SAME frozen experts)
 
 C0 is the dry specialist, C1 the wet-mountain specialist.
 
@@ -56,6 +62,8 @@ C0 is the dry specialist, C1 the wet-mountain specialist.
    -> 0.5/0.5 blend of frozen experts; else static hard.
 7. `c0_only` (MANUAL oracle, `deployable=false`): every row to dry
    expert. Ceiling reference only — not a deployable claim.
+8. `direct` (baselines only): single-regime `Global_Single_54`
+   prediction, no routing.
 
 Gate-justification scope: the WA synthetic-SMAP-masking study supports
 the gate for `Clustering_Backbone54_k2` (masked-val aux 0.0740 < static
@@ -64,7 +72,7 @@ static-masked 0.0681) — the V0 gate application extrapolates beyond its
 own WA evidence. The gate decision itself uses inputs only (no target).
 Routers are fixed at seed 42 by design (as in 1.1 / formal-eval, whose
 delta additions are tied to seed-42 cluster labels); the 5-seed std
-measures expert-fit variance only.
+measures expert/baseline-fit variance only, not end-to-end routing variance.
 
 ## WA-only calibration (no ECE target used)
 
@@ -109,6 +117,7 @@ WA val (input masking only).
 | Clustering_Backbone54_k2 | v3          | auto_soft_T2 | True         |   0.0707262 | 0.000926717 |  0.0635665 |   0.0504515 |     0.0495632 |  -1.26006  |      0.0786598 |                 -0.096705  |             0.0129581   |
 | Clustering_Backbone54_k2 | v3          | auto_equal   | True         |   0.117866  | 0.00212523  |  0.108001  |   0.107152  |     0.0490928 |  -5.27756  |     -0.0507691 |                 -0.0495652 |             0.0600979   |
 | Clustering_Backbone54_k2 | v3          | c0_only      | False        |   0.0577681 | 0.000617298 |  0.0501669 |   0.0286544 |     0.0501576 |  -0.507705 |      0.103776  |                 -0.109663  |             0           |
+| Global_Single_54         | v3          | direct       | True         |   0.058634  | 0.000734624 |  0.0506233 |   0.0151223 |     0.0566347 |  -0.553294 |     -0.0653815 |                nan         |           nan           |
 
 ## Station RMSE (mean over seeds)
 
@@ -128,6 +137,7 @@ WA val (input masking only).
 | ('Clustering_Backbone54_k2', 'v3', 'auto_soft_T2') |              0.067204 |          0.070347 |                  0.037385 |                 0.050216 |          0.107813 |
 | ('Clustering_Backbone54_k2', 'v3', 'auto_equal')   |              0.122413 |          0.128514 |                  0.029596 |                 0.101451 |          0.163678 |
 | ('Clustering_Backbone54_k2', 'v3', 'c0_only')      |              0.047951 |          0.049039 |                  0.056877 |                 0.034239 |          0.087015 |
+| ('Global_Single_54', 'v3', 'direct')               |              0.061896 |          0.041421 |                  0.080627 |                 0.023171 |          0.067806 |
 
 ## Per-station prediction line charts
 

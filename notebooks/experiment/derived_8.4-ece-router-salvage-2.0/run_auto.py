@@ -4,9 +4,10 @@ Follow-up to derived_8.4-ece-router-salvage-1.1 with two hard constraints:
 
   1. No target at deploy time: gate thresholds, margin cutoffs, and the softmax
      temperature are fit on WA data only (ECE targets are eval-only).
-  2. No global-model fallback: every prediction is a convex combo w0*E0 + w1*E1
+  2. No global-model fallback: every MoE prediction is a convex combo w0*E0 + w1*E1
      of the SAME two frozen regime experts. Hard routing is the special case
-     (w in {0, 1}).
+     (w in {0, 1}). Global_Single_54 is reported as a single-regime baseline
+     reference row only (policy=direct) and is never used as a fallback.
 
 Bandaid logic (per row, per family):
   - Availability gate (input-only): router-unreliable when the full SMAP
@@ -28,10 +29,13 @@ WA-only calibration (ECE never touched):
 
 Protocol (ECE strictly unseen):
   - Routers fit on WA trainval only (14,608 rows, 7 stations).
-  - Experts (XGBRegressor, formal-eval exact_params, cpu) fit on WA trainval
-    only. ECE targets NEVER used for fitting or for any routing decision.
+  - Experts and the Global_Single_54 baseline (XGBRegressor, formal-eval
+    exact_params, cpu) fit on WA trainval only. ECE targets NEVER used for
+    fitting or for any routing decision.
   - c0_only is a MANUAL oracle ceiling (deployable=false), kept only to
     quantify the remaining gap.
+  - Global_Single_54 (policy=direct) is a deployable single-regime reference
+    row only; it never feeds any MoE routing decision.
 
 Resume: per-seed checkpoints under checkpoints/ keyed by a config+code hash;
 reruns refit on any config or code change unless --no-resume is passed.
@@ -355,6 +359,17 @@ def run_seed(seed: int, data: dict, routers: dict, v0_features: list[str],
         family_experts[family] = fit_experts(trainval, labels, backbone, target,
                                              seed_params)
 
+    # Single-regime global baseline reference, fit on WA trainval only
+    # (same seed_params / exact_params as the experts). Reference row only:
+    # its predictions never feed any MoE routing decision.
+    baseline_features = {"Global_Single_54": backbone}
+    baselines: dict[str, tuple[XGBRegressor, list[str]]] = {}
+    for name, features in baseline_features.items():
+        model = XGBRegressor(**seed_params)
+        model.fit(trainval[features], trainval[target].to_numpy(dtype=float),
+                  verbose=False)
+        baselines[name] = (model, features)
+
     aux_labels = np.asarray(routers["gapi"].predict(frame)).ravel().astype(int)
 
     records, station_records, audit, pred_rows = [], [], {"seed": seed, "policies": {}}, []
@@ -382,6 +397,25 @@ def run_seed(seed: int, data: dict, routers: dict, v0_features: list[str],
                                   "family": family, "policy": policy,
                                   "y_pred": float(preds[i]),
                                   "w0": float(weights[i, 0])})
+
+    def _record_direct(family: str, policy: str, preds: np.ndarray,
+                       extra: dict) -> None:
+        # Baseline reference rows (policy=direct): pooled + per-station metrics
+        # only. No MoE weights exist, and baselines stay out of
+        # predictions_v3.csv so the <=5-line chart budget is untouched.
+        metrics = compute_metrics(y, preds)
+        deployable = policy in config["deployable"]
+        records.append({"family": family, "ece_input": "v3",
+                        "policy": policy, "seed": seed,
+                        "deployable": deployable, **metrics})
+        for station in sorted(frame["station_id"].unique()):
+            mask = per_station == station
+            sm = compute_metrics(y[mask], preds[mask])
+            station_records.append({"family": family, "ece_input": "v3",
+                                    "policy": policy, "seed": seed,
+                                    "station": station,
+                                    "n": int(mask.sum()), **sm})
+        audit["policies"].setdefault(family, {})[policy] = extra
 
     for family, key in families.items():
         router = routers[key]
@@ -468,6 +502,13 @@ def run_seed(seed: int, data: dict, routers: dict, v0_features: list[str],
             }
             _record(family, policy, preds, weights, extra)
 
+    for name, (model, features) in baselines.items():
+        preds = np.asarray(model.predict(frame[features])).ravel()
+        _record_direct(name, "direct", preds,
+                       {"n_features": len(features),
+                        "deployable": True,
+                        "reference_only": True})
+
     return records, station_records, audit, pred_rows
 
 
@@ -516,7 +557,8 @@ def main(argv: list[str] | None = None) -> None:
         print(f"  {row['family']} {row['setting']} {row['policy']}: rmse={row['rmse']:.6f}")
 
     print(f"train_rows={len(data['trainval'])} ece_v3_rows={len(data['v3'])} "
-          f"families={config['families']} policies={config['policies']}")
+          f"families={config['families']} policies={config['policies']} "
+          f"baselines={config.get('baselines', [])}")
 
     CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
     run_hash = config_code_hash()

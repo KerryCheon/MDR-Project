@@ -1,7 +1,7 @@
 experiment:
   name: "derived_8.4-ece-router-salvage-2.0"
-  objective: "Automatic missingness-aware MoE routing bandaid: no target at deploy time, no global-model fallback. Gate on router-input availability, SMAP-free G_API auxiliary router, MoE-internal soft blending for ambiguous rows."
-  constraint: "ECE strictly unseen; experts fit on WA trainval only; every prediction is a convex combo of the two frozen regime experts (w0*E0 + w1*E1); no Global_Single_*, no manual per-station override."
+  objective: "Automatic missingness-aware MoE routing bandaid: no target at deploy time, no global-model fallback. Gate on router-input availability, SMAP-free G_API auxiliary router, MoE-internal soft blending for ambiguous rows. Global_Single_54 reported as a single-regime baseline reference row only."
+  constraint: "ECE strictly unseen; experts and the Global_Single_54 baseline fit on WA trainval only; every MoE prediction is a convex combo of the two frozen regime experts (w0*E0 + w1*E1); the baseline is a direct reference row only (never used as fallback/transplant); no manual per-station override."
   parent_evaluation: "derived_8.4-formal-eval-2.0-ece"
   prior_experiment: "notebooks/experiment/derived_8.4-ece-router-salvage-1.1"
   router_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/eval_formal/routers.py"
@@ -20,7 +20,12 @@ families:
   - Clustering_V0_Full_k2
   - Clustering_Backbone54_k2
 
-# Deployable automatic policies (MoE-internal, no target, no global model).
+# Single-regime global baseline reference (fit on WA trainval only, direct prediction).
+# Global_Single_54: 54-feature shared backbone. Reference row only, never a fallback.
+baselines:
+  - Global_Single_54
+
+# Deployable automatic policies (MoE-internal, no target, no global-model fallback).
 # as_routed: static KMeans hard (reference, no fix).
 # soft_static: always softmax-blend static KMeans distances with WA-tuned T.
 # auto_hard: availability gate -> G_API hard label, else static hard.
@@ -30,6 +35,7 @@ families:
 #   genuinely-soft path to show what blending costs when the window is one-sided.
 # auto_equal: gate or margin-ambiguous -> 0.5/0.5 blend of frozen experts; else static hard.
 # c0_only: MANUAL oracle ceiling only (deployable=false), to quantify the remaining gap.
+# direct: baselines only (single-regime prediction, no routing).
 policies:
   - as_routed
   - soft_static
@@ -46,6 +52,7 @@ deployable:
   - auto_soft
   - auto_soft_T2
   - auto_equal
+  - direct
 
 oracle:
   - c0_only

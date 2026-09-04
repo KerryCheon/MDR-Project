@@ -9,9 +9,12 @@ NOTEBOOK_PATH = EXP_DIR / "derived_8.4-ece-router-salvage-2.0.ipynb"
 
 
 def make_cell(cell_type: str, source: str) -> dict:
-    lines = source.split("\n")
-    # Canonical nbformat: one string per line without trailing newlines, and
-    # no empty trailing element.
+    # Canonical nbformat multi-line source: each line carries its newline
+    # except the last (same pattern as salvage-1.1). Bare split lines make
+    # `nb execute` concatenate code into one line (SyntaxError).
+    lines = [line + "\n" for line in source.split("\n")]
+    if lines and lines[-1] == "\n":
+        lines[-1] = ""
     cell = {"cell_type": cell_type, "id": str(uuid.uuid4()), "metadata": {},
             "source": lines}
     if cell_type == "code":
@@ -30,11 +33,13 @@ def main() -> None:
 Manual routing overrides (`c0_only`, transplants) close the ECE gap but are not
 deployable: they peek at the target to pick the winner. This experiment replaces
 them with an **automatic, input-only bandaid** that only activates when routing
-inputs are missing/unreliable and never leaves the MoE (every prediction is
+inputs are missing/unreliable and never leaves the MoE (every MoE prediction is
 `w0*E0 + w1*E1` of the same two frozen regime experts). Experts, routers, margin
 cutoffs, gate rule, and softmax temperature are all fit on WA `trainval` /
 `train`+`val` only; `derived_8.4_ece_v3` targets are eval-only. `c0_only` is kept
-purely as a MANUAL oracle ceiling (`deployable=false`)."""))
+purely as a MANUAL oracle ceiling (`deployable=false`). `Global_Single_54`
+(`policy=direct`) is a single-regime baseline reference row only, fit on WA
+`trainval` like the experts and never used as a fallback."""))
 
     cells.append(make_cell("markdown",
         r"""## 1. Load the versioned experiment implementation
@@ -71,10 +76,11 @@ print(f"Constraint: {config['experiment']['constraint']}")
 
     cells.append(make_cell("markdown",
         r"""## 2. Run the automatic salvage on v3
-Fits routers + experts on WA `trainval` only, calibrates temperature and gate on
-WA `train`/`val` only (ECE never touched), then scores v3 under each policy.
-Per-seed checkpoints resume, so re-execution is fast when artifacts exist. From a
-clean checkout this cell trains (documented timeout 3600s, CPU)."""))
+Fits routers + experts + the Global_Single_54 baseline on WA `trainval` only,
+calibrates temperature and gate on WA `train`/`val` only (ECE never touched),
+then scores v3 under each policy. Per-seed checkpoints resume, so re-execution
+is fast when artifacts exist. From a clean checkout this cell trains
+(documented timeout 3600s, CPU)."""))
 
     cells.append(make_cell("code",
         r"""salvage.main([])  # [] = defaults; avoids parsing the kernel's argv
@@ -105,7 +111,8 @@ print(f"WA temperatures: {audit['temperatures']}")
 print(summary.to_string(index=False))
 print(calibration.to_string(index=False))
 
-deployable = summary[summary["deployable"] == True]
+deployable = summary[(summary["deployable"] == True)
+                    & (summary["family"].isin(config["families"]))]
 order = [p for p in config["policies"] if p in set(deployable["policy"])]
 fig, axes = plt.subplots(1, 2, figsize=(15, 5), sharey=True)
 for ax, (family, sub) in zip(axes, deployable.groupby("family")):
@@ -142,8 +149,8 @@ for family in config["families"]:
     base = v3.loc[(family, "as_routed")].mean()
     oracle = v3.loc[(family, "c0_only")].mean()
     for policy in config["deployable"]:
-        if policy == "as_routed":
-            continue
+        if policy in ("as_routed", "direct"):
+            continue  # reference rows have no per-family MoE entry
         val = v3.loc[(family, policy)].mean()
         print(f"{family} {policy}: as_routed={base:.6f} -> {policy}={val:.6f} "
               f"(delta={val - base:+.6f}, gap_vs_oracle={val - oracle:+.6f})")

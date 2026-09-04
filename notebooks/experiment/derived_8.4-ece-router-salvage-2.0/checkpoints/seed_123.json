@@ -181,6 +181,19 @@
       "bias": 0.028353094516267666,
       "mae": 0.04990613188808959,
       "pearson": 0.10305859529840451
+    },
+    {
+      "family": "Global_Single_54",
+      "ece_input": "v3",
+      "policy": "direct",
+      "seed": 123,
+      "deployable": true,
+      "r2": -0.5328127707598069,
+      "rmse": 0.05824977727333271,
+      "ubrmse": 0.056321397438248134,
+      "bias": 0.014863941031764239,
+      "mae": 0.050401680600164166,
+      "pearson": -0.06816997391411185
     }
   ],
   "stations": [
@@ -1163,6 +1176,76 @@
       "bias": 0.08440663883690151,
       "mae": 0.08440663883690151,
       "pearson": 0.5684666751157029
+    },
+    {
+      "family": "Global_Single_54",
+      "ece_input": "v3",
+      "policy": "direct",
+      "seed": 123,
+      "station": "ECE_BBG_Lost_Meadow",
+      "n": 30,
+      "r2": -62.986315839858804,
+      "rmse": 0.06106369614162601,
+      "ubrmse": 0.021510017287641466,
+      "bias": 0.05714975190464257,
+      "mae": 0.05714975190464257,
+      "pearson": -0.49524836910766695
+    },
+    {
+      "family": "Global_Single_54",
+      "ece_input": "v3",
+      "policy": "direct",
+      "seed": 123,
+      "station": "ECE_BBG_Main_St",
+      "n": 30,
+      "r2": -53.4190613292606,
+      "rmse": 0.041323291903150705,
+      "ubrmse": 0.02325818716495667,
+      "bias": 0.034156568672992396,
+      "mae": 0.034156568672992396,
+      "pearson": 0.735670485864434
+    },
+    {
+      "family": "Global_Single_54",
+      "ece_input": "v3",
+      "policy": "direct",
+      "seed": 123,
+      "station": "ECE_Renton_Garden_North",
+      "n": 30,
+      "r2": -8.73230873334402,
+      "rmse": 0.08082718210464153,
+      "ubrmse": 0.015037824051967949,
+      "bias": -0.07941597581569428,
+      "mae": 0.07941597581569428,
+      "pearson": 0.8210139962787457
+    },
+    {
+      "family": "Global_Single_54",
+      "ece_input": "v3",
+      "policy": "direct",
+      "seed": 123,
+      "station": "ECE_Renton_Garden_Shed",
+      "n": 30,
+      "r2": -23.341900930689878,
+      "rmse": 0.022296560642108554,
+      "ubrmse": 0.02229368627960326,
+      "bias": -0.00035800633214167486,
+      "mae": 0.018498739878469374,
+      "pearson": 0.4345576654067031
+    },
+    {
+      "family": "Global_Single_54",
+      "ece_input": "v3",
+      "policy": "direct",
+      "seed": 123,
+      "station": "ECE_Renton_Home",
+      "n": 30,
+      "r2": -723.0720173727356,
+      "rmse": 0.06707177750984686,
+      "ubrmse": 0.023587494940448383,
+      "bias": 0.06278736672902217,
+      "mae": 0.06278736672902217,
+      "pearson": 0.6780150928328391
     }
   ],
   "audit": {
@@ -1352,6 +1435,13 @@
           "temperature": 0.25,
           "wa_margin_p5": 1.5480887296641908,
           "wa_margin_median": 3.6499401378874268
+        }
+      },
+      "Global_Single_54": {
+        "direct": {
+          "n_features": 54,
+          "deployable": true,
+          "reference_only": true
         }
       }
     }
@@ -13474,5 +13564,5 @@
     "v0": 0.25,
     "backbone": 0.25
   },
-  "config_code_hash": "aadd273640ed1cba"
+  "config_code_hash": "330d2d3ef7fa93a2"
 }
