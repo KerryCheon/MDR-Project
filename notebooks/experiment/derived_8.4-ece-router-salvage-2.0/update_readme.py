@@ -1,0 +1,150 @@
+"""Populate README.md tables from executed 2.0 automatic-salvage outputs."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pandas as pd
+
+EXP_DIR = Path(__file__).resolve().parent
+
+
+def main() -> None:
+    summary = pd.read_csv(EXP_DIR / "summary.csv")
+    station = pd.read_csv(EXP_DIR / "station_metrics.csv")
+    calibration = pd.read_csv(EXP_DIR / "wa_calibration.csv")
+    with (EXP_DIR / "routing_audit.json").open(encoding="utf-8") as handle:
+        audit = json.load(handle)
+
+    pivot = station.groupby(["family", "ece_input", "policy", "station"],
+                            sort=False)["rmse"].mean().unstack("station")
+
+    lines = [
+        "# Experiment: `derived_8.4-ece-router-salvage-2.0`",
+        "",
+        "Automatic missingness-aware MoE routing bandaid for",
+        "`Clustering_V0_Full_k2` and `Clustering_Backbone54_k2`",
+        "(`c0_0_c1_0`, 54 backbone features, no deltas) on the canonical",
+        "`derived_8.4_ece_v3` split. No target is used at deploy time and no",
+        "prediction ever leaves the MoE: every row is a convex combo",
+        "`w0*E0 + w1*E1` of the SAME two frozen regime experts (hard routing",
+        "is the special case `w in {0, 1}`). `c0_only` is a MANUAL oracle",
+        "ceiling (`deployable=false`), kept only to quantify the remaining gap.",
+        "",
+        f"WA margin p5 thresholds: `{audit['wa_thresholds']}`.",
+        f"WA margin medians: `{audit['wa_medians']}`.",
+        f"WA-tuned temperatures: `{audit['temperatures']}` (grid-selected on WA",
+        "val only; ECE never touched).",
+        f"Availability gate: full-SMAP-block-missing OR miss rate > `{audit['tau_miss_rate']}`.",
+        "",
+        "## Datasets",
+        "",
+        "Two versioned splits (see `config.yaml`):",
+        "",
+        "1. Training — `data/splits/derived_8.4` (7 WA reference stations).",
+        "   `train.csv` + `val.csv` concatenated as `trainval` (14,608 rows,",
+        "   2017–2022). Routers and experts fit here only. WA `train`/`val` are",
+        "   additionally used as a fit/score split for the WA-only temperature",
+        "   and gate calibration. The WA `test.csv` (2023–2025) is NOT used.",
+        "2. ECE eval — `data/splits/derived_8.4_ece_v3`, `test.csv` only",
+        "   (150 rows: 5 stations x 30 days, 2026-07-20–08-19; `train.csv` /",
+        "   `val.csv` are empty). 30-day warmup scaffold (Jun 20–Jul 19), strict",
+        "   native-NaN SMAP (82 value cols NaN, 3 masks 0, zero `0.0`s), MODIS",
+        "   NDVI 16-day fallback. Evaluation only — never used for fitting,",
+        "   thresholds, temperature, or gating decisions.",
+        "",
+        "Every reported number is (2 families x 7 policies) x 5 seeds",
+        "on the single `v3` input. `deployable=false` marks the manual oracle.",
+        "",
+        "## Routing policies (all reuse the SAME frozen experts)",
+        "",
+        "C0 is the dry specialist, C1 the wet-mountain specialist.",
+        "",
+        "1. `as_routed` (deployable reference, no fix): static KMeans hard label.",
+        "2. `soft_static` (deployable): always softmax-blend static KMeans",
+        "   distances with the WA-tuned temperature.",
+        "3. `auto_hard` (deployable bandaid): availability gate -> SMAP-free",
+        "   `G_API` auxiliary hard label; else static hard.",
+        "4. `auto_soft` (deployable bandaid): gate -> `G_API`-anchored softmax",
+        "   blend (aux label at distance 0, WA median margin for the other",
+        "   regime, same WA temperature); ungated but margin-ambiguous rows ->",
+        "   static softmax blend; else static hard.",
+        "5. `auto_soft_T2` (deployable diagnostic sensitivity, not WA-selected):",
+        "   same as `auto_soft` at the grid-max temperature (T=2.0). The",
+        "   WA-selected T=0.25 leaves the blend near-hard, so this row exercises",
+        "   the genuinely-soft path and shows what blending costs when the",
+        "   window is one-sided.",
+        "6. `auto_equal` (deployable comparison): gated or margin-ambiguous rows",
+        "   -> 0.5/0.5 blend of frozen experts; else static hard.",
+        "7. `c0_only` (MANUAL oracle, `deployable=false`): every row to dry",
+        "   expert. Ceiling reference only — not a deployable claim.",
+        "",
+        "Gate-justification scope: the WA synthetic-SMAP-masking study supports",
+        "the gate for `Clustering_Backbone54_k2` (masked-val aux 0.0740 < static",
+        "0.0869) but is neutral for `Clustering_V0_Full_k2` (aux 0.0728 vs",
+        "static-masked 0.0681) — the V0 gate application extrapolates beyond its",
+        "own WA evidence. The gate decision itself uses inputs only (no target).",
+        "Routers are fixed at seed 42 by design (as in 1.1 / formal-eval, whose",
+        "delta additions are tied to seed-42 cluster labels); the 5-seed std",
+        "measures expert-fit variance only.",
+        "",
+        "## WA-only calibration (no ECE target used)",
+        "",
+        "Temperature grid-selected on WA val (calibration experts fit on WA",
+        "train only); gate regime verified with synthetic full-SMAP masking on",
+        "WA val (input masking only).",
+        "",
+        calibration.to_markdown(index=False),
+        "",
+        "## Pooled summary (mean over seeds)",
+        "",
+        summary.to_markdown(index=False),
+        "",
+        "## Station RMSE (mean over seeds)",
+        "",
+        pivot.to_markdown(floatfmt=".6f"),
+        "",
+        "## Per-station prediction line charts",
+        "",
+        "Seed-mean observed vs predicted trajectories (`predictions_v3.csv`).",
+        "Every panel shows at most 5 lines: observed + as_routed / auto_soft /",
+        "auto_hard + c0_only oracle ceiling.",
+        "",
+        "![Auto overlay](figures/timeseries_v3_auto_overlay.png)",
+        "",
+        "Per-station family panels:",
+        "",
+        "- V0: `timeseries_v3_<STATION>_v0.png`",
+        "- Backbone: `timeseries_v3_<STATION>_backbone.png`",
+        "",
+        "with `<STATION>` in `ECE_BBG_Lost_Meadow`, `ECE_BBG_Main_St`,",
+        "`ECE_Renton_Garden_North`, `ECE_Renton_Garden_Shed`, `ECE_Renton_Home`.",
+        "",
+        "## Reproduction",
+        "",
+        "From `notebooks/` (the uv project lives here), run the notebook:",
+        "",
+        "```powershell",
+        "nb execute experiment/derived_8.4-ece-router-salvage-2.0/derived_8.4-ece-router-salvage-2.0.ipynb --uv --timeout 3600",
+        "```",
+        "",
+        "Or from the repo root, run the tracked script directly (same code the",
+        "notebook imports):",
+        "",
+        "```powershell",
+        "uv run --project notebooks python notebooks/experiment/derived_8.4-ece-router-salvage-2.0/run_auto.py",
+        "```",
+        "",
+        "Tables above are transcribed from the executed notebook stdout / CSVs.",
+        "Versioned outputs are `summary.csv`, `seed_metrics.csv`,",
+        "`station_metrics.csv`, `predictions_v3.csv`, `wa_calibration.csv`,",
+        "`routing_audit.json`, and `figures/timeseries_v3_*.png` (11 line charts).",
+        "",
+    ]
+    (EXP_DIR / "README.md").write_text("\n".join(lines), encoding="utf-8")
+    print(f"Wrote README.md ({len(summary)} summary rows)")
+
+
+if __name__ == "__main__":
+    main()

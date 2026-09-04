@@ -1,0 +1,82 @@
+experiment:
+  name: "derived_8.4-ece-router-salvage-2.0"
+  objective: "Automatic missingness-aware MoE routing bandaid: no target at deploy time, no global-model fallback. Gate on router-input availability, SMAP-free G_API auxiliary router, MoE-internal soft blending for ambiguous rows."
+  constraint: "ECE strictly unseen; experts fit on WA trainval only; every prediction is a convex combo of the two frozen regime experts (w0*E0 + w1*E1); no Global_Single_*, no manual per-station override."
+  parent_evaluation: "derived_8.4-formal-eval-2.0-ece"
+  prior_experiment: "notebooks/experiment/derived_8.4-ece-router-salvage-1.1"
+  router_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/eval_formal/routers.py"
+  model_params_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/config.yaml"
+
+datasets:
+  training: "data/splits/derived_8.4"
+  ece_v3: "data/splits/derived_8.4_ece_v3"
+
+target_column: "soil_moisture_5cm"
+seeds: [42, 7, 13, 101, 123]
+
+# c0_0_c1_0 variants: identical 54-feature backbone, no delta additions.
+# The two families differ ONLY in router, so this isolates the routing trap.
+families:
+  - Clustering_V0_Full_k2
+  - Clustering_Backbone54_k2
+
+# Deployable automatic policies (MoE-internal, no target, no global model).
+# as_routed: static KMeans hard (reference, no fix).
+# soft_static: always softmax-blend static KMeans distances with WA-tuned T.
+# auto_hard: availability gate -> G_API hard label, else static hard.
+# auto_soft: gate -> G_API-anchored softmax blend; ungated + margin-ambiguous -> static softmax blend; else static hard.
+# auto_soft_T2: same as auto_soft but at the grid-max temperature (T=2.0, diagnostic sensitivity, not WA-selected).
+#   At the WA-selected T=0.25 the aux-anchored blend is near-hard (mean w0 ~ 1.0), so this row exercises the
+#   genuinely-soft path to show what blending costs when the window is one-sided.
+# auto_equal: gate or margin-ambiguous -> 0.5/0.5 blend of frozen experts; else static hard.
+# c0_only: MANUAL oracle ceiling only (deployable=false), to quantify the remaining gap.
+policies:
+  - as_routed
+  - soft_static
+  - auto_hard
+  - auto_soft
+  - auto_soft_T2
+  - auto_equal
+  - c0_only
+
+deployable:
+  - as_routed
+  - soft_static
+  - auto_hard
+  - auto_soft
+  - auto_soft_T2
+  - auto_equal
+
+oracle:
+  - c0_only
+
+# Availability gate (input-only, no target): a row is "router-unreliable" when
+# its full SMAP router-feature block is native-missing, OR its overall router
+# miss rate exceeds tau. Rule + tau are pre-registered here; the WA
+# synthetic-masking calibration in run_auto.py verifies (on WA val only) that
+# the auxiliary router wins exactly in that regime.
+gate:
+  tau_miss_rate: 0.10
+  smap_block_rule: "all_smap_router_features_nan"
+
+# Ambiguity + blending (WA-only fit): margin = |d0 - d1| under the family's own
+# scaler/centroids. wa_percentile sets the ambiguous cutoff; T is grid-selected
+# on WA val only (experts fit on WA train, scored on WA val, ECE never touched).
+blend:
+  wa_percentile: 5
+  temperature_grid: [0.25, 0.5, 1.0, 2.0]
+  aux_pseudo_distance: "wa_median_margin"
+
+model_params:
+  n_estimators: 2500
+  learning_rate: 0.005
+  max_depth: 9
+  min_child_weight: 8
+  gamma: 0.0
+  reg_lambda: 0.75
+  reg_alpha: 0.03
+  subsample: 0.9
+  colsample_bytree: 0.8
+  tree_method: hist
+  device: cpu
+  n_jobs: 1
