@@ -1,0 +1,299 @@
+# Configuration for derived_8.4-formal-eval-2.1-ece-v3 — In-Situ ECE Formal Evaluation on v3 Split
+#
+# Continuation of derived_8.4-formal-eval-2.0-ece incorporating:
+#   1. Canonical derived_8.4_ece_v3 split (clean native-NaN SMAP, MODIS NDVI fallback, 30-day scaffold).
+#   2. Missingness-aware MoE routing fix from derived_8.4-ece-router-salvage-2.0.
+#   3. RMSE as the primary ranking metric (to guard against variance compression artifacts in short 30-day period).
+#   4. Line charts strictly <= 5 lines per chart (Architecture Showdown & Regime Benchmark Showdown).
+#   5. Pearson correlation tracking for trend verification.
+#
+data:
+  target: soil_moisture_5cm
+  metadata_path: data/splits/derived_8.4/dataset_metadata.py
+  splits:
+    train: data/splits/derived_8.4/train.csv
+    val: data/splits/derived_8.4/val.csv
+    test: data/splits/derived_8.4/test.csv
+  spatial_ece:
+    metadata_path: data/splits/derived_8.4_ece_v3/dataset_metadata.py
+    splits:
+      train: data/splits/derived_8.4_ece_v3/train.csv
+      val: data/splits/derived_8.4_ece_v3/val.csv
+      test: data/splits/derived_8.4_ece_v3/test.csv
+candidate_pool_file: notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv
+model:
+  router_seed: 42
+  exact_params:
+    n_estimators: 2500
+    learning_rate: 0.005
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: hist
+    device: cpu
+  proxy_params:
+    n_estimators: 500
+    learning_rate: 0.01
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: hist
+    device: cpu
+shared_backbone_54:
+- precip_mm
+- s2_b4
+- s2_b8
+- SMAP_sm_pm_interp
+- D_sin_DOY
+- D_cos_DOY
+- E_SAR_ratio
+- G_API
+- G_DSLR
+- G_rain_sum_3d
+- G_rain_sum_7d
+- SMAP_sm_pm_interp_lag7
+- SMAP_sm_pm_interp_lag30
+- SMAP_sm_pm_interp_rollrange7
+- SMAP_sm_pm_interp_rollmean30
+- SMAP_sm_pm_interp_rollrange30
+- SMAP_sm_interp_rollrange7
+- SMAP_ampm_diff_interp
+- V_rollrng_G_API_kobs7
+- V_rollmax_F_NDMI_kobs30
+- A_d_E_SAR_ratio_kobs30
+- V_rollmax_E_SAR_ratio_kobs7
+- V_rollmin_E_SAR_ratio_kobs30
+- V_rollmax_E_SAR_ratio_kobs30
+- V_rollmin_LST_modis_kobs30
+- V_ema_LST_modis_kobs30
+- V_rollmax_F_NDVI_kobs14
+- V_rollmax_F_NDVI_kobs30
+- V_ema_F_NDVI_kobs30
+- C_lag_F_NDVI_kobs30
+- A_grad_E_SAR_diff_kobs30
+- V_rollmax_E_SAR_diff_kobs14
+- V_rollrng_E_SAR_diff_kobs30
+- V_rollmax_E_SAR_diff_kobs30
+- A_grad_s2_b11_kobs30
+- V_rollrng_s2_b11_kobs30
+- V_rollmin_s2_b11_kobs30
+- V_rollmin_s2_b12_kobs30
+- A_d_SMAP_sm_interp_kobs30
+- V_rollmin_SMAP_sm_interp_kobs14
+- V_rollmin_SMAP_sm_interp_kobs30
+- E_rough_s1_vh_kobs14
+- J_aspect_deg
+- J_bio_bio02
+- J_bio_bio13
+- J_lc_code
+- J_soil_texture_usda_b0
+- sin_year
+- cos_year
+- SMAP_x_year
+- D_z_F_NDMI
+- D_z_LST_modis
+- D_fft_dom_LST_modis_kobs30
+- D_fft_ent_LST_modis_kobs30
+pinned_configs:
+  Clustering_V0_Full_k2_c0_0_c1_10:
+    strategy: Clustering_V0_Full_k2
+    c0: 0
+    c1: 10
+    additions_source: eval11_grid
+  Clustering_V0_Full_k2_c0_0_c1_0:
+    strategy: Clustering_V0_Full_k2
+    c0: 0
+    c1: 0
+    additions_source: none
+  Clustering_Backbone54_k2_c0_10_c1_10:
+    strategy: Clustering_Backbone54_k2
+    c0: 10
+    c1: 10
+    additions_source: eval11_v0full_grid
+  Clustering_Backbone54_k2_c0_0_c1_0:
+    strategy: Clustering_Backbone54_k2
+    c0: 0
+    c1: 0
+    additions_source: none
+  Global_Single_54:
+    strategy: Global_Single
+    c0: null
+    c1: null
+    additions_source: global
+  Baseline_V0_50:
+    strategy: Global_Single
+    c0: null
+    c1: null
+    additions_source: global_v0
+  Univariate_G_API_k2_c0_10_c1_0:
+    strategy: Univariate_G_API_k2
+    c0: 10
+    c1: 0
+    additions_source: eval11_grid
+  Univariate_G_API_k2_c0_0_c1_0:
+    strategy: Univariate_G_API_k2
+    c0: 0
+    c1: 0
+    additions_source: none
+  Clustering_Dynamic_k2_c0_10_c1_0:
+    strategy: Clustering_Dynamic_k2
+    c0: 10
+    c1: 0
+    additions_source: eval11_grid
+  Clustering_Dynamic_k2_c0_0_c1_0:
+    strategy: Clustering_Dynamic_k2
+    c0: 0
+    c1: 0
+    additions_source: none
+  Seasonal_Binary_k2_c0_0_c1_5:
+    strategy: Seasonal_Binary_k2
+    c0: 0
+    c1: 5
+    additions_source: eval11_grid
+  Seasonal_Binary_k2_c0_0_c1_0:
+    strategy: Seasonal_Binary_k2
+    c0: 0
+    c1: 0
+    additions_source: none
+  Trained_Gating_k2_c0_5_c1_10:
+    strategy: Trained_Gating_k2
+    c0: 5
+    c1: 10
+    additions_source: eval11_grid
+  Trained_Gating_k2_c0_0_c1_0:
+    strategy: Trained_Gating_k2
+    c0: 0
+    c1: 0
+    additions_source: none
+val_selection:
+  strategies:
+  - Clustering_V0_Full_k2
+  - Clustering_Backbone54_k2
+  - Clustering_Dynamic_k2
+  - Univariate_G_API_k2
+  - Seasonal_Binary_k2
+  - Trained_Gating_k2
+  candidate_pool_size: 96
+  max_additions: 10
+  delta_addition_counts:
+  - 0
+  - 5
+  - 10
+  canonical_mi_k: 300
+  eval11_dir: notebooks/experiment/derived_8.4-eval-1.1
+  fs20_candidate_pool: notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/candidate_pool.csv
+  output_json: val_selected_deltas.json
+seeds:
+  temporal:
+  - 42
+  - 7
+  - 13
+  - 21
+  - 55
+  - 99
+  - 123
+  - 2024
+  - 3141
+  - 2718
+  - 808
+  - 1618
+  - 2357
+  - 3333
+  - 4321
+  - 5555
+  - 6789
+  - 7777
+  - 8888
+  - 9091
+  - 101
+  - 202
+  - 303
+  - 404
+  - 505
+  - 606
+  - 707
+  - 909
+  - 1111
+  - 2222
+  spatial:
+  - 42
+  - 7
+  - 13
+  - 21
+  - 55
+  - 99
+  - 123
+  - 2024
+  - 3141
+  - 2718
+  - 808
+  - 1618
+  - 2357
+  - 3333
+  - 4321
+  - 5555
+  - 6789
+  - 7777
+  - 8888
+  - 9091
+  - 101
+  - 202
+  - 303
+  - 404
+  - 505
+  - 606
+  - 707
+  - 909
+  - 1111
+  - 2222
+temporal:
+  save_weights: true
+  save_predictions: true
+  predictions_dir: predictions
+  models_dir: models
+  n_parallel: 8
+  data_version: 1
+replication:
+  temporal_r2:
+    Clustering_V0_Full_k2_c0_0_c1_10: 0.81496
+    Global_Single_54: 0.77923
+    Baseline_V0_50: 0.760447
+stats:
+  alpha: 0.05
+  bootstrap_resamples: 2000
+  bootstrap_blocks: station_month
+  fdr_method: bh
+spatial:
+  save_predictions: true
+  predictions_dir: predictions_spatial
+  models_dir: models
+  n_parallel: 8
+  data_version: 1
+routing_fix:
+  enabled: true
+  tau_miss_rate: 0.10
+  smap_block_rule: all_smap_router_features_nan
+  aux_router: Univariate_G_API
+  temperature: 0.25
+  wa_percentile: 5
+evaluation:
+  primary_metric: rmse
+  max_chart_lines: 5
+  showdown_configs:
+  - Clustering_Backbone54_k2_c0_10_c1_10
+  - Clustering_V0_Full_k2_c0_0_c1_10
+  - Global_Single_54
+  - Trained_Gating_k2_c0_5_c1_10
+  regime_configs:
+  - Clustering_V0_Full_k2_c0_0_c1_0
+  - Univariate_G_API_k2_c0_0_c1_0
+  - Clustering_Dynamic_k2_c0_0_c1_0
+  - Seasonal_Binary_k2_c0_0_c1_0
