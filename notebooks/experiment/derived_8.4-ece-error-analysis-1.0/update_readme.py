@@ -19,6 +19,7 @@ def df_to_markdown(df: pd.DataFrame) -> str:
 
 def main():
     t1 = pd.read_csv(TABLES_DIR / "table1_variance_compression_r2.csv")
+    t1b = pd.read_csv(TABLES_DIR / "table1b_target_variance_ece_vs_wa_test.csv")
     t2 = pd.read_csv(TABLES_DIR / "table2_historical_benchmark_ref.csv")
     t3 = pd.read_csv(TABLES_DIR / "table3_missing_data_audit.csv")
     t4 = pd.read_csv(TABLES_DIR / "table4_spatial_proximity_inputs.csv")
@@ -40,7 +41,7 @@ def main():
 This report provides a rigorous, multi-faceted post-mortem into why machine learning models trained on the Washington state reference dataset (`derived_8.4`, 7 stations) exhibited severe negative $R^2$ scores ($-0.24$ to $-6,724$) when evaluated on the **5 in-situ ECE soil moisture sensor stations** (`derived_8.4-ece`, July 20 – August 19, 2026).
 
 #### Core Takeaways:
-1. **The Variance Compression Paradox ($R^2$ Collapse)**: In dry Mediterranean summer conditions, actual soil moisture is nearly constant ($\\text{{Var}}(y) \\approx 6\\times 10^{{-6}}\\text{{ m}}^3/\\text{{m}}^3$). Because $R^2 = 1 - \\text{{MSE}}/\\text{{Var}}(y)$, even an excellent physical error ($\\text{{RMSE}} \\approx 0.048 - 0.051\\text{{ m}}^3/\\text{{m}}^3$) produces astronomical negative $R^2$ by mathematical necessity. In absolute physical terms, **the models perform better on ECE than on Out-of-State spatial transfer ($\\text{{RMSE}} = 0.062\\text{{ m}}^3/\\text{{m}}^3$)**.
+1. **The Variance Compression Paradox ($R^2$ Collapse)**: In dry Mediterranean summer conditions, actual soil moisture is nearly constant ($\\text{{Var}}(y) \\approx 6\\times 10^{{-6}}\\text{{ (m}}^3/\\text{{m}}^3)^2$). Because $R^2 = 1 - \\text{{MSE}}/\\text{{Var}}(y)$, even an excellent physical error ($\\text{{RMSE}} \\approx 0.048 - 0.051\\text{{ m}}^3/\\text{{m}}^3$) produces astronomical negative per-station $R^2$ by mathematical necessity. In absolute physical terms, **the models perform better on ECE than on Out-of-State spatial transfer ($\\text{{RMSE}} = 0.062\\text{{ m}}^3/\\text{{m}}^3$)**.
 2. **Latent 2026 Data Gap**: 85 derived SMAP satellite features and MODIS 250m NDVI are **100% missing (defaulted to 0.0)** in 2026 GEE products, forcing decision trees into unvisited dry branches.
 3. **Sub-Grid Scale Mismatch (53m Divergence)**: Sensors separated by only **53.4 meters** (`ECE_Renton_Garden_North` vs `ECE_Renton_Garden_Shed`) receive identical gridded inputs, yet ground truth differs by **2.04×** (15.5% vs 7.6%) due to local shade vs roof rain shadows.
 4. **Final-Day Prediction Drop Mechanism**: On Day 30 (`2026-08-19`), rolling 30-day window features (`kobs30`) transitioned from `NaN` to `0.000`, activating a high-importance (23.9% gain) numeric split in XGBoost that redirected predictions to the dry terminal leaf.
@@ -55,6 +56,14 @@ This report provides a rigorous, multi-faceted post-mortem into why machine lear
 {df_to_markdown(t1)}
 
 ![Fig 1: Variance Compression Anatomy](figures/fig1_r2_variance_compression_anatomy.png)
+
+### Table 1b: Target Variance Comparison: 5 ECE Sensors vs. 7 WA Training Stations (Test Period)
+{df_to_markdown(t1b)}
+
+- **Variance Compression Paradox**: The mean of per-station sample variances is $\\mathbf{{0.00936\\text{{ (m}}^3/\\text{{m}}^3)^2}}$ across the 7 WA reference stations (6,620 obs total, 2023–2025; $\\sigma = 0.0953$) vs $\\mathbf{{0.000163\\text{{ (m}}^3/\\text{{m}}^3)^2}}$ across the 5 ECE stations (150 obs total, 30 per station with 2026-08-01 missing; $\\sigma = 0.0094$), down to $\\mathbf{{0.0000064\\text{{ (m}}^3/\\text{{m}}^3)^2}}$ ($\\sigma = 0.0025$) at `ECE_Renton_Home` — a **57× mean-of-variances (1,456× vs the minimum) full-year-vs-summer comparison**. The like-for-like estimators are the pooled variances ($0.0103786$ WA vs $0.0022285$ ECE, **4.66×**) and, season-matched, pooled WA summer ($0.0025261$, 547 obs, Jul 20–Aug 19) vs pooled ECE ($0.0022285$), only **1.13×** with theoretical pooled $R^2 \\approx +0.37$ vs $+0.28$ at RMSE $0.04$. Between-station mean differences inflate pooled variance, so pooled $N$ must not be paired with a mean-of-variances. Theoretical $R^2$ uses population variance ($\\text{{ddof}}=0$).
+- **Mathematical Sensitivity**: Because $R^2 = 1 - \\text{{MSE}}/\\text{{Var}}(y)$, an identical, respectable physical prediction error of $\\text{{RMSE}} = 0.040\\text{{ m}}^3/\\text{{m}}^3$ produces per-station $R^2 \\in [+0.668, +0.888]$ on the WA reference stations, but collapses to per-station $R^2 \\in [-256.53, -1.38]$ on the 5 ECE stations (sample-variance form: $[-247.94, -1.30]$). The negative per-station $R^2$ scores on ECE are a mathematical artifact of vanishing per-station target variance during the summer drought; the pooled ECE set stays positive.
+
+![Fig 1b: Target Variance Compression & R² Penalty Comparison](figures/fig1b_target_variance_ece_vs_wa_test_comparison.png)
 
 ---
 

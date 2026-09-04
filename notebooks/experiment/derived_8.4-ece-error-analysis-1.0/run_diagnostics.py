@@ -139,6 +139,158 @@ def generate_table1_variance_compression(data):
     print("Table 1 saved.")
     return df_t1
 
+def generate_table1b_target_variance_comparison(data):
+    print("Generating Table 1b: Target Variance Comparison ECE vs WA Test...")
+    ece_test = data["ece_test"]
+    wa_test = data["wa_test"]
+    
+    rows = []
+    
+    # 1. 5 ECE Stations
+    # NOTE: target_var/target_std use sample variance (ddof=1) as descriptive
+    # statistics. Theoretical R2 uses population variance (ddof=0) because
+    # R2 = 1 - SSE/SST with SST = sum((y-mean)^2) = N*var_pop. Using ddof=1
+    # would inflate var by N/(N-1) (3.4% at N=30) and make R2 less negative.
+    for st, df in ece_test.groupby("station_id"):
+        y = df["soil_moisture_5cm"]
+        var = float(np.var(y, ddof=1))
+        var_pop = float(np.var(y, ddof=0))
+        std = float(np.std(y, ddof=1))
+        mean = float(np.mean(y))
+        y_min = float(np.min(y))
+        y_max = float(np.max(y))
+        rng = y_max - y_min
+        cv = std / mean if mean > 0 else np.nan
+        r2_004 = 1.0 - (0.04**2) / var_pop if var_pop > 0 else np.nan
+        r2_005 = 1.0 - (0.05**2) / var_pop if var_pop > 0 else np.nan
+
+        rows.append({
+            "dataset_split": "ECE In-Situ (2026 Test)",
+            "station_id": st,
+            "test_period": "2026-07-20 to 2026-08-19 (30 obs; 2026-08-01 missing)",
+            "n_obs": len(y),
+            "target_mean": mean,
+            "target_std": std,
+            "target_var": var,
+            "target_min": y_min,
+            "target_max": y_max,
+            "target_range": rng,
+            "target_cv": cv,
+            "theoretical_r2_at_rmse_0_04": r2_004,
+            "theoretical_r2_at_rmse_0_05": r2_005,
+        })
+        
+    # ECE Pooled
+    y_ece_all = ece_test["soil_moisture_5cm"]
+    var_ece_all = float(np.var(y_ece_all, ddof=1))
+    var_ece_all_pop = float(np.var(y_ece_all, ddof=0))
+    std_ece_all = float(np.std(y_ece_all, ddof=1))
+    mean_ece_all = float(np.mean(y_ece_all))
+    rows.append({
+        "dataset_split": "ECE In-Situ (2026 Test)",
+        "station_id": "[All 5 ECE Stations Combined]",
+        "test_period": "2026-07-20 to 2026-08-19 (150 obs; 2026-08-01 missing at each station)",
+        "n_obs": len(y_ece_all),
+        "target_mean": mean_ece_all,
+        "target_std": std_ece_all,
+        "target_var": var_ece_all,
+        "target_min": float(np.min(y_ece_all)),
+        "target_max": float(np.max(y_ece_all)),
+        "target_range": float(np.max(y_ece_all) - np.min(y_ece_all)),
+        "target_cv": std_ece_all / mean_ece_all,
+        "theoretical_r2_at_rmse_0_04": 1.0 - (0.04**2) / var_ece_all_pop,
+        "theoretical_r2_at_rmse_0_05": 1.0 - (0.05**2) / var_ece_all_pop,
+    })
+
+    # 2. 7 WA Reference Stations (Full Test Period)
+    for st, df in wa_test.groupby("station_id"):
+        y = df["soil_moisture_5cm"]
+        var = float(np.var(y, ddof=1))
+        var_pop = float(np.var(y, ddof=0))
+        std = float(np.std(y, ddof=1))
+        mean = float(np.mean(y))
+        y_min = float(np.min(y))
+        y_max = float(np.max(y))
+        rng = y_max - y_min
+        cv = std / mean if mean > 0 else np.nan
+        r2_004 = 1.0 - (0.04**2) / var_pop if var_pop > 0 else np.nan
+        r2_005 = 1.0 - (0.05**2) / var_pop if var_pop > 0 else np.nan
+        
+        rows.append({
+            "dataset_split": "WA Reference (2023-2025 Test)",
+            "station_id": st,
+            "test_period": "2023-01-01 to 2025-12-31",
+            "n_obs": len(y),
+            "target_mean": mean,
+            "target_std": std,
+            "target_var": var,
+            "target_min": y_min,
+            "target_max": y_max,
+            "target_range": rng,
+            "target_cv": cv,
+            "theoretical_r2_at_rmse_0_04": r2_004,
+            "theoretical_r2_at_rmse_0_05": r2_005,
+        })
+        
+    # WA Test Pooled
+    y_wa_all = wa_test["soil_moisture_5cm"]
+    var_wa_all = float(np.var(y_wa_all, ddof=1))
+    var_wa_all_pop = float(np.var(y_wa_all, ddof=0))
+    std_wa_all = float(np.std(y_wa_all, ddof=1))
+    mean_wa_all = float(np.mean(y_wa_all))
+    rows.append({
+        "dataset_split": "WA Reference (2023-2025 Test)",
+        "station_id": "[All 7 WA Stations Combined]",
+        "test_period": "2023-01-01 to 2025-12-31",
+        "n_obs": len(y_wa_all),
+        "target_mean": mean_wa_all,
+        "target_std": std_wa_all,
+        "target_var": var_wa_all,
+        "target_min": float(np.min(y_wa_all)),
+        "target_max": float(np.max(y_wa_all)),
+        "target_range": float(np.max(y_wa_all) - np.min(y_wa_all)),
+        "target_cv": std_wa_all / mean_wa_all,
+        "theoretical_r2_at_rmse_0_04": 1.0 - (0.04**2) / var_wa_all_pop,
+        "theoretical_r2_at_rmse_0_05": 1.0 - (0.05**2) / var_wa_all_pop,
+    })
+
+    # 3. WA Reference Stations Summer Test Window (July 20 - August 19)
+    # NOTE: season-matched comparator for the ECE summer-drought window.
+    # Zero-padded "%m-%d" strings sort lexicographically like calendar order,
+    # but this breaks if the date format ever changes; validate below.
+    dt_series = pd.to_datetime(wa_test["date"], errors="raise")
+    mmdd = dt_series.dt.strftime("%m-%d")
+    summer_mask = (mmdd >= "07-20") & (mmdd <= "08-19")
+    wa_summer_test = wa_test[summer_mask]
+    if len(wa_summer_test) == 0:
+        raise ValueError("WA summer subset is empty; check date format/parsing.")
+    y_wa_summer = wa_summer_test["soil_moisture_5cm"]
+    var_wa_summer = float(np.var(y_wa_summer, ddof=1))
+    var_wa_summer_pop = float(np.var(y_wa_summer, ddof=0))
+    std_wa_summer = float(np.std(y_wa_summer, ddof=1))
+    mean_wa_summer = float(np.mean(y_wa_summer))
+    rows.append({
+        "dataset_split": "WA Reference (Summer Jul 20-Aug 19 Test)",
+        "station_id": "[All 7 WA Stations Summer Subset]",
+        "test_period": "2023-2025 (Jul 20 - Aug 19)",
+        "n_obs": len(y_wa_summer),
+        "target_mean": mean_wa_summer,
+        "target_std": std_wa_summer,
+        "target_var": var_wa_summer,
+        "target_min": float(np.min(y_wa_summer)),
+        "target_max": float(np.max(y_wa_summer)),
+        "target_range": float(np.max(y_wa_summer) - np.min(y_wa_summer)),
+        "target_cv": std_wa_summer / mean_wa_summer,
+        "theoretical_r2_at_rmse_0_04": 1.0 - (0.04**2) / var_wa_summer_pop,
+        "theoretical_r2_at_rmse_0_05": 1.0 - (0.05**2) / var_wa_summer_pop,
+    })
+    
+    df_t1b = pd.DataFrame(rows)
+    out_path = os.path.join(TABLES_DIR, "table1b_target_variance_ece_vs_wa_test.csv")
+    df_t1b.to_csv(out_path, index=False)
+    print(f"Table 1b saved to {out_path}.")
+    return df_t1b
+
 def generate_table2_historical_benchmarks(data):
     print("Generating Table 2: Historical Reference Benchmark...")
     rows = [
@@ -1349,6 +1501,126 @@ def generate_all_figures(data):
     print("Fig 1 saved.")
 
     # -------------------------------------------------------------
+    # FIGURE 1B: Target Variance Comparison (ECE Sensors vs WA Test Period)
+    # -------------------------------------------------------------
+    from matplotlib.patches import Patch
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+    
+    wa_test = data["wa_test"]
+    
+    wa_stats = []
+    for st, g in wa_test.groupby("station_id"):
+        y = g["soil_moisture_5cm"]
+        wa_stats.append({
+            "station": st.replace("_WA_990", "").replace("_WA_985", "").replace("_WA", ""),
+            "mean": float(y.mean()),
+            "std": float(y.std(ddof=1)),
+            "var": float(y.var(ddof=1)),
+            "var_pop": float(y.var(ddof=0)),
+            "n": int(len(y)),
+            "min": float(y.min()),
+            "max": float(y.max()),
+            "group": "WA Reference (2023-2025 Test)",
+        })
+
+    ece_stats = []
+    for st, g in ece_test.groupby("station_id"):
+        y = g["soil_moisture_5cm"]
+        ece_stats.append({
+            "station": st.replace("ECE_", ""),
+            "mean": float(y.mean()),
+            "std": float(y.std(ddof=1)),
+            "var": float(y.var(ddof=1)),
+            "var_pop": float(y.var(ddof=0)),
+            "n": int(len(y)),
+            "min": float(y.min()),
+            "max": float(y.max()),
+            "group": "ECE In-Situ (2026 Test)",
+        })
+
+    df_comp = pd.DataFrame(wa_stats + ece_stats)
+    # Season-matched + pooled reference values (sample var for display).
+    # Pooled variance exceeds the mean of per-station variances because
+    # between-station mean differences inflate the pooled estimator.
+    y_wa_pool = wa_test["soil_moisture_5cm"]
+    y_ece_pool = ece_test["soil_moisture_5cm"]
+    dt_wa = pd.to_datetime(wa_test["date"], errors="raise")
+    wa_summer_y = wa_test[(dt_wa.dt.strftime("%m-%d") >= "07-20") & (dt_wa.dt.strftime("%m-%d") <= "08-19")]["soil_moisture_5cm"]
+    pooled_refs = {
+        "wa_pool_var": float(y_wa_pool.var(ddof=1)),
+        "ece_pool_var": float(y_ece_pool.var(ddof=1)),
+        "wa_summer_var": float(wa_summer_y.var(ddof=1)),
+        "wa_pool_var_pop": float(y_wa_pool.var(ddof=0)),
+        "ece_pool_var_pop": float(y_ece_pool.var(ddof=0)),
+        "wa_summer_var_pop": float(wa_summer_y.var(ddof=0)),
+    }
+    colors = ["#1f77b4" if g == "WA Reference (2023-2025 Test)" else "#d62728" for g in df_comp["group"]]
+    x = np.arange(len(df_comp))
+    
+    legend_elements = [
+        Patch(facecolor="#1f77b4", edgecolor="black", label="WA Reference (7 Stations, 2023-2025 Test)"),
+        Patch(facecolor="#d62728", edgecolor="black", label="ECE In-Situ (5 Sensors, 2026 Test)")
+    ]
+    
+    # Panel (a): Mean +/- 1 std and [min, max] range
+    axes[0].bar(x, df_comp["mean"], yerr=df_comp["std"], capsize=4, color=colors, alpha=0.85, edgecolor="black", linewidth=0.8, zorder=3)
+    for idx, row in df_comp.iterrows():
+        axes[0].plot([idx, idx], [row["min"], row["max"]], color="black", linestyle=":", linewidth=1.2, zorder=2)
+        axes[0].scatter([idx, idx], [row["min"], row["max"]], color="black", s=12, marker="_", zorder=2)
+    axes[0].set_xticks(x)
+    axes[0].set_xticklabels(df_comp["station"], rotation=45, ha="right", fontsize=8)
+    axes[0].set_ylabel("Volumetric Soil Moisture (m³/m³)")
+    axes[0].set_title("(a) Target Soil Moisture: Mean ± 1σ & Full Range", fontweight="bold")
+    axes[0].set_ylim(0, 0.45)
+    axes[0].legend(handles=legend_elements, loc="upper right", fontsize=8)
+    
+    # Panel (b): Target Variance on Logarithmic Scale
+    # Shows per-station sample vars plus pooled and season-matched references so
+    # readers do not mistake the full-year-vs-summer gap for a pure site effect.
+    axes[1].bar(x, df_comp["var"], color=colors, alpha=0.85, edgecolor="black", linewidth=0.8, zorder=3)
+    axes[1].set_yscale("log")
+    axes[1].set_xticks(x)
+    axes[1].set_xticklabels(df_comp["station"], rotation=45, ha="right", fontsize=8)
+    axes[1].set_ylabel("Target Variance Var(y) [log scale]")
+    axes[1].set_title("(b) Target Variance Var(y) Compression (Log Scale)", fontweight="bold")
+    mean_wa_var = df_comp[df_comp["group"] == "WA Reference (2023-2025 Test)"]["var"].mean()
+    mean_ece_var = df_comp[df_comp["group"] == "ECE In-Situ (2026 Test)"]["var"].mean()
+    min_ece_var = df_comp[df_comp["group"] == "ECE In-Situ (2026 Test)"]["var"].min()
+    axes[1].axhline(mean_wa_var, color="#1f77b4", linestyle="--", linewidth=1.2, alpha=0.8, label=f"WA Mean Var ({mean_wa_var:.1e})")
+    axes[1].axhline(mean_ece_var, color="#d62728", linestyle="--", linewidth=1.2, alpha=0.8, label=f"ECE Mean Var ({mean_ece_var:.1e})")
+    axes[1].axhline(min_ece_var, color="darkred", linestyle=":", linewidth=1.2, alpha=0.8, label=f"ECE Min Var ({min_ece_var:.1e})")
+    axes[1].axhline(pooled_refs["wa_pool_var"], color="#1f77b4", linestyle="-", linewidth=1.4, alpha=0.9, label=f"WA Pooled Var ({pooled_refs['wa_pool_var']:.1e})")
+    axes[1].axhline(pooled_refs["ece_pool_var"], color="#d62728", linestyle="-", linewidth=1.4, alpha=0.9, label=f"ECE Pooled Var ({pooled_refs['ece_pool_var']:.1e})")
+    axes[1].axhline(pooled_refs["wa_summer_var"], color="#17becf", linestyle="-.", linewidth=1.6, alpha=0.95, label=f"WA Summer Pooled ({pooled_refs['wa_summer_var']:.1e}; season-matched)")
+    axes[1].legend(loc="upper right", fontsize=7)
+
+    # Panel (c): Mathematical R² Penalty at Fixed RMSE = 0.04 m³/m³
+    # Uses population variance (ddof=0), consistent with Table 1b, plus pooled
+    # markers: pooled ECE R2 is positive (~+0.28); collapse is per-station.
+    rmse_bench = 0.04
+    r2_hypo = 1.0 - (rmse_bench**2) / df_comp["var_pop"]
+    axes[2].bar(x, r2_hypo, color=colors, alpha=0.85, edgecolor="black", linewidth=0.8, zorder=3)
+    axes[2].set_yscale("symlog", linthresh=1.0)
+    axes[2].set_xticks(x)
+    axes[2].set_xticklabels(df_comp["station"], rotation=45, ha="right", fontsize=8)
+    axes[2].set_ylabel(r"Theoretical $R^2 = 1 - (0.04)^2/\mathrm{Var}_{pop}(y)$")
+    axes[2].set_title(r"(c) Theoretical Per-Station $R^2$ at Fixed RMSE = $0.04\ \mathrm{m}^3/\mathrm{m}^3$", fontweight="bold")
+    axes[2].axhline(0, color="gray", linestyle="-", linewidth=1.0)
+    for key, ls, col, lab in [
+        ("wa_pool_var_pop", "--", "#1f77b4", "WA pooled"),
+        ("ece_pool_var_pop", "-", "#d62728", "ECE pooled (+0.28)"),
+        ("wa_summer_var_pop", "-.", "#17becf", "WA summer pooled"),
+    ]:
+        axes[2].axhline(1.0 - rmse_bench**2 / pooled_refs[key], color=col, linestyle=ls, linewidth=1.2, alpha=0.9, label=f"{lab} R²={1.0 - rmse_bench**2 / pooled_refs[key]:+.2f}")
+    axes[2].legend(handles=legend_elements + [Patch(facecolor="none", edgecolor="none", label="Dashed/dotted: pooled refs (positive R²)")], loc="lower left", fontsize=7)
+    
+    plt.tight_layout()
+    fig1b_path = os.path.join(FIGURES_DIR, "fig1b_target_variance_ece_vs_wa_test_comparison.png")
+    plt.savefig(fig1b_path, dpi=300)
+    plt.close()
+    print("Fig 1b saved.")
+
+    # -------------------------------------------------------------
     # FIGURE 2: SMAP & MODIS NDVI Missingness & Feature Shift
     # -------------------------------------------------------------
     fig, axes = plt.subplots(1, 2, figsize=(13, 5))
@@ -1634,6 +1906,7 @@ def main():
     print("=== STARTING DIAGNOSTICS GENERATION ===")
     data = load_data()
     generate_table1_variance_compression(data)
+    generate_table1b_target_variance_comparison(data)
     generate_table2_historical_benchmarks(data)
     generate_table3_missing_data_audit(data)
     generate_table4_spatial_proximity_and_side_by_side(data)

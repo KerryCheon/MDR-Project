@@ -90,6 +90,21 @@ display(t1)
 display(Image(filename=str(FIGURES_DIR / "fig1_r2_variance_compression_anatomy.png")))
 """))
 
+    # Cell 2b: Section 2.2 - Direct Variance Comparison: 5 ECE Sensors vs 7 WA Training Stations (Test Period)
+    cells.append(make_cell("markdown", r"""### 2.2 Direct Variance & Standard Deviation Comparison: ECE Sensors vs. WA Reference Test Period
+
+To empirically prove that the negative $R^2$ collapse on ECE is driven by target variance compression, Table 1b and Figure 1b contrast the target soil moisture distribution ($\text{soil\_moisture\_5cm}$) of the 5 in-situ ECE sensor stations (150 obs total, 30 per station with 2026-08-01 missing, July 20 – August 19, 2026) against the 7 Washington training reference stations during their official test period (6,620 obs, 2023–2025). Table 1b also includes a season-matched WA summer subset (547 obs, Jul 20 – Aug 19 across 2023–2025) as the like-for-like comparator:
+
+- **Standard Deviation Collapse**: WA reference stations maintain a mean per-station standard deviation of $\sigma = 0.0953\text{ m}^3/\text{m}^3$ ($0.0694$ to $0.1195$), while ECE sensors average $\sigma = 0.0094\text{ m}^3/\text{m}^3$ (down to $0.0025\text{ m}^3/\text{m}^3$ at `ECE_Renton_Home`) — **~10× on average, up to 47× for the most extreme station pair** (mean-to-min $37.6×$, max-to-min $47.1×$).
+- **Target Variance Ratios (do not mix estimators)**: the mean of per-station sample variances is $9.36\times 10^{-3}\text{ (m}^3/\text{m}^3)^2$ (WA, $N=6{,}620$ total) vs $1.63\times 10^{-4}\text{ (m}^3/\text{m}^3)^2$ (ECE, $N=150$ total), i.e. **57× mean-of-variances and 1,456× vs `ECE_Renton_Home`** ($6.43\times 10^{-6}$). These compare full-year WA (wet-winter variance included) against summer-drought ECE. The pooled variances — the estimator matching the pooled $N$ — are $0.0103786$ (WA) vs $0.0022285$ (ECE), only **4.66×**; season-matched pooled WA summer ($0.0025261$) vs pooled ECE ($0.0022285$) is only **1.13×**. Between-station mean differences inflate pooled variance, so never pair pooled $N$ with a mean-of-variances.
+- **The Mathematical Per-Station $R^2$ Penalty**: if a model achieves an identical, highly respectable physical prediction error ($\text{RMSE} = 0.040\text{ m}^3/\text{m}^3$), the resulting Nash-Sutcliffe Efficiency on the reference test stations is $R^2 \in [+0.668, +0.888]$ (strong positive skill). On the 5 ECE stations individually, that exact same physical error produces per-station $R^2 \in [-256.53, -1.38]$ (population-variance form; sample-variance form gives $[-247.94, -1.30]$) purely because each station's denominator $\text{Var}(y)$ is negligible. The pooled ECE set, by contrast, has theoretical $R^2 \approx +0.28$ at RMSE $0.04$ (WA summer pooled $\approx +0.37$) — the collapse is a per-station variance artifact, not a pooled-set failure. Theoretical $R^2$ uses population variance ($\text{ddof}=0$) since $R^2 = 1 - \text{SSE}/\text{SST}$ with $\text{SST} = N\cdot\text{Var}_{pop}$."""))
+
+    cells.append(make_cell("code", r"""t1b = pd.read_csv(TABLES_DIR / "table1b_target_variance_ece_vs_wa_test.csv")
+print("=== TABLE 1B: TARGET VARIANCE COMPARISON: 5 ECE SENSORS vs 7 WA REFERENCE TEST PERIOD ===")
+display(t1b)
+display(Image(filename=str(FIGURES_DIR / "fig1b_target_variance_ece_vs_wa_test_comparison.png")))
+"""))
+
     # Cell 3: Section 3 - Historical Benchmarks
     cells.append(make_cell("markdown", r"""## 3. Historical Cross-Experiment Reference Benchmarks
 
