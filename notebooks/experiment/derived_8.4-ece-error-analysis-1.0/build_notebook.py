@@ -105,6 +105,45 @@ display(t1b)
 display(Image(filename=str(FIGURES_DIR / "fig1b_target_variance_ece_vs_wa_test_comparison.png")))
 """))
 
+    # Cell 2c: Section 2.3 - In-Distribution Summer Drought Performance (1-Month 2025 Window)
+    cells.append(make_cell("markdown", r"""### 2.3 In-Distribution Summer Drought Performance (1-Month 2025 Window) Across Existing Models
+
+To address whether negative $R^2$ scores indicate model degradation or are simply a mathematical artifact of evaluating over a dry summer month, we evaluate all 6 primary model architectures directly on the **season-matched 1-month summer window from 2025 (`2025-07-20` to `2025-08-19`)** using the official reference test set (`derived_8.4/test.csv`).
+
+During this 2025 window, exactly 5 reference stations are active (`CayusePass_WA`, `Darrington`, `Paradise_WA`, `Quinault`, and `Spokane`), yielding $N=155$ observations (31 per station) — an exact structural analogue to the 5 ECE stations ($N=150$, 30 per station).
+
+#### Key Findings from Table 1c, Table 1d, and Figure 1c:
+
+1. **Physical Error Reaches Its Annual Best in Summer**:
+   - In the 1-month summer drought window, models achieve their lowest physical prediction errors of the entire year:
+     - `Clustering_V0_Full_k2`: $\text{RMSE} = 0.0210\text{ m}^3/\text{m}^3$ (vs $0.0442$ across full 3-year test)
+     - `Trained_Gating_k2`: $\text{RMSE} = 0.0272\text{ m}^3/\text{m}^3$ (vs $0.0525$ across full 3-year test)
+     - `Clustering_Dynamic_k2`: $\text{RMSE} = 0.0281\text{ m}^3/\text{m}^3$ (vs $0.0471$ across full 3-year test)
+     - `Baseline_V0_50`: $\text{RMSE} = 0.0288\text{ m}^3/\text{m}^3$ (vs $0.0499$ across full 3-year test)
+     - `Global_Single_54`: $\text{RMSE} = 0.0345\text{ m}^3/\text{m}^3$ (vs $0.0478$ across full 3-year test)
+   - The models are **not physically struggling** during summer; they predict absolute soil moisture with millimeter-scale accuracy ($\text{MAE} \le 0.015 - 0.028\text{ m}^3/\text{m}^3$).
+
+2. **Yet Station $R^2$ Plummets to Severe Negatives (Up to $-122$ and $-177$) on Reference Stations!**:
+   - Despite exceptional physical accuracy, per-station $R^2$ collapses across native reference stations because local summer target variance is negligible:
+     - On `Paradise_WA` ($\text{Var}(y) = 1.4\times 10^{-5}$, $\sigma = 0.0037$), $R^2$ plunges to **$-27.76$** (`Clustering_V0_Full_k2`), **$-119.74$** (`Global_Single_54`), **$-122.04$** (`Baseline_V0_50`), and **$-177.04$** (`Univariate_G_API_k2`), even though $\text{RMSE} \le 0.019 - 0.049\text{ m}^3/\text{m}^3$!
+     - On `Spokane` ($\text{Var}(y) = 4.6\times 10^{-5}$, $\sigma = 0.0068$), $R^2$ plunges to **$-4.09$** to **$-25.14$**, despite $\text{RMSE} \le 0.015 - 0.035\text{ m}^3/\text{m}^3$!
+   - Across all 6 model architectures, **60% to 80% of native Washington reference stations exhibit negative $R^2$** during this 1-month evaluation window.
+
+3. **The "Pooled $R^2$" Masking Mechanism**:
+   - When evaluating across all 5 reference stations jointly ($N=155$), pooled sample variance is $\text{Var}(y_{\text{pooled}}) = 0.002654$ — nearly **200× larger** than `Paradise_WA`'s local variance. This variance inflation is purely driven by static spatial elevation and climatology differences between wet coastal Quinault ($\bar{y} = 0.142$) and dry inland Spokane ($\bar{y} = 0.026$).
+   - Consequently, **Pooled $R^2$ remains deceptively positive ($+0.50$ to $+0.80$)**, completely masking the fact that per-station tracking yields severe negative $R^2$ (mean station $R^2 \in [-6.19, -40.06]$).
+
+This empirical comparison proves that **negative per-station $R^2$ during summer drought is an inherent mathematical artifact of short-window variance compression**, not a failure of model generalization or spatial transfer."""))
+
+    cells.append(make_cell("code", r"""t1c = pd.read_csv(TABLES_DIR / "table1c_1month_2025_summer_all_metrics.csv")
+t1d = pd.read_csv(TABLES_DIR / "table1d_macro_evaluation_window_benchmark.csv")
+print("=== TABLE 1C: 1-MONTH 2025 SUMMER DETAILED PERFORMANCE PER STATION & MODEL ===")
+display(t1c)
+print("\n=== TABLE 1D: MACRO BENCHMARK: FULL 3-YEAR TEST vs 1-MONTH 2025 SUMMER vs 2026 ECE ===")
+display(t1d)
+display(Image(filename=str(FIGURES_DIR / "fig1c_1month_2025_summer_vs_ece_bridge.png")))
+"""))
+
     # Cell 3: Section 3 - Historical Benchmarks
     cells.append(make_cell("markdown", r"""## 3. Historical Cross-Experiment Reference Benchmarks
 

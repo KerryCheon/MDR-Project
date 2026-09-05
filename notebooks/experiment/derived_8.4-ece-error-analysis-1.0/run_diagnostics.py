@@ -291,6 +291,202 @@ def generate_table1b_target_variance_comparison(data):
     print(f"Table 1b saved to {out_path}.")
     return df_t1b
 
+def generate_table1c_1month_2025_summer_all_metrics(data):
+    print("Generating Table 1c: Detailed 1-Month 2025 Summer Performance Across Models...")
+    wa_test = data["wa_test"].copy()
+    mask_2025 = (wa_test["date"] >= "2025-07-20") & (wa_test["date"] <= "2025-08-19")
+    pred_dir = os.path.join(PROJECT_ROOT, "notebooks/experiment/derived_8.4-formal-eval-2.0/predictions")
+    
+    models = [
+        "Clustering_V0_Full_k2",
+        "Clustering_Dynamic_k2",
+        "Global_Single_54",
+        "Baseline_V0_50",
+        "Univariate_G_API_k2",
+        "Trained_Gating_k2"
+    ]
+    
+    rows = []
+    for m in models:
+        files = sorted(glob.glob(f"{pred_dir}/{m}*full_preds.npy"))
+        if not files:
+            print(f"Warning: No predictions found for {m} in {pred_dir}")
+            continue
+        preds_all = np.mean([np.load(f) for f in files[:5]], axis=0)
+        wa_test["pred"] = preds_all
+        sub_2025 = wa_test[mask_2025]
+        
+        # 1. Per-Station Rows
+        for st, g in sub_2025.groupby("station_id"):
+            y_true = g["soil_moisture_5cm"].values
+            y_pred = g["pred"].values
+            err = y_pred - y_true
+            var = float(np.var(y_true, ddof=1))
+            std = float(np.std(y_true, ddof=1))
+            mean_true = float(np.mean(y_true))
+            mean_pred = float(np.mean(y_pred))
+            bias = float(np.mean(err))
+            mae = float(np.mean(np.abs(err)))
+            mse = float(np.mean(err**2))
+            rmse = float(np.sqrt(mse))
+            ubrmse = float(np.sqrt(max(0.0, rmse**2 - bias**2)))
+            r2 = float(1.0 - (mse / var)) if var > 0 else np.nan
+            corr = float(np.corrcoef(y_true, y_pred)[0, 1]) if (std > 0 and np.std(y_pred) > 0) else 0.0
+            
+            if r2 < -50:
+                classification = "Extreme Negative (R² < -50)"
+            elif r2 < -10:
+                classification = "Severe Negative (-50 <= R² < -10)"
+            elif r2 < 0:
+                classification = "Moderate Negative (-10 <= R² < 0)"
+            else:
+                classification = "Positive Skill (R² >= 0)"
+                
+            rows.append({
+                "model": m,
+                "station_id": st,
+                "period": "2025-07-20 to 2025-08-19",
+                "n_obs": len(g),
+                "target_mean": mean_true,
+                "target_std": std,
+                "target_var": var,
+                "pred_mean": mean_pred,
+                "pred_std": float(np.std(y_pred, ddof=1)),
+                "bias": bias,
+                "mae": mae,
+                "rmse": rmse,
+                "ubrmse": ubrmse,
+                "pearson_r": corr,
+                "r2": r2,
+                "r2_classification": classification,
+            })
+            
+        # 2. Pooled Row for this model
+        y_true_pool = sub_2025["soil_moisture_5cm"].values
+        y_pred_pool = sub_2025["pred"].values
+        err_pool = y_pred_pool - y_true_pool
+        var_p = float(np.var(y_true_pool, ddof=1))
+        std_p = float(np.std(y_true_pool, ddof=1))
+        bias_p = float(np.mean(err_pool))
+        mae_p = float(np.mean(np.abs(err_pool)))
+        mse_p = float(np.mean(err_pool**2))
+        rmse_p = float(np.sqrt(mse_p))
+        ubrmse_p = float(np.sqrt(max(0.0, rmse_p**2 - bias_p**2)))
+        r2_p = float(1.0 - (mse_p / var_p))
+        corr_p = float(np.corrcoef(y_true_pool, y_pred_pool)[0, 1])
+        
+        rows.append({
+            "model": m,
+            "station_id": "[All 5 Stations Pooled]",
+            "period": "2025-07-20 to 2025-08-19",
+            "n_obs": len(sub_2025),
+            "target_mean": float(np.mean(y_true_pool)),
+            "target_std": std_p,
+            "target_var": var_p,
+            "pred_mean": float(np.mean(y_pred_pool)),
+            "pred_std": float(np.std(y_pred_pool, ddof=1)),
+            "bias": bias_p,
+            "mae": mae_p,
+            "rmse": rmse_p,
+            "ubrmse": ubrmse_p,
+            "pearson_r": corr_p,
+            "r2": r2_p,
+            "r2_classification": "Pooled (Spatial Masked)",
+        })
+        
+    df_t1c = pd.DataFrame(rows)
+    out_path = os.path.join(TABLES_DIR, "table1c_1month_2025_summer_all_metrics.csv")
+    df_t1c.to_csv(out_path, index=False)
+    print(f"Table 1c saved to {out_path}.")
+    return df_t1c
+
+def generate_table1d_macro_evaluation_window_benchmark(data):
+    print("Generating Table 1d: Macro Evaluation Window Benchmark across Models...")
+    wa_test = data["wa_test"].copy()
+    mask_2025 = (wa_test["date"] >= "2025-07-20") & (wa_test["date"] <= "2025-08-19")
+    pred_dir = os.path.join(PROJECT_ROOT, "notebooks/experiment/derived_8.4-formal-eval-2.0/predictions")
+    
+    ece_ref_stats = {
+        "Clustering_V0_Full_k2": {"r2_mean": -1342.56, "r2_median": -73.37, "rmse": 0.1004, "mae": 0.0955, "bias": 0.0713},
+        "Clustering_Dynamic_k2": {"r2_mean": -177.53, "r2_median": -37.82, "rmse": 0.0483, "mae": 0.0454, "bias": 0.0173},
+        "Global_Single_54": {"r2_mean": -181.15, "r2_median": -38.66, "rmse": 0.0511, "mae": 0.0467, "bias": 0.0169},
+        "Baseline_V0_50": {"r2_mean": -185.00, "r2_median": -39.00, "rmse": 0.0515, "mae": 0.0470, "bias": 0.0170},
+        "Univariate_G_API_k2": {"r2_mean": -169.49, "r2_median": -30.34, "rmse": 0.0479, "mae": 0.0447, "bias": 0.0147},
+        "Trained_Gating_k2": {"r2_mean": -169.50, "r2_median": -31.00, "rmse": 0.0495, "mae": 0.0450, "bias": 0.0150}
+    }
+    
+    models = [
+        "Clustering_V0_Full_k2",
+        "Clustering_Dynamic_k2",
+        "Global_Single_54",
+        "Baseline_V0_50",
+        "Univariate_G_API_k2",
+        "Trained_Gating_k2"
+    ]
+    
+    rows = []
+    for m in models:
+        files = sorted(glob.glob(f"{pred_dir}/{m}*full_preds.npy"))
+        if not files:
+            continue
+        preds_all = np.mean([np.load(f) for f in files[:5]], axis=0)
+        wa_test["pred"] = preds_all
+        
+        # 1. Full 3-Year Test
+        y_full = wa_test["soil_moisture_5cm"].values
+        err_full = preds_all - y_full
+        var_full = float(np.var(y_full, ddof=1))
+        r2_full_pool = float(1.0 - np.mean(err_full**2) / var_full)
+        rmse_full_pool = float(np.sqrt(np.mean(err_full**2)))
+        st_r2_full = []
+        st_rmse_full = []
+        for st, g in wa_test.groupby("station_id"):
+            ef = g["pred"].values - g["soil_moisture_5cm"].values
+            vf = float(np.var(g["soil_moisture_5cm"].values, ddof=1))
+            st_r2_full.append(float(1.0 - np.mean(ef**2) / vf))
+            st_rmse_full.append(float(np.sqrt(np.mean(ef**2))))
+            
+        # 2. 1-Month 2025 Summer
+        sub_2025 = wa_test[mask_2025]
+        y_sum = sub_2025["soil_moisture_5cm"].values
+        p_sum = sub_2025["pred"].values
+        err_sum = p_sum - y_sum
+        var_sum = float(np.var(y_sum, ddof=1))
+        r2_sum_pool = float(1.0 - np.mean(err_sum**2) / var_sum)
+        rmse_sum_pool = float(np.sqrt(np.mean(err_sum**2)))
+        
+        st_r2_sum = []
+        st_rmse_sum = []
+        for st, g in sub_2025.groupby("station_id"):
+            es = g["pred"].values - g["soil_moisture_5cm"].values
+            vs = float(np.var(g["soil_moisture_5cm"].values, ddof=1))
+            st_r2_sum.append(float(1.0 - np.mean(es**2) / vs))
+            st_rmse_sum.append(float(np.sqrt(np.mean(es**2))))
+            
+        ece_m = ece_ref_stats.get(m, {})
+        
+        rows.append({
+            "model": m,
+            "full_test_r2_pooled": r2_full_pool,
+            "full_test_r2_mean_st": float(np.mean(st_r2_full)),
+            "full_test_rmse_pooled": rmse_full_pool,
+            "summer2025_r2_pooled": r2_sum_pool,
+            "summer2025_r2_mean_st": float(np.mean(st_r2_sum)),
+            "summer2025_r2_median_st": float(np.median(st_r2_sum)),
+            "summer2025_pct_neg_stations": float((np.array(st_r2_sum) < 0).mean() * 100),
+            "summer2025_rmse_pooled": rmse_sum_pool,
+            "summer2025_rmse_mean_st": float(np.mean(st_rmse_sum)),
+            "ece2026_r2_mean_st": ece_m.get("r2_mean", np.nan),
+            "ece2026_r2_median_st": ece_m.get("r2_median", np.nan),
+            "ece2026_rmse_mean_st": ece_m.get("rmse", np.nan),
+        })
+        
+    df_t1d = pd.DataFrame(rows)
+    out_path = os.path.join(TABLES_DIR, "table1d_macro_evaluation_window_benchmark.csv")
+    df_t1d.to_csv(out_path, index=False)
+    print(f"Table 1d saved to {out_path}.")
+    return df_t1d
+
 def generate_table2_historical_benchmarks(data):
     print("Generating Table 2: Historical Reference Benchmark...")
     rows = [
@@ -1621,6 +1817,112 @@ def generate_all_figures(data):
     print("Fig 1b saved.")
 
     # -------------------------------------------------------------
+    # FIGURE 1C: 1-Month 2025 Summer vs 2026 ECE Performance Bridge
+    # -------------------------------------------------------------
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+    
+    pred_dir = os.path.join(PROJECT_ROOT, "notebooks/experiment/derived_8.4-formal-eval-2.0/predictions")
+    mask_2025 = (wa_test["date"] >= "2025-07-20") & (wa_test["date"] <= "2025-08-19")
+    models_sub = ["Clustering_V0_Full_k2", "Clustering_Dynamic_k2", "Global_Single_54", "Baseline_V0_50", "Univariate_G_API_k2", "Trained_Gating_k2"]
+    
+    # Panel (a): RMSE comparison
+    x = np.arange(len(models_sub))
+    w = 0.25
+    
+    rmse_full = []
+    rmse_sum25 = []
+    rmse_ece = [0.1004, 0.0483, 0.0511, 0.0515, 0.0479, 0.0495]
+    
+    for m in models_sub:
+        files = sorted(glob.glob(f"{pred_dir}/{m}*full_preds.npy"))
+        p = np.mean([np.load(f) for f in files[:5]], axis=0)
+        err_f = p - wa_test["soil_moisture_5cm"].values
+        rmse_full.append(np.sqrt(np.mean(err_f**2)))
+        
+        sub = wa_test[mask_2025]
+        err_s = p[mask_2025] - sub["soil_moisture_5cm"].values
+        rmse_sum25.append(np.sqrt(np.mean(err_s**2)))
+        
+    axes[0].bar(x - w, rmse_full, w, label='Full 3-Yr Test (2023-2025)', color='#1f77b4', edgecolor='black', alpha=0.85)
+    axes[0].bar(x, rmse_sum25, w, label='1-Mo 2025 Summer (Ref)', color='#2ca02c', edgecolor='black', alpha=0.85)
+    axes[0].bar(x + w, rmse_ece, w, label='1-Mo 2026 Summer (ECE)', color='#d62728', edgecolor='black', alpha=0.85)
+    axes[0].set_xticks(x)
+    axes[0].set_xticklabels([m.replace('_k2', '').replace('_54', '').replace('_50', '') for m in models_sub], rotation=35, ha='right', fontsize=8)
+    axes[0].set_ylabel('RMSE (m³/m³)')
+    axes[0].set_title('(a) Physical Error Comparison: 1-Mo Summer vs Full Test', fontweight='bold')
+    axes[0].legend(fontsize=7, loc='upper left')
+
+    # Panel (b): Station R2 in 2025 Summer for Key Architectures
+    st_names = ['CayusePass', 'Darrington', 'Paradise', 'Quinault', 'Spokane']
+    x_st = np.arange(len(st_names))
+    w_st = 0.25
+    
+    p_glob = np.mean([np.load(f) for f in sorted(glob.glob(f"{pred_dir}/Global_Single_54*full_preds.npy"))[:5]], axis=0)
+    p_base = np.mean([np.load(f) for f in sorted(glob.glob(f"{pred_dir}/Baseline_V0_50*full_preds.npy"))[:5]], axis=0)
+    p_v0 = np.mean([np.load(f) for f in sorted(glob.glob(f"{pred_dir}/Clustering_V0_Full_k2*full_preds.npy"))[:5]], axis=0)
+    
+    wa_test_eval = wa_test.copy()
+    wa_test_eval['p_glob'] = p_glob
+    wa_test_eval['p_base'] = p_base
+    wa_test_eval['p_v0'] = p_v0
+    sub25 = wa_test_eval[mask_2025]
+    
+    r2_g, r2_b, r2_v = [], [], []
+    for st, g in sub25.groupby("station_id"):
+        y = g['soil_moisture_5cm'].values
+        v = np.var(y, ddof=1)
+        r2_g.append(1.0 - np.mean((g['p_glob'].values - y)**2) / v)
+        r2_b.append(1.0 - np.mean((g['p_base'].values - y)**2) / v)
+        r2_v.append(1.0 - np.mean((g['p_v0'].values - y)**2) / v)
+        
+    axes[1].bar(x_st - w_st, r2_v, w_st, label='Clustering_V0', color='#9467bd', edgecolor='black', alpha=0.85)
+    axes[1].bar(x_st, r2_g, w_st, label='Global_Single_54', color='#ff7f0e', edgecolor='black', alpha=0.85)
+    axes[1].bar(x_st + w_st, r2_b, w_st, label='Baseline_V0_50', color='#8c564b', edgecolor='black', alpha=0.85)
+    axes[1].set_yscale('symlog', linthresh=1.0)
+    axes[1].set_xticks(x_st)
+    axes[1].set_xticklabels(st_names, rotation=35, ha='right', fontsize=8)
+    axes[1].set_ylabel('Station R² (symlog scale)')
+    axes[1].set_title('(b) 2025 Summer: Native Stations Plunge into Negative R²', fontweight='bold')
+    axes[1].axhline(0, color='gray', linestyle='-', linewidth=0.8)
+    axes[1].scatter([4.6, 4.8, 5.0], [0.8003, 0.5006, 0.6723], marker='D', s=40, color=['#9467bd', '#ff7f0e', '#8c564b'], label='Pooled R² (+0.50 to +0.80)', zorder=5)
+    axes[1].legend(fontsize=7, loc='lower left')
+
+    # Panel (c): Hyperbolic decay curve R2 vs Var(y)
+    var_curve = np.logspace(-6, -1, 200)
+    for rmse_val, ls in [(0.02, ':'), (0.03, '--'), (0.04, '-'), (0.05, '-.')]:
+        r2_curve = 1.0 - (rmse_val**2) / var_curve
+        axes[2].plot(var_curve, r2_curve, linestyle=ls, color='gray', alpha=0.7, label=f'Theory (RMSE={rmse_val})')
+        
+    # Scatter reference stations (2025)
+    st_vars_25 = []
+    st_r2_g = []
+    for st, g in sub25.groupby("station_id"):
+        y = g['soil_moisture_5cm'].values
+        v = np.var(y, ddof=1)
+        st_vars_25.append(v)
+        st_r2_g.append(1.0 - np.mean((g['p_glob'].values - y)**2) / v)
+    axes[2].scatter(st_vars_25, st_r2_g, color='#1f77b4', s=80, marker='o', edgecolor='black', label='WA Ref Stations (2025 Summer)', zorder=5)
+
+    # Scatter ECE stations (2026)
+    ece_vars = [6.03e-5, 3.25e-5, 6.94e-4, 2.11e-5, 6.43e-6]
+    ece_r2_g = [-50.48, -38.66, -6.92, -23.94, -785.74]
+    axes[2].scatter(ece_vars, ece_r2_g, color='#d62728', s=80, marker='s', edgecolor='black', label='ECE In-Situ (2026 Summer)', zorder=5)
+
+    axes[2].set_xscale('log')
+    axes[2].set_yscale('symlog', linthresh=1.0)
+    axes[2].set_xlabel('Target Variance Var(y) [log scale]')
+    axes[2].set_ylabel('R² (symlog scale)')
+    axes[2].set_title('(c) Unified R² vs Var(y) Hyperbolic Decay Curve', fontweight='bold')
+    axes[2].axhline(0, color='gray', linestyle='-', linewidth=0.8)
+    axes[2].legend(fontsize=7, loc='lower left')
+
+    plt.tight_layout()
+    fig1c_path = os.path.join(FIGURES_DIR, "fig1c_1month_2025_summer_vs_ece_bridge.png")
+    plt.savefig(fig1c_path, dpi=300)
+    plt.close()
+    print("Fig 1c saved.")
+
+    # -------------------------------------------------------------
     # FIGURE 2: SMAP & MODIS NDVI Missingness & Feature Shift
     # -------------------------------------------------------------
     fig, axes = plt.subplots(1, 2, figsize=(13, 5))
@@ -1907,6 +2209,8 @@ def main():
     data = load_data()
     generate_table1_variance_compression(data)
     generate_table1b_target_variance_comparison(data)
+    generate_table1c_1month_2025_summer_all_metrics(data)
+    generate_table1d_macro_evaluation_window_benchmark(data)
     generate_table2_historical_benchmarks(data)
     generate_table3_missing_data_audit(data)
     generate_table4_spatial_proximity_and_side_by_side(data)

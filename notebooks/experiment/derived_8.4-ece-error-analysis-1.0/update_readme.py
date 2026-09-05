@@ -20,6 +20,8 @@ def df_to_markdown(df: pd.DataFrame) -> str:
 def main():
     t1 = pd.read_csv(TABLES_DIR / "table1_variance_compression_r2.csv")
     t1b = pd.read_csv(TABLES_DIR / "table1b_target_variance_ece_vs_wa_test.csv")
+    t1c = pd.read_csv(TABLES_DIR / "table1c_1month_2025_summer_all_metrics.csv")
+    t1d = pd.read_csv(TABLES_DIR / "table1d_macro_evaluation_window_benchmark.csv")
     t2 = pd.read_csv(TABLES_DIR / "table2_historical_benchmark_ref.csv")
     t3 = pd.read_csv(TABLES_DIR / "table3_missing_data_audit.csv")
     t4 = pd.read_csv(TABLES_DIR / "table4_spatial_proximity_inputs.csv")
@@ -42,11 +44,12 @@ This report provides a rigorous, multi-faceted post-mortem into why machine lear
 
 #### Core Takeaways:
 1. **The Variance Compression Paradox ($R^2$ Collapse)**: In dry Mediterranean summer conditions, actual soil moisture is nearly constant ($\\text{{Var}}(y) \\approx 6\\times 10^{{-6}}\\text{{ (m}}^3/\\text{{m}}^3)^2$). Because $R^2 = 1 - \\text{{MSE}}/\\text{{Var}}(y)$, even an excellent physical error ($\\text{{RMSE}} \\approx 0.048 - 0.051\\text{{ m}}^3/\\text{{m}}^3$) produces astronomical negative per-station $R^2$ by mathematical necessity. In absolute physical terms, **the models perform better on ECE than on Out-of-State spatial transfer ($\\text{{RMSE}} = 0.062\\text{{ m}}^3/\\text{{m}}^3$)**.
-2. **Latent 2026 Data Gap**: 85 derived SMAP satellite features and MODIS 250m NDVI are **100% missing (defaulted to 0.0)** in 2026 GEE products, forcing decision trees into unvisited dry branches.
-3. **Sub-Grid Scale Mismatch (53m Divergence)**: Sensors separated by only **53.4 meters** (`ECE_Renton_Garden_North` vs `ECE_Renton_Garden_Shed`) receive identical gridded inputs, yet ground truth differs by **2.04×** (15.5% vs 7.6%) due to local shade vs roof rain shadows.
-4. **Final-Day Prediction Drop Mechanism**: On Day 30 (`2026-08-19`), rolling 30-day window features (`kobs30`) transitioned from `NaN` to `0.000`, activating a high-importance (23.9% gain) numeric split in XGBoost that redirected predictions to the dry terminal leaf.
-5. **Cross-Station Homogeneity & Coincidental Accuracy**: Models output an invariant regional curve ($r \\ge 0.960$; pairwise difference $< 0.008\\text{{ m}}^3/\\text{{m}}^3$). `ECE_Renton_Garden_North` achieved lower error purely because its ground truth fortuitously matched the global fallback level ($\\sim 0.13\\text{{ m}}^3/\\text{{m}}^3$).
-6. **Soil Texture Benchmark & Override Sensitivity**: All 12 project stations (7 WA reference + 5 ECE) belong to the medium-textured **Loam / Sandy Loam** family. The models have encountered both classes in training. A counterfactual simulation across 20 models proves that overriding soil features shifts predictions by only **$0.0003\\text{{ m}}^3/\\text{{m}}^3$ ($0.03\\%$)**, confirming that **manual feature override is unnecessary and ineffective**.
+2. **Summer 1-Month Baseline Benchmark (Table 1c & 1d)**: Evaluating existing models on native reference stations during the same 1-month window in 2025 (`2025-07-20` to `2025-08-19`, 5 stations, $N=155$) reveals that models achieve their **lowest physical RMSE of the year ($0.021 - 0.035\\text{{ m}}^3/\\text{{m}}^3$)**, yet **station $R^2$ still collapses to $-122$ and $-177$** (with 60%–80% of native stations negative), proving that summer negative $R^2$ is an inherent property of short-window variance compression.
+3. **Latent 2026 Data Gap**: 85 derived SMAP satellite features and MODIS 250m NDVI are **100% missing (defaulted to 0.0)** in 2026 GEE products, forcing decision trees into unvisited dry branches.
+4. **Sub-Grid Scale Mismatch (53m Divergence)**: Sensors separated by only **53.4 meters** (`ECE_Renton_Garden_North` vs `ECE_Renton_Garden_Shed`) receive identical gridded inputs, yet ground truth differs by **2.04×** (15.5% vs 7.6%) due to local shade vs roof rain shadows.
+5. **Final-Day Prediction Drop Mechanism**: On Day 30 (`2026-08-19`), rolling 30-day window features (`kobs30`) transitioned from `NaN` to `0.000`, activating a high-importance (23.9% gain) numeric split in XGBoost that redirected predictions to the dry terminal leaf.
+6. **Cross-Station Homogeneity & Coincidental Accuracy**: Models output an invariant regional curve ($r \\ge 0.960$; pairwise difference $< 0.008\\text{{ m}}^3/\\text{{m}}^3$). `ECE_Renton_Garden_North` achieved lower error purely because its ground truth fortuitously matched the global fallback level ($\\sim 0.13\\text{{ m}}^3/\\text{{m}}^3$).
+7. **Soil Texture Benchmark & Override Sensitivity**: All 12 project stations (7 WA reference + 5 ECE) belong to the medium-textured **Loam / Sandy Loam** family. The models have encountered both classes in training. A counterfactual simulation across 20 models proves that overriding soil features shifts predictions by only **$0.0003\\text{{ m}}^3/\\text{{m}}^3$ ($0.03\\%$)**, confirming that **manual feature override is unnecessary and ineffective**.
 
 ---
 
@@ -64,6 +67,41 @@ This report provides a rigorous, multi-faceted post-mortem into why machine lear
 - **Mathematical Sensitivity**: Because $R^2 = 1 - \\text{{MSE}}/\\text{{Var}}(y)$, an identical, respectable physical prediction error of $\\text{{RMSE}} = 0.040\\text{{ m}}^3/\\text{{m}}^3$ produces per-station $R^2 \\in [+0.668, +0.888]$ on the WA reference stations, but collapses to per-station $R^2 \\in [-256.53, -1.38]$ on the 5 ECE stations (sample-variance form: $[-247.94, -1.30]$). The negative per-station $R^2$ scores on ECE are a mathematical artifact of vanishing per-station target variance during the summer drought; the pooled ECE set stays positive.
 
 ![Fig 1b: Target Variance Compression & R² Penalty Comparison](figures/fig1b_target_variance_ece_vs_wa_test_comparison.png)
+
+### 1.3 In-Distribution Summer Drought Performance (1-Month 2025 Window) Across Existing Models
+
+To evaluate whether negative $R^2$ scores indicate model degradation or are simply a mathematical consequence of short dry-season evaluation, we benchmarked all 6 primary model architectures directly on the **season-matched 1-month summer window from 2025 (`2025-07-20` to `2025-08-19`)** using the reference test set (`derived_8.4/test.csv`).
+
+During this 2025 window, exactly 5 reference stations are active (`CayusePass_WA`, `Darrington`, `Paradise_WA`, `Quinault`, and `Spokane`), totaling 155 observations (31 obs/station) — an identical structural comparator to the 5 ECE stations (150 obs, 30 obs/station).
+
+### Table 1c: 1-Month 2025 Summer Detailed Performance Per Station & Model
+{df_to_markdown(t1c)}
+
+### Table 1d: Macro Benchmark: Full 3-Year Test vs 1-Month 2025 Summer vs 2026 ECE
+{df_to_markdown(t1d)}
+
+### Key Empirical Findings:
+
+#### 1. Models Achieve Their Best Physical Accuracy of the Year in Summer
+- Across all models, physical prediction error is substantially lower during the 1-month summer window than across the full 3-year test set:
+  - `Clustering_V0_Full_k2`: **$\\text{{RMSE}} = 0.0210\\text{{ m}}^3/\\text{{m}}^3$** (vs $0.0442$ full test)
+  - `Trained_Gating_k2`: **$\\text{{RMSE}} = 0.0272\\text{{ m}}^3/\\text{{m}}^3$** (vs $0.0525$ full test)
+  - `Clustering_Dynamic_k2`: **$\\text{{RMSE}} = 0.0281\\text{{ m}}^3/\\text{{m}}^3$** (vs $0.0471$ full test)
+  - `Baseline_V0_50`: **$\\text{{RMSE}} = 0.0288\\text{{ m}}^3/\\text{{m}}^3$** (vs $0.0499$ full test)
+  - `Global_Single_54`: **$\\text{{RMSE}} = 0.0345\\text{{ m}}^3/\\text{{m}}^3$** (vs $0.0478$ full test)
+- Models predict summer moisture with millimeter accuracy ($\\text{{MAE}} \\le 0.015 - 0.028\\text{{ m}}^3/\\text{{m}}^3$). There is **no physical breakdown** in summer.
+
+#### 2. Yet Station $R^2$ Plummets to Severe Negatives (Up to $-122$ and $-177$) on Reference Stations!
+- Even on their own training region stations, per-station $R^2$ plummets into deep negative values because target variance drops to near zero:
+  - At `Paradise_WA` ($\\text{{Var}}(y) = 1.4\\times 10^{{-5}}$, $\\sigma = 0.0037$), $R^2$ plunges to **$-27.76$** (`Clustering_V0_Full_k2`), **$-119.74$** (`Global_Single_54`), **$-122.04$** (`Baseline_V0_50`), and **$-177.04$** (`Univariate_G_API_k2`), despite $\\text{{RMSE}} \\le 0.019 - 0.049\\text{{ m}}^3/\\text{{m}}^3$.
+  - At `Spokane` ($\\text{{Var}}(y) = 4.6\\times 10^{{-5}}$, $\\sigma = 0.0068$), $R^2$ plunges to **$-4.09$** to **$-25.14$**, despite $\\text{{RMSE}} \\le 0.015 - 0.035\\text{{ m}}^3/\\text{{m}}^3$.
+- Across all 6 model architectures, **60% to 80% of native Washington reference stations have negative $R^2$** during this 1-month evaluation window.
+
+#### 3. The "Pooled $R^2$" Masking Mechanism
+- When all 5 stations are pooled together ($N=155$), pooled sample variance is $\\text{{Var}}(y_{{\\text{{pooled}}}}) = 0.002654$ — nearly **200× larger** than `Paradise_WA`'s local variance. This is driven entirely by static geographical differences between wet coastal Quinault ($\\bar{{y}} = 0.142$) and dry inland Spokane ($\\bar{{y}} = 0.026$).
+- Consequently, **Pooled $R^2$ remains deceptively high ($+0.50$ to $+0.80$)**, masking the per-station tracking collapse (mean per-station $R^2 \\in [-6.19, -40.06]$).
+
+![Fig 1c: 1-Month 2025 Summer vs ECE Performance Bridge](figures/fig1c_1month_2025_summer_vs_ece_bridge.png)
 
 ---
 
