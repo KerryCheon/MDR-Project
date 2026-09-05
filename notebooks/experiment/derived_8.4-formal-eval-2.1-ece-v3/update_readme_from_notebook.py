@@ -19,6 +19,7 @@ with open(nb_path, "r", encoding="utf-8") as f:
 # README sections (legacy code used hardcoded outputs.get(3)/get(5)/...).
 sections: dict[str, str] = {}
 legacy: dict[int, str] = {}
+takeaways_md = ""
 last_header = ""
 for i, cell in enumerate(nb["cells"]):
     if cell["cell_type"] == "markdown":
@@ -26,6 +27,8 @@ for i, cell in enumerate(nb["cells"]):
         text = "".join(src) if isinstance(src, list) else str(src)
         m = re.search(r"^#{1,3}\s*(.+)", text.strip(), re.MULTILINE)
         last_header = m.group(1).strip().lower() if m else text.strip()[:80].lower()
+        if "key takeaways" in last_header and not takeaways_md:
+            takeaways_md = text.strip()
     elif cell["cell_type"] == "code":
         text = ""
         for out in cell.get("outputs", []):
@@ -56,6 +59,9 @@ spatial_boot_md = _get("spatial sample-level", fallback_idx=17)
 focused_md = _get("focused in-situ", fallback_idx=19)
 delta_md = _get("delta-robustness", fallback_idx=23)
 repl_md = _get("replication checks", fallback_idx=25)
+# Conclusion body = takeaways markdown cell minus its own top-level header
+# (README provides the ## header). Falls back to "" if the cell is missing.
+takeaways_body = re.sub(r"^#+\s*.*\n", "", takeaways_md, count=1).strip()
 
 readme_content = f"""# Experiment: `derived_8.4-formal-eval-2.1-ece-v3` — Formal Statistical Evaluation on In-Situ ECE Sensors (v3 Split & Salvaged Router)
 
@@ -71,7 +77,7 @@ All models and routers are trained **strictly on the 7 Washington State stations
 3. **Primary Metric Realism (RMSE):** In this 30-day late-summer dry-down window, soil moisture target variance is extremely small ($\\\\sigma_y \\\\in [0.003, 0.008]\\\\text{{ m}}^3/\\\\text{{m}}^3$). Modest residuals ($\\\\sim 0.04$ to $0.05$) unavoidably produce large negative $R^2$ values due to tiny denominators. Models are therefore **ranked primarily by RMSE (ascending, lower is better)**, with $R^2$, MAE, Bias, ubRMSE, and Pearson correlation ($r$) reported alongside.
 4. **Trend Directionality via Pearson Correlation:** Evaluates whether model predictions faithfully reproduce the ground-truth drying curve.
 5. **Time Series Line Charts (Strictly $\\\\le 5$ Lines per Chart):**
-   - **Chart Suite 1 (Architecture Showdown):** Observed In-Situ Ground Truth, `Clustering_Backbone54_k2`, `Clustering_V0_Full_k2`, `Global_Single_54`, `Trained_Gating_k2`.
+   - **Chart Suite 1 (Architecture Showdown, NO per-regime deltas):** Observed In-Situ Ground Truth, `Clustering_V0_Full_k2 c0=0,c1=0`, `Clustering_Backbone54_k2 c0=0,c1=0`, `Global_Single_54`, `Trained_Gating_k2 c0=0,c1=0`.
    - **Chart Suite 2 (Regime Benchmark Showdown):** Observed In-Situ Ground Truth, `Clustering_V0_Full_k2 c0=0, c1=0`, `Univariate_G_API_k2 c0=0, c1=0`, `Clustering_Dynamic_k2 c0=0, c1=0`, `Seasonal_Binary_k2 c0=0, c1=0`.
 
 All tables below are copied verbatim from the stdout of the executed report notebook
@@ -153,7 +159,7 @@ A low-noise architectural comparison evaluating two-regime models strictly **wit
 
 ## Publication Figures
 
-### 1. Architecture Showdown Time Series (Observed + 4 Key Architectures; $\\\\le 5$ lines)
+### 1. Architecture Showdown Time Series (Observed + 2 No-Delta Clustering Regimes + Global + No-Delta Gating; $\\\\le 5$ lines; the two clustering no-delta lines overlap — numerically identical on ECE)
 ![Architecture Showdown Combined](spatial_ece_timeseries_architecture_combined.png)
 
 ### 2. Regime Benchmark Showdown Time Series (Observed + 4 Zero-Delta Regimes; $\\\\le 5$ lines)
@@ -167,6 +173,12 @@ A low-noise architectural comparison evaluating two-regime models strictly **wit
 ### 4. Robustness Across Feature Selection Sources
 ![Delta robustness RMSE](delta_robustness_rmse.png)
 ![Delta robustness R2](delta_robustness_r2.png)
+
+---
+
+## Conclusion (No-Delta Regimes)
+
+{takeaways_body}
 
 ---
 

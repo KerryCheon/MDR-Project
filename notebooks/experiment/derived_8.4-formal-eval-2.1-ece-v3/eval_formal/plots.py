@@ -37,7 +37,9 @@ ECE_MODEL_COLORS = {
     "Clustering_V0_Full_k2_c0_0_c1_10": "#1f77b4",     # Steel Blue (Val-selected)
     "Clustering_V0_Full_k2_c0_0_c1_0": "#1f77b4",      # Steel Blue (Zero delta)
     "Clustering_Backbone54_k2_c0_10_c1_10": "#ff7f0e", # Dark Orange (Backbone MoE)
+    "Clustering_Backbone54_k2_c0_0_c1_0": "#ff7f0e",  # Dark Orange (Backbone, Zero delta)
     "Trained_Gating_k2_c0_5_c1_10": "#9467bd",         # Purple (Gating MoE)
+    "Trained_Gating_k2_c0_0_c1_0": "#9467bd",          # Purple (Gating, Zero delta)
     "Univariate_G_API_k2_c0_0_c1_0": "#e377c2",        # Magenta/Pink (API baseline)
     "Clustering_Dynamic_k2_c0_0_c1_0": "#17becf",      # Cyan (Dynamic MoE)
     "Seasonal_Binary_k2_c0_0_c1_0": "#8c564b",         # Brown (Seasonal MoE)
@@ -49,7 +51,9 @@ ECE_MODEL_LINESTYLES = {
     "Clustering_V0_Full_k2_c0_0_c1_10": "-",
     "Clustering_V0_Full_k2_c0_0_c1_0": "-",
     "Clustering_Backbone54_k2_c0_10_c1_10": "--",
+    "Clustering_Backbone54_k2_c0_0_c1_0": "--",
     "Trained_Gating_k2_c0_5_c1_10": "-.",
+    "Trained_Gating_k2_c0_0_c1_0": "-.",
     "Univariate_G_API_k2_c0_0_c1_0": ":",
     "Clustering_Dynamic_k2_c0_0_c1_0": "--",
     "Seasonal_Binary_k2_c0_0_c1_0": "-.",
@@ -61,6 +65,16 @@ ECE_ARCH_CONFIGS = [
     "Clustering_Backbone54_k2_c0_10_c1_10",
     "Global_Single_54",
     "Trained_Gating_k2_c0_5_c1_10",
+]
+
+# Suite 1 (No-Delta): Architecture Showdown WITHOUT per-regime feature selection
+# (Observed + 2 clustering no-delta regimes + Global + Trained Gating no-delta = 5 lines).
+# Basis: focused no-delta comparison (spatial_focused_no_delta_*.csv, README Tables 1-3).
+ECE_ARCH_NODELTA_CONFIGS = [
+    "Clustering_V0_Full_k2_c0_0_c1_0",
+    "Clustering_Backbone54_k2_c0_0_c1_0",
+    "Global_Single_54",
+    "Trained_Gating_k2_c0_0_c1_0",
 ]
 
 # Suite 2: Regime Benchmark Showdown (4 models + 1 ground truth = 5 lines)

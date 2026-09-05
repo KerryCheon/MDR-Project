@@ -12,7 +12,7 @@ All models and routers are trained **strictly on the 7 Washington State stations
 3. **Primary Metric Realism (RMSE):** In this 30-day late-summer dry-down window, soil moisture target variance is extremely small ($\\sigma_y \\in [0.003, 0.008]\\text{ m}^3/\\text{m}^3$). Modest residuals ($\\sim 0.04$ to $0.05$) unavoidably produce large negative $R^2$ values due to tiny denominators. Models are therefore **ranked primarily by RMSE (ascending, lower is better)**, with $R^2$, MAE, Bias, ubRMSE, and Pearson correlation ($r$) reported alongside.
 4. **Trend Directionality via Pearson Correlation:** Evaluates whether model predictions faithfully reproduce the ground-truth drying curve.
 5. **Time Series Line Charts (Strictly $\\le 5$ Lines per Chart):**
-   - **Chart Suite 1 (Architecture Showdown):** Observed In-Situ Ground Truth, `Clustering_Backbone54_k2`, `Clustering_V0_Full_k2`, `Global_Single_54`, `Trained_Gating_k2`.
+   - **Chart Suite 1 (Architecture Showdown, NO per-regime deltas):** Observed In-Situ Ground Truth, `Clustering_V0_Full_k2 c0=0,c1=0`, `Clustering_Backbone54_k2 c0=0,c1=0`, `Global_Single_54`, `Trained_Gating_k2 c0=0,c1=0`.
    - **Chart Suite 2 (Regime Benchmark Showdown):** Observed In-Situ Ground Truth, `Clustering_V0_Full_k2 c0=0, c1=0`, `Univariate_G_API_k2 c0=0, c1=0`, `Clustering_Dynamic_k2 c0=0, c1=0`, `Seasonal_Binary_k2 c0=0, c1=0`.
 
 All tables below are copied verbatim from the stdout of the executed report notebook
@@ -365,7 +365,7 @@ TEMPORAL replication (seed 42 pooled test R2 vs eval-1.1 / eval-1.3 full baselin
 
 ## Publication Figures
 
-### 1. Architecture Showdown Time Series (Observed + 4 Key Architectures; $\\le 5$ lines)
+### 1. Architecture Showdown Time Series (Observed + 2 No-Delta Clustering Regimes + Global + No-Delta Gating; $\\le 5$ lines; the two clustering no-delta lines overlap — numerically identical on ECE)
 ![Architecture Showdown Combined](spatial_ece_timeseries_architecture_combined.png)
 
 ### 2. Regime Benchmark Showdown Time Series (Observed + 4 Zero-Delta Regimes; $\\le 5$ lines)
@@ -379,6 +379,27 @@ TEMPORAL replication (seed 42 pooled test R2 vs eval-1.1 / eval-1.3 full baselin
 ### 4. Robustness Across Feature Selection Sources
 ![Delta robustness RMSE](delta_robustness_rmse.png)
 ![Delta robustness R2](delta_robustness_r2.png)
+
+---
+
+## Conclusion (No-Delta Regimes)
+
+1. **Missingness-Aware Router Salvage Success:**
+   By applying the availability gate router fix ($\tau = 0.10$), the model gracefully detects the missing SMAP sensor channels in `derived_8.4_ece_v3` and falls back to the SMAP-free `Univariate_G_API_k2` router. This completely resolves the severe failure mode observed in v2.0 (where predictions defaulted to Cluster 1 wet specialist predictions), reducing spatial RMSE from $\sim 0.167$ to $\sim 0.050\text{ m}^3/\text{m}^3$.
+2. **Evaluation Metric Realism (RMSE vs R²):**
+   In this 30-day late-summer dry window (July 20 to August 19, 2026), soil moisture variance is extremely small ($\sigma_y \approx 0.003$ to $0.008\text{ m}^3/\text{m}^3$). Small absolute errors ($\text{RMSE} \approx 0.04$ to $0.05\text{ m}^3/\text{m}^3$) unavoidably drive $R^2 = 1 - \text{MSE}/\text{Var}(y)$ negative. Ranking models primarily by **RMSE** provides an uncorrupted, physically grounded assessment of sensor transfer accuracy.
+3. **No-Delta Verdict: regime partitioning alone does not transfer on RMSE.**
+   Evaluated strictly WITHOUT per-regime feature selection (identical 54 global backbone features, `c0=0,c1=0`; README Tables 1–3 sourced from `spatial_focused_no_delta_*.csv`), the two clustering regime models tie the single-regime global model and lose to the no-delta trained gating and V0 baseline across the 5 ECE stations:
+   - Clustering (V0, `c0=0,c1=0`) pooled RMSE $0.0584 \pm 0.0010$ vs Global-Single-54 $0.0586 \pm 0.0007$ (pooled $\Delta$RMSE $-0.00021$); per-station median $\Delta$RMSE $+0.00025$, 2/5 wins, binomial sign $p = 1.0000$, paired t $p = 0.97652$, Wilcoxon $p = 1.00000$ — statistically indistinguishable.
+   - Clustering (V0) vs Baseline-50: station mean $\Delta$RMSE $+0.00828$, 1/5 wins (sign $p = 0.37500$, t $p = 0.42408$) — loses.
+   - Clustering (V0) vs Trained Gating (`c0=0,c1=0`): station mean $\Delta$RMSE $+0.00688$, 1/5 wins (sign $p = 0.37500$, t $p = 0.27348$) — loses; no-delta Trained Gating holds the best station-median RMSE ($0.0445$), ahead of Baseline-50 ($0.0448$) and Clustering ($0.0487$).
+   - The Backbone54 no-delta twin is numerically identical to V0 no-delta on ECE (pooled RMSE $0.0584$ both; per-station RMSE equal to 4dp), so its two lines overlap in the Architecture Showdown figure.
+   - No other no-delta regime beats Global-54 either: Univariate G_API 3/5 ($\Delta -0.00083$, sign $p = 1.0$), Dynamic 3/5 ($\Delta -0.00097$, sign $p = 1.0$), Seasonal Binary 2/5 ($\Delta +0.00018$).
+   Conclusion: without per-regime delta features, two-regime partitioning provides no spatial RMSE benefit over a single global model on these 5 in-situ stations. Regime gains reported elsewhere in this experiment come from the delta-feature variants, not from partitioning alone.
+4. **Trend Directionality (Pearson $r$) is the one preserved strength:**
+   Clustering no-delta attains the best station-mean Pearson $r$ ($0.4297$ vs Global-54 $0.4277$, Gating no-delta $0.3954$), so regime models still track dry-down directionality even while RMSE ties — with positive per-station $r$ at 4 of 5 ECE sites (Lost Meadow is negative, $-0.34$).
+5. **Why transfer stalls (Table 4 diagnostics):**
+   ECE stations sit near the KMeans decision boundary (ambiguity ratio $0.89$–$0.96$ vs $0.56$–$0.72$ on WA; margin $0.26$–$0.88$ vs $2.71$–$4.46$), so hard cluster assignment is near coin-flip on 2 of 5 sites (27%/73% splits at Garden North/Shed). Combined with tiny target variance, small biases dominate RMSE. In-distribution (WA temporal) the same no-delta clustering ranks 2nd–3rd (RMSE $0.04419$–$0.04420$), confirming the failure is spatial transfer, not model quality.
 
 ---
 
