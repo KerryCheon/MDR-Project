@@ -57,6 +57,18 @@ MODIS_R = 6371007.181
 MODIS_TILE_WIDTH = 2.0 * math.pi * MODIS_R / 36.0
 MODIS_PIX_SIZE = MODIS_TILE_WIDTH / 1200.0  # ~926.625 m
 
+# Display toggles & real MODIS LST overlay settings (Fig.1 only; Fig.4 proxy untouched).
+# Schematic orange macrogrid is retained for future use but hidden by default:
+# the 499-feature pipeline uses a 1000 m circular buffer mean, not static tiles.
+SHOW_MODIS_MACROGRID_FIG1 = False
+SHOW_REAL_MODIS_LST_FIG1 = True
+MODIS_LST_COLLECTION = "MODIS/061/MOD11A1"
+MODIS_LST_BAND = "LST_Day_1km"
+MODIS_LST_START = "2026-08-01"
+MODIS_LST_END = "2026-09-02"
+MODIS_LST_SCALE = 1000.0
+MODIS_LST_SCALE_FACTOR = 0.02
+
 
 # ==============================================================================
 # Geodetic Projections: Web Mercator, UTM Zone 10N, MODIS Sinusoidal
@@ -522,6 +534,7 @@ def generate_upstream_aligned_grid(
                 "col": c_i,
                 "row": r_i,
                 "poly_merc": [p_sw, p_se, p_ne, p_nw],
+                "corners_latlon": [c_sw, c_se, c_ne, c_nw],
                 "label": f"MODIS_r{r_i}_c{c_i}"
             })
 
@@ -939,6 +952,128 @@ def extract_smap_features(
     return df_chunks, smap_meta
 
 
+def fetch_modis_lst_pixels(
+    meta: Dict[str, Any],
+    cache_dir: Optional[Path] = None,
+    start_date: str = MODIS_LST_START,
+    end_date: str = MODIS_LST_END,
+) -> Dict[str, Any]:
+    """Fetches real MODIS/061/MOD11A1 LST_Day_1km audit-window means per ~926 m pixel.
+
+    One GEE `mean().reduceRegion(mean, pixel-polygon, scale=1000)` per
+    parallelogram in `meta["modis_parallelograms"]`. Results are cached to
+    `modis_lst_farm_cache.json` (reproducibility: no inline/scratch queries).
+    Falls back to the uniform `farm_operational_499_audit.json` buffer mean
+    if GEE is unavailable, flagged via `fallback_uniform=True`.
+    """
+    if cache_dir is None:
+        cache_dir = Path(__file__).resolve().parent
+    cache_file = Path(cache_dir) / "modis_lst_farm_cache.json"
+    parallelograms = meta.get("modis_parallelograms", [])
+    labels = [p["label"] for p in parallelograms]
+
+    if cache_file.exists():
+        try:
+            with open(cache_file, "r", encoding="utf-8") as f:
+                cached = json.load(f)
+            if (
+                cached.get("start_date") == start_date
+                and cached.get("end_date") == end_date
+                and cached.get("collection") == MODIS_LST_COLLECTION
+                and all(lbl in cached.get("pixels", {}) for lbl in labels)
+            ):
+                return cached
+        except Exception:
+            pass
+
+    def _fallback_pixels(reason: str) -> Dict[str, Any]:
+        audit_mean = 25.05
+        try:
+            audit_path = Path(cache_dir) / "farm_operational_499_audit.json"
+            if audit_path.exists():
+                with open(audit_path, "r", encoding="utf-8") as f:
+                    audit = json.load(f)
+                audit_mean = float(
+                    audit.get("scorecard", {}).get("dynamic_modis_lst", {}).get(
+                        "mean_lst_celsius", audit_mean
+                    )
+                )
+        except Exception:
+            pass
+        return {
+            "collection": MODIS_LST_COLLECTION,
+            "band": MODIS_LST_BAND,
+            "start_date": start_date,
+            "end_date": end_date,
+            "scale": MODIS_LST_SCALE,
+            "scale_factor": MODIS_LST_SCALE_FACTOR,
+            "fallback_uniform": True,
+            "fallback_reason": reason,
+            "fallback_mean_celsius": round(audit_mean, 2),
+            "n_scenes": None,
+            "pixels": {
+                lbl: {"dn_mean": None, "celsius": round(audit_mean, 2), "count": None}
+                for lbl in labels
+            },
+        }
+
+    try:
+        project_root = Path(__file__).resolve().parents[3]
+        if str(project_root) not in sys.path:
+            sys.path.insert(0, str(project_root))
+        import ee  # noqa: E402
+        from src.pipeline.utils.gee import initialize_ee  # noqa: E402
+
+        initialize_ee()
+        coll = (
+            ee.ImageCollection(MODIS_LST_COLLECTION)
+            .filterDate(start_date, end_date)
+            .select(MODIS_LST_BAND)
+        )
+        n_scenes = int(coll.size().getInfo())
+        if n_scenes == 0:
+            raise RuntimeError("empty MODIS LST collection for window")
+        mean_img = coll.mean()
+        pixels: Dict[str, Any] = {}
+        for poly in parallelograms:
+            lonlat = [[lon, lat] for lat, lon in poly.get("corners_latlon", [])]
+            geom = ee.Geometry.Polygon([lonlat])
+            val = mean_img.reduceRegion(
+                reducer=ee.Reducer.mean(),
+                geometry=geom,
+                scale=MODIS_LST_SCALE,
+                bestEffort=True,
+            ).get(MODIS_LST_BAND).getInfo()
+            if val is None:
+                pixels[poly["label"]] = {"dn_mean": None, "celsius": None, "count": n_scenes}
+            else:
+                pixels[poly["label"]] = {
+                    "dn_mean": float(val),
+                    "celsius": round(float(val) * MODIS_LST_SCALE_FACTOR - 273.15, 2),
+                    "count": n_scenes,
+                }
+        payload = {
+            "collection": MODIS_LST_COLLECTION,
+            "band": MODIS_LST_BAND,
+            "start_date": start_date,
+            "end_date": end_date,
+            "scale": MODIS_LST_SCALE,
+            "scale_factor": MODIS_LST_SCALE_FACTOR,
+            "fallback_uniform": False,
+            "n_scenes": n_scenes,
+            "pixels": pixels,
+        }
+    except Exception as e:  # GEE auth/network unavailable -> uniform fallback
+        payload = _fallback_pixels(f"{type(e).__name__}: {e}")
+
+    try:
+        with open(cache_file, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+    except Exception:
+        pass
+    return payload
+
+
 # ==============================================================================
 # Map Drawing Helpers
 # ==============================================================================
@@ -1010,30 +1145,78 @@ def plot_upstream_grid_basemap(
     meta: Dict[str, Any],
     img: np.ndarray,
     ext: List[float],
-    save_path: Path
+    save_path: Path,
+    show_modis_macrogrid: bool = SHOW_MODIS_MACROGRID_FIG1,
+    show_real_modis_lst: bool = SHOW_REAL_MODIS_LST_FIG1,
+    modis_lst_data: Optional[Dict[str, Any]] = None,
 ):
-    """Figure 1: Basemap with King County Parcel 3420069035, UTM Zone 10N 250m Subgrid, and MODIS Sinusoidal Parallelograms."""
+    """Figure 1: Basemap with parcel, UTM 250m subgrid, buffer, and real MODIS LST Day 1km.
+
+    The schematic orange Native Sinusoidal macrogrid is retained but hidden by
+    default (`SHOW_MODIS_MACROGRID_FIG1=False`); the real `MODIS/061/MOD11A1
+    LST_Day_1km` audit-window means are drawn as filled ~926 m parallelograms.
+    """
     fig, ax = plt.subplots(figsize=(13, 13), dpi=160)
     ax.imshow(img, extent=ext, origin="upper", zorder=1)
 
     parcel_merc = meta["parcel_merc"]
     draw_parcel_boundary(ax, parcel_merc)
 
-    # 1. Draw Native MODIS Sinusoidal Macro Parallelograms (Orange solid lines)
-    for mod_poly in meta.get("modis_parallelograms", []):
-        poly_pts = mod_poly["poly_merc"]
-        poly_patch = Polygon(poly_pts, facecolor="none", edgecolor="#FF3D00", linewidth=2.5, linestyle="-", alpha=0.85, zorder=9)
-        ax.add_patch(poly_patch)
-
-        # Label along top edge
-        top_x = (poly_pts[2][0] + poly_pts[3][0]) / 2.0
-        top_y = (poly_pts[2][1] + poly_pts[3][1]) / 2.0
-        if ext[0] <= top_x <= ext[1] and ext[2] <= top_y <= ext[3]:
-            ax.text(
-                top_x, top_y - 20.0, f"MODIS Native Sinusoidal: {mod_poly['label']}",
-                color="#FF3D00", fontsize=8.5, fontweight="heavy", ha="center", va="top", zorder=16,
-                bbox=dict(boxstyle="square,pad=0.2", facecolor="black", edgecolor="#FF3D00", alpha=0.85, lw=1.2)
+    # 0. Real MODIS LST Day 1km audit-window means (filled ~926 m parallelograms)
+    lst_cbar = None
+    if show_real_modis_lst and modis_lst_data:
+        pixels = modis_lst_data.get("pixels", {})
+        vals = [v.get("celsius") for v in pixels.values() if v.get("celsius") is not None]
+        if vals:
+            cmap = plt.cm.plasma
+            norm = matplotlib.colors.Normalize(vmin=float(min(vals)), vmax=float(max(vals)))
+            for mod_poly in meta.get("modis_parallelograms", []):
+                entry = pixels.get(mod_poly["label"])
+                if not entry or entry.get("celsius") is None:
+                    continue
+                color = cmap(norm(entry["celsius"]))
+                poly_patch = Polygon(
+                    mod_poly["poly_merc"], facecolor=color, edgecolor="white",
+                    linewidth=1.4, linestyle="-", alpha=0.45, zorder=6,
+                )
+                ax.add_patch(poly_patch)
+                top_x = (mod_poly["poly_merc"][2][0] + mod_poly["poly_merc"][3][0]) / 2.0
+                top_y = (mod_poly["poly_merc"][2][1] + mod_poly["poly_merc"][3][1]) / 2.0
+                if ext[0] <= top_x <= ext[1] and ext[2] <= top_y <= ext[3]:
+                    ax.text(
+                        top_x, top_y - 20.0,
+                        f"{mod_poly['label']}: {entry['celsius']:.2f}°C",
+                        color="white", fontsize=8.0, fontweight="bold",
+                        ha="center", va="top", zorder=16,
+                        bbox=dict(boxstyle="square,pad=0.2", facecolor="black",
+                                  edgecolor="white", alpha=0.8, lw=1.0),
+                    )
+            sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+            sm.set_array([])
+            lst_cbar = fig.colorbar(sm, ax=ax, fraction=0.035, pad=0.02, shrink=0.75)
+            lst_cbar.set_label(
+                f"Real MODIS LST Day 1km audit mean (°C) "
+                f"[{modis_lst_data.get('start_date')} to {modis_lst_data.get('end_date')}]",
+                fontsize=10, fontweight="bold",
             )
+            lst_cbar.ax.tick_params(labelsize=9.0)
+
+    # 1. Schematic Native MODIS Sinusoidal Macro Parallelograms (retained, hidden by default)
+    if show_modis_macrogrid:
+        for mod_poly in meta.get("modis_parallelograms", []):
+            poly_pts = mod_poly["poly_merc"]
+            poly_patch = Polygon(poly_pts, facecolor="none", edgecolor="#FF3D00", linewidth=2.5, linestyle="-", alpha=0.85, zorder=9)
+            ax.add_patch(poly_patch)
+
+            # Label along top edge
+            top_x = (poly_pts[2][0] + poly_pts[3][0]) / 2.0
+            top_y = (poly_pts[2][1] + poly_pts[3][1]) / 2.0
+            if ext[0] <= top_x <= ext[1] and ext[2] <= top_y <= ext[3]:
+                ax.text(
+                    top_x, top_y - 20.0, f"MODIS Native Sinusoidal: {mod_poly['label']}",
+                    color="#FF3D00", fontsize=8.5, fontweight="heavy", ha="center", va="top", zorder=16,
+                    bbox=dict(boxstyle="square,pad=0.2", facecolor="black", edgecolor="#FF3D00", alpha=0.85, lw=1.2)
+                )
 
     # 2. Draw Native UTM Zone 10N 250m Sub-Grid (Cyan dashed lines)
     for _, row in df_chunks.iterrows():
@@ -1081,11 +1264,20 @@ def plot_upstream_grid_basemap(
 
     legend_elements = [
         mlines.Line2D([], [], color="#FFD700", lw=2.8, label="Farm Parcel Boundary (PIN 3420069035, 69.4 ac)"),
-        mlines.Line2D([], [], color="#FF3D00", lw=2.5, label="MODIS Native Sinusoidal Macrogrid (~57.4° Tilt Parallelogram)"),
         mlines.Line2D([], [], color="#00E5FF", lw=1.5, ls="--", label="UTM Zone 10N 250m Subgrid (True 250m Ground Metric Scale)"),
         mlines.Line2D([], [], marker="o", color="w", markerfacecolor="#FFD700", markeredgecolor="k", markersize=8, label="Candidate Sensor Node (100% Verified Inside Farm)"),
         mpatches.Patch(facecolor="#0288D1", edgecolor="#00E5FF", alpha=0.3, label="MDR Pipeline Buffer (r = 1000m Circular Moving Average)")
     ]
+    if show_modis_macrogrid:
+        legend_elements.insert(
+            1,
+            mlines.Line2D([], [], color="#FF3D00", lw=2.5, label="MODIS Native Sinusoidal Macrogrid (~57.4° Tilt Parallelogram)"),
+        )
+    if show_real_modis_lst and modis_lst_data:
+        legend_elements.insert(
+            1,
+            mpatches.Patch(facecolor="#7E03A8", edgecolor="white", alpha=0.45, label=f"Real MODIS LST Day 1km (~926 m, {modis_lst_data.get('start_date')} to {modis_lst_data.get('end_date')} mean)"),
+        )
 
     legend = ax.legend(
         handles=legend_elements, loc="upper right", fontsize=9.0,
@@ -1946,6 +2138,12 @@ def run_analysis(output_dir: Path) -> pd.DataFrame:
     print(f"   -> Masking Status: {smap_meta['status']} (Urban Masked: {smap_meta['urban_masked']}, Revisit Rate: {smap_meta['revisit_coverage_pct']}%)")
     print(f"   -> Seasonal Volumetric Soil Moisture: Spring Wet={smap_meta['spring_am_mean']} m³/m³ | Summer Dry={smap_meta['summer_am_mean']} m³/m³ | August 2026={smap_meta['aug2026_am_mean']} m³/m³")
 
+    print("7c. Fetching real MODIS LST Day 1km (~926 m) audit-window means per pixel...")
+    modis_lst_data = fetch_modis_lst_pixels(meta, cache_dir=output_dir)
+    n_lst = len(modis_lst_data.get("pixels", {}))
+    n_finite = sum(1 for v in modis_lst_data.get("pixels", {}).values() if v.get("celsius") is not None)
+    print(f"   -> {MODIS_LST_COLLECTION} {MODIS_LST_BAND} {modis_lst_data.get('start_date')} to {modis_lst_data.get('end_date')}: {n_finite}/{n_lst} pixels finite (fallback_uniform={modis_lst_data.get('fallback_uniform')})")
+
     print("8. Generating publication figures:")
     f1 = fig_dir / "farm_basemap_upstream_grid.png"
     f2 = fig_dir / "farm_basemap_soil_grid.png"
@@ -1959,7 +2157,12 @@ def run_analysis(output_dir: Path) -> pd.DataFrame:
     f10 = fig_dir / "farm_buffer_overlap_heatmap.png"
     f11 = fig_dir / "farm_basemap_smap_easegrid.png"
 
-    plot_upstream_grid_basemap(df_chunks, meta, img, ext, f1)
+    plot_upstream_grid_basemap(
+        df_chunks, meta, img, ext, f1,
+        show_modis_macrogrid=SHOW_MODIS_MACROGRID_FIG1,
+        show_real_modis_lst=SHOW_REAL_MODIS_LST_FIG1,
+        modis_lst_data=modis_lst_data,
+    )
     print(f"   -> Saved Figure 1: {f1}")
     plot_soil_grid_basemap(df_chunks, meta, img, ext, f2)
     print(f"   -> Saved Figure 2: {f2}")

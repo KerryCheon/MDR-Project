@@ -43,7 +43,8 @@ This experiment generates high-resolution satellite basemaps with upstream-align
 
 Sub-meter **Esri World Imagery** overlaid with:
 - **Farm Parcel Boundary**: Solid gold line showing official 32-vertex King County parcel boundary.
-- **MODIS Native Sinusoidal Macrogrid**: Orange solid lines showing native MODIS pixel parallelograms (tilted at $57.4^\circ$).
+- **Real MODIS LST Day 1km (~926 m)**: Filled `MODIS/061/MOD11A1 LST_Day_1km` audit-window means (`2026-08-01` to `2026-09-02`, 32 scenes, cached GEE query in `modis_lst_farm_cache.json`); farm pixels `r5138_c11646: 24.42°C`, `r5138_c11647: 26.01°C`, `r5139_c11645: 25.19°C`, `r5139_c11646: 25.89°C`.
+- **Schematic MODIS Macrogrid**: Retained in code but hidden by default (`SHOW_MODIS_MACROGRID_FIG1=False`); the 499-feature pipeline uses a 1000 m circular buffer mean, not static tiles.
 - **UTM Zone 10N 250m Sub-Grid**: Cyan dashed lines with gold badges for parcel-intersecting chunks.
 - **Candidate Sensor Nodes**: Gold markers showing verified non-trespassing deployment points (100% inside parcel).
 - **MDR Pipeline Buffer**: Translucent blue circle showing the 1000m circular moving extraction buffer.

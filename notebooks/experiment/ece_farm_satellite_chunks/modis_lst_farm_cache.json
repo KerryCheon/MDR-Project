@@ -1,0 +1,112 @@
+{
+  "collection": "MODIS/061/MOD11A1",
+  "band": "LST_Day_1km",
+  "start_date": "2026-08-01",
+  "end_date": "2026-09-02",
+  "scale": 1000.0,
+  "scale_factor": 0.02,
+  "fallback_uniform": false,
+  "n_scenes": 32,
+  "pixels": {
+    "MODIS_r5136_c11645": {
+      "dn_mean": 14832.14498526776,
+      "celsius": 23.49,
+      "count": 32
+    },
+    "MODIS_r5136_c11646": {
+      "dn_mean": 14844.482931968694,
+      "celsius": 23.74,
+      "count": 32
+    },
+    "MODIS_r5136_c11647": {
+      "dn_mean": 14881.781047335504,
+      "celsius": 24.49,
+      "count": 32
+    },
+    "MODIS_r5136_c11648": {
+      "dn_mean": 14967.490108575637,
+      "celsius": 26.2,
+      "count": 32
+    },
+    "MODIS_r5137_c11645": {
+      "dn_mean": 14840.478656126485,
+      "celsius": 23.66,
+      "count": 32
+    },
+    "MODIS_r5137_c11646": {
+      "dn_mean": 14856.370245361577,
+      "celsius": 23.98,
+      "count": 32
+    },
+    "MODIS_r5137_c11647": {
+      "dn_mean": 14923.804155265027,
+      "celsius": 25.33,
+      "count": 32
+    },
+    "MODIS_r5137_c11648": {
+      "dn_mean": 15004.832369942198,
+      "celsius": 26.95,
+      "count": 32
+    },
+    "MODIS_r5138_c11645": {
+      "dn_mean": 14872.892328793316,
+      "celsius": 24.31,
+      "count": 32
+    },
+    "MODIS_r5138_c11646": {
+      "dn_mean": 14878.348118712425,
+      "celsius": 24.42,
+      "count": 32
+    },
+    "MODIS_r5138_c11647": {
+      "dn_mean": 14957.846076660646,
+      "celsius": 26.01,
+      "count": 32
+    },
+    "MODIS_r5138_c11648": {
+      "dn_mean": 14985.16129841461,
+      "celsius": 26.55,
+      "count": 32
+    },
+    "MODIS_r5139_c11645": {
+      "dn_mean": 14917.227039736941,
+      "celsius": 25.19,
+      "count": 32
+    },
+    "MODIS_r5139_c11646": {
+      "dn_mean": 14952.199571880268,
+      "celsius": 25.89,
+      "count": 32
+    },
+    "MODIS_r5139_c11647": {
+      "dn_mean": 14963.483150238098,
+      "celsius": 26.12,
+      "count": 32
+    },
+    "MODIS_r5139_c11648": {
+      "dn_mean": 14944.32986770404,
+      "celsius": 25.74,
+      "count": 32
+    },
+    "MODIS_r5140_c11645": {
+      "dn_mean": 14977.673336297616,
+      "celsius": 26.4,
+      "count": 32
+    },
+    "MODIS_r5140_c11646": {
+      "dn_mean": 14938.612983078401,
+      "celsius": 25.62,
+      "count": 32
+    },
+    "MODIS_r5140_c11647": {
+      "dn_mean": 14879.69241565351,
+      "celsius": 24.44,
+      "count": 32
+    },
+    "MODIS_r5140_c11648": {
+      "dn_mean": 14785.395669306537,
+      "celsius": 22.56,
+      "count": 32
+    }
+  }
+}
