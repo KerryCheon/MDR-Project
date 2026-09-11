@@ -62,6 +62,8 @@ MODIS_PIX_SIZE = MODIS_TILE_WIDTH / 1200.0  # ~926.625 m
 # the 499-feature pipeline uses a 1000 m circular buffer mean, not static tiles.
 SHOW_MODIS_MACROGRID_FIG1 = False
 SHOW_REAL_MODIS_LST_FIG1 = True
+SHOW_PIPELINE_BUFFER_FIG1 = False
+SHOW_PIPELINE_BUFFER_FIG11 = False
 MODIS_LST_COLLECTION = "MODIS/061/MOD11A1"
 MODIS_LST_BAND = "LST_Day_1km"
 MODIS_LST_START = "2026-08-01"
@@ -1149,12 +1151,16 @@ def plot_upstream_grid_basemap(
     show_modis_macrogrid: bool = SHOW_MODIS_MACROGRID_FIG1,
     show_real_modis_lst: bool = SHOW_REAL_MODIS_LST_FIG1,
     modis_lst_data: Optional[Dict[str, Any]] = None,
+    show_pipeline_buffer: bool = SHOW_PIPELINE_BUFFER_FIG1,
 ):
     """Figure 1: Basemap with parcel, UTM 250m subgrid, buffer, and real MODIS LST Day 1km.
 
     The schematic orange Native Sinusoidal macrogrid is retained but hidden by
     default (`SHOW_MODIS_MACROGRID_FIG1=False`); the real `MODIS/061/MOD11A1
     LST_Day_1km` audit-window means are drawn as filled ~926 m parallelograms.
+    The MDR 1000m circular moving buffer is hidden by default
+    (`SHOW_PIPELINE_BUFFER_FIG1=False`) since it does not follow the satellite
+    grids; see Figure 10 for the dedicated buffer-overlap analysis.
     """
     fig, ax = plt.subplots(figsize=(13, 13), dpi=160)
     ax.imshow(img, extent=ext, origin="upper", zorder=1)
@@ -1242,32 +1248,38 @@ def plot_upstream_grid_basemap(
             color="#FFD700", edgecolor="black", s=50, linewidth=1.5, zorder=18
         )
 
-    # 4. Draw True MDR Pipeline 1000m Moving Circular Buffer around Primary Candidate (R03_C05)
-    primary_node = parcel_chunks[parcel_chunks["chunk_id"] == "R03_C05"]
-    if len(primary_node) > 0:
-        p_row = primary_node.iloc[0]
-        # In Web Mercator, 1000 ground meters = 1000 * k
-        mean_lat = 47.1811
-        k = 1.0 / math.cos(math.radians(mean_lat))
-        buf_radius_merc = 1000.0 * k
-        circ = plt.Circle(
-            (p_row["dep_merc_x"], p_row["dep_merc_y"]), buf_radius_merc,
-            facecolor="#0288D1", edgecolor="#00E5FF", linewidth=2.0, linestyle=":", alpha=0.18, zorder=7
-        )
-        ax.add_patch(circ)
-        ax.text(
-            p_row["dep_merc_x"], p_row["dep_merc_y"] - buf_radius_merc + 40.0,
-            "Pipeline 1000m Moving Buffer (r = 1 km circular moving average)",
-            color="#00E5FF", fontsize=8.0, fontweight="bold", ha="center", va="bottom", zorder=19,
-            bbox=dict(boxstyle="round,pad=0.2", facecolor="#002171", edgecolor="#00E5FF", alpha=0.9)
-        )
+    # 4. True MDR Pipeline 1000m Moving Circular Buffer around Primary Candidate (R03_C05).
+    # Hidden by default (SHOW_PIPELINE_BUFFER_FIG1=False): the buffer does not
+    # follow the satellite grids, so it adds noise to the grid reference map.
+    if show_pipeline_buffer:
+        primary_node = parcel_chunks[parcel_chunks["chunk_id"] == "R03_C05"]
+        if len(primary_node) > 0:
+            p_row = primary_node.iloc[0]
+            # In Web Mercator, 1000 ground meters = 1000 * k
+            mean_lat = 47.1811
+            k = 1.0 / math.cos(math.radians(mean_lat))
+            buf_radius_merc = 1000.0 * k
+            circ = plt.Circle(
+                (p_row["dep_merc_x"], p_row["dep_merc_y"]), buf_radius_merc,
+                facecolor="#0288D1", edgecolor="#00E5FF", linewidth=2.0, linestyle=":", alpha=0.18, zorder=7
+            )
+            ax.add_patch(circ)
+            ax.text(
+                p_row["dep_merc_x"], p_row["dep_merc_y"] - buf_radius_merc + 40.0,
+                "Pipeline 1000m Moving Buffer (r = 1 km circular moving average)",
+                color="#00E5FF", fontsize=8.0, fontweight="bold", ha="center", va="bottom", zorder=19,
+                bbox=dict(boxstyle="round,pad=0.2", facecolor="#002171", edgecolor="#00E5FF", alpha=0.9)
+            )
 
     legend_elements = [
         mlines.Line2D([], [], color="#FFD700", lw=2.8, label="Farm Parcel Boundary (PIN 3420069035, 69.4 ac)"),
         mlines.Line2D([], [], color="#00E5FF", lw=1.5, ls="--", label="UTM Zone 10N 250m Subgrid (True 250m Ground Metric Scale)"),
         mlines.Line2D([], [], marker="o", color="w", markerfacecolor="#FFD700", markeredgecolor="k", markersize=8, label="Candidate Sensor Node (100% Verified Inside Farm)"),
-        mpatches.Patch(facecolor="#0288D1", edgecolor="#00E5FF", alpha=0.3, label="MDR Pipeline Buffer (r = 1000m Circular Moving Average)")
     ]
+    if show_pipeline_buffer:
+        legend_elements.append(
+            mpatches.Patch(facecolor="#0288D1", edgecolor="#00E5FF", alpha=0.3, label="MDR Pipeline Buffer (r = 1000m Circular Moving Average)")
+        )
     if show_modis_macrogrid:
         legend_elements.insert(
             1,
@@ -1947,9 +1959,15 @@ def plot_smap_easegrid_basemap(
     img: np.ndarray,
     ext: List[float],
     smap_meta: Dict[str, Any],
-    save_path: Path
+    save_path: Path,
+    show_pipeline_buffer: bool = SHOW_PIPELINE_BUFFER_FIG11,
 ):
-    """Figure 11: Dual-panel SMAP radiometer footprint (EASE-Grid 2.0 9km) & August 2026 drying curve."""
+    """Figure 11: Dual-panel SMAP radiometer footprint (EASE-Grid 2.0 9km) & August 2026 drying curve.
+
+    The MDR 1000m circular moving buffer is hidden by default
+    (`SHOW_PIPELINE_BUFFER_FIG11=False`) since it does not follow the satellite
+    grids; see Figure 10 for the dedicated buffer-overlap analysis.
+    """
     fig = plt.figure(figsize=(24, 12), dpi=160)
     gs = fig.add_gridspec(1, 2, width_ratios=[1.15, 1.0], wspace=0.18)
 
@@ -1971,15 +1989,17 @@ def plot_smap_easegrid_basemap(
             dep_x, dep_y = latlon_to_mercator(row["dep_lat"], row["dep_lon"])
             ax1.plot(dep_x, dep_y, marker="o", markersize=4.5, color="#FFD700", markeredgecolor="black", markeredgewidth=0.8, zorder=14)
 
-    # 2. MDR Pipeline Circular Moving Buffer (1000m)
-    c_x, c_y = latlon_to_mercator(NOMINAL_CENTER_LAT, NOMINAL_CENTER_LON)
-    k_lat = 1.0 / math.cos(math.radians(NOMINAL_CENTER_LAT))
-    buffer_patch = mpatches.Circle(
-        (c_x, c_y), 1000.0 * k_lat,
-        facecolor="#0288D1", edgecolor="#00E5FF", linewidth=2.0, linestyle="--", alpha=0.22, zorder=7,
-        label="MDR Pipeline Buffer (r=1000m)"
-    )
-    ax1.add_patch(buffer_patch)
+    # 2. MDR Pipeline Circular Moving Buffer (1000m). Hidden by default
+    # (SHOW_PIPELINE_BUFFER_FIG11=False) to keep the satellite grid readable.
+    if show_pipeline_buffer:
+        c_x, c_y = latlon_to_mercator(NOMINAL_CENTER_LAT, NOMINAL_CENTER_LON)
+        k_lat = 1.0 / math.cos(math.radians(NOMINAL_CENTER_LAT))
+        buffer_patch = mpatches.Circle(
+            (c_x, c_y), 1000.0 * k_lat,
+            facecolor="#0288D1", edgecolor="#00E5FF", linewidth=2.0, linestyle="--", alpha=0.22, zorder=7,
+            label="MDR Pipeline Buffer (r=1000m)"
+        )
+        ax1.add_patch(buffer_patch)
 
     # 3. SMAP EASE-Grid 2.0 Cell Geometry
     cell_info = get_smap_ease2_cell(NOMINAL_CENTER_LAT, NOMINAL_CENTER_LON)
@@ -2162,6 +2182,7 @@ def run_analysis(output_dir: Path) -> pd.DataFrame:
         show_modis_macrogrid=SHOW_MODIS_MACROGRID_FIG1,
         show_real_modis_lst=SHOW_REAL_MODIS_LST_FIG1,
         modis_lst_data=modis_lst_data,
+        show_pipeline_buffer=SHOW_PIPELINE_BUFFER_FIG1,
     )
     print(f"   -> Saved Figure 1: {f1}")
     plot_soil_grid_basemap(df_chunks, meta, img, ext, f2)
@@ -2182,7 +2203,10 @@ def run_analysis(output_dir: Path) -> pd.DataFrame:
     print(f"   -> Saved Figure 9: {f9}")
     plot_buffer_overlap_matrix(df_chunks, f10)
     print(f"   -> Saved Figure 10: {f10}")
-    plot_smap_easegrid_basemap(df_chunks, meta, img, ext, smap_meta, f11)
+    plot_smap_easegrid_basemap(
+        df_chunks, meta, img, ext, smap_meta, f11,
+        show_pipeline_buffer=SHOW_PIPELINE_BUFFER_FIG11,
+    )
     print(f"   -> Saved Figure 11: {f11}")
 
     csv_path = output_dir / "farm_grid_chunks.csv"

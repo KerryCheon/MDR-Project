@@ -47,7 +47,7 @@ Sub-meter **Esri World Imagery** overlaid with:
 - **Schematic MODIS Macrogrid**: Retained in code but hidden by default (`SHOW_MODIS_MACROGRID_FIG1=False`); the 499-feature pipeline uses a 1000 m circular buffer mean, not static tiles.
 - **UTM Zone 10N 250m Sub-Grid**: Cyan dashed lines with gold badges for parcel-intersecting chunks.
 - **Candidate Sensor Nodes**: Gold markers showing verified non-trespassing deployment points (100% inside parcel).
-- **MDR Pipeline Buffer**: Translucent blue circle showing the 1000m circular moving extraction buffer.
+- **MDR Pipeline Buffer**: Retained in code but hidden by default (`SHOW_PIPELINE_BUFFER_FIG1=False` / `SHOW_PIPELINE_BUFFER_FIG11=False`) since it does not follow the satellite grids; see Figure 10 for the dedicated buffer-overlap analysis.
 
 ![Figure 1: Farm Upstream Satellite Grid Reference Map](figures/farm_basemap_upstream_grid.png)
 
