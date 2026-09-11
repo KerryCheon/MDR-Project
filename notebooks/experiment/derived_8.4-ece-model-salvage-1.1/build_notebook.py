@@ -265,6 +265,28 @@ print("REPORT_BEGIN::FIGURES")
 for path in figure_paths:
     print(f"- {path.name}")
 print("REPORT_END::FIGURES")"""),
+        markdown("""## Multi-panel ECE sensor comparisons
+
+Each model group is also shown as one multi-panel image containing all five ECE sensors. Panels share the fixed 0.00–0.25 soil-moisture y-axis, while the individual trend figures above remain available for detailed inspection."""),
+        code("""multipanel_paths = runner.make_multipanel_trend_figures(predictions, EXP_DIR / "figures")
+print("REPORT_BEGIN::MULTIPANEL")
+for path in multipanel_paths:
+    print(f"FIGURE::{path.name}")
+print("REPORT_END::MULTIPANEL")"""),
+        markdown("""## Original versus best 1.1 global validation
+
+This focused diagnostic compares ground truth with the original global model and the 1.1 global model having the lowest pooled ECE RMSE across the common seeds. The unused bottom-right panel reports pooled ECE RMSE, MAE, Pearson correlation, and RMSE improvement. Similar trend shapes would support the hypothesis that SMAP availability drives the original-model consistency."""),
+        code("""validation_data = runner.load_data(config)
+best_global_path = runner.make_best_global_validation_multipanel(
+    validation_data, predictions, summary, config, EXP_DIR / "figures", (42, 7, 13)
+)
+best_global_provenance = json.loads(
+    (EXP_DIR / "global_best_validation_provenance.json").read_text(encoding="utf-8")
+)
+print("REPORT_BEGIN::BEST_GLOBAL_VALIDATION")
+print(json.dumps(best_global_provenance, indent=2, sort_keys=True))
+print(f"FIGURE::{best_global_path.name}")
+print("REPORT_END::BEST_GLOBAL_VALIDATION")"""),
         markdown("""## Completion
 
 All tables above are sourced from executed cells, and the linked figures are generated during this notebook execution."""),

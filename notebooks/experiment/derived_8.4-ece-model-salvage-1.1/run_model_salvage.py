@@ -46,6 +46,44 @@ ECE_SOIL_MOISTURE_YLIM = (0.0, 0.25)
 RMSE_EFFECT_YLIM = (-0.04, 0.04)
 
 
+def _ece_model_groups() -> dict[str, list[str]]:
+    return {
+        "architecture": [
+            "Clustering_V0_Full_k2_no_smap_fs60",
+            "Clustering_Backbone_k2_no_smap_fs60",
+            "Trained_Gating_k2_no_smap_fs60",
+            "Global_Single_60_no_smap_fs60",
+        ],
+        "regime": [
+            "Univariate_G_API_k2_no_smap_fs60",
+            "Clustering_Dynamic_k2_no_smap_fs60",
+            "Seasonal_Binary_k2_no_smap_fs60",
+            "Global_Single_60_no_smap_fs60",
+        ],
+        "global_feature_sizes": [
+            "Global_Single_40_no_smap_fs40",
+            "Global_Single_50_no_smap_fs50",
+            "Global_Single_60_no_smap_fs60",
+            "Global_Single_69_no_smap_fs69",
+        ],
+    }
+
+
+def _ece_model_labels() -> dict[str, str]:
+    return {
+        "Clustering_V0_Full_k2_no_smap_fs60": "V0 KMeans (60)",
+        "Clustering_Backbone_k2_no_smap_fs60": "Backbone KMeans (60)",
+        "Trained_Gating_k2_no_smap_fs60": "Trained gate (60)",
+        "Univariate_G_API_k2_no_smap_fs60": "G_API gate (60)",
+        "Clustering_Dynamic_k2_no_smap_fs60": "Dynamic gate (60)",
+        "Seasonal_Binary_k2_no_smap_fs60": "Seasonal gate (60)",
+        "Global_Single_40_no_smap_fs40": "Global (40)",
+        "Global_Single_50_no_smap_fs50": "Global (50)",
+        "Global_Single_60_no_smap_fs60": "Global (60)",
+        "Global_Single_69_no_smap_fs69": "Global (69)",
+    }
+
+
 @dataclass
 class DataBundle:
     train: pd.DataFrame
@@ -938,46 +976,14 @@ def make_trend_figures(predictions: pd.DataFrame, output_dir: Path) -> list[Path
     import matplotlib.pyplot as plt
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    architecture = [
-        "Clustering_V0_Full_k2_no_smap_fs60",
-        "Clustering_Backbone_k2_no_smap_fs60",
-        "Trained_Gating_k2_no_smap_fs60",
-        "Global_Single_60_no_smap_fs60",
-    ]
-    regime = [
-        "Univariate_G_API_k2_no_smap_fs60",
-        "Clustering_Dynamic_k2_no_smap_fs60",
-        "Seasonal_Binary_k2_no_smap_fs60",
-        "Global_Single_60_no_smap_fs60",
-    ]
-    global_sizes = [
-        "Global_Single_40_no_smap_fs40",
-        "Global_Single_50_no_smap_fs50",
-        "Global_Single_60_no_smap_fs60",
-        "Global_Single_69_no_smap_fs69",
-    ]
-    labels = {
-        "Clustering_V0_Full_k2_no_smap_fs60": "V0 KMeans (60)",
-        "Clustering_Backbone_k2_no_smap_fs60": "Backbone KMeans (60)",
-        "Trained_Gating_k2_no_smap_fs60": "Trained gate (60)",
-        "Univariate_G_API_k2_no_smap_fs60": "G_API gate (60)",
-        "Clustering_Dynamic_k2_no_smap_fs60": "Dynamic gate (60)",
-        "Seasonal_Binary_k2_no_smap_fs60": "Seasonal gate (60)",
-        "Global_Single_40_no_smap_fs40": "Global (40)",
-        "Global_Single_50_no_smap_fs50": "Global (50)",
-        "Global_Single_60_no_smap_fs60": "Global (60)",
-        "Global_Single_69_no_smap_fs69": "Global (69)",
-    }
+    groups = _ece_model_groups()
+    labels = _ece_model_labels()
     ece = predictions[(predictions["dataset"] == "ece_spatial") & (predictions["seed"] == 42)].copy()
     paths: list[Path] = []
     for station in sorted(ece["station_id"].unique()):
         station_data = ece[ece["station_id"] == station].sort_values("date")
         observed = station_data.drop_duplicates("date")
-        for suite_name, model_ids in (
-            ("architecture", architecture),
-            ("regime", regime),
-            ("global_feature_sizes", global_sizes),
-        ):
+        for suite_name, model_ids in groups.items():
             fig, ax = plt.subplots(figsize=(10, 4.5))
             ax.plot(pd.to_datetime(observed["date"]), observed["target"], color="black", linewidth=2.2, label="Observed")
             for model_id in model_ids:
@@ -995,6 +1001,278 @@ def make_trend_figures(predictions: pd.DataFrame, output_dir: Path) -> list[Path
             plt.close(fig)
             paths.append(path)
     return paths
+
+
+def make_multipanel_trend_figures(
+    predictions: pd.DataFrame,
+    output_dir: Path,
+) -> list[Path]:
+    """Create one five-panel ECE figure for each model group.
+
+    Each image uses the same fixed y-axis and places all five ECE sensors in
+    shared-y panels, making station-level trend differences easy to compare.
+    """
+    import matplotlib.pyplot as plt
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    groups = _ece_model_groups()
+    labels = _ece_model_labels()
+    ece = predictions[
+        (predictions["dataset"] == "ece_spatial")
+        & (predictions["seed"] == 42)
+    ].copy()
+    stations = sorted(ece["station_id"].astype(str).unique())
+    if len(stations) != 5:
+        raise ValueError(f"Expected five ECE stations for multi-panel figures; got {stations}")
+    paths: list[Path] = []
+    provenance: dict[str, Any] = {
+        "seed": 42,
+        "ece_stations": stations,
+        "panels_per_figure": len(stations),
+        "line_count_per_panel": {},
+        "y_limits": list(ECE_SOIL_MOISTURE_YLIM),
+        "groups": {},
+    }
+    for group_name, model_ids in groups.items():
+        fig, axes = plt.subplots(
+            3, 2, figsize=(15, 11), sharex=True, sharey=True,
+        )
+        axes_flat = list(np.asarray(axes).ravel())
+        for axis, station in zip(axes_flat, stations):
+            station_data = ece[ece["station_id"].astype(str).eq(station)].sort_values("date")
+            observed = station_data.drop_duplicates("date")
+            dates = pd.to_datetime(observed["date"])
+            axis.plot(
+                dates, observed["target"], color="black", linewidth=2.2,
+                label="Observed",
+            )
+            for model_id in model_ids:
+                model_data = station_data[station_data["model_id"].eq(model_id)]
+                if len(model_data) != len(observed):
+                    raise ValueError(
+                        f"Incomplete {group_name} data for {station}: {model_id}"
+                    )
+                axis.plot(
+                    pd.to_datetime(model_data["date"]),
+                    model_data["prediction"],
+                    linewidth=1.4,
+                    label=labels[model_id],
+                )
+            if len(axis.lines) != len(model_ids) + 1:
+                raise AssertionError(f"Unexpected line count in {group_name} panel.")
+            axis.set_title(station)
+            axis.set_ylim(*ECE_SOIL_MOISTURE_YLIM)
+            axis.grid(alpha=0.25)
+        axes_flat[-1].axis("off")
+        axes_flat[0].set_ylabel("Soil moisture")
+        axes_flat[2].set_ylabel("Soil moisture")
+        axes_flat[4].set_ylabel("Soil moisture")
+        axes_flat[4].set_xlabel("Date")
+        handles, legend_labels = axes_flat[0].get_legend_handles_labels()
+        fig.legend(
+            handles, legend_labels, loc="upper center", bbox_to_anchor=(0.5, 0.955),
+            ncol=3, fontsize=9,
+        )
+        fig.suptitle(f"ECE sensors — no-SMAP {group_name} (seed 42)", y=0.995)
+        fig.tight_layout(rect=(0, 0, 1, 0.90))
+        path = output_dir / f"ece_all_sensors_{group_name}_multipanel.png"
+        fig.savefig(path, dpi=170)
+        plt.close(fig)
+        paths.append(path)
+        provenance["groups"][group_name] = {
+            "models": model_ids,
+            "line_count_per_panel": len(model_ids) + 1,
+            "figure": path.name,
+        }
+        provenance["line_count_per_panel"][group_name] = len(model_ids) + 1
+    _write_json(output_dir.parent / "multipanel_provenance.json", provenance)
+    return paths
+
+
+def select_best_global_model_for_ece(
+    summary: pd.DataFrame,
+    config: dict[str, Any],
+) -> tuple[str, float]:
+    """Select the 1.1 global model with the lowest pooled ECE RMSE."""
+    global_specs = [spec for spec in config["models"] if spec["router"] == "global"]
+    global_ids = {spec["id"] for spec in global_specs}
+    subset = summary[
+        summary["scope"].eq("__pooled__")
+        & summary["dataset"].eq("ece_spatial")
+        & summary["window"].eq("spatial_ece_v3_full")
+        & summary["model_id"].isin(global_ids)
+    ].copy()
+    if set(subset["model_id"]) != global_ids:
+        missing = sorted(global_ids - set(subset["model_id"]))
+        raise ValueError(f"Missing pooled ECE metrics for global models: {missing}")
+    feature_sizes = {spec["id"]: int(spec["feature_size"]) for spec in global_specs}
+    subset["feature_size"] = subset["model_id"].map(feature_sizes)
+    best = subset.sort_values(["rmse_mean", "feature_size", "model_id"]).iloc[0]
+    return str(best["model_id"]), float(best["rmse_mean"])
+
+
+def make_best_global_validation_multipanel(
+    data: DataBundle,
+    predictions: pd.DataFrame,
+    summary: pd.DataFrame,
+    config: dict[str, Any],
+    output_dir: Path,
+    seeds: Iterable[int] = (42, 7, 13),
+) -> Path:
+    """Compare observed ECE trends with original and best 1.1 global models."""
+    import matplotlib.pyplot as plt
+
+    seed_list = [int(seed) for seed in seeds]
+    if not seed_list:
+        raise ValueError("At least one seed is required for global validation charts.")
+    best_model_id, best_rmse = select_best_global_model_for_ece(summary, config)
+    best_metric_rows = summary[
+        (summary["model_id"] == best_model_id)
+        & summary["scope"].eq("__pooled__")
+        & summary["dataset"].eq("ece_spatial")
+        & summary["window"].eq("spatial_ece_v3_full")
+    ]
+    if len(best_metric_rows) != 1:
+        raise ValueError(f"Expected one pooled ECE summary row for {best_model_id}.")
+    best_metric_row = best_metric_rows.iloc[0]
+    references = load_reference_metrics(config)
+    original_metric_rows = references[
+        (references["model_id"] == best_model_id)
+        & references["dataset"].eq("ece_spatial")
+        & references["window"].eq("spatial_ece_v3_full")
+        & references["seed"].isin(seed_list)
+    ]
+    if set(original_metric_rows["seed"].astype(int)) != set(seed_list):
+        raise ValueError(f"Missing original ECE metrics for chart seeds: {seed_list}")
+    original_metrics = {
+        metric: float(pd.to_numeric(original_metric_rows[metric], errors="raise").mean())
+        for metric in ("rmse", "mae", "pearson")
+    }
+    best_metrics = {
+        "rmse": float(best_metric_row["rmse_mean"]),
+        "mae": float(best_metric_row["mae_mean"]),
+        "pearson": float(best_metric_row["pearson_mean"]),
+    }
+    rmse_improvement = original_metrics["rmse"] - best_metrics["rmse"]
+    rmse_improvement_pct = rmse_improvement / original_metrics["rmse"] * 100.0
+    canonical = data.ece[["station_id", "date", data.target]].copy()
+    canonical["station_id"] = canonical["station_id"].astype(str)
+    canonical["date"] = pd.to_datetime(canonical["date"], errors="raise").dt.strftime("%Y-%m-%d")
+    keys = ["station_id", "date"]
+    if canonical.duplicated(keys).any():
+        raise ValueError("Canonical ECE test contains duplicate station/date keys.")
+    stations = sorted(canonical["station_id"].unique())
+    if len(stations) != 5 or len(canonical) != 5 * 30:
+        raise ValueError(
+            f"Expected five ECE stations with 30 dates each; got {len(stations)} stations "
+            f"and {len(canonical)} rows."
+        )
+    expected_keys = set(map(tuple, canonical[keys].to_numpy()))
+    formal_dir = PROJECT_ROOT / Path(config["data"]["original_results_dir"])
+    old_frames: list[pd.DataFrame] = []
+    new_frames: list[pd.DataFrame] = []
+    for seed in seed_list:
+        old_path = formal_dir / "predictions_spatial" / f"Global_Single_54__s{seed}__ece_preds.npy"
+        old_values = np.asarray(np.load(old_path)).ravel()
+        if len(old_values) != len(canonical):
+            raise ValueError(f"Original ECE prediction length mismatch for seed {seed}.")
+        old_frames.append(canonical[keys].assign(prediction=old_values, seed=seed))
+
+        new = predictions[
+            (predictions["model_id"].eq(best_model_id))
+            & (predictions["seed"] == seed)
+            & predictions["dataset"].eq("ece_spatial")
+            & predictions["window"].eq("spatial_ece_v3_full")
+        ][keys + ["prediction"]].copy()
+        new["station_id"] = new["station_id"].astype(str)
+        new["date"] = pd.to_datetime(new["date"], errors="raise").dt.strftime("%Y-%m-%d")
+        if new.duplicated(keys).any() or set(map(tuple, new[keys].to_numpy())) != expected_keys:
+            raise ValueError(f"Best global ECE prediction keys are incomplete for seed {seed}.")
+        new_frames.append(new.assign(seed=seed))
+
+    combined = canonical.rename(columns={data.target: "target"})
+    for name, frames in (("original", old_frames), ("best_1_1", new_frames)):
+        averaged = (
+            pd.concat(frames, ignore_index=True)
+            .groupby(keys, as_index=False)["prediction"]
+            .mean()
+            .rename(columns={"prediction": name})
+        )
+        combined = combined.merge(averaged, on=keys, how="left", validate="one_to_one")
+    line_columns = ["target", "original", "best_1_1"]
+    if combined[line_columns].isna().any().any():
+        raise ValueError("Best-global validation chart contains missing aligned values.")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    path = output_dir / "ece_all_sensors_global_best_validation_multipanel.png"
+    fig, axes = plt.subplots(3, 2, figsize=(15, 11), sharex=True, sharey=True)
+    axes_flat = list(np.asarray(axes).ravel())
+    for axis, station in zip(axes_flat, stations):
+        station_data = combined[combined["station_id"].eq(station)].sort_values("date")
+        dates = pd.to_datetime(station_data["date"])
+        axis.plot(dates, station_data["target"], color="black", linewidth=2.2, label="Ground truth")
+        axis.plot(dates, station_data["original"], linewidth=1.7, label="Original Global_Single_54")
+        axis.plot(dates, station_data["best_1_1"], linewidth=1.7, label=f"Best 1.1 ({best_model_id})")
+        if len(axis.lines) != 3:
+            raise AssertionError("Best-global validation panel must contain exactly three lines.")
+        axis.set_title(station)
+        axis.set_ylim(*ECE_SOIL_MOISTURE_YLIM)
+        axis.grid(alpha=0.25)
+    metrics_axis = axes_flat[-1]
+    metrics_axis.axis("off")
+    metrics_axis.text(
+        0.04,
+        0.86,
+        "Pooled ECE metrics\n(mean across chart seeds)\n\n"
+        "                 Original   Best 1.1\n"
+        f"RMSE             {original_metrics['rmse']:.4f}     {best_metrics['rmse']:.4f}\n"
+        f"MAE              {original_metrics['mae']:.4f}     {best_metrics['mae']:.4f}\n"
+        f"Pearson          {original_metrics['pearson']:.4f}     {best_metrics['pearson']:.4f}\n\n"
+        f"RMSE improvement {rmse_improvement:.4f} ({rmse_improvement_pct:.1f}%)",
+        transform=metrics_axis.transAxes,
+        va="top",
+        fontsize=11,
+        family="monospace",
+    )
+    axes_flat[0].set_ylabel("Soil moisture")
+    axes_flat[2].set_ylabel("Soil moisture")
+    axes_flat[4].set_ylabel("Soil moisture")
+    axes_flat[4].set_xlabel("Date")
+    handles, legend_labels = axes_flat[0].get_legend_handles_labels()
+    fig.legend(
+        handles, legend_labels, loc="upper center", bbox_to_anchor=(0.5, 0.955),
+        ncol=3, fontsize=9,
+    )
+    fig.suptitle(
+        f"ECE sensors — original versus best 1.1 global ({best_model_id})",
+        y=0.995,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.90))
+    fig.savefig(path, dpi=170)
+    plt.close(fig)
+    _write_json(
+        output_dir.parent / "global_best_validation_provenance.json",
+        {
+            "best_model_id": best_model_id,
+            "best_pooled_ece_rmse": best_rmse,
+            "selection_metric": "pooled ECE RMSE",
+            "selection_rule": "lowest mean RMSE across the configured ECE evaluation rows",
+            "seeds": seed_list,
+            "aggregation": "mean over chart seeds",
+            "ece_stations": stations,
+            "dates_per_station": combined.groupby("station_id")["date"].nunique().to_dict(),
+            "line_count": 3,
+            "line_labels": ["Ground truth", "Original Global_Single_54", f"Best 1.1 ({best_model_id})"],
+            "y_limits": list(ECE_SOIL_MOISTURE_YLIM),
+            "pooled_ece_metrics": {
+                "original": original_metrics,
+                "best_1_1": best_metrics,
+                "rmse_improvement": rmse_improvement,
+                "rmse_improvement_pct": rmse_improvement_pct,
+            },
+        },
+    )
+    return path
 
 
 def make_old_vs_new_effect_figure(effect_summary: pd.DataFrame, output_dir: Path) -> Path:

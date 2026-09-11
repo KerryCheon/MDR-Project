@@ -1,0 +1,50 @@
+{
+  "aggregation": "mean over chart seeds",
+  "best_model_id": "Global_Single_60_no_smap_fs60",
+  "best_pooled_ece_rmse": 0.0502967871673428,
+  "dates_per_station": {
+    "ECE_BBG_Lost_Meadow": 30,
+    "ECE_BBG_Main_St": 30,
+    "ECE_Renton_Garden_North": 30,
+    "ECE_Renton_Garden_Shed": 30,
+    "ECE_Renton_Home": 30
+  },
+  "ece_stations": [
+    "ECE_BBG_Lost_Meadow",
+    "ECE_BBG_Main_St",
+    "ECE_Renton_Garden_North",
+    "ECE_Renton_Garden_Shed",
+    "ECE_Renton_Home"
+  ],
+  "line_count": 3,
+  "line_labels": [
+    "Ground truth",
+    "Original Global_Single_54",
+    "Best 1.1 (Global_Single_60_no_smap_fs60)"
+  ],
+  "pooled_ece_metrics": {
+    "best_1_1": {
+      "mae": 0.0422026438575099,
+      "pearson": 0.0088391209018219,
+      "rmse": 0.0502967871673428
+    },
+    "original": {
+      "mae": 0.05118888073910786,
+      "pearson": -0.05850091631388754,
+      "rmse": 0.059287378229081276
+    },
+    "rmse_improvement": 0.008990591061738475,
+    "rmse_improvement_pct": 15.164426780687808
+  },
+  "seeds": [
+    42,
+    7,
+    13
+  ],
+  "selection_metric": "pooled ECE RMSE",
+  "selection_rule": "lowest mean RMSE across the configured ECE evaluation rows",
+  "y_limits": [
+    0.0,
+    0.25
+  ]
+}

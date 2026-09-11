@@ -381,6 +381,66 @@ def test_global_version_inputs_and_generated_charts():
     assert all(path.exists() and path.stat().st_size > 0 for path in paths)
 
 
+def test_multipanel_ece_figures_cover_all_five_sensors_and_model_groups():
+    runner = _load_runner()
+    prediction_path = EXP_DIR / "predictions.csv"
+    if not prediction_path.exists():
+        pytest.skip("full variable-size model stage has not completed")
+    predictions = pd.read_csv(prediction_path, low_memory=False)
+    paths = runner.make_multipanel_trend_figures(predictions, EXP_DIR / "figures")
+    assert [path.name for path in paths] == [
+        "ece_all_sensors_architecture_multipanel.png",
+        "ece_all_sensors_regime_multipanel.png",
+        "ece_all_sensors_global_feature_sizes_multipanel.png",
+    ]
+    provenance = json.loads((EXP_DIR / "multipanel_provenance.json").read_text())
+    assert provenance["panels_per_figure"] == 5
+    assert provenance["ece_stations"] == [
+        "ECE_BBG_Lost_Meadow",
+        "ECE_BBG_Main_St",
+        "ECE_Renton_Garden_North",
+        "ECE_Renton_Garden_Shed",
+        "ECE_Renton_Home",
+    ]
+    assert set(provenance["line_count_per_panel"].values()) == {5}
+    assert provenance["y_limits"] == [0.0, 0.25]
+    assert all(path.exists() and path.stat().st_size > 0 for path in paths)
+
+
+def test_best_global_validation_figure_has_three_aligned_lines_per_sensor():
+    runner = _load_runner()
+    prediction_path = EXP_DIR / "predictions.csv"
+    if not prediction_path.exists():
+        pytest.skip("full variable-size model stage has not completed")
+    config = runner.load_configuration()
+    data = runner.load_data(config)
+    predictions = pd.read_csv(prediction_path, low_memory=False)
+    summary = pd.read_csv(EXP_DIR / "summary.csv", low_memory=False)
+    best_model_id, best_rmse = runner.select_best_global_model_for_ece(summary, config)
+    path = runner.make_best_global_validation_multipanel(
+        data, predictions, summary, config, EXP_DIR / "figures", [42, 7, 13]
+    )
+    assert path.name == "ece_all_sensors_global_best_validation_multipanel.png"
+    provenance = json.loads(
+        (EXP_DIR / "global_best_validation_provenance.json").read_text()
+    )
+    assert provenance["best_model_id"] == best_model_id
+    assert provenance["best_pooled_ece_rmse"] == pytest.approx(best_rmse)
+    assert provenance["seeds"] == SEEDS
+    assert provenance["line_count"] == 3
+    assert len(provenance["ece_stations"]) == 5
+    assert set(provenance["dates_per_station"].values()) == {30}
+    assert len(provenance["line_labels"]) == 3
+    assert path.exists() and path.stat().st_size > 0
+    pooled_metrics = provenance["pooled_ece_metrics"]
+    assert set(pooled_metrics) == {"original", "best_1_1", "rmse_improvement", "rmse_improvement_pct"}
+    assert set(pooled_metrics["original"]) == {"rmse", "mae", "pearson"}
+    assert set(pooled_metrics["best_1_1"]) == {"rmse", "mae", "pearson"}
+    assert pooled_metrics["rmse_improvement"] == pytest.approx(
+        pooled_metrics["original"]["rmse"] - pooled_metrics["best_1_1"]["rmse"]
+    )
+
+
 def test_readme_has_variable_size_section_and_valid_figure_links():
     readme = EXP_DIR / "README.md"
     prediction_path = EXP_DIR / "predictions.csv"
@@ -397,10 +457,14 @@ def test_readme_has_variable_size_section_and_valid_figure_links():
     assert "ECE benefit" in text
     assert "Pooled WA degradation" in text
     assert "## Global model version comparison" in text
+    assert "## Multi-panel ECE sensor comparisons" in text
+    assert "## Original versus best 1.1 global validation" in text
     links = [Path(match) for match in re.findall(r"\]\((figures/[^)]+\.png)\)", text)]
     assert links
     assert all((EXP_DIR / link).exists() for link in links)
     assert len([link for link in links if "global_model_versions" in link.name]) == 5
+    assert len([link for link in links if "_multipanel.png" in link.name]) == 4
+    assert len([link for link in links if "global_best_validation" in link.name]) == 1
 
 
 def test_readme_tables_fences_and_provenance_are_well_formed():

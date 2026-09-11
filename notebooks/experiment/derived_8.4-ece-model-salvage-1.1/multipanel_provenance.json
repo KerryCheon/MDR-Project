@@ -1,0 +1,52 @@
+{
+  "ece_stations": [
+    "ECE_BBG_Lost_Meadow",
+    "ECE_BBG_Main_St",
+    "ECE_Renton_Garden_North",
+    "ECE_Renton_Garden_Shed",
+    "ECE_Renton_Home"
+  ],
+  "groups": {
+    "architecture": {
+      "figure": "ece_all_sensors_architecture_multipanel.png",
+      "line_count_per_panel": 5,
+      "models": [
+        "Clustering_V0_Full_k2_no_smap_fs60",
+        "Clustering_Backbone_k2_no_smap_fs60",
+        "Trained_Gating_k2_no_smap_fs60",
+        "Global_Single_60_no_smap_fs60"
+      ]
+    },
+    "global_feature_sizes": {
+      "figure": "ece_all_sensors_global_feature_sizes_multipanel.png",
+      "line_count_per_panel": 5,
+      "models": [
+        "Global_Single_40_no_smap_fs40",
+        "Global_Single_50_no_smap_fs50",
+        "Global_Single_60_no_smap_fs60",
+        "Global_Single_69_no_smap_fs69"
+      ]
+    },
+    "regime": {
+      "figure": "ece_all_sensors_regime_multipanel.png",
+      "line_count_per_panel": 5,
+      "models": [
+        "Univariate_G_API_k2_no_smap_fs60",
+        "Clustering_Dynamic_k2_no_smap_fs60",
+        "Seasonal_Binary_k2_no_smap_fs60",
+        "Global_Single_60_no_smap_fs60"
+      ]
+    }
+  },
+  "line_count_per_panel": {
+    "architecture": 5,
+    "global_feature_sizes": 5,
+    "regime": 5
+  },
+  "panels_per_figure": 5,
+  "seed": 42,
+  "y_limits": [
+    0.0,
+    0.25
+  ]
+}

@@ -190,7 +190,7 @@ def main() -> None:
     required = {
         "SELECTION", "INPUT_AUDIT", "FEATURE_AUDIT", "ROUTER_AUDIT", "METRICS",
         "REFERENCE_COMPARISON", "SALVAGE_1_1_VS_1_0", "FEATURE_SELECTION_ROUND", "OLD_NEW_EFFECT",
-        "SMAP_INVARIANCE", "GLOBAL_VERSION", "FIGURES",
+        "SMAP_INVARIANCE", "GLOBAL_VERSION", "FIGURES", "MULTIPANEL", "BEST_GLOBAL_VALIDATION",
     }
     missing = sorted(required - sections.keys())
     if missing:
@@ -205,6 +205,21 @@ def main() -> None:
     if len(version_names) != 5:
         raise RuntimeError(
             "GLOBAL_VERSION must contain exactly one chart for each of five ECE stations."
+        )
+    multipanel_names = _figure_names(sections["MULTIPANEL"])
+    expected_multipanel_names = [
+        "ece_all_sensors_architecture_multipanel.png",
+        "ece_all_sensors_regime_multipanel.png",
+        "ece_all_sensors_global_feature_sizes_multipanel.png",
+    ]
+    if multipanel_names != expected_multipanel_names:
+        raise RuntimeError(
+            "MULTIPANEL must contain one chart for each configured model group."
+        )
+    best_global_names = _figure_names(sections["BEST_GLOBAL_VALIDATION"])
+    if best_global_names != ["ece_all_sensors_global_best_validation_multipanel.png"]:
+        raise RuntimeError(
+            "BEST_GLOBAL_VALIDATION must contain exactly one diagnostic chart."
         )
     trend_names = [
         line.strip().removeprefix("-").strip()
@@ -225,6 +240,12 @@ def main() -> None:
     )
     version_links = "\n\n".join(
         f"![{name}](figures/{name})" for name in version_names
+    )
+    multipanel_links = "\n\n".join(
+        f"![{name}](figures/{name})" for name in multipanel_names
+    )
+    best_global_links = "\n\n".join(
+        f"![{name}](figures/{name})" for name in best_global_names
     )
     feature_selection_section = sections["FEATURE_SELECTION_ROUND"]
     feature_selection_section = feature_selection_section.replace(
@@ -306,6 +327,18 @@ The following charts align station/date keys and average predictions over the co
 {global_version_section}
 
 {version_links}
+
+## Multi-panel ECE sensor comparisons
+
+Each image contains all five ECE sensors in separate panels for one model group: architecture, alternative regime gates, or global feature sizes. Every panel uses the common fixed y-axis of 0.00 to 0.25 soil-moisture units.
+
+{multipanel_links}
+
+## Original versus best 1.1 global validation
+
+This focused diagnostic compares ground truth with the original `Global_Single_54` and the 1.1 global model selected by the lowest pooled ECE RMSE across the common seeds `[42, 7, 13]`. The bottom-right panel reports pooled ECE RMSE, MAE, Pearson correlation, and RMSE improvement. Similar trend shapes would support, but cannot by themselves prove, the hypothesis that SMAP availability drives the original-model consistency.
+
+{best_global_links}
 
 ## Figures
 

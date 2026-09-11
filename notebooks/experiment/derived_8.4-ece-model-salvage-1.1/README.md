@@ -554,6 +554,22 @@ The following charts align station/date keys and average predictions over the co
 
 ![ece_ECE_Renton_Home_global_model_versions.png](figures/ece_ECE_Renton_Home_global_model_versions.png)
 
+## Multi-panel ECE sensor comparisons
+
+Each image contains all five ECE sensors in separate panels for one model group: architecture, alternative regime gates, or global feature sizes. Every panel uses the common fixed y-axis of 0.00 to 0.25 soil-moisture units.
+
+![ece_all_sensors_architecture_multipanel.png](figures/ece_all_sensors_architecture_multipanel.png)
+
+![ece_all_sensors_regime_multipanel.png](figures/ece_all_sensors_regime_multipanel.png)
+
+![ece_all_sensors_global_feature_sizes_multipanel.png](figures/ece_all_sensors_global_feature_sizes_multipanel.png)
+
+## Original versus best 1.1 global validation
+
+This focused diagnostic compares ground truth with the original `Global_Single_54` and the 1.1 global model selected by the lowest pooled ECE RMSE across the common seeds `[42, 7, 13]`. The bottom-right panel reports pooled ECE RMSE, MAE, Pearson correlation, and RMSE improvement. Similar trend shapes would support, but cannot by themselves prove, the hypothesis that SMAP availability drives the original-model consistency.
+
+![ece_all_sensors_global_best_validation_multipanel.png](figures/ece_all_sensors_global_best_validation_multipanel.png)
+
 ## Figures
 
 All generated paths below use the notebook-relative `figures/<filename>` form. Trend charts contain no more than five lines and use the common fixed y-axis of 0.00 to 0.25 soil-moisture units.
