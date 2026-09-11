@@ -1,0 +1,9 @@
+{
+  "eval_days_expected": 150,
+  "eval_days_present": 150,
+  "days_below_18h": 3,
+  "simple_vs_hourly_max_pp": 0.36273426732366526,
+  "simple_vs_snapshot_max_pp": 3.8918705035971253,
+  "snotel_hourly_rows": 58199,
+  "train_duplicates": 0
+}

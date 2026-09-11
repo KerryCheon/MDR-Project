@@ -21,6 +21,16 @@ As documented in [split_meta.json](../data/splits/derived_8.0/split_meta.json):
 * **`station_id`** (Metadata): Unique string identifier for the weather/SNOTEL monitoring station.
 * **`date`** (Metadata): Daily observation timestamp formatted as `YYYY-MM-DD`.
 
+### In-situ Daily Target Definitions (Current Behavior, Not Harmonized)
+
+All rows are daily, but the daily `soil_moisture_5cm` value is produced differently per network:
+
+* **USCRN** (Spokane / Quinault / Darrington): provider daily mean, used as-is. The pipeline pulls NOAA `daily01` (`request.base_url` in [config.yaml](../src/pipeline/config.yaml)) and maps column 18 in [parse_pipe.py](../src/pipeline/pipes/parse_pipe.py). Per the NOAA `daily01/readme.txt` Notes D/J, values are the average of the day's hourly soil measurements from multiple independent sensors over the station's 24-hour LST day; flagged inputs yield missing instead of a derived value.
+* **SNOTEL** (BeaverPass / CayusePass / Paradise / SourdoughGulch): midnight pick, not a 24-hour mean, in the current code. Raw `.stm` files are hourly; [snotel_pipe.py](../src/pipeline/pipes/snotel_pipe.py) averages redundant sensors at the same `Date,Time` only and keeps hourly `DateTime` rows. [merge_pipe.py](../src/pipeline/pipes/merge_pipe.py) then runs `drop_duplicates(subset=["station_id", "date"])`, which keeps the first (00:00) row per day since the frame is sorted by `DateTime`. Known limitations: raw hourly `Value` contains spikes (sample SourdoughGulch 5 cm file peaks at 1327.1) with no QC before the dedup, and diurnal information in the other 23 hours is discarded.
+* **ECE** (5 Bellevue/Renton in-situ sensors): Seattle-Time calendar-day simple mean in [ece_pipe.py](../src/pipeline/pipes/ece_pipe.py) (`Timestamp (Seattle Time)` preferred, `floor("D")`, `groupby.mean()`, `% / 100`). Partial edge days are excluded via the min/max-date filter. Audited in `notebooks/experiment/ece-daily-mean-1.0/README.md`: eval window `2026-07-20` to `2026-08-19` yields 150 station-days with `2026-08-01` fully missing on all stations and 3 days at 16 distinct hours; simple-vs-hourly-weighted mean differs by at most 0.0036 m³/m³. There is currently no minimum-hour rule.
+
+Implication: cross-network targets are not strictly comparable (provider daily mean vs. midnight snapshot vs. Seattle-day mean).
+
 ### Raw Data Sources & Resolution Scales
 
 | Data Source Provider | GEE / Provider Catalog ID | Native Spatial Resolution | Pipeline Extraction Scale (`scale=`) | Temporal Resolution / Cadence | Mapped Raw / Key Features |

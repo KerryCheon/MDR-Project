@@ -606,12 +606,13 @@ All generated paths below use the notebook-relative `figures/<filename>` form. T
 
 ## Input weather overlay (companion to best-1.1 validation)
 
-Notebook `ece-input-weather-overlay-1.0.ipynb` reuses the aligned Best-1.1 predictions and overlays raw ECE input drivers on the same 5-station layout and soil-moisture `ylim [0, 0.25]` as the validation chart above; only ground truth and Best 1.1 are drawn. The ECE test split has no T2M/air-temperature column, so `LST_modis` is the temperature proxy. The values below come strictly from the overlay notebook stdout; provenance: `input_overlay_provenance.json`.
+Notebook `ece-input-weather-overlay-1.0.ipynb` reuses the aligned Best-1.1 predictions and overlays raw ECE input drivers — plus diagnostic-only Open-Meteo reference ET0 and 2m temperature (`ece_et_reference.csv`, never model inputs) — on the same 5-station layout and soil-moisture `ylim [0, 0.25]` as the validation chart above; only ground truth and Best 1.1 are drawn. The ECE test split has no T2M/air-temperature column, so `LST_modis` is the temperature proxy among model inputs. The values below come strictly from the overlay notebook stdout; provenance: `input_overlay_provenance.json`.
 
 ```text
 Best model: Global_Single_60_no_smap_fs60 (mean over seeds [42, 7, 13]); inputs from data/splits/derived_8.4_ece_v3/test.csv (150 rows, 5 stations x 30 dates 2026-07-20 to 2026-08-19).
 The early-window prediction hump (peaking 2026-07-26/27) tracks the G_rain_sum_3d/7d and G_API rise after the 07-23 and 07-26 rain events, then decays as G_API drains and G_DSLR grows. Daily precip_mm spikes and LST_modis (a coarse stepwise composite, flat for days at a time) barely correlate with prediction level, and day-to-day prediction changes respond only weakly to same-day rain (Spearman rho +0.07 to +0.21 per station, none significant at 0.05; pooled rho +0.15, p=0.077, n=145). Prediction level follows antecedent wetness, not daily weather.
 G_rain_sum_30d shows the strongest per-station level correlation (+0.83 to +0.89) but only +0.57 pooled: a near-constant 30-day accumulator acts as a station level offset rather than event tracking, so it is reported here and not plotted.
+Reference ET0/T2M are Open-Meteo diagnostic-only series (not model inputs; 2026-08-01 absent from the test split so reference rows for that date are unused). Per-station r(pred,ET0|Tmean) and rho(d_pred,ET0): BBG_Lost_Meadow ET0:-0.05/Tm:-0.42/rho:-0.06; BBG_Main_St ET0:-0.03/Tm:-0.35/rho:-0.13; Renton_Garden_North ET0:-0.24/Tm:-0.54/rho:-0.10; Renton_Garden_Shed ET0:-0.25/Tm:-0.54/rho:-0.06; Renton_Home ET0:-0.26/Tm:-0.46/rho:-0.23. Pooled d_pred vs ET0: Pearson -0.19, Spearman rho -0.09 (p=0.297, n=145).
 
 Per-station Pearson r(Best-1.1, driver); d_pred vs same-day precip with Spearman rho/p:
 station                      r_precip r_rain3d r_rain7d r_rain30d   r_LST   r_API  r_DSLR  r_dpred rho_dpred       p
@@ -625,6 +626,8 @@ ECE_Renton_Home                 +0.16    +0.76    +0.67     +0.83   +0.29   +0.8
 ![ece_all_sensors_input_overlay_rainfall.png](figures/ece_all_sensors_input_overlay_rainfall.png)
 
 ![ece_all_sensors_input_overlay_temperature.png](figures/ece_all_sensors_input_overlay_temperature.png)
+
+![ece_all_sensors_input_overlay_evapotranspiration.png](figures/ece_all_sensors_input_overlay_evapotranspiration.png)
 
 ## Reproduction
 

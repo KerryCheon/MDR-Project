@@ -15,6 +15,7 @@ README = EXP_DIR / "README.md"
 EXPECTED_OVERLAY_FIGURES = [
     "ece_all_sensors_input_overlay_rainfall.png",
     "ece_all_sensors_input_overlay_temperature.png",
+    "ece_all_sensors_input_overlay_evapotranspiration.png",
 ]
 
 
@@ -239,7 +240,8 @@ def main() -> None:
     overlay_names = _figure_names(overlay_sections["INPUT_OVERLAY"])
     if overlay_names != EXPECTED_OVERLAY_FIGURES:
         raise RuntimeError(
-            "INPUT_OVERLAY must contain exactly the rainfall and temperature overlay charts."
+            "INPUT_OVERLAY must contain exactly the rainfall, temperature, and "
+            "evapotranspiration overlay charts."
         )
     overlay_body = _without_figure_markers(overlay_sections["INPUT_OVERLAY"])
     if "REPORT_BEGIN::" in overlay_body or "REPORT_END::" in overlay_body:
@@ -374,7 +376,7 @@ All generated paths below use the notebook-relative `figures/<filename>` form. T
 
 ## Input weather overlay (companion to best-1.1 validation)
 
-Notebook `ece-input-weather-overlay-1.0.ipynb` reuses the aligned Best-1.1 predictions and overlays raw ECE input drivers on the same 5-station layout and soil-moisture `ylim [0, 0.25]` as the validation chart above; only ground truth and Best 1.1 are drawn. The ECE test split has no T2M/air-temperature column, so `LST_modis` is the temperature proxy. The values below come strictly from the overlay notebook stdout; provenance: `input_overlay_provenance.json`.
+Notebook `ece-input-weather-overlay-1.0.ipynb` reuses the aligned Best-1.1 predictions and overlays raw ECE input drivers — plus diagnostic-only Open-Meteo reference ET0 and 2m temperature (`ece_et_reference.csv`, never model inputs) — on the same 5-station layout and soil-moisture `ylim [0, 0.25]` as the validation chart above; only ground truth and Best 1.1 are drawn. The ECE test split has no T2M/air-temperature column, so `LST_modis` is the temperature proxy among model inputs. The values below come strictly from the overlay notebook stdout; provenance: `input_overlay_provenance.json`.
 
 ```text
 {overlay_body}

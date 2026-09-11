@@ -9,6 +9,8 @@
   ],
   "aggregation": "mean over chart seeds",
   "ece_input_source": "data/splits/derived_8.4_ece_v3/test.csv",
+  "et_reference_source": "ece_et_reference.csv (Open-Meteo archive daily: et0_fao_evapotranspiration, temperature_2m_max/min/mean; diagnostic-only, not model inputs)",
+  "et_reference_fetch": "fetch_ece_et_reference.py",
   "target": "soil_moisture_5cm",
   "ece_stations": [
     "ECE_BBG_Lost_Meadow",
@@ -18,6 +20,8 @@
     "ECE_Renton_Home"
   ],
   "n_rows_aligned": 150,
+  "n_et_reference_rows": 155,
+  "et_join_gap": "2026-08-01 present in reference but absent from test split; unused in figures",
   "raw_drivers": [
     "precip_mm",
     "LST_modis",
@@ -27,12 +31,24 @@
     "G_rain_sum_7d",
     "G_rain_sum_30d"
   ],
+  "reference_cols": [
+    "et0_fao_mm",
+    "t2m_max_C",
+    "t2m_min_C",
+    "t2m_mean_C"
+  ],
   "note": "No T2M/air-temperature column in ECE v3 test split; LST_modis is the temperature proxy.",
   "event_response_note": "d_pred vs precip uses same-day precip (diff[t] vs precip[t]); Spearman rho is robust to zero-inflated precip_mm.",
   "pooled_dpred_vs_precip": {
     "pearson": 0.2364,
     "spearman_rho": 0.1473,
     "spearman_p": 0.0771,
+    "n": 145
+  },
+  "pooled_dpred_vs_et0": {
+    "pearson": -0.188,
+    "spearman_rho": -0.0872,
+    "spearman_p": 0.2972,
     "n": 145
   },
   "soil_moisture_ylim": [
@@ -51,6 +67,14 @@
     0.0,
     20.0
   ],
+  "et0_ylim_mm_per_day": [
+    0.0,
+    7.0
+  ],
+  "tmean_ylim_C": [
+    14.0,
+    28.0
+  ],
   "gvp_crosscheck_max_abs_diff": 9.71445146547012e-17,
   "per_station_pearson": {
     "ECE_BBG_Lost_Meadow": {
@@ -63,7 +87,14 @@
       "r_pred_vs_G_rain_sum_30d": 0.8614,
       "r_dpred_vs_precip": 0.1576,
       "rho_dpred_vs_precip": 0.2095,
-      "p_dpred_vs_precip": 0.2754
+      "p_dpred_vs_precip": 0.2754,
+      "r_pred_vs_et0_fao_mm": -0.0546,
+      "r_pred_vs_t2m_max_C": -0.3671,
+      "r_pred_vs_t2m_min_C": -0.2584,
+      "r_pred_vs_t2m_mean_C": -0.4212,
+      "r_dpred_vs_et0": -0.1796,
+      "rho_dpred_vs_et0": -0.0567,
+      "p_dpred_vs_et0": 0.7703
     },
     "ECE_BBG_Main_St": {
       "r_pred_vs_precip_mm": 0.1459,
@@ -75,7 +106,14 @@
       "r_pred_vs_G_rain_sum_30d": 0.89,
       "r_dpred_vs_precip": 0.1167,
       "rho_dpred_vs_precip": 0.1885,
-      "p_dpred_vs_precip": 0.3273
+      "p_dpred_vs_precip": 0.3273,
+      "r_pred_vs_et0_fao_mm": -0.0286,
+      "r_pred_vs_t2m_max_C": -0.3184,
+      "r_pred_vs_t2m_min_C": -0.1881,
+      "r_pred_vs_t2m_mean_C": -0.354,
+      "r_dpred_vs_et0": -0.1508,
+      "rho_dpred_vs_et0": -0.1274,
+      "p_dpred_vs_et0": 0.5103
     },
     "ECE_Renton_Garden_North": {
       "r_pred_vs_precip_mm": 0.1439,
@@ -87,7 +125,14 @@
       "r_pred_vs_G_rain_sum_30d": 0.8837,
       "r_dpred_vs_precip": 0.3155,
       "rho_dpred_vs_precip": 0.0731,
-      "p_dpred_vs_precip": 0.7064
+      "p_dpred_vs_precip": 0.7064,
+      "r_pred_vs_et0_fao_mm": -0.2423,
+      "r_pred_vs_t2m_max_C": -0.5108,
+      "r_pred_vs_t2m_min_C": -0.1795,
+      "r_pred_vs_t2m_mean_C": -0.5438,
+      "r_dpred_vs_et0": -0.2729,
+      "rho_dpred_vs_et0": -0.0959,
+      "p_dpred_vs_et0": 0.6208
     },
     "ECE_Renton_Garden_Shed": {
       "r_pred_vs_precip_mm": 0.142,
@@ -99,7 +144,14 @@
       "r_pred_vs_G_rain_sum_30d": 0.887,
       "r_dpred_vs_precip": 0.3067,
       "rho_dpred_vs_precip": 0.0731,
-      "p_dpred_vs_precip": 0.7064
+      "p_dpred_vs_precip": 0.7064,
+      "r_pred_vs_et0_fao_mm": -0.2496,
+      "r_pred_vs_t2m_max_C": -0.5158,
+      "r_pred_vs_t2m_min_C": -0.1722,
+      "r_pred_vs_t2m_mean_C": -0.5446,
+      "r_dpred_vs_et0": -0.2666,
+      "rho_dpred_vs_et0": -0.0619,
+      "p_dpred_vs_et0": 0.7499
     },
     "ECE_Renton_Home": {
       "r_pred_vs_precip_mm": 0.1639,
@@ -111,11 +163,19 @@
       "r_pred_vs_G_rain_sum_30d": 0.8318,
       "r_dpred_vs_precip": 0.2363,
       "rho_dpred_vs_precip": 0.1558,
-      "p_dpred_vs_precip": 0.4196
+      "p_dpred_vs_precip": 0.4196,
+      "r_pred_vs_et0_fao_mm": -0.2606,
+      "r_pred_vs_t2m_max_C": -0.4543,
+      "r_pred_vs_t2m_min_C": -0.1745,
+      "r_pred_vs_t2m_mean_C": -0.4556,
+      "r_dpred_vs_et0": -0.0673,
+      "rho_dpred_vs_et0": -0.231,
+      "p_dpred_vs_et0": 0.2279
     }
   },
   "figures": [
     "figures/ece_all_sensors_input_overlay_rainfall.png",
-    "figures/ece_all_sensors_input_overlay_temperature.png"
+    "figures/ece_all_sensors_input_overlay_temperature.png",
+    "figures/ece_all_sensors_input_overlay_evapotranspiration.png"
   ]
 }

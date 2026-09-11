@@ -468,6 +468,7 @@ def test_readme_has_variable_size_section_and_valid_figure_links():
     assert overlay_provenance["figures"] == [
         "figures/ece_all_sensors_input_overlay_rainfall.png",
         "figures/ece_all_sensors_input_overlay_temperature.png",
+        "figures/ece_all_sensors_input_overlay_evapotranspiration.png",
     ]
     links = [Path(match) for match in re.findall(r"\]\((figures/[^)]+\.png)\)", text)]
     assert links
@@ -478,6 +479,7 @@ def test_readme_has_variable_size_section_and_valid_figure_links():
     assert [link.name for link in links if "input_overlay" in link.name] == [
         "ece_all_sensors_input_overlay_rainfall.png",
         "ece_all_sensors_input_overlay_temperature.png",
+        "ece_all_sensors_input_overlay_evapotranspiration.png",
     ]
 
 

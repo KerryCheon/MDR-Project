@@ -59,6 +59,9 @@ step() {
  # The runner resumes by default; its CLI uses --no-resume only to force refits.
 step uv run --no-sync python run_model_salvage.py
 step uv run --no-sync python build_notebook.py
+# Diagnostic-only Open-Meteo reference (ET0 + 2m temperature) for the overlay
+# notebook; cached to ece_et_reference.csv, skipped when already present.
+step uv run --no-sync python fetch_ece_et_reference.py
 
 cd ../..
 step nb execute experiment/derived_8.4-ece-model-salvage-1.1/derived_8.4-ece-model-salvage-1.1.ipynb --uv --timeout 1800
