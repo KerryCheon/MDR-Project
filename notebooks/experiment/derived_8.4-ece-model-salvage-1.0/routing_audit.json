@@ -1,0 +1,235 @@
+{
+  "rows": [
+    {
+      "dataset": "wa_trainval",
+      "model_id": "Clustering_V0_Full_k2_no_smap",
+      "n": 14608,
+      "regime_0_share": 0.27204271631982474,
+      "regime_1_share": 0.7279572836801752,
+      "router": "v0",
+      "router_feature_count": 42,
+      "router_features": "A_d_E_SAR_diff_kobs30;A_d_LST_modis_kobs30;A_d_s2_b11_kobs30;A_grad_E_SAR_diff_kobs30;A_grad_LST_modis_kobs30;A_grad_s2_b11_kobs30;C_lag_F_NDVI_kobs30;D_sa_F_NDMI;D_sa_LST_modis;D_z_E_SAR_ratio;E_SAR_ratio;F_MSI;J_aspect_deg;J_bio_bio15;K_aspect_cos;K_aspect_sin;V_ema_F_NDVI_kobs30;V_ema_LST_modis_kobs30;V_rollmax_G_API_kobs7;V_rollmean_F_NDMI_kobs30;V_rollmin_s2_b12_kobs30;V_rollrng_F_NDVI_kobs30;aspect;latitude;lia_std_asc_deg;s2_b8;slope;A_grad_LST_modis_kobs14;V_rollmax_E_SAR_ratio_kobs7;A_d_LST_modis_kobs14;J_clay_wfrac_b100;V_ema_G_API_kobs30;V_rollmin_G_API_kobs14;V_rollrng_LST_modis_kobs30;V_rollrng_G_API_kobs30;C_lag_F_NDMI_kobs30;V_rollrng_E_SAR_ratio_kobs30;J_bio_bio02;V_rollmax_E_SAR_ratio_kobs30;V_rollmax_G_API_kobs30;s2_b11;V_rollrng_F_NDVI_kobs14",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_test",
+      "model_id": "Clustering_V0_Full_k2_no_smap",
+      "n": 6620,
+      "regime_0_share": 0.27235649546827795,
+      "regime_1_share": 0.7276435045317221,
+      "router": "v0",
+      "router_feature_count": 42,
+      "router_features": "A_d_E_SAR_diff_kobs30;A_d_LST_modis_kobs30;A_d_s2_b11_kobs30;A_grad_E_SAR_diff_kobs30;A_grad_LST_modis_kobs30;A_grad_s2_b11_kobs30;C_lag_F_NDVI_kobs30;D_sa_F_NDMI;D_sa_LST_modis;D_z_E_SAR_ratio;E_SAR_ratio;F_MSI;J_aspect_deg;J_bio_bio15;K_aspect_cos;K_aspect_sin;V_ema_F_NDVI_kobs30;V_ema_LST_modis_kobs30;V_rollmax_G_API_kobs7;V_rollmean_F_NDMI_kobs30;V_rollmin_s2_b12_kobs30;V_rollrng_F_NDVI_kobs30;aspect;latitude;lia_std_asc_deg;s2_b8;slope;A_grad_LST_modis_kobs14;V_rollmax_E_SAR_ratio_kobs7;A_d_LST_modis_kobs14;J_clay_wfrac_b100;V_ema_G_API_kobs30;V_rollmin_G_API_kobs14;V_rollrng_LST_modis_kobs30;V_rollrng_G_API_kobs30;C_lag_F_NDMI_kobs30;V_rollrng_E_SAR_ratio_kobs30;J_bio_bio02;V_rollmax_E_SAR_ratio_kobs30;V_rollmax_G_API_kobs30;s2_b11;V_rollrng_F_NDVI_kobs14",
+      "router_seed": 42
+    },
+    {
+      "dataset": "ece_v3",
+      "model_id": "Clustering_V0_Full_k2_no_smap",
+      "n": 150,
+      "regime_0_share": 0.82,
+      "regime_1_share": 0.18,
+      "router": "v0",
+      "router_feature_count": 42,
+      "router_features": "A_d_E_SAR_diff_kobs30;A_d_LST_modis_kobs30;A_d_s2_b11_kobs30;A_grad_E_SAR_diff_kobs30;A_grad_LST_modis_kobs30;A_grad_s2_b11_kobs30;C_lag_F_NDVI_kobs30;D_sa_F_NDMI;D_sa_LST_modis;D_z_E_SAR_ratio;E_SAR_ratio;F_MSI;J_aspect_deg;J_bio_bio15;K_aspect_cos;K_aspect_sin;V_ema_F_NDVI_kobs30;V_ema_LST_modis_kobs30;V_rollmax_G_API_kobs7;V_rollmean_F_NDMI_kobs30;V_rollmin_s2_b12_kobs30;V_rollrng_F_NDVI_kobs30;aspect;latitude;lia_std_asc_deg;s2_b8;slope;A_grad_LST_modis_kobs14;V_rollmax_E_SAR_ratio_kobs7;A_d_LST_modis_kobs14;J_clay_wfrac_b100;V_ema_G_API_kobs30;V_rollmin_G_API_kobs14;V_rollrng_LST_modis_kobs30;V_rollrng_G_API_kobs30;C_lag_F_NDMI_kobs30;V_rollrng_E_SAR_ratio_kobs30;J_bio_bio02;V_rollmax_E_SAR_ratio_kobs30;V_rollmax_G_API_kobs30;s2_b11;V_rollrng_F_NDVI_kobs14",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_trainval",
+      "model_id": "Clustering_Backbone54_k2_no_smap",
+      "n": 14608,
+      "regime_0_share": 0.727341182913472,
+      "regime_1_share": 0.27265881708652795,
+      "router": "backbone54",
+      "router_feature_count": 42,
+      "router_features": "precip_mm;s2_b4;s2_b8;D_sin_DOY;D_cos_DOY;E_SAR_ratio;G_API;G_DSLR;G_rain_sum_3d;G_rain_sum_7d;V_rollrng_G_API_kobs7;V_rollmax_F_NDMI_kobs30;A_d_E_SAR_ratio_kobs30;V_rollmax_E_SAR_ratio_kobs7;V_rollmin_E_SAR_ratio_kobs30;V_rollmax_E_SAR_ratio_kobs30;V_rollmin_LST_modis_kobs30;V_ema_LST_modis_kobs30;V_rollmax_F_NDVI_kobs14;V_rollmax_F_NDVI_kobs30;V_ema_F_NDVI_kobs30;C_lag_F_NDVI_kobs30;A_grad_E_SAR_diff_kobs30;V_rollmax_E_SAR_diff_kobs14;V_rollrng_E_SAR_diff_kobs30;V_rollmax_E_SAR_diff_kobs30;A_grad_s2_b11_kobs30;V_rollrng_s2_b11_kobs30;V_rollmin_s2_b11_kobs30;V_rollmin_s2_b12_kobs30;E_rough_s1_vh_kobs14;J_aspect_deg;J_bio_bio02;J_bio_bio13;J_lc_code;J_soil_texture_usda_b0;sin_year;cos_year;D_z_F_NDMI;D_z_LST_modis;D_fft_dom_LST_modis_kobs30;D_fft_ent_LST_modis_kobs30",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_test",
+      "model_id": "Clustering_Backbone54_k2_no_smap",
+      "n": 6620,
+      "regime_0_share": 0.7280966767371602,
+      "regime_1_share": 0.2719033232628399,
+      "router": "backbone54",
+      "router_feature_count": 42,
+      "router_features": "precip_mm;s2_b4;s2_b8;D_sin_DOY;D_cos_DOY;E_SAR_ratio;G_API;G_DSLR;G_rain_sum_3d;G_rain_sum_7d;V_rollrng_G_API_kobs7;V_rollmax_F_NDMI_kobs30;A_d_E_SAR_ratio_kobs30;V_rollmax_E_SAR_ratio_kobs7;V_rollmin_E_SAR_ratio_kobs30;V_rollmax_E_SAR_ratio_kobs30;V_rollmin_LST_modis_kobs30;V_ema_LST_modis_kobs30;V_rollmax_F_NDVI_kobs14;V_rollmax_F_NDVI_kobs30;V_ema_F_NDVI_kobs30;C_lag_F_NDVI_kobs30;A_grad_E_SAR_diff_kobs30;V_rollmax_E_SAR_diff_kobs14;V_rollrng_E_SAR_diff_kobs30;V_rollmax_E_SAR_diff_kobs30;A_grad_s2_b11_kobs30;V_rollrng_s2_b11_kobs30;V_rollmin_s2_b11_kobs30;V_rollmin_s2_b12_kobs30;E_rough_s1_vh_kobs14;J_aspect_deg;J_bio_bio02;J_bio_bio13;J_lc_code;J_soil_texture_usda_b0;sin_year;cos_year;D_z_F_NDMI;D_z_LST_modis;D_fft_dom_LST_modis_kobs30;D_fft_ent_LST_modis_kobs30",
+      "router_seed": 42
+    },
+    {
+      "dataset": "ece_v3",
+      "model_id": "Clustering_Backbone54_k2_no_smap",
+      "n": 150,
+      "regime_0_share": 0.09333333333333334,
+      "regime_1_share": 0.9066666666666666,
+      "router": "backbone54",
+      "router_feature_count": 42,
+      "router_features": "precip_mm;s2_b4;s2_b8;D_sin_DOY;D_cos_DOY;E_SAR_ratio;G_API;G_DSLR;G_rain_sum_3d;G_rain_sum_7d;V_rollrng_G_API_kobs7;V_rollmax_F_NDMI_kobs30;A_d_E_SAR_ratio_kobs30;V_rollmax_E_SAR_ratio_kobs7;V_rollmin_E_SAR_ratio_kobs30;V_rollmax_E_SAR_ratio_kobs30;V_rollmin_LST_modis_kobs30;V_ema_LST_modis_kobs30;V_rollmax_F_NDVI_kobs14;V_rollmax_F_NDVI_kobs30;V_ema_F_NDVI_kobs30;C_lag_F_NDVI_kobs30;A_grad_E_SAR_diff_kobs30;V_rollmax_E_SAR_diff_kobs14;V_rollrng_E_SAR_diff_kobs30;V_rollmax_E_SAR_diff_kobs30;A_grad_s2_b11_kobs30;V_rollrng_s2_b11_kobs30;V_rollmin_s2_b11_kobs30;V_rollmin_s2_b12_kobs30;E_rough_s1_vh_kobs14;J_aspect_deg;J_bio_bio02;J_bio_bio13;J_lc_code;J_soil_texture_usda_b0;sin_year;cos_year;D_z_F_NDMI;D_z_LST_modis;D_fft_dom_LST_modis_kobs30;D_fft_ent_LST_modis_kobs30",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_trainval",
+      "model_id": "Trained_Gating_k2_no_smap",
+      "n": 14608,
+      "regime_0_share": 0.21358159912376778,
+      "regime_1_share": 0.7864184008762322,
+      "router": "trained_gate",
+      "router_feature_count": 42,
+      "router_features": "A_d_E_SAR_diff_kobs30;A_d_LST_modis_kobs30;A_d_s2_b11_kobs30;A_grad_E_SAR_diff_kobs30;A_grad_LST_modis_kobs30;A_grad_s2_b11_kobs30;C_lag_F_NDVI_kobs30;D_sa_F_NDMI;D_sa_LST_modis;D_z_E_SAR_ratio;E_SAR_ratio;F_MSI;J_aspect_deg;J_bio_bio15;K_aspect_cos;K_aspect_sin;V_ema_F_NDVI_kobs30;V_ema_LST_modis_kobs30;V_rollmax_G_API_kobs7;V_rollmean_F_NDMI_kobs30;V_rollmin_s2_b12_kobs30;V_rollrng_F_NDVI_kobs30;aspect;latitude;lia_std_asc_deg;s2_b8;slope;A_grad_LST_modis_kobs14;V_rollmax_E_SAR_ratio_kobs7;A_d_LST_modis_kobs14;J_clay_wfrac_b100;V_ema_G_API_kobs30;V_rollmin_G_API_kobs14;V_rollrng_LST_modis_kobs30;V_rollrng_G_API_kobs30;C_lag_F_NDMI_kobs30;V_rollrng_E_SAR_ratio_kobs30;J_bio_bio02;V_rollmax_E_SAR_ratio_kobs30;V_rollmax_G_API_kobs30;s2_b11;V_rollrng_F_NDVI_kobs14",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_test",
+      "model_id": "Trained_Gating_k2_no_smap",
+      "n": 6620,
+      "regime_0_share": 0.19546827794561933,
+      "regime_1_share": 0.8045317220543806,
+      "router": "trained_gate",
+      "router_feature_count": 42,
+      "router_features": "A_d_E_SAR_diff_kobs30;A_d_LST_modis_kobs30;A_d_s2_b11_kobs30;A_grad_E_SAR_diff_kobs30;A_grad_LST_modis_kobs30;A_grad_s2_b11_kobs30;C_lag_F_NDVI_kobs30;D_sa_F_NDMI;D_sa_LST_modis;D_z_E_SAR_ratio;E_SAR_ratio;F_MSI;J_aspect_deg;J_bio_bio15;K_aspect_cos;K_aspect_sin;V_ema_F_NDVI_kobs30;V_ema_LST_modis_kobs30;V_rollmax_G_API_kobs7;V_rollmean_F_NDMI_kobs30;V_rollmin_s2_b12_kobs30;V_rollrng_F_NDVI_kobs30;aspect;latitude;lia_std_asc_deg;s2_b8;slope;A_grad_LST_modis_kobs14;V_rollmax_E_SAR_ratio_kobs7;A_d_LST_modis_kobs14;J_clay_wfrac_b100;V_ema_G_API_kobs30;V_rollmin_G_API_kobs14;V_rollrng_LST_modis_kobs30;V_rollrng_G_API_kobs30;C_lag_F_NDMI_kobs30;V_rollrng_E_SAR_ratio_kobs30;J_bio_bio02;V_rollmax_E_SAR_ratio_kobs30;V_rollmax_G_API_kobs30;s2_b11;V_rollrng_F_NDVI_kobs14",
+      "router_seed": 42
+    },
+    {
+      "dataset": "ece_v3",
+      "model_id": "Trained_Gating_k2_no_smap",
+      "n": 150,
+      "regime_0_share": 1.0,
+      "regime_1_share": 0.0,
+      "router": "trained_gate",
+      "router_feature_count": 42,
+      "router_features": "A_d_E_SAR_diff_kobs30;A_d_LST_modis_kobs30;A_d_s2_b11_kobs30;A_grad_E_SAR_diff_kobs30;A_grad_LST_modis_kobs30;A_grad_s2_b11_kobs30;C_lag_F_NDVI_kobs30;D_sa_F_NDMI;D_sa_LST_modis;D_z_E_SAR_ratio;E_SAR_ratio;F_MSI;J_aspect_deg;J_bio_bio15;K_aspect_cos;K_aspect_sin;V_ema_F_NDVI_kobs30;V_ema_LST_modis_kobs30;V_rollmax_G_API_kobs7;V_rollmean_F_NDMI_kobs30;V_rollmin_s2_b12_kobs30;V_rollrng_F_NDVI_kobs30;aspect;latitude;lia_std_asc_deg;s2_b8;slope;A_grad_LST_modis_kobs14;V_rollmax_E_SAR_ratio_kobs7;A_d_LST_modis_kobs14;J_clay_wfrac_b100;V_ema_G_API_kobs30;V_rollmin_G_API_kobs14;V_rollrng_LST_modis_kobs30;V_rollrng_G_API_kobs30;C_lag_F_NDMI_kobs30;V_rollrng_E_SAR_ratio_kobs30;J_bio_bio02;V_rollmax_E_SAR_ratio_kobs30;V_rollmax_G_API_kobs30;s2_b11;V_rollrng_F_NDVI_kobs14",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_trainval",
+      "model_id": "Univariate_G_API_k2_no_smap",
+      "n": 14608,
+      "regime_0_share": 0.5,
+      "regime_1_share": 0.5,
+      "router": "gapi",
+      "router_feature_count": 1,
+      "router_features": "G_API",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_test",
+      "model_id": "Univariate_G_API_k2_no_smap",
+      "n": 6620,
+      "regime_0_share": 0.5306646525679758,
+      "regime_1_share": 0.46933534743202415,
+      "router": "gapi",
+      "router_feature_count": 1,
+      "router_features": "G_API",
+      "router_seed": 42
+    },
+    {
+      "dataset": "ece_v3",
+      "model_id": "Univariate_G_API_k2_no_smap",
+      "n": 150,
+      "regime_0_share": 1.0,
+      "regime_1_share": 0.0,
+      "router": "gapi",
+      "router_feature_count": 1,
+      "router_features": "G_API",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_trainval",
+      "model_id": "Clustering_Dynamic_k2_no_smap",
+      "n": 14608,
+      "regime_0_share": 0.5528477546549836,
+      "regime_1_share": 0.4471522453450164,
+      "router": "dynamic",
+      "router_feature_count": 2,
+      "router_features": "G_API;LST_modis",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_test",
+      "model_id": "Clustering_Dynamic_k2_no_smap",
+      "n": 6620,
+      "regime_0_share": 0.5693353474320242,
+      "regime_1_share": 0.4306646525679758,
+      "router": "dynamic",
+      "router_feature_count": 2,
+      "router_features": "G_API;LST_modis",
+      "router_seed": 42
+    },
+    {
+      "dataset": "ece_v3",
+      "model_id": "Clustering_Dynamic_k2_no_smap",
+      "n": 150,
+      "regime_0_share": 1.0,
+      "regime_1_share": 0.0,
+      "router": "dynamic",
+      "router_feature_count": 2,
+      "router_features": "G_API;LST_modis",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_trainval",
+      "model_id": "Seasonal_Binary_k2_no_smap",
+      "n": 14608,
+      "regime_0_share": 0.5174561883899234,
+      "regime_1_share": 0.48254381161007665,
+      "router": "seasonal",
+      "router_feature_count": 1,
+      "router_features": "month",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_test",
+      "model_id": "Seasonal_Binary_k2_no_smap",
+      "n": 6620,
+      "regime_0_share": 0.5158610271903323,
+      "regime_1_share": 0.48413897280966767,
+      "router": "seasonal",
+      "router_feature_count": 1,
+      "router_features": "month",
+      "router_seed": 42
+    },
+    {
+      "dataset": "ece_v3",
+      "model_id": "Seasonal_Binary_k2_no_smap",
+      "n": 150,
+      "regime_0_share": 1.0,
+      "regime_1_share": 0.0,
+      "router": "seasonal",
+      "router_feature_count": 1,
+      "router_features": "month",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_trainval",
+      "model_id": "Global_Single_54_no_smap",
+      "n": 14608,
+      "regime_0_share": 1.0,
+      "regime_1_share": 0.0,
+      "router": "global",
+      "router_feature_count": 0,
+      "router_features": "",
+      "router_seed": 42
+    },
+    {
+      "dataset": "wa_test",
+      "model_id": "Global_Single_54_no_smap",
+      "n": 6620,
+      "regime_0_share": 1.0,
+      "regime_1_share": 0.0,
+      "router": "global",
+      "router_feature_count": 0,
+      "router_features": "",
+      "router_seed": 42
+    },
+    {
+      "dataset": "ece_v3",
+      "model_id": "Global_Single_54_no_smap",
+      "n": 150,
+      "regime_0_share": 1.0,
+      "regime_1_share": 0.0,
+      "router": "global",
+      "router_feature_count": 0,
+      "router_features": "",
+      "router_seed": 42
+    }
+  ]
+}

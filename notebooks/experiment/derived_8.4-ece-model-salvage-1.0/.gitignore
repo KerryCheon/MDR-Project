@@ -1,0 +1,4 @@
+artifacts/checkpoints/
+artifacts/predictions/
+artifacts/slurm/
+__pycache__/
