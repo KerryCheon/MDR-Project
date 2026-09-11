@@ -38,6 +38,12 @@ DEFAULT_SEEDS = [42, 7, 13]
 TARGET_DEFAULT = "soil_moisture_5cm"
 CHECKPOINT_DIR = EXP_DIR / "artifacts/checkpoints"
 PREDICTION_DIR = EXP_DIR / "artifacts/predictions"
+# Keep every ECE time-series panel on the same physical scale so differences in
+# level and variability are comparable across stations and model versions.
+ECE_SOIL_MOISTURE_YLIM = (0.0, 0.25)
+# Effect bars use one shared scale as well; this range contains the completed
+# three-seed effects while keeping zero visually central.
+RMSE_EFFECT_YLIM = (-0.04, 0.04)
 
 
 @dataclass
@@ -610,6 +616,68 @@ def build_reference_comparison(seed_metrics: pd.DataFrame, references: pd.DataFr
     return merged
 
 
+def summarize_reference_comparison(
+    reference_comparison: pd.DataFrame,
+    expected_seeds: Iterable[int] | None = None,
+) -> pd.DataFrame:
+    """Average original-vs-no-SMAP reference metrics across seeds.
+
+    The persisted ``reference_comparison.csv`` remains seed-level for audit and
+    paired analyses. This report-facing view deliberately has one row per
+    model and evaluation split, with all numeric metrics averaged over seeds.
+    """
+    columns = [
+        "model_id", "dataset", "window", "n_seeds", "rmse_no_smap",
+        "rmse_original", "rmse_delta_no_smap_minus_original", "pearson_no_smap",
+        "pearson_original",
+    ]
+    if reference_comparison.empty:
+        return pd.DataFrame(columns=columns)
+
+    required = {
+        "model_id", "seed", "dataset", "window", "scope", "rmse_no_smap",
+        "rmse_original", "rmse_delta_no_smap_minus_original", "pearson_no_smap",
+        "pearson_original",
+    }
+    missing = sorted(required - set(reference_comparison.columns))
+    if missing:
+        raise ValueError(f"reference_comparison is missing required columns: {missing}")
+    source = reference_comparison[
+        reference_comparison["scope"].eq("__pooled__")
+        & reference_comparison["window"].isin(["temporal_full", "spatial_ece_v3_full"])
+    ].copy()
+    if source.empty:
+        return pd.DataFrame(columns=columns)
+
+    keys = ["model_id", "seed", "dataset", "window"]
+    if source.duplicated(keys).any():
+        duplicate_rows = source.loc[source.duplicated(keys, keep=False), keys].to_dict(orient="records")
+        raise ValueError(f"Duplicate reference comparison rows: {duplicate_rows}")
+
+    expected_seed_set = None if expected_seeds is None else {int(seed) for seed in expected_seeds}
+    if expected_seed_set is not None:
+        actual_by_split = source.groupby(["model_id", "dataset", "window"])["seed"].agg(
+            lambda values: {int(seed) for seed in values}
+        )
+        invalid = {
+            tuple(index): sorted(expected_seed_set - set(seeds))
+            for index, seeds in actual_by_split.items()
+            if set(seeds) != expected_seed_set
+        }
+        if invalid:
+            raise ValueError(f"Reference comparison does not contain exactly expected seeds: {invalid}")
+
+    numeric = [
+        "rmse_no_smap", "rmse_original", "rmse_delta_no_smap_minus_original",
+        "pearson_no_smap", "pearson_original",
+    ]
+    result = source.groupby(["model_id", "dataset", "window"], as_index=False).agg(
+        n_seeds=("seed", "nunique"),
+        **{column: (column, "mean") for column in numeric},
+    )
+    return result[columns].sort_values(["dataset", "window", "model_id"]).reset_index(drop=True)
+
+
 _EFFECT_SPLITS = {
     ("ece_spatial", "spatial_ece_v3_full"): ("ECE spatial", "ECE benefit"),
     ("wa_temporal", "temporal_full"): ("WA temporal", "WA degradation"),
@@ -918,6 +986,7 @@ def make_trend_figures(predictions: pd.DataFrame, output_dir: Path) -> list[Path
             ax.set_title(f"{station} — no-SMAP {suite_name} (seed 42)")
             ax.set_xlabel("Date")
             ax.set_ylabel("Soil moisture")
+            ax.set_ylim(*ECE_SOIL_MOISTURE_YLIM)
             ax.grid(alpha=0.25)
             ax.legend(ncol=2, fontsize=8)
             fig.tight_layout()
@@ -961,7 +1030,7 @@ def make_old_vs_new_effect_figure(effect_summary: pd.DataFrame, output_dir: Path
         "Global_Single_69_no_smap_fs69": "Global (69)",
     }
     output_dir.mkdir(parents=True, exist_ok=True)
-    fig, axes = plt.subplots(1, 2, figsize=(15, 5.5), sharey=False)
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5.5), sharey=True)
     for ax, split, title, color in (
         (axes[0], "ECE spatial", "ECE benefit\n(original RMSE − no-SMAP RMSE)", "#2a9d8f"),
         (axes[1], "WA temporal", "WA degradation\n(no-SMAP RMSE − original RMSE)", "#e76f51"),
@@ -983,6 +1052,7 @@ def make_old_vs_new_effect_figure(effect_summary: pd.DataFrame, output_dir: Path
         ax.axhline(0.0, color="black", linewidth=0.9)
         ax.set_title(title)
         ax.set_ylabel("RMSE difference")
+        ax.set_ylim(*RMSE_EFFECT_YLIM)
         ax.set_xticks(x, [labels[model_id] for model_id in model_order], rotation=38, ha="right")
         ax.grid(axis="y", alpha=0.25)
     fig.suptitle("No-SMAP versus original SMAP-trained models (mean ± seed SD)")
@@ -1197,6 +1267,7 @@ def make_global_version_charts(
         ax.set_title(f"{station_id} — global model version comparison")
         ax.set_xlabel("Date")
         ax.set_ylabel("Soil moisture")
+        ax.set_ylim(*ECE_SOIL_MOISTURE_YLIM)
         ax.grid(alpha=0.25)
         ax.legend(fontsize=8)
         fig.tight_layout()

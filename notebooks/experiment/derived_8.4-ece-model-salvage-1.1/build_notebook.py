@@ -154,14 +154,17 @@ print("REPORT_END::METRICS")"""),
     add_batch([
         markdown("""## Comparison with original SMAP-trained models
 
-The original formal-evaluation results remain reference-only and are never used for 1.1 fitting."""),
+The original formal-evaluation results remain reference-only and are never used for 1.1 fitting. To keep this section compact, each model/split row reports the mean over the common three learner seeds; the seed-level paired artifact remains available for audit."""),
         code("""comparison = pd.read_csv(EXP_DIR / "reference_comparison.csv", low_memory=False)
 print("REPORT_BEGIN::REFERENCE_COMPARISON")
 if comparison.empty:
     print("No reference rows available.")
 else:
-    columns = ["model_id", "seed", "dataset", "rmse_no_smap", "rmse_original", "rmse_delta_no_smap_minus_original", "pearson_no_smap", "pearson_original"]
-    print(comparison[columns].to_markdown(index=False, floatfmt=".6f"))
+    reference_mean = runner.summarize_reference_comparison(
+        comparison, expected_seeds=config["seeds"]
+    )
+    columns = ["model_id", "dataset", "window", "n_seeds", "rmse_no_smap", "rmse_original", "rmse_delta_no_smap_minus_original", "pearson_no_smap", "pearson_original"]
+    print(reference_mean[columns].to_markdown(index=False, floatfmt=".6f"))
 print("REPORT_END::REFERENCE_COMPARISON")"""),
         markdown("""## Comparison of 1.1 selected features with 1.0 no-SMAP models
 
@@ -219,7 +222,7 @@ else:
 print("REPORT_END::FEATURE_SELECTION_ROUND")"""),
         markdown("""## Effect of Removing SMAP: ECE Benefit vs WA Degradation
 
-This paired summary compares 1.1 against the original SMAP-trained references. ECE benefit is original RMSE minus no-SMAP RMSE; WA degradation is no-SMAP RMSE minus original RMSE. Global feature-count variants are listed separately."""),
+This paired summary compares 1.1 against the original SMAP-trained references. ECE benefit is original RMSE minus no-SMAP RMSE; WA degradation is no-SMAP RMSE minus original RMSE. Global feature-count variants are listed separately. The effect chart uses a shared fixed y-axis of −0.04 to 0.04 RMSE."""),
         code("""effect_summary = pd.read_csv(EXP_DIR / "old_vs_new_effect_summary.csv", low_memory=False)
 effect_columns = ["model_id", "split", "n_seeds", "rmse_original_mean", "rmse_no_smap_mean", "effect_rmse_mean", "effect_rmse_std", "effect_rmse_pct_mean", "improved_seeds", "worsened_seeds", "pearson_change_mean", "diff_pearson_change_mean"]
 print("REPORT_BEGIN::OLD_NEW_EFFECT")
@@ -242,7 +245,7 @@ print(invariance.to_markdown(index=False, floatfmt=".12f"))
 print("REPORT_END::SMAP_INVARIANCE")"""),
         markdown("""## Global model version comparison
 
-Each ECE station receives one seven-line chart comparing the original global model, the 1.0 no-SMAP global model, the 1.1 global models at 40/50/60/69 features, and ground truth. Predictions are aligned by station/date and averaged over the common seeds `[42, 7, 13]`."""),
+Each ECE station receives one seven-line chart comparing the original global model, the 1.0 no-SMAP global model, the 1.1 global models at 40/50/60/69 features, and ground truth. Predictions are aligned by station/date and averaged over the common seeds `[42, 7, 13]`. Every ECE line chart uses the same fixed y-axis of 0.00 to 0.25 soil-moisture units."""),
         code("""print("REPORT_BEGIN::GLOBAL_VERSION")
 version_data = runner.load_data(config)
 version_status = runner.global_version_source_status(version_data, config, (42, 7, 13))
@@ -256,7 +259,7 @@ else:
 print("REPORT_END::GLOBAL_VERSION")"""),
         markdown("""## Trend figures
 
-The next cell generates three figure suites per ECE station: architecture gates, alternative regime gates, and all four global feature sizes. Each chart is limited to five lines including the observed target."""),
+The next cell generates three figure suites per ECE station: architecture gates, alternative regime gates, and all four global feature sizes. Each chart is limited to five lines including the observed target and uses the common fixed y-axis of 0.00 to 0.25 soil-moisture units."""),
         code("""figure_paths = runner.make_trend_figures(predictions, EXP_DIR / "figures")
 print("REPORT_BEGIN::FIGURES")
 for path in figure_paths:

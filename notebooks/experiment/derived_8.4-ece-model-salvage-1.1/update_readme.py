@@ -57,6 +57,13 @@ def _figure_names(section: str, marker: str = "FIGURE::") -> list[str]:
     return names
 
 
+def _without_figure_markers(section: str) -> str:
+    """Remove notebook-internal figure discovery markers before embedding."""
+    return "\n".join(
+        line for line in section.splitlines() if not line.startswith("FIGURE::")
+    ).strip()
+
+
 def _table_blocks(text: str) -> list[list[str]]:
     """Return pipe-table blocks outside fenced code blocks."""
     blocks: list[list[str]] = []
@@ -131,8 +138,38 @@ def _validate_provenance_section(section: str) -> None:
             raise RuntimeError(f"Invalid {size}-feature selection manifest.")
 
 
+def _validate_reference_section(section: str) -> None:
+    """Require one mean-across-seeds row for each model and evaluation split."""
+    blocks = _table_blocks(section)
+    if len(blocks) != 1:
+        raise RuntimeError("REFERENCE_COMPARISON must contain exactly one Markdown table.")
+    table = blocks[0]
+    headers = [cell.strip() for cell in table[0].strip("|").split("|")]
+    expected_headers = [
+        "model_id", "dataset", "window", "n_seeds", "rmse_no_smap",
+        "rmse_original", "rmse_delta_no_smap_minus_original", "pearson_no_smap",
+        "pearson_original",
+    ]
+    if headers != expected_headers:
+        raise RuntimeError(f"Reference comparison must be seed-averaged: {headers}")
+    rows = table[2:]
+    if len(rows) != 20:
+        raise RuntimeError(
+            "Reference comparison must contain exactly 20 model/split mean rows."
+        )
+    parsed = [
+        [cell.strip() for cell in line.strip("|").split("|")]
+        for line in rows
+    ]
+    if any(len(row) != len(expected_headers) or row[3] != "3" for row in parsed):
+        raise RuntimeError("Reference comparison rows must report n_seeds=3.")
+    keys = [(row[0], row[1], row[2]) for row in parsed]
+    if len(keys) != len(set(keys)):
+        raise RuntimeError("Reference comparison contains duplicate model/split rows.")
+
+
 def _validate_readme_content(content: str) -> None:
-    if re.search(r"(?:REPORT_BEGIN|REPORT_END)::|INTERPRETATION_(?:BEGIN|END)", content):
+    if re.search(r"(?:REPORT_BEGIN|REPORT_END|FIGURE)::|INTERPRETATION_(?:BEGIN|END)", content):
         raise RuntimeError("README contains internal notebook report markers.")
     fence_count = sum(1 for line in content.splitlines() if line.strip().startswith("```"))
     if fence_count % 2:
@@ -159,6 +196,7 @@ def main() -> None:
     if missing:
         raise RuntimeError(f"Notebook stdout is missing report sections: {missing}")
     _validate_provenance_section(sections["SELECTION"])
+    _validate_reference_section(sections["REFERENCE_COMPARISON"])
 
     effect_names = _figure_names(sections["OLD_NEW_EFFECT"])
     if effect_names != ["old_vs_new_rmse_effect.png"]:
@@ -192,6 +230,9 @@ def main() -> None:
     feature_selection_section = feature_selection_section.replace(
         "INTERPRETATION_BEGIN", "### Interpretation"
     ).replace("INTERPRETATION_END", "")
+    reference_section = _without_figure_markers(sections["REFERENCE_COMPARISON"])
+    old_new_effect_section = _without_figure_markers(sections["OLD_NEW_EFFECT"])
+    global_version_section = _without_figure_markers(sections["GLOBAL_VERSION"])
     content = f"""# Experiment: `derived_8.4-ece-model-salvage-1.1`
 
 ## Objective
@@ -230,7 +271,7 @@ The temporal results include the complete 2023–2025 WA test period and the mat
 
 Original formal-evaluation runs remain reference-only and are not retrained or used by the selector or models.
 
-{sections['REFERENCE_COMPARISON']}
+{reference_section}
 
 ## Comparison of 1.1 selected features with 1.0 no-SMAP models
 
@@ -246,9 +287,9 @@ This global-only comparison isolates the new nested selector from the 1.0 manual
 
 ## Effect of Removing SMAP: ECE Benefit vs WA Degradation
 
-The paired summary uses original RMSE − no-SMAP RMSE for ECE benefit and no-SMAP RMSE − original RMSE for WA degradation. Positive values have the stated interpretation.
+The paired summary uses original RMSE − no-SMAP RMSE for ECE benefit and no-SMAP RMSE − original RMSE for WA degradation. Positive values have the stated interpretation. The effect chart uses a shared fixed y-axis of −0.04 to 0.04 RMSE.
 
-{sections['OLD_NEW_EFFECT']}
+{old_new_effect_section}
 
 ![old_vs_new_rmse_effect.png](figures/old_vs_new_rmse_effect.png)
 
@@ -260,15 +301,15 @@ Seed-42 predictions were checked after replacing all ECE SMAP columns with zero.
 
 ## Global model version comparison
 
-The following charts align station/date keys and average predictions over the common seeds `[42, 7, 13]`. Each chart has exactly seven lines: original `Global_Single_54`, 1.0 `Global_Single_54_no_smap`, 1.1 global models at 40/50/60/69 features, and ground truth.
+The following charts align station/date keys and average predictions over the common seeds `[42, 7, 13]`. Each chart has exactly seven lines: original `Global_Single_54`, 1.0 `Global_Single_54_no_smap`, 1.1 global models at 40/50/60/69 features, and ground truth. Every ECE line chart uses the same fixed y-axis of 0.00 to 0.25 soil-moisture units.
 
-{sections['GLOBAL_VERSION']}
+{global_version_section}
 
 {version_links}
 
 ## Figures
 
-All generated paths below use the notebook-relative `figures/<filename>` form. Trend charts contain no more than five lines.
+All generated paths below use the notebook-relative `figures/<filename>` form. Trend charts contain no more than five lines and use the common fixed y-axis of 0.00 to 0.25 soil-moisture units.
 
 {figure_links}
 

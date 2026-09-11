@@ -375,68 +375,28 @@ The temporal results include the complete 2023–2025 WA test period and the mat
 
 Original formal-evaluation runs remain reference-only and are not retrained or used by the selector or models.
 
-| model_id                            |   seed | dataset     |   rmse_no_smap |   rmse_original |   rmse_delta_no_smap_minus_original |   pearson_no_smap |   pearson_original |
-|:------------------------------------|-------:|:------------|---------------:|----------------:|------------------------------------:|------------------:|-------------------:|
-| Clustering_Backbone_k2_no_smap_fs60 |      7 | ece_spatial |       0.074010 |        0.058576 |                            0.015434 |         -0.284552 |           0.115054 |
-| Clustering_Backbone_k2_no_smap_fs60 |      7 | wa_temporal |       0.052213 |        0.044187 |                            0.008026 |          0.863762 |           0.903874 |
-| Clustering_Backbone_k2_no_smap_fs60 |     13 | ece_spatial |       0.074720 |        0.059511 |                            0.015209 |         -0.300242 |           0.100609 |
-| Clustering_Backbone_k2_no_smap_fs60 |     13 | wa_temporal |       0.052055 |        0.044187 |                            0.007868 |          0.864618 |           0.903734 |
-| Clustering_Backbone_k2_no_smap_fs60 |     42 | ece_spatial |       0.074493 |        0.057342 |                            0.017150 |         -0.314938 |           0.109832 |
-| Clustering_Backbone_k2_no_smap_fs60 |     42 | wa_temporal |       0.052537 |        0.043909 |                            0.008628 |          0.861853 |           0.904845 |
-| Clustering_Dynamic_k2_no_smap_fs60  |      7 | ece_spatial |       0.053359 |        0.058625 |                           -0.005266 |         -0.119387 |          -0.137070 |
-| Clustering_Dynamic_k2_no_smap_fs60  |      7 | wa_temporal |       0.052019 |        0.047060 |                            0.004959 |          0.867767 |           0.892281 |
-| Clustering_Dynamic_k2_no_smap_fs60  |     13 | ece_spatial |       0.053659 |        0.058387 |                           -0.004728 |         -0.153798 |          -0.127746 |
-| Clustering_Dynamic_k2_no_smap_fs60  |     13 | wa_temporal |       0.052067 |        0.047230 |                            0.004836 |          0.867045 |           0.891666 |
-| Clustering_Dynamic_k2_no_smap_fs60  |     42 | ece_spatial |       0.052908 |        0.059859 |                           -0.006951 |         -0.124761 |          -0.140396 |
-| Clustering_Dynamic_k2_no_smap_fs60  |     42 | wa_temporal |       0.052045 |        0.047057 |                            0.004987 |          0.867190 |           0.892172 |
-| Clustering_V0_Full_k2_no_smap_fs60  |      7 | ece_spatial |       0.086632 |        0.058576 |                            0.028056 |         -0.300941 |           0.115054 |
-| Clustering_V0_Full_k2_no_smap_fs60  |      7 | wa_temporal |       0.052080 |        0.044174 |                            0.007906 |          0.864639 |           0.903921 |
-| Clustering_V0_Full_k2_no_smap_fs60  |     13 | ece_spatial |       0.086720 |        0.059511 |                            0.027209 |         -0.303081 |           0.100609 |
-| Clustering_V0_Full_k2_no_smap_fs60  |     13 | wa_temporal |       0.052533 |        0.044176 |                            0.008357 |          0.861694 |           0.903770 |
-| Clustering_V0_Full_k2_no_smap_fs60  |     42 | ece_spatial |       0.086487 |        0.057342 |                            0.029145 |         -0.316356 |           0.109832 |
-| Clustering_V0_Full_k2_no_smap_fs60  |     42 | wa_temporal |       0.052216 |        0.043894 |                            0.008322 |          0.863747 |           0.904903 |
-| Global_Single_40_no_smap_fs40       |      7 | ece_spatial |       0.051663 |        0.058601 |                           -0.006939 |          0.020152 |          -0.060968 |
-| Global_Single_40_no_smap_fs40       |      7 | wa_temporal |       0.048935 |        0.047706 |                            0.001230 |          0.882648 |           0.889567 |
-| Global_Single_40_no_smap_fs40       |     13 | ece_spatial |       0.051005 |        0.059756 |                           -0.008750 |          0.045644 |          -0.053964 |
-| Global_Single_40_no_smap_fs40       |     13 | wa_temporal |       0.048809 |        0.047983 |                            0.000826 |          0.883397 |           0.888415 |
-| Global_Single_40_no_smap_fs40       |     42 | ece_spatial |       0.051238 |        0.059505 |                           -0.008267 |          0.074778 |          -0.060571 |
-| Global_Single_40_no_smap_fs40       |     42 | wa_temporal |       0.048857 |        0.047864 |                            0.000993 |          0.883063 |           0.889432 |
-| Global_Single_50_no_smap_fs50       |      7 | ece_spatial |       0.051228 |        0.058601 |                           -0.007373 |          0.056146 |          -0.060968 |
-| Global_Single_50_no_smap_fs50       |      7 | wa_temporal |       0.048774 |        0.047706 |                            0.001068 |          0.883450 |           0.889567 |
-| Global_Single_50_no_smap_fs50       |     13 | ece_spatial |       0.050540 |        0.059756 |                           -0.009216 |          0.087583 |          -0.053964 |
-| Global_Single_50_no_smap_fs50       |     13 | wa_temporal |       0.048694 |        0.047983 |                            0.000712 |          0.883726 |           0.888415 |
-| Global_Single_50_no_smap_fs50       |     42 | ece_spatial |       0.050372 |        0.059505 |                           -0.009134 |          0.074480 |          -0.060571 |
-| Global_Single_50_no_smap_fs50       |     42 | wa_temporal |       0.048697 |        0.047864 |                            0.000834 |          0.883653 |           0.889432 |
-| Global_Single_60_no_smap_fs60       |      7 | ece_spatial |       0.049990 |        0.058601 |                           -0.008611 |          0.055307 |          -0.060968 |
-| Global_Single_60_no_smap_fs60       |      7 | wa_temporal |       0.053813 |        0.047706 |                            0.006108 |          0.855706 |           0.889567 |
-| Global_Single_60_no_smap_fs60       |     13 | ece_spatial |       0.050881 |        0.059756 |                           -0.008875 |         -0.012228 |          -0.053964 |
-| Global_Single_60_no_smap_fs60       |     13 | wa_temporal |       0.053451 |        0.047983 |                            0.005469 |          0.857203 |           0.888415 |
-| Global_Single_60_no_smap_fs60       |     42 | ece_spatial |       0.050020 |        0.059505 |                           -0.009486 |         -0.016562 |          -0.060571 |
-| Global_Single_60_no_smap_fs60       |     42 | wa_temporal |       0.053745 |        0.047864 |                            0.005882 |          0.855723 |           0.889432 |
-| Global_Single_69_no_smap_fs69       |      7 | ece_spatial |       0.050570 |        0.058601 |                           -0.008031 |         -0.111783 |          -0.060968 |
-| Global_Single_69_no_smap_fs69       |      7 | wa_temporal |       0.054112 |        0.047706 |                            0.006406 |          0.853101 |           0.889567 |
-| Global_Single_69_no_smap_fs69       |     13 | ece_spatial |       0.050330 |        0.059756 |                           -0.009425 |         -0.112246 |          -0.053964 |
-| Global_Single_69_no_smap_fs69       |     13 | wa_temporal |       0.054042 |        0.047983 |                            0.006060 |          0.853876 |           0.888415 |
-| Global_Single_69_no_smap_fs69       |     42 | ece_spatial |       0.050239 |        0.059505 |                           -0.009267 |         -0.188609 |          -0.060571 |
-| Global_Single_69_no_smap_fs69       |     42 | wa_temporal |       0.054151 |        0.047864 |                            0.006287 |          0.853006 |           0.889432 |
-| Seasonal_Binary_k2_no_smap_fs60     |      7 | ece_spatial |       0.050915 |        0.058667 |                           -0.007752 |         -0.158024 |          -0.069146 |
-| Seasonal_Binary_k2_no_smap_fs60     |      7 | wa_temporal |       0.053960 |        0.048995 |                            0.004965 |          0.854611 |           0.883670 |
-| Seasonal_Binary_k2_no_smap_fs60     |     13 | ece_spatial |       0.050835 |        0.059188 |                           -0.008353 |         -0.199200 |          -0.045172 |
-| Seasonal_Binary_k2_no_smap_fs60     |     13 | wa_temporal |       0.053668 |        0.048640 |                            0.005029 |          0.855851 |           0.885627 |
-| Seasonal_Binary_k2_no_smap_fs60     |     42 | ece_spatial |       0.051061 |        0.058418 |                           -0.007357 |         -0.205536 |          -0.038768 |
-| Seasonal_Binary_k2_no_smap_fs60     |     42 | wa_temporal |       0.054009 |        0.048876 |                            0.005133 |          0.854093 |           0.884222 |
-| Trained_Gating_k2_no_smap_fs60      |      7 | ece_spatial |       0.051403 |        0.052873 |                           -0.001470 |         -0.085116 |          -0.037230 |
-| Trained_Gating_k2_no_smap_fs60      |      7 | wa_temporal |       0.053830 |        0.052443 |                            0.001387 |          0.863132 |           0.875377 |
-| Trained_Gating_k2_no_smap_fs60      |     13 | ece_spatial |       0.051724 |        0.053515 |                           -0.001791 |         -0.115236 |          -0.053182 |
-| Trained_Gating_k2_no_smap_fs60      |     13 | wa_temporal |       0.053704 |        0.052566 |                            0.001138 |          0.863207 |           0.874742 |
-| Trained_Gating_k2_no_smap_fs60      |     42 | ece_spatial |       0.052267 |        0.052027 |                            0.000240 |         -0.097006 |          -0.036375 |
-| Trained_Gating_k2_no_smap_fs60      |     42 | wa_temporal |       0.053799 |        0.052393 |                            0.001406 |          0.862926 |           0.875079 |
-| Univariate_G_API_k2_no_smap_fs60    |      7 | ece_spatial |       0.051304 |        0.057866 |                           -0.006562 |          0.007519 |          -0.086082 |
-| Univariate_G_API_k2_no_smap_fs60    |      7 | wa_temporal |       0.050969 |        0.049174 |                            0.001795 |          0.871838 |           0.882830 |
-| Univariate_G_API_k2_no_smap_fs60    |     13 | ece_spatial |       0.050455 |        0.058860 |                           -0.008404 |          0.020874 |          -0.074338 |
-| Univariate_G_API_k2_no_smap_fs60    |     13 | wa_temporal |       0.050842 |        0.048995 |                            0.001847 |          0.872127 |           0.883918 |
-| Univariate_G_API_k2_no_smap_fs60    |     42 | ece_spatial |       0.051132 |        0.057647 |                           -0.006515 |          0.012341 |          -0.081524 |
-| Univariate_G_API_k2_no_smap_fs60    |     42 | wa_temporal |       0.050978 |        0.048893 |                            0.002085 |          0.871517 |           0.883769 |
+| model_id                            | dataset     | window              |   n_seeds |   rmse_no_smap |   rmse_original |   rmse_delta_no_smap_minus_original |   pearson_no_smap |   pearson_original |
+|:------------------------------------|:------------|:--------------------|----------:|---------------:|----------------:|------------------------------------:|------------------:|-------------------:|
+| Clustering_Backbone_k2_no_smap_fs60 | ece_spatial | spatial_ece_v3_full |         3 |       0.074408 |        0.058476 |                            0.015931 |         -0.299911 |           0.108498 |
+| Clustering_Dynamic_k2_no_smap_fs60  | ece_spatial | spatial_ece_v3_full |         3 |       0.053308 |        0.058957 |                           -0.005649 |         -0.132648 |          -0.135071 |
+| Clustering_V0_Full_k2_no_smap_fs60  | ece_spatial | spatial_ece_v3_full |         3 |       0.086613 |        0.058476 |                            0.028137 |         -0.306792 |           0.108498 |
+| Global_Single_40_no_smap_fs40       | ece_spatial | spatial_ece_v3_full |         3 |       0.051302 |        0.059287 |                           -0.007985 |          0.046858 |          -0.058501 |
+| Global_Single_50_no_smap_fs50       | ece_spatial | spatial_ece_v3_full |         3 |       0.050713 |        0.059287 |                           -0.008574 |          0.072736 |          -0.058501 |
+| Global_Single_60_no_smap_fs60       | ece_spatial | spatial_ece_v3_full |         3 |       0.050297 |        0.059287 |                           -0.008991 |          0.008839 |          -0.058501 |
+| Global_Single_69_no_smap_fs69       | ece_spatial | spatial_ece_v3_full |         3 |       0.050380 |        0.059287 |                           -0.008908 |         -0.137546 |          -0.058501 |
+| Seasonal_Binary_k2_no_smap_fs60     | ece_spatial | spatial_ece_v3_full |         3 |       0.050937 |        0.058758 |                           -0.007821 |         -0.187587 |          -0.051029 |
+| Trained_Gating_k2_no_smap_fs60      | ece_spatial | spatial_ece_v3_full |         3 |       0.051798 |        0.052805 |                           -0.001007 |         -0.099119 |          -0.042262 |
+| Univariate_G_API_k2_no_smap_fs60    | ece_spatial | spatial_ece_v3_full |         3 |       0.050964 |        0.058124 |                           -0.007160 |          0.013578 |          -0.080648 |
+| Clustering_Backbone_k2_no_smap_fs60 | wa_temporal | temporal_full       |         3 |       0.052269 |        0.044094 |                            0.008174 |          0.863411 |           0.904151 |
+| Clustering_Dynamic_k2_no_smap_fs60  | wa_temporal | temporal_full       |         3 |       0.052043 |        0.047116 |                            0.004927 |          0.867334 |           0.892040 |
+| Clustering_V0_Full_k2_no_smap_fs60  | wa_temporal | temporal_full       |         3 |       0.052277 |        0.044081 |                            0.008195 |          0.863360 |           0.904198 |
+| Global_Single_40_no_smap_fs40       | wa_temporal | temporal_full       |         3 |       0.048867 |        0.047851 |                            0.001016 |          0.883036 |           0.889138 |
+| Global_Single_50_no_smap_fs50       | wa_temporal | temporal_full       |         3 |       0.048722 |        0.047851 |                            0.000871 |          0.883610 |           0.889138 |
+| Global_Single_60_no_smap_fs60       | wa_temporal | temporal_full       |         3 |       0.053670 |        0.047851 |                            0.005819 |          0.856211 |           0.889138 |
+| Global_Single_69_no_smap_fs69       | wa_temporal | temporal_full       |         3 |       0.054102 |        0.047851 |                            0.006251 |          0.853327 |           0.889138 |
+| Seasonal_Binary_k2_no_smap_fs60     | wa_temporal | temporal_full       |         3 |       0.053879 |        0.048837 |                            0.005042 |          0.854851 |           0.884506 |
+| Trained_Gating_k2_no_smap_fs60      | wa_temporal | temporal_full       |         3 |       0.053778 |        0.052467 |                            0.001310 |          0.863088 |           0.875066 |
+| Univariate_G_API_k2_no_smap_fs60    | wa_temporal | temporal_full       |         3 |       0.050930 |        0.049021 |                            0.001909 |          0.871827 |           0.883506 |
 
 ## Comparison of 1.1 selected features with 1.0 no-SMAP models
 
@@ -485,7 +445,7 @@ This global-only comparison isolates the new nested selector from the 1.0 manual
 
 ## Effect of Removing SMAP: ECE Benefit vs WA Degradation
 
-The paired summary uses original RMSE − no-SMAP RMSE for ECE benefit and no-SMAP RMSE − original RMSE for WA degradation. Positive values have the stated interpretation.
+The paired summary uses original RMSE − no-SMAP RMSE for ECE benefit and no-SMAP RMSE − original RMSE for WA degradation. Positive values have the stated interpretation. The effect chart uses a shared fixed y-axis of −0.04 to 0.04 RMSE.
 
 | model_id                            | split       |   n_seeds |   rmse_original_mean |   rmse_no_smap_mean |   effect_rmse_mean |   effect_rmse_std |   effect_rmse_pct_mean |   improved_seeds |   worsened_seeds |   pearson_change_mean |   diff_pearson_change_mean |
 |:------------------------------------|:------------|----------:|---------------------:|--------------------:|-------------------:|------------------:|-----------------------:|-----------------:|-----------------:|----------------------:|---------------------------:|
@@ -510,8 +470,6 @@ The paired summary uses original RMSE − no-SMAP RMSE for ECE benefit and no-SM
 | Global_Single_40_no_smap_fs40       | WA temporal |         3 |             0.047851 |            0.048867 |           0.001016 |          0.000203 |               2.124978 |                0 |                3 |             -0.006102 |                        nan |
 | Global_Single_50_no_smap_fs50       | WA temporal |         3 |             0.047851 |            0.048722 |           0.000871 |          0.000181 |               1.821261 |                0 |                3 |             -0.005529 |                        nan |
 
-FIGURE::old_vs_new_rmse_effect.png
-
 ![old_vs_new_rmse_effect.png](figures/old_vs_new_rmse_effect.png)
 
 ## No-SMAP invariance
@@ -533,7 +491,7 @@ Seed-42 predictions were checked after replacing all ECE SMAP columns with zero.
 
 ## Global model version comparison
 
-The following charts align station/date keys and average predictions over the common seeds `[42, 7, 13]`. Each chart has exactly seven lines: original `Global_Single_54`, 1.0 `Global_Single_54_no_smap`, 1.1 global models at 40/50/60/69 features, and ground truth.
+The following charts align station/date keys and average predictions over the common seeds `[42, 7, 13]`. Each chart has exactly seven lines: original `Global_Single_54`, 1.0 `Global_Single_54_no_smap`, 1.1 global models at 40/50/60/69 features, and ground truth. Every ECE line chart uses the same fixed y-axis of 0.00 to 0.25 soil-moisture units.
 
 {
   "ece_dates_per_station": 30,
@@ -586,12 +544,6 @@ The following charts align station/date keys and average predictions over the co
   ]
 }
 
-FIGURE::ece_ECE_BBG_Lost_Meadow_global_model_versions.png
-FIGURE::ece_ECE_BBG_Main_St_global_model_versions.png
-FIGURE::ece_ECE_Renton_Garden_North_global_model_versions.png
-FIGURE::ece_ECE_Renton_Garden_Shed_global_model_versions.png
-FIGURE::ece_ECE_Renton_Home_global_model_versions.png
-
 ![ece_ECE_BBG_Lost_Meadow_global_model_versions.png](figures/ece_ECE_BBG_Lost_Meadow_global_model_versions.png)
 
 ![ece_ECE_BBG_Main_St_global_model_versions.png](figures/ece_ECE_BBG_Main_St_global_model_versions.png)
@@ -604,7 +556,7 @@ FIGURE::ece_ECE_Renton_Home_global_model_versions.png
 
 ## Figures
 
-All generated paths below use the notebook-relative `figures/<filename>` form. Trend charts contain no more than five lines.
+All generated paths below use the notebook-relative `figures/<filename>` form. Trend charts contain no more than five lines and use the common fixed y-axis of 0.00 to 0.25 soil-moisture units.
 
 ![ece_ECE_BBG_Lost_Meadow_architecture_trend.png](figures/ece_ECE_BBG_Lost_Meadow_architecture_trend.png)
 

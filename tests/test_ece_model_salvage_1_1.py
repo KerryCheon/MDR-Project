@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import importlib.util
+import inspect
 import json
 import re
 import sys
@@ -158,6 +159,64 @@ def test_effect_sign_conventions_and_percentage_denominator():
     assert wa["effect_rmse_pct"] == pytest.approx(20.0)
     assert len(summary) == len(MODEL_IDS) * 2
     assert "diff_pearson_change_mean" in summary.columns
+
+
+def test_reference_comparison_report_is_mean_across_three_seeds():
+    runner = _load_runner()
+    rows = []
+    for model_index, model_id in enumerate(MODEL_IDS):
+        for seed_index, seed in enumerate(SEEDS):
+            for dataset, window, offset in (
+                ("ece_spatial", "spatial_ece_v3_full", 0.0),
+                ("wa_temporal", "temporal_full", 1.0),
+            ):
+                original = 1.0 + 0.1 * model_index
+                no_smap = original + offset + 0.01 * seed_index
+                rows.append({
+                    "model_id": model_id,
+                    "seed": seed,
+                    "dataset": dataset,
+                    "window": window,
+                    "scope": "__pooled__",
+                    "rmse_no_smap": no_smap,
+                    "rmse_original": original,
+                    "rmse_delta_no_smap_minus_original": no_smap - original,
+                    "pearson_no_smap": 0.2 + 0.01 * seed_index,
+                    "pearson_original": 0.5,
+                })
+    result = runner.summarize_reference_comparison(
+        pd.DataFrame(rows), expected_seeds=SEEDS
+    )
+    assert len(result) == len(MODEL_IDS) * 2
+    assert not result.duplicated(["model_id", "dataset", "window"]).any()
+    assert set(result["n_seeds"]) == {3}
+    assert list(result.columns) == [
+        "model_id", "dataset", "window", "n_seeds", "rmse_no_smap",
+        "rmse_original", "rmse_delta_no_smap_minus_original", "pearson_no_smap",
+        "pearson_original",
+    ]
+    row = result[
+        (result["model_id"] == MODEL_IDS[0])
+        & (result["dataset"] == "ece_spatial")
+    ].iloc[0]
+    assert row["rmse_no_smap"] == pytest.approx(1.01)
+    assert row["rmse_original"] == pytest.approx(1.0)
+    assert row["pearson_no_smap"] == pytest.approx(0.21)
+
+
+def test_report_figure_scales_are_fixed():
+    runner = _load_runner()
+    assert runner.ECE_SOIL_MOISTURE_YLIM == (0.0, 0.25)
+    assert runner.RMSE_EFFECT_YLIM == (-0.04, 0.04)
+    assert "ax.set_ylim(*ECE_SOIL_MOISTURE_YLIM)" in inspect.getsource(
+        runner.make_trend_figures
+    )
+    assert "ax.set_ylim(*ECE_SOIL_MOISTURE_YLIM)" in inspect.getsource(
+        runner.make_global_version_charts
+    )
+    assert "ax.set_ylim(*RMSE_EFFECT_YLIM)" in inspect.getsource(
+        runner.make_old_vs_new_effect_figure
+    )
 
 
 def test_feature_selection_round_comparison_is_global_only_and_interpretable():
@@ -353,6 +412,7 @@ def test_readme_tables_fences_and_provenance_are_well_formed():
     assert "REPORT_END::" not in text
     assert "INTERPRETATION_BEGIN" not in text
     assert "INTERPRETATION_END" not in text
+    assert "FIGURE::" not in text
     assert text.count("```") % 2 == 0
 
     blocks = []
@@ -407,3 +467,16 @@ def test_readme_tables_fences_and_provenance_are_well_formed():
         and not any("smap" in line.lower() for line in body.splitlines())
         for size, body in manifests
     )
+
+    comparison_start = text.index("## Comparison with original SMAP-trained models")
+    comparison_end = text.index("## Comparison of 1.1 selected features", comparison_start)
+    comparison_lines = [
+        line for line in text[comparison_start:comparison_end].splitlines()
+        if line.startswith("|") and line.rstrip().endswith("|")
+    ]
+    assert len(comparison_lines) == 22
+    comparison_headers = [
+        cell.strip() for cell in comparison_lines[0].strip("|").split("|")
+    ]
+    assert "seed" not in comparison_headers
+    assert "n_seeds" in comparison_headers
