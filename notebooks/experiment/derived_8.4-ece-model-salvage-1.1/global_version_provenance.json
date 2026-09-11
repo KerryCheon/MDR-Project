@@ -1,6 +1,12 @@
 {
-  "ece_dates_per_station": 30,
-  "ece_rows": 150,
+  "aggregation": "mean over common seeds [42, 7, 13]",
+  "dates_per_station": {
+    "ECE_BBG_Lost_Meadow": 30,
+    "ECE_BBG_Main_St": 30,
+    "ECE_Renton_Garden_North": 30,
+    "ECE_Renton_Garden_Shed": 30,
+    "ECE_Renton_Home": 30
+  },
   "ece_stations": [
     "ECE_BBG_Lost_Meadow",
     "ECE_BBG_Main_St",
@@ -8,44 +14,70 @@
     "ECE_Renton_Garden_Shed",
     "ECE_Renton_Home"
   ],
-  "missing": [
-    "1.1 Global_Single_40_no_smap_fs40 seed=7",
-    "1.1 Global_Single_50_no_smap_fs50 seed=7",
-    "1.1 Global_Single_60_no_smap_fs60 seed=7",
-    "1.1 Global_Single_69_no_smap_fs69 seed=7",
-    "1.1 Global_Single_40_no_smap_fs40 seed=13",
-    "1.1 Global_Single_50_no_smap_fs50 seed=13",
-    "1.1 Global_Single_60_no_smap_fs60 seed=13",
-    "1.1 Global_Single_69_no_smap_fs69 seed=13"
+  "key": "station_id/date",
+  "line_count": 7,
+  "line_labels": [
+    "Original Global_Single_54",
+    "1.0 no-SMAP Global",
+    "1.1 Global (40 features)",
+    "1.1 Global (50 features)",
+    "1.1 Global (60 features)",
+    "1.1 Global (69 features)",
+    "Ground truth"
   ],
-  "original_paths": [
-    "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3/predictions_spatial/Global_Single_54__s42__ece_preds.npy",
-    "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3/predictions_spatial/Global_Single_54__s7__ece_preds.npy",
-    "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3/predictions_spatial/Global_Single_54__s13__ece_preds.npy"
-  ],
-  "ready": false,
-  "salvage_1_0_paths": [
-    "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.0/artifacts/predictions/Global_Single_54_no_smap__s42.csv",
-    "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.0/artifacts/predictions/Global_Single_54_no_smap__s7.csv",
-    "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.0/artifacts/predictions/Global_Single_54_no_smap__s13.csv"
-  ],
-  "salvage_1_1_paths": {
-    "40": [
-      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_40_no_smap_fs40__s42.csv"
-    ],
-    "50": [
-      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_50_no_smap_fs50__s42.csv"
-    ],
-    "60": [
-      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_60_no_smap_fs60__s42.csv"
-    ],
-    "69": [
-      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_69_no_smap_fs69__s42.csv"
-    ]
-  },
   "seeds": [
     42,
     7,
     13
-  ]
+  ],
+  "sources": {
+    "ece_dates_per_station": 30,
+    "ece_rows": 150,
+    "ece_stations": [
+      "ECE_BBG_Lost_Meadow",
+      "ECE_BBG_Main_St",
+      "ECE_Renton_Garden_North",
+      "ECE_Renton_Garden_Shed",
+      "ECE_Renton_Home"
+    ],
+    "missing": [],
+    "original_paths": [
+      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3/predictions_spatial/Global_Single_54__s42__ece_preds.npy",
+      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3/predictions_spatial/Global_Single_54__s7__ece_preds.npy",
+      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3/predictions_spatial/Global_Single_54__s13__ece_preds.npy"
+    ],
+    "ready": true,
+    "salvage_1_0_paths": [
+      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.0/artifacts/predictions/Global_Single_54_no_smap__s42.csv",
+      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.0/artifacts/predictions/Global_Single_54_no_smap__s7.csv",
+      "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.0/artifacts/predictions/Global_Single_54_no_smap__s13.csv"
+    ],
+    "salvage_1_1_paths": {
+      "40": [
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_40_no_smap_fs40__s42.csv",
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_40_no_smap_fs40__s7.csv",
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_40_no_smap_fs40__s13.csv"
+      ],
+      "50": [
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_50_no_smap_fs50__s42.csv",
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_50_no_smap_fs50__s7.csv",
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_50_no_smap_fs50__s13.csv"
+      ],
+      "60": [
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_60_no_smap_fs60__s42.csv",
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_60_no_smap_fs60__s7.csv",
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_60_no_smap_fs60__s13.csv"
+      ],
+      "69": [
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_69_no_smap_fs69__s42.csv",
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_69_no_smap_fs69__s7.csv",
+        "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/artifacts/predictions/Global_Single_69_no_smap_fs69__s13.csv"
+      ]
+    },
+    "seeds": [
+      42,
+      7,
+      13
+    ]
+  }
 }
