@@ -160,6 +160,81 @@ def test_effect_sign_conventions_and_percentage_denominator():
     assert "diff_pearson_change_mean" in summary.columns
 
 
+def test_feature_selection_round_comparison_is_global_only_and_interpretable():
+    runner = _load_runner()
+    config = runner.load_configuration()
+    global_ids = [
+        spec["id"] for spec in config["models"] if spec["router"] == "global"
+    ]
+    rows = []
+    for model_id in global_ids:
+        size = int(next(spec["feature_size"] for spec in config["models"] if spec["id"] == model_id))
+        for seed in SEEDS:
+            for dataset, window in (
+                ("ece_spatial", "spatial_ece_v3_full"),
+                ("wa_temporal", "temporal_full"),
+            ):
+                before = 1.0
+                after = {40: 0.8, 50: 0.9, 60: 1.1, 69: 1.2}[size]
+                if dataset == "wa_temporal":
+                    after = {40: 1.1, 50: 1.2, 60: 1.3, 69: 1.4}[size]
+                rows.append({
+                    "model_id": model_id,
+                    "old_model_id": "Global_Single_54_no_smap",
+                    "seed": seed,
+                    "dataset": dataset,
+                    "window": window,
+                    "old_rmse": before,
+                    "new_rmse": after,
+                    "old_pearson": 0.5,
+                    "new_pearson": 0.6,
+                    "change_pearson": 0.1,
+                    "old_diff_pearson": 0.2,
+                    "new_diff_pearson": 0.25,
+                    "change_diff_pearson": 0.05,
+                })
+    seed_frame, summary = runner.build_feature_selection_round_comparison(
+        pd.DataFrame(rows), config, expected_seeds=SEEDS
+    )
+    assert len(seed_frame) == 4 * 3 * 2
+    assert len(summary) == 4 * 2
+    assert set(seed_frame["model_id"]) == set(global_ids)
+    assert not seed_frame.duplicated(["model_id", "seed", "split"]).any()
+    ece_40 = summary[
+        (summary["feature_size"] == 40) & (summary["split"] == "ECE spatial")
+    ].iloc[0]
+    wa_40 = summary[
+        (summary["feature_size"] == 40) & (summary["split"] == "WA temporal")
+    ].iloc[0]
+    assert ece_40["rmse_effect_mean"] == pytest.approx(0.2)
+    assert ece_40["rmse_effect_pct_mean"] == pytest.approx(20.0)
+    assert wa_40["rmse_effect_mean"] == pytest.approx(0.1)
+    assert wa_40["rmse_effect_pct_mean"] == pytest.approx(10.0)
+    assert ece_40["pearson_change_mean"] == pytest.approx(0.1)
+    assert ece_40["diff_pearson_change_mean"] == pytest.approx(0.05)
+    interpretation = runner.interpret_feature_selection_round(summary, SEEDS)
+    assert "40-feature model" in interpretation
+    assert "Pooled WA degradation ranges" in interpretation
+
+
+def test_completed_feature_selection_round_artifacts_are_complete():
+    summary_path = EXP_DIR / "feature_selection_round_effect_summary.csv"
+    seed_path = EXP_DIR / "feature_selection_round_effect_seed.csv"
+    if not summary_path.exists() or not seed_path.exists():
+        pytest.skip("feature-selection round comparison has not been generated")
+    seed_frame = pd.read_csv(seed_path)
+    summary = pd.read_csv(summary_path)
+    global_ids = set(MODEL_IDS[-4:])
+    assert set(seed_frame["model_id"]) == global_ids
+    assert len(seed_frame) == 4 * len(SEEDS) * 2
+    assert not seed_frame.duplicated(["model_id", "seed", "split"]).any()
+    assert set(seed_frame["seed"]) == set(SEEDS)
+    assert set(summary["feature_size"]) == set(FEATURE_SIZES)
+    assert len(summary) == 4 * 2
+    assert set(summary["n_seeds"]) == {len(SEEDS)}
+    assert summary[["pearson_change_mean", "diff_pearson_change_mean"]].notna().all().all()
+
+
 def test_router_inputs_are_non_smap_and_sized_by_model():
     runner = _load_runner()
     if not SELECTION_BY_SIZE.exists():
@@ -201,6 +276,7 @@ def test_completed_prediction_coverage_has_no_duplicates_and_complete_metrics():
     if not prediction_path.exists():
         pytest.skip("full variable-size model stage has not completed")
     predictions = pd.read_csv(prediction_path, low_memory=False)
+    assert not predictions["model_id"].astype(str).str.contains("fs54", case=False).any()
     expected_pairs = {(model_id, seed) for model_id in MODEL_IDS for seed in SEEDS}
     if set(zip(predictions.model_id, predictions.seed)) != expected_pairs:
         pytest.skip("prediction table is not yet the complete 10-variant run")
@@ -258,8 +334,76 @@ def test_readme_has_variable_size_section_and_valid_figure_links():
         pytest.skip("README is awaiting the complete run")
     text = readme.read_text(encoding="utf-8")
     assert "40/50/60/69" in text
+    assert "## Before vs after the new feature-selection round" in text
+    assert "ECE benefit" in text
+    assert "Pooled WA degradation" in text
     assert "## Global model version comparison" in text
     links = [Path(match) for match in re.findall(r"\]\((figures/[^)]+\.png)\)", text)]
     assert links
     assert all((EXP_DIR / link).exists() for link in links)
     assert len([link for link in links if "global_model_versions" in link.name]) == 5
+
+
+def test_readme_tables_fences_and_provenance_are_well_formed():
+    readme = EXP_DIR / "README.md"
+    if not readme.exists():
+        pytest.skip("README is generated after notebook execution")
+    text = readme.read_text(encoding="utf-8")
+    assert "REPORT_BEGIN::" not in text
+    assert "REPORT_END::" not in text
+    assert "INTERPRETATION_BEGIN" not in text
+    assert "INTERPRETATION_END" not in text
+    assert text.count("```") % 2 == 0
+
+    blocks = []
+    current = []
+    in_fence = False
+    for line in text.splitlines():
+        if line.strip().startswith("```"):
+            in_fence = not in_fence
+        if not in_fence and line.startswith("|") and line.rstrip().endswith("|"):
+            current.append(line)
+        elif current:
+            blocks.append(current)
+            current = []
+    if current:
+        blocks.append(current)
+    assert len(blocks) >= 8
+    for block in blocks:
+        assert len(block) >= 2
+        pipe_count = block[0].count("|")
+        assert pipe_count >= 3
+        assert all(line.count("|") == pipe_count for line in block)
+        separator = [cell.strip() for cell in block[1].strip("|").split("|")]
+        assert all(re.fullmatch(r":?-{3,}:?", cell) for cell in separator)
+
+    start = text.index("## Feature-selection provenance")
+    end = text.index("## Input audit", start)
+    section = text[start:end]
+    table_lines = [
+        line for line in section.splitlines()
+        if line.startswith("|") and line.rstrip().endswith("|")
+    ]
+    assert len(table_lines) == 6
+    headers = [cell.strip() for cell in table_lines[0].strip("|").split("|")]
+    assert headers == [
+        "status", "selected_features", "smap_features", "candidate_pool",
+        "delta_additions", "selection_period", "fit_scope",
+    ]
+    rows = [
+        [cell.strip() for cell in line.strip("|").split("|")]
+        for line in table_lines[2:]
+    ]
+    assert [int(row[1]) for row in rows] == [40, 50, 60, 69]
+    assert all(row[4] == "none" for row in rows)
+    manifests = re.findall(
+        r"### Selected feature manifest \((\d+) features\)\n\n```text\n(.*?)\n```",
+        section,
+        flags=re.DOTALL,
+    )
+    assert [int(size) for size, _ in manifests] == [40, 50, 60, 69]
+    assert all(
+        len([line for line in body.splitlines() if line.strip()]) == int(size)
+        and not any("smap" in line.lower() for line in body.splitlines())
+        for size, body in manifests
+    )

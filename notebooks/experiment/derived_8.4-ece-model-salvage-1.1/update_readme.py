@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -13,22 +14,29 @@ README = EXP_DIR / "README.md"
 
 
 def notebook_outputs() -> str:
+    """Read executed stream outputs through nb without parsing display wrappers."""
     result = subprocess.run(
-        ["nb", "read", str(NOTEBOOK), "--limit", "1000000"],
+        ["nb", "read", str(NOTEBOOK), "--json"],
         check=True,
         capture_output=True,
         text=True,
     )
-    return result.stdout
+    notebook = json.loads(result.stdout)
+    streams: list[str] = []
+    for cell in notebook.get("cells", []):
+        for output in cell.get("outputs", []):
+            if output.get("output_type") != "stream" or output.get("name") != "stdout":
+                continue
+            text = output.get("text", "")
+            streams.append("".join(text) if isinstance(text, list) else str(text))
+    return "\n".join(streams)
 
 
 def extract_sections(text: str) -> dict[str, str]:
-    outputs = re.findall(r"@@output .*?\n```text\n(.*?)\n```", text, flags=re.DOTALL)
     sections: dict[str, str] = {}
-    combined_output = "\n".join(outputs)
     for match in re.finditer(
         r"REPORT_BEGIN::([A-Z0-9_]+)\n(.*?)\nREPORT_END::\1",
-        combined_output,
+        text,
         flags=re.DOTALL,
     ):
         sections[match.group(1)] = match.group(2).strip()
@@ -49,18 +57,108 @@ def _figure_names(section: str, marker: str = "FIGURE::") -> list[str]:
     return names
 
 
+def _table_blocks(text: str) -> list[list[str]]:
+    """Return pipe-table blocks outside fenced code blocks."""
+    blocks: list[list[str]] = []
+    current: list[str] = []
+    in_fence = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            in_fence = not in_fence
+        is_table_line = (
+            not in_fence
+            and line.startswith("|")
+            and line.rstrip().endswith("|")
+        )
+        if is_table_line:
+            current.append(line)
+        elif current:
+            blocks.append(current)
+            current = []
+    if current:
+        blocks.append(current)
+    return blocks
+
+
+def _validate_table_blocks(text: str) -> None:
+    """Validate GFM pipe-table shape without changing notebook-derived text."""
+    for block_index, block in enumerate(_table_blocks(text), start=1):
+        if len(block) < 2:
+            raise RuntimeError(f"Markdown table {block_index} has no separator row.")
+        expected_pipes = block[0].count("|")
+        if expected_pipes < 3 or any(line.count("|") != expected_pipes for line in block):
+            raise RuntimeError(f"Markdown table {block_index} has inconsistent pipe counts.")
+        separator_cells = [cell.strip() for cell in block[1].strip("|").split("|")]
+        if len(separator_cells) != expected_pipes - 1 or any(
+            not re.fullmatch(r":?-{3,}:?", cell) for cell in separator_cells
+        ):
+            raise RuntimeError(f"Markdown table {block_index} has an invalid separator row.")
+
+
+def _validate_provenance_section(section: str) -> None:
+    blocks = _table_blocks(section)
+    if len(blocks) != 1:
+        raise RuntimeError("SELECTION must contain exactly one Markdown table.")
+    table = blocks[0]
+    headers = [cell.strip() for cell in table[0].strip("|").split("|")]
+    expected_headers = [
+        "status", "selected_features", "smap_features", "candidate_pool",
+        "delta_additions", "selection_period", "fit_scope",
+    ]
+    if headers != expected_headers:
+        raise RuntimeError(f"Unexpected provenance table headers: {headers}")
+    rows = [
+        [cell.strip() for cell in line.strip("|").split("|")]
+        for line in table[2:]
+    ]
+    if len(rows) != 4:
+        raise RuntimeError("Provenance table must contain exactly four feature-size rows.")
+    if [int(row[1]) for row in rows] != [40, 50, 60, 69]:
+        raise RuntimeError("Provenance table feature sizes are incomplete or unordered.")
+    if any(row[3] != "69" or row[4].lower() != "none" for row in rows):
+        raise RuntimeError("Provenance table contains non-scalar or unexpected values.")
+    manifests = re.findall(
+        r"### Selected feature manifest \((\d+) features\)\n\n```text\n(.*?)\n```",
+        section,
+        flags=re.DOTALL,
+    )
+    if [int(size) for size, _ in manifests] != [40, 50, 60, 69]:
+        raise RuntimeError("SELECTION must contain four ordered fenced manifests.")
+    for size, body in manifests:
+        features = [line.strip() for line in body.splitlines() if line.strip()]
+        if len(features) != int(size) or any("smap" in feature.lower() for feature in features):
+            raise RuntimeError(f"Invalid {size}-feature selection manifest.")
+
+
+def _validate_readme_content(content: str) -> None:
+    if re.search(r"(?:REPORT_BEGIN|REPORT_END)::|INTERPRETATION_(?:BEGIN|END)", content):
+        raise RuntimeError("README contains internal notebook report markers.")
+    fence_count = sum(1 for line in content.splitlines() if line.strip().startswith("```"))
+    if fence_count % 2:
+        raise RuntimeError("README contains an unclosed fenced block.")
+    _validate_table_blocks(content)
+    links = re.findall(r"!\[[^]]*\]\((figures/[^)]+\.png)\)", content)
+    if len(links) != len(set(links)):
+        raise RuntimeError("README contains duplicate figure links.")
+    for link in links:
+        if not (EXP_DIR / link).exists():
+            raise FileNotFoundError(EXP_DIR / link)
+
+
 def main() -> None:
     if not NOTEBOOK.exists():
         raise FileNotFoundError(NOTEBOOK)
     sections = extract_sections(notebook_outputs())
     required = {
         "SELECTION", "INPUT_AUDIT", "FEATURE_AUDIT", "ROUTER_AUDIT", "METRICS",
-        "REFERENCE_COMPARISON", "SALVAGE_1_1_VS_1_0", "OLD_NEW_EFFECT",
+        "REFERENCE_COMPARISON", "SALVAGE_1_1_VS_1_0", "FEATURE_SELECTION_ROUND", "OLD_NEW_EFFECT",
         "SMAP_INVARIANCE", "GLOBAL_VERSION", "FIGURES",
     }
     missing = sorted(required - sections.keys())
     if missing:
         raise RuntimeError(f"Notebook stdout is missing report sections: {missing}")
+    _validate_provenance_section(sections["SELECTION"])
 
     effect_names = _figure_names(sections["OLD_NEW_EFFECT"])
     if effect_names != ["old_vs_new_rmse_effect.png"]:
@@ -81,13 +179,19 @@ def main() -> None:
         if not (EXP_DIR / "figures" / name).exists():
             raise FileNotFoundError(EXP_DIR / "figures" / name)
 
-    all_figures = version_names + trend_names
+    # Version charts are embedded in their dedicated section above. Keep the
+    # general Figures section focused on trend/effect charts so each generated
+    # figure has one README link and the section remains easy to audit.
     figure_links = "\n\n".join(
-        f"![{name}](figures/{name})" for name in all_figures
+        f"![{name}](figures/{name})" for name in trend_names
     )
     version_links = "\n\n".join(
         f"![{name}](figures/{name})" for name in version_names
     )
+    feature_selection_section = sections["FEATURE_SELECTION_ROUND"]
+    feature_selection_section = feature_selection_section.replace(
+        "INTERPRETATION_BEGIN", "### Interpretation"
+    ).replace("INTERPRETATION_END", "")
     content = f"""# Experiment: `derived_8.4-ece-model-salvage-1.1`
 
 ## Objective
@@ -134,6 +238,12 @@ This same-seed comparison isolates the feature-selection change from the origina
 
 {sections['SALVAGE_1_1_VS_1_0']}
 
+## Before vs after the new feature-selection round
+
+This global-only comparison isolates the new nested selector from the 1.0 manually selected no-SMAP baseline. Positive ECE values are benefits; positive WA values are degradations. The trend columns are after-minus-before changes, so positive correlation changes indicate stronger agreement with the observed level or temporal direction.
+
+{feature_selection_section}
+
 ## Effect of Removing SMAP: ECE Benefit vs WA Degradation
 
 The paired summary uses original RMSE − no-SMAP RMSE for ECE benefit and no-SMAP RMSE − original RMSE for WA degradation. Positive values have the stated interpretation.
@@ -167,7 +277,7 @@ All generated paths below use the notebook-relative `figures/<filename>` form. T
 ```bash
 cd notebooks/experiment/derived_8.4-ece-model-salvage-1.1
 uv run --no-sync python run_feature_selection.py --stage all
-uv run --no-sync python run_model_salvage.py --resume
+uv run --no-sync python run_model_salvage.py
 uv run --no-sync python build_notebook.py
 nb execute derived_8.4-ece-model-salvage-1.1.ipynb --uv --timeout 1800
 uv run --no-sync python update_readme.py
@@ -175,6 +285,7 @@ uv run --no-sync python update_readme.py
 
 The Slurm workflow separates feature selection and model/report execution on `gpu_debug`, with the second stage dependent on successful selection.
 """
+    _validate_readme_content(content)
     README.write_text(content, encoding="utf-8")
     print(f"[README] updated {README}")
 

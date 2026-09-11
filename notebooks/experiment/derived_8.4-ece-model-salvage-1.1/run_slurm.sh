@@ -20,6 +20,12 @@ mkdir -p artifacts/slurm artifacts/checkpoints artifacts/predictions figures
 echo "=== job ${SLURM_JOB_ID:-?} start $(date) host $(hostname) ==="
 nvidia-smi -L 2>/dev/null | head -2 || true
 
+# Compute nodes may not expose the login-node Jupyter runtime directory.
+# Keep nb's kernel/runtime files in a job-local writable directory.
+NB_RUNTIME_ROOT="${SLURM_TMPDIR:-/tmp}"
+export JUPYTER_RUNTIME_DIR="${NB_RUNTIME_ROOT}/d84_ece_salvage11_jupyter_${SLURM_JOB_ID:-manual}"
+mkdir -p "$JUPYTER_RUNTIME_DIR"
+
 test -f feature_selection_artifacts/selected_features.json || {
     echo "Feature-selection manifest is missing; refusing to start model stage." >&2
     exit 2

@@ -81,10 +81,10 @@ candidate_pool = pd.read_csv(EXP_DIR / "feature_selection_artifacts" / "candidat
 selection_table = pd.DataFrame([
     {
         "status": selection.get("status"),
-        "selected_count": int(size),
-        "smap_selected": sum("smap" in feature.lower() for feature in record["features"]),
-        "candidate_pool_count": len(candidate_pool),
-        "delta_additions": selection.get("delta_additions", {}),
+        "selected_features": int(size),
+        "smap_features": sum("smap" in feature.lower() for feature in record["features"]),
+        "candidate_pool": len(candidate_pool),
+        "delta_additions": "none",
         "selection_period": "WA 2023–2025",
         "fit_scope": "WA only",
     }
@@ -92,7 +92,12 @@ selection_table = pd.DataFrame([
 ])
 print(selection_table.to_markdown(index=False))
 for size, record in sorted(selected_by_size.items(), key=lambda item: int(item[0])):
-    print(f"Selected {size} features:", ";".join(record["features"]))
+    print()
+    print(f"### Selected feature manifest ({size} features)")
+    print()
+    print("```text")
+    print("\\n".join(record["features"]))
+    print("```")
 print("REPORT_END::SELECTION")"""),
     ])
 
@@ -169,6 +174,49 @@ else:
     columns = ["model_id", "old_model_id", "dataset", "window", "n_seeds", "change_rmse_mean", "change_mae_mean", "change_bias_mean", "change_pearson_mean", "change_diff_pearson_mean"]
     print(comparison_10[columns].sort_values(["dataset", "window", "change_rmse_mean"]).to_markdown(index=False, floatfmt=".6f"))
 print("REPORT_END::SALVAGE_1_1_VS_1_0")"""),
+        markdown("""## Before vs after the new feature-selection round
+
+This global-only comparison treats the 1.0 no-SMAP global model as the before-selection baseline and the four nested 1.1 global feature sizes as after-selection variants. It reports pooled ECE benefit, pooled WA degradation, and changes in level and first-difference trend correlation over the common seeds."""),
+        code("""feature_selection_effect = pd.read_csv(EXP_DIR / "feature_selection_round_effect_summary.csv", low_memory=False)
+print("REPORT_BEGIN::FEATURE_SELECTION_ROUND")
+if feature_selection_effect.empty:
+    print("Feature-selection comparison is not available yet.")
+else:
+    table_rows = []
+    for feature_size in sorted(feature_selection_effect["feature_size"].unique()):
+        ece_row = feature_selection_effect[
+            (feature_selection_effect["feature_size"] == feature_size)
+            & (feature_selection_effect["split"] == "ECE spatial")
+        ]
+        wa_row = feature_selection_effect[
+            (feature_selection_effect["feature_size"] == feature_size)
+            & (feature_selection_effect["split"] == "WA temporal")
+        ]
+        if len(ece_row) != 1 or len(wa_row) != 1:
+            raise ValueError(f"Expected one ECE and one WA row for {feature_size} features.")
+        ece_row = ece_row.iloc[0]
+        wa_row = wa_row.iloc[0]
+        table_rows.append({
+            "features": int(feature_size),
+            "n_seeds": int(ece_row["n_seeds"]),
+            "ECE before RMSE": ece_row["rmse_before_mean"],
+            "ECE after RMSE": ece_row["rmse_after_mean"],
+            "ECE benefit": ece_row["rmse_effect_mean"],
+            "ECE benefit %": ece_row["rmse_effect_pct_mean"],
+            "ECE ΔPearson": ece_row["pearson_change_mean"],
+            "ECE Δdiff Pearson": ece_row["diff_pearson_change_mean"],
+            "WA before RMSE": wa_row["rmse_before_mean"],
+            "WA after RMSE": wa_row["rmse_after_mean"],
+            "WA degradation": wa_row["rmse_effect_mean"],
+            "WA degradation %": wa_row["rmse_effect_pct_mean"],
+            "WA ΔPearson": wa_row["pearson_change_mean"],
+            "WA Δdiff Pearson": wa_row["diff_pearson_change_mean"],
+        })
+    print(pd.DataFrame(table_rows).to_markdown(index=False, floatfmt=".6f"))
+    print("INTERPRETATION_BEGIN")
+    print(runner.interpret_feature_selection_round(feature_selection_effect, expected_seeds=(42, 7, 13)))
+    print("INTERPRETATION_END")
+print("REPORT_END::FEATURE_SELECTION_ROUND")"""),
         markdown("""## Effect of Removing SMAP: ECE Benefit vs WA Degradation
 
 This paired summary compares 1.1 against the original SMAP-trained references. ECE benefit is original RMSE minus no-SMAP RMSE; WA degradation is no-SMAP RMSE minus original RMSE. Global feature-count variants are listed separately."""),

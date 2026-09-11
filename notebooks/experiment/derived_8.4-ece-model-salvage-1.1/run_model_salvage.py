@@ -1284,6 +1284,331 @@ def build_salvage_1_1_vs_1_0_comparison(
     return seed_frame, pd.DataFrame(summary_rows)
 
 
+def build_feature_selection_round_comparison(
+    paired_seed: pd.DataFrame,
+    config: dict[str, Any],
+    expected_seeds: Iterable[int] | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Extract the global-only before/after feature-selection comparison.
+
+    ``paired_seed`` is produced by ``build_salvage_1_1_vs_1_0_comparison``;
+    the old 1.0 model is the before-selection baseline and each 1.1 global
+    size is an after-selection variant.  The stored ``rmse_effect`` follows
+    the report-facing sign convention: ECE benefit is before-minus-after,
+    while WA degradation is after-minus-before.
+    """
+    global_specs = sorted(
+        (spec for spec in config["models"] if spec["router"] == "global"),
+        key=lambda spec: int(spec["feature_size"]),
+    )
+    global_ids = [str(spec["id"]) for spec in global_specs]
+    feature_sizes = {
+        str(spec["id"]): int(spec["feature_size"]) for spec in global_specs
+    }
+    seed_columns = [
+        "model_id", "feature_size", "before_model_id", "after_model_id", "seed",
+        "split", "dataset", "window", "rmse_before", "rmse_after",
+        "rmse_change_after_minus_before", "rmse_effect", "rmse_effect_pct",
+        "pearson_before", "pearson_after", "pearson_change",
+        "diff_pearson_before", "diff_pearson_after", "diff_pearson_change",
+    ]
+    summary_columns = [
+        "model_id", "feature_size", "before_model_id", "after_model_id", "split",
+        "dataset", "window", "n_seeds", "rmse_before_mean", "rmse_after_mean",
+        "rmse_effect_mean", "rmse_effect_std", "rmse_effect_pct_mean",
+        "rmse_effect_pct_std", "pearson_before_mean", "pearson_after_mean",
+        "pearson_change_mean", "diff_pearson_before_mean", "diff_pearson_after_mean",
+        "diff_pearson_change_mean",
+    ]
+    if paired_seed.empty:
+        return pd.DataFrame(columns=seed_columns), pd.DataFrame(columns=summary_columns)
+
+    required = {
+        "model_id", "old_model_id", "seed", "dataset", "window", "old_rmse",
+        "new_rmse", "old_pearson", "new_pearson", "change_pearson",
+        "old_diff_pearson", "new_diff_pearson", "change_diff_pearson",
+    }
+    missing = sorted(required - set(paired_seed.columns))
+    if missing:
+        raise ValueError(f"1.0/1.1 paired comparison is missing columns: {missing}")
+
+    source = paired_seed[
+        paired_seed["model_id"].astype(str).isin(global_ids)
+        & paired_seed.set_index(["dataset", "window"]).index.isin(_EFFECT_SPLITS)
+    ].copy()
+    if source.empty:
+        return pd.DataFrame(columns=seed_columns), pd.DataFrame(columns=summary_columns)
+    keys = ["model_id", "seed", "dataset", "window"]
+    if source.duplicated(keys).any():
+        duplicates = source.loc[source.duplicated(keys, keep=False), keys].to_dict(orient="records")
+        raise ValueError(f"Duplicate feature-selection comparison rows: {duplicates}")
+
+    expected_seed_set = None if expected_seeds is None else {int(seed) for seed in expected_seeds}
+    expected_pairs = {
+        (model_id, int(seed), split)
+        for model_id in global_ids
+        for seed in (expected_seed_set or set(source["seed"].astype(int).unique()))
+        for split in _EFFECT_SPLITS
+    }
+    found_pairs = {
+        (str(row["model_id"]), int(row["seed"]), (str(row["dataset"]), str(row["window"])))
+        for _, row in source.iterrows()
+    }
+    if expected_seed_set is not None and found_pairs != expected_pairs:
+        missing_pairs = sorted(expected_pairs - found_pairs)
+        unexpected_pairs = sorted(found_pairs - expected_pairs)
+        raise ValueError(
+            "Feature-selection comparison does not have exactly the requested pairs: "
+            f"missing={missing_pairs}, unexpected={unexpected_pairs}"
+        )
+
+    rows: list[dict[str, Any]] = []
+    for _, row in source.sort_values(keys).iterrows():
+        model_id = str(row["model_id"])
+        dataset = str(row["dataset"])
+        window = str(row["window"])
+        split, _ = _EFFECT_SPLITS[(dataset, window)]
+        before_rmse = float(row["old_rmse"])
+        after_rmse = float(row["new_rmse"])
+        generic_change = after_rmse - before_rmse
+        effect = -generic_change if split == "ECE spatial" else generic_change
+        effect_pct = effect / before_rmse * 100.0 if before_rmse else float("nan")
+        rows.append({
+            "model_id": model_id,
+            "feature_size": feature_sizes[model_id],
+            "before_model_id": str(row["old_model_id"]),
+            "after_model_id": model_id,
+            "seed": int(row["seed"]),
+            "split": split,
+            "dataset": dataset,
+            "window": window,
+            "rmse_before": before_rmse,
+            "rmse_after": after_rmse,
+            "rmse_change_after_minus_before": generic_change,
+            "rmse_effect": effect,
+            "rmse_effect_pct": effect_pct,
+            "pearson_before": float(row["old_pearson"]),
+            "pearson_after": float(row["new_pearson"]),
+            "pearson_change": float(row["change_pearson"]),
+            "diff_pearson_before": float(row["old_diff_pearson"]),
+            "diff_pearson_after": float(row["new_diff_pearson"]),
+            "diff_pearson_change": float(row["change_diff_pearson"]),
+        })
+
+    seed_frame = pd.DataFrame(rows, columns=seed_columns)
+    summary_rows: list[dict[str, Any]] = []
+    for (model_id, split), group in seed_frame.groupby(["model_id", "split"], sort=True):
+        first = group.iloc[0]
+        summary_rows.append({
+            "model_id": model_id,
+            "feature_size": int(first["feature_size"]),
+            "before_model_id": first["before_model_id"],
+            "after_model_id": first["after_model_id"],
+            "split": split,
+            "dataset": first["dataset"],
+            "window": first["window"],
+            "n_seeds": int(group["seed"].nunique()),
+            "rmse_before_mean": float(group["rmse_before"].mean()),
+            "rmse_after_mean": float(group["rmse_after"].mean()),
+            "rmse_effect_mean": float(group["rmse_effect"].mean()),
+            "rmse_effect_std": float(group["rmse_effect"].std(ddof=1)) if len(group) > 1 else 0.0,
+            "rmse_effect_pct_mean": float(group["rmse_effect_pct"].mean()),
+            "rmse_effect_pct_std": float(group["rmse_effect_pct"].std(ddof=1)) if len(group) > 1 else 0.0,
+            "pearson_before_mean": float(group["pearson_before"].mean()),
+            "pearson_after_mean": float(group["pearson_after"].mean()),
+            "pearson_change_mean": float(group["pearson_change"].mean()),
+            "diff_pearson_before_mean": float(group["diff_pearson_before"].mean()),
+            "diff_pearson_after_mean": float(group["diff_pearson_after"].mean()),
+            "diff_pearson_change_mean": float(group["diff_pearson_change"].mean()),
+        })
+    return seed_frame, pd.DataFrame(summary_rows, columns=summary_columns)
+
+
+def interpret_feature_selection_round(
+    effect_summary: pd.DataFrame,
+    expected_seeds: Iterable[int] = DEFAULT_SEEDS,
+) -> str:
+    """Create concise, data-driven prose for the README feature-selection section."""
+    if effect_summary.empty:
+        return "Interpretation is deferred until the complete 1.0/1.1 paired results are available."
+    required = {
+        "feature_size", "split", "n_seeds", "rmse_before_mean", "rmse_after_mean",
+        "rmse_effect_mean", "rmse_effect_pct_mean", "pearson_change_mean",
+        "diff_pearson_change_mean",
+    }
+    missing = sorted(required - set(effect_summary.columns))
+    if missing:
+        raise ValueError(f"Feature-selection effect summary is missing columns: {missing}")
+    expected_n = len({int(seed) for seed in expected_seeds})
+    if set(effect_summary["n_seeds"].astype(int)) != {expected_n}:
+        raise ValueError(
+            f"Feature-selection interpretation requires {expected_n} seeds per row."
+        )
+
+    def fmt(value: Any, digits: int = 4) -> str:
+        numeric = pd.to_numeric(pd.Series([value]), errors="coerce").iloc[0]
+        return "NA" if pd.isna(numeric) else f"{float(numeric):.{digits}f}"
+
+    ece = effect_summary[effect_summary["split"].eq("ECE spatial")].sort_values("feature_size")
+    wa = effect_summary[effect_summary["split"].eq("WA temporal")].sort_values("feature_size")
+    if ece.empty or wa.empty:
+        raise ValueError("Feature-selection interpretation requires both ECE and WA splits.")
+    best_ece = ece.sort_values(["rmse_after_mean", "feature_size"]).iloc[0]
+    ece_effects = ece["rmse_effect_mean"].astype(float)
+    if (ece_effects > 0).all():
+        ece_statement = "all four selected-size variants improve pooled ECE RMSE"
+    elif (ece_effects < 0).all():
+        ece_statement = "all four selected-size variants worsen pooled ECE RMSE"
+    else:
+        ece_statement = "the ECE result is mixed across selected sizes"
+    wa_effects = wa["rmse_effect_mean"].astype(float)
+    wa_low = wa.loc[wa["rmse_effect_mean"].idxmin()]
+    wa_high = wa.loc[wa["rmse_effect_mean"].idxmax()]
+    ece_pearson = ece["pearson_change_mean"].dropna()
+    ece_diff = ece["diff_pearson_change_mean"].dropna()
+    wa_pearson = wa["pearson_change_mean"].dropna()
+    wa_diff = wa["diff_pearson_change_mean"].dropna()
+    trend_parts = []
+    if not ece_pearson.empty:
+        trend_parts.append(
+            f"ECE Pearson changes range from {fmt(ece_pearson.min())} to {fmt(ece_pearson.max())}"
+        )
+    if not ece_diff.empty:
+        trend_parts.append(
+            f"ECE first-difference Pearson changes range from {fmt(ece_diff.min())} to {fmt(ece_diff.max())}"
+        )
+    if not wa_pearson.empty:
+        trend_parts.append(
+            f"WA Pearson changes range from {fmt(wa_pearson.min())} to {fmt(wa_pearson.max())}"
+        )
+    if not wa_diff.empty:
+        trend_parts.append(
+            f"WA first-difference Pearson changes range from {fmt(wa_diff.min())} to {fmt(wa_diff.max())}"
+        )
+    lines = [
+        f"- Best pooled ECE RMSE is the {int(best_ece['feature_size'])}-feature model: "
+        f"{fmt(best_ece['rmse_after_mean'])} after selection versus "
+        f"{fmt(best_ece['rmse_before_mean'])} before, an ECE benefit of "
+        f"{fmt(best_ece['rmse_effect_mean'])} ({fmt(best_ece['rmse_effect_pct_mean'], 2)}%).",
+        f"- The feature-selection round means {ece_statement}; ECE benefit spans "
+        f"{fmt(ece['rmse_effect_mean'].min())} to {fmt(ece['rmse_effect_mean'].max())} RMSE units.",
+        f"- Pooled WA degradation ranges from {fmt(wa_effects.min())} "
+        f"({int(wa_low['feature_size'])} features) to {fmt(wa_effects.max())} "
+        f"({int(wa_high['feature_size'])} features); negative values indicate "
+        "improvement and positive values indicate degradation.",
+        f"- " + ("; ".join(trend_parts) + "." if trend_parts else "Trend correlations were unavailable."),
+        f"- These are pooled comparisons across five ECE stations and seven WA stations, averaged over {expected_n} common seeds; they describe association, not a causal effect of feature selection.",
+    ]
+    return "\n".join(lines)
+
+
+def _load_saved_predictions(
+    config: dict[str, Any], seeds: Iterable[int]
+) -> pd.DataFrame:
+    """Load exactly the configured model/seed prediction artifacts."""
+    specs = _model_specs(config)
+    expected = {(_spec["id"], int(seed)) for _spec in specs for seed in seeds}
+    frames: list[pd.DataFrame] = []
+    found: set[tuple[str, int]] = set()
+    for model_id, seed in sorted(expected):
+        path = _prediction_path(model_id, seed)
+        if not path.exists():
+            raise FileNotFoundError(f"Missing saved prediction artifact: {path}")
+        frame = pd.read_csv(path, low_memory=False)
+        if frame.empty:
+            raise ValueError(f"Saved prediction artifact is empty: {path}")
+        pair = (str(frame["model_id"].iloc[0]), int(frame["seed"].iloc[0]))
+        if pair != (str(model_id), int(seed)):
+            raise ValueError(f"Prediction identity mismatch in {path}: {pair}")
+        found.add(pair)
+        frames.append(frame)
+    if found != expected:
+        raise RuntimeError(f"Saved prediction coverage is incomplete: {sorted(expected - found)}")
+    predictions = pd.concat(frames, ignore_index=True)
+    key_columns = ["model_id", "seed", "dataset", "window", "station_id", "date"]
+    if predictions.duplicated(key_columns).any():
+        raise RuntimeError("Saved prediction artifacts contain duplicate prediction keys.")
+    return predictions
+
+
+def rebuild_reports_from_saved_predictions(
+    config: dict[str, Any], seeds: list[int]
+) -> None:
+    """Rebuild derived reports without refitting models or routers."""
+    data = load_data(config)
+    predictions = _load_saved_predictions(config, seeds)
+    _write_json(EXP_DIR / "feature_manifest.json", feature_manifest(data, config))
+    _write_json(EXP_DIR / "selection_provenance.json", {
+        "manifest_paths": {
+            str(size): str(_resolve_experiment_path(path))
+            for size, path in config["selected_feature_manifests"].items()
+        },
+        "manifest_sha256": {
+            str(size): hashlib.sha256(
+                _resolve_experiment_path(path).read_bytes()
+            ).hexdigest()
+            for size, path in config["selected_feature_manifests"].items()
+        },
+        "selected_feature_hashes": {
+            str(size): _hash_features(features)
+            for size, features in sorted(data.selected_feature_sets.items())
+        },
+        "selected_feature_counts": {
+            str(size): len(features)
+            for size, features in sorted(data.selected_feature_sets.items())
+        },
+        "selected_features_by_size": {
+            str(size): features
+            for size, features in sorted(data.selected_feature_sets.items())
+        },
+        "fit_scope": "WA trainval only",
+        "ece_target_used_for_fit": False,
+        "delta_additions": [],
+    })
+    _write_json(EXP_DIR / "input_audit.json", {
+        "train_rows": len(data.train), "val_rows": len(data.val), "trainval_rows": len(data.trainval),
+        "wa_test_rows": len(data.test), "ece_rows": len(data.ece),
+        "wa_train_stations": sorted(data.trainval["station_id"].astype(str).unique()),
+        "ece_stations": sorted(data.ece["station_id"].astype(str).unique()),
+        "ece_date_min": str(data.ece["date"].min().date()), "ece_date_max": str(data.ece["date"].max().date()),
+        "ece_target_used_for_fit": False,
+    })
+    seed_metrics, summary = summarize_predictions(predictions)
+    predictions.to_csv(EXP_DIR / "predictions.csv", index=False)
+    seed_metrics.to_csv(EXP_DIR / "seed_metrics.csv", index=False)
+    summary.to_csv(EXP_DIR / "summary.csv", index=False)
+    summary[summary["scope"] != "__pooled__"].to_csv(EXP_DIR / "station_summary.csv", index=False)
+    references = load_reference_metrics(config)
+    references.to_csv(EXP_DIR / "reference_metrics.csv", index=False)
+    comparison = build_reference_comparison(seed_metrics, references)
+    comparison.to_csv(EXP_DIR / "reference_comparison.csv", index=False)
+    effect_seed, effect_summary = build_old_vs_new_effects(
+        comparison,
+        expected_seeds=seeds,
+        expected_model_ids=[spec["id"] for spec in _model_specs(config)],
+    )
+    effect_seed.to_csv(EXP_DIR / "old_vs_new_effect_seed.csv", index=False)
+    effect_summary.to_csv(EXP_DIR / "old_vs_new_effect_summary.csv", index=False)
+    one_zero_seed, one_zero_summary = build_salvage_1_1_vs_1_0_comparison(
+        predictions, config, seeds
+    )
+    one_zero_seed.to_csv(EXP_DIR / "salvage_1_1_vs_1_0_seed.csv", index=False)
+    one_zero_summary.to_csv(EXP_DIR / "salvage_1_1_vs_1_0_summary.csv", index=False)
+    feature_selection_seed, feature_selection_summary = build_feature_selection_round_comparison(
+        one_zero_seed, config, expected_seeds=seeds
+    )
+    feature_selection_seed.to_csv(EXP_DIR / "feature_selection_round_effect_seed.csv", index=False)
+    feature_selection_summary.to_csv(EXP_DIR / "feature_selection_round_effect_summary.csv", index=False)
+    version_status = global_version_source_status(data, config, (42, 7, 13))
+    _write_json(EXP_DIR / "global_version_provenance.json", version_status)
+    if version_status["ready"]:
+        make_global_version_charts(data, config, EXP_DIR / "figures", (42, 7, 13))
+    print(
+        f"[reports-only] models={len(_model_specs(config))} seeds={len(seeds)} "
+        f"prediction_rows={len(predictions)}"
+    )
+
+
 def run_experiment(config: dict[str, Any], seeds: list[int], smoke: bool,
                    resume: bool, device_override: str | None = None) -> None:
     global PREDICTION_DIR, CHECKPOINT_DIR
@@ -1406,6 +1731,11 @@ def run_experiment(config: dict[str, Any], seeds: list[int], smoke: bool,
     )
     one_zero_seed.to_csv(EXP_DIR / "salvage_1_1_vs_1_0_seed.csv", index=False)
     one_zero_summary.to_csv(EXP_DIR / "salvage_1_1_vs_1_0_summary.csv", index=False)
+    feature_selection_seed, feature_selection_summary = build_feature_selection_round_comparison(
+        one_zero_seed, config, expected_seeds=seeds
+    )
+    feature_selection_seed.to_csv(EXP_DIR / "feature_selection_round_effect_seed.csv", index=False)
+    feature_selection_summary.to_csv(EXP_DIR / "feature_selection_round_effect_summary.csv", index=False)
     version_status = global_version_source_status(data, config, (42, 7, 13))
     _write_json(EXP_DIR / "global_version_provenance.json", version_status)
     if version_status["ready"]:
@@ -1425,6 +1755,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--seeds", default=None, help="Comma-separated seed override.")
     parser.add_argument("--device", default=None, choices=["cpu", "cuda"], help="Optional XGBoost device override.")
     parser.add_argument("--no-resume", action="store_true", help="Refit outputs even when checkpoints exist.")
+    parser.add_argument("--report-only", action="store_true", help="Rebuild reports from saved predictions without fitting.")
     return parser.parse_args(argv)
 
 
@@ -1434,7 +1765,10 @@ def main(argv: list[str] | None = None) -> None:
     seeds = [int(value) for value in args.seeds.split(",")] if args.seeds else list(config.get("seeds", DEFAULT_SEEDS))
     if args.smoke:
         seeds = [42]
-    run_experiment(config, seeds, args.smoke, resume=not args.no_resume, device_override=args.device)
+    if args.report_only:
+        rebuild_reports_from_saved_predictions(config, seeds)
+    else:
+        run_experiment(config, seeds, args.smoke, resume=not args.no_resume, device_override=args.device)
 
 
 if __name__ == "__main__":
