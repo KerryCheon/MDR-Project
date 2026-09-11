@@ -1,0 +1,2 @@
+candidate_id,canonical_candidate_id,evaluation_status,cluster_0_addition_count,cluster_1_addition_count,cluster_0_additions,cluster_1_additions,pooled_r2,pooled_rmse,pooled_mae,year_2023_r2,year_2024_r2,year_2025_r2
+delta_c0_0_c1_0,round_06_swap_D_fft_ent_LST_modis_kobs30_for_V_rollmax_E_SAR_ratio_kobs30_exact,reused,0,0,,,0.784129865611434,0.04732952351850482,0.03588957445320766,0.768837696874003,0.7688806619119275,0.8093184856104227

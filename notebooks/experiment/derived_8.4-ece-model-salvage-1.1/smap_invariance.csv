@@ -1,0 +1,11 @@
+model_id,seed,smap_columns_altered,max_abs_prediction_difference,changed_regime_labels
+Clustering_V0_Full_k2_no_smap_fs60,42,85,0.0,0
+Clustering_Backbone_k2_no_smap_fs60,42,85,0.0,0
+Trained_Gating_k2_no_smap_fs60,42,85,0.0,0
+Univariate_G_API_k2_no_smap_fs60,42,85,0.0,0
+Clustering_Dynamic_k2_no_smap_fs60,42,85,0.0,0
+Seasonal_Binary_k2_no_smap_fs60,42,85,0.0,0
+Global_Single_40_no_smap_fs40,42,85,0.0,0
+Global_Single_50_no_smap_fs50,42,85,0.0,0
+Global_Single_60_no_smap_fs60,42,85,0.0,0
+Global_Single_69_no_smap_fs69,42,85,0.0,0

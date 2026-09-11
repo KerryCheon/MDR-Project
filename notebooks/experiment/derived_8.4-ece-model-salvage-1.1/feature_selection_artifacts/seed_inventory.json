@@ -1,0 +1,90 @@
+{
+  "seed_notes": [
+    {
+      "seed": "legacy_8_2_forced_bypass",
+      "status": "loaded",
+      "detail": "42"
+    },
+    {
+      "seed": "current_8_4_c0",
+      "status": "loaded",
+      "detail": "40"
+    },
+    {
+      "seed": "current_8_4_c1_true_off",
+      "status": "loaded",
+      "detail": "9"
+    },
+    {
+      "seed": "current_8_4_c2",
+      "status": "loaded",
+      "detail": "48"
+    },
+    {
+      "seed": "current_8_4_c2b",
+      "status": "loaded",
+      "detail": "47"
+    },
+    {
+      "seed": "current_8_4_c2c",
+      "status": "loaded",
+      "detail": "48"
+    },
+    {
+      "seed": "current_8_4_c2d",
+      "status": "loaded",
+      "detail": "57"
+    },
+    {
+      "seed": "current_8_4_c3",
+      "status": "loaded",
+      "detail": "48"
+    },
+    {
+      "seed": "current_8_4_c4",
+      "status": "loaded",
+      "detail": "48"
+    },
+    {
+      "seed": "current_8_4_c5",
+      "status": "loaded",
+      "detail": "45"
+    },
+    {
+      "seed": "historical_8_2_v3",
+      "status": "missing",
+      "detail": "data/splits/derived_8.2/dataset_metadata.py"
+    },
+    {
+      "seed": "local_mi300",
+      "status": "generated",
+      "detail": "22"
+    },
+    {
+      "seed": "local_legacy_forced_bypass",
+      "status": "generated",
+      "detail": "43"
+    },
+    {
+      "seed": "local_mi300_repaired",
+      "status": "generated",
+      "detail": "22"
+    }
+  ],
+  "seed_sizes": {
+    "v0": 42,
+    "legacy_8_2_forced_bypass": 42,
+    "current_8_4_c0": 40,
+    "current_8_4_c1_true_off": 9,
+    "current_8_4_c2": 48,
+    "current_8_4_c2b": 47,
+    "current_8_4_c2c": 48,
+    "current_8_4_c2d": 57,
+    "current_8_4_c3": 48,
+    "current_8_4_c4": 48,
+    "current_8_4_c5": 45,
+    "local_mi300": 22,
+    "local_legacy_forced_bypass": 43,
+    "local_mi300_repaired": 22
+  }
+}

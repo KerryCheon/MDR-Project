@@ -1,0 +1,123 @@
+experiment:
+  name: "derived_8.4-ece-model-salvage-1.1"
+  objective: "Retrain all current two-regime gates at 60 selected non-SMAP features and the global model at 40, 50, 60, and 69 selected features."
+  constraint: "Routers and regressors fit only on WA trainval; ECE targets are evaluation-only."
+  parent_experiment: "notebooks/experiment/derived_8.4-ece-model-salvage-1.0"
+  feature_selection_config: "notebooks/experiment/derived_8.4-ece-model-salvage-1.1/feature_selection_config.yaml"
+  parent_evaluation: "notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3"
+  router_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/eval_formal/routers.py"
+  model_params_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/config.yaml"
+
+data:
+  training_dir: "data/splits/derived_8.4"
+  ece_v3_test: "data/splits/derived_8.4_ece_v3/test.csv"
+  target: "soil_moisture_5cm"
+  v0_metadata: "data/splits/derived_8.4/dataset_metadata.py"
+  backbone_config: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/config.yaml"
+  original_results_dir: "notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3"
+  salvage_1_0_results_dir: "notebooks/experiment/derived_8.4-ece-model-salvage-1.0"
+
+seeds: [42, 7, 13]
+router_seed: 42
+selected_feature_manifests:
+  "40": "feature_selection_artifacts/selected_features_40.json"
+  "50": "feature_selection_artifacts/selected_features_50.json"
+  "60": "feature_selection_artifacts/selected_features_60.json"
+  "69": "feature_selection_artifacts/selected_features_69.json"
+selected_feature_sizes: [40, 50, 60, 69]
+
+model:
+  exact_params:
+    n_estimators: 2500
+    learning_rate: 0.005
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: hist
+    device: cuda
+    n_jobs: 1
+  trained_gate_threshold: 0.16
+
+features:
+  dynamic_parent: ["SMAP_sm_pm_interp_lag1", "G_API", "LST_modis"]
+
+models:
+  - id: "Clustering_V0_Full_k2_no_smap_fs60"
+    router: "v0"
+    parent_reference: "Clustering_V0_Full_k2_c0_0_c1_0"
+    salvage_1_0_model_id: "Clustering_V0_Full_k2_no_smap"
+    feature_size: 60
+    two_regime: true
+  - id: "Clustering_Backbone_k2_no_smap_fs60"
+    router: "backbone54"
+    parent_reference: "Clustering_Backbone54_k2_c0_0_c1_0"
+    salvage_1_0_model_id: "Clustering_Backbone54_k2_no_smap"
+    feature_size: 60
+    two_regime: true
+  - id: "Trained_Gating_k2_no_smap_fs60"
+    router: "trained_gate"
+    parent_reference: "Trained_Gating_k2_c0_0_c1_0"
+    salvage_1_0_model_id: "Trained_Gating_k2_no_smap"
+    feature_size: 60
+    two_regime: true
+  - id: "Univariate_G_API_k2_no_smap_fs60"
+    router: "gapi"
+    parent_reference: "Univariate_G_API_k2_c0_0_c1_0"
+    salvage_1_0_model_id: "Univariate_G_API_k2_no_smap"
+    feature_size: 60
+    two_regime: true
+  - id: "Clustering_Dynamic_k2_no_smap_fs60"
+    router: "dynamic"
+    parent_reference: "Clustering_Dynamic_k2_c0_0_c1_0"
+    salvage_1_0_model_id: "Clustering_Dynamic_k2_no_smap"
+    feature_size: 60
+    two_regime: true
+  - id: "Seasonal_Binary_k2_no_smap_fs60"
+    router: "seasonal"
+    parent_reference: "Seasonal_Binary_k2_c0_0_c1_0"
+    salvage_1_0_model_id: "Seasonal_Binary_k2_no_smap"
+    feature_size: 60
+    two_regime: true
+  - id: "Global_Single_40_no_smap_fs40"
+    router: "global"
+    parent_reference: "Global_Single_54"
+    salvage_1_0_model_id: "Global_Single_54_no_smap"
+    feature_size: 40
+    two_regime: false
+  - id: "Global_Single_50_no_smap_fs50"
+    router: "global"
+    parent_reference: "Global_Single_54"
+    salvage_1_0_model_id: "Global_Single_54_no_smap"
+    feature_size: 50
+    two_regime: false
+  - id: "Global_Single_60_no_smap_fs60"
+    router: "global"
+    parent_reference: "Global_Single_54"
+    salvage_1_0_model_id: "Global_Single_54_no_smap"
+    feature_size: 60
+    two_regime: false
+  - id: "Global_Single_69_no_smap_fs69"
+    router: "global"
+    parent_reference: "Global_Single_54"
+    salvage_1_0_model_id: "Global_Single_54_no_smap"
+    feature_size: 69
+    two_regime: false
+
+evaluation:
+  windows:
+    temporal_full:
+      dataset: "wa_temporal"
+      start: "2023-01-01"
+      end: "2025-12-31"
+    temporal_summer_2025:
+      dataset: "wa_temporal"
+      start: "2025-07-20"
+      end: "2025-08-19"
+    spatial_ece_v3_full:
+      dataset: "ece_spatial"
+      start: "2026-07-20"
+      end: "2026-08-19"

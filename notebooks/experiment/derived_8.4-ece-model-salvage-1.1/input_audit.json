@@ -1,0 +1,26 @@
+{
+  "ece_date_max": "2026-08-19",
+  "ece_date_min": "2026-07-20",
+  "ece_rows": 150,
+  "ece_stations": [
+    "ECE_BBG_Lost_Meadow",
+    "ECE_BBG_Main_St",
+    "ECE_Renton_Garden_North",
+    "ECE_Renton_Garden_Shed",
+    "ECE_Renton_Home"
+  ],
+  "ece_target_used_for_fit": false,
+  "train_rows": 9803,
+  "trainval_rows": 14608,
+  "val_rows": 4805,
+  "wa_test_rows": 6620,
+  "wa_train_stations": [
+    "BeaverPass_WA_990",
+    "CayusePass_WA",
+    "Darrington",
+    "Paradise_WA",
+    "Quinault",
+    "SourdoughGulch_WA_985",
+    "Spokane"
+  ]
+}

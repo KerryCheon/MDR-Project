@@ -1,0 +1,105 @@
+# Local copy of the MI -> ElasticNet -> stability -> wrapper workflow.
+# This configuration is deliberately independent of the source package runtime.
+experiment:
+  name: "derived_8.4-ece-model-salvage-1.1-feature-selection"
+  source_pipeline: "derived_8.4-feature-selection-2.0 (locally copied and adapted)"
+  selection_period: "WA 2023-01-01 through 2025-12-31; wrapper evaluation is an accepted manual-selection analogue"
+  fit_scope: "WA trainval only; no ECE rows or targets"
+
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+artifacts:
+  directory: "feature_selection_artifacts"
+
+model:
+  seed: 42
+  exact_params:
+    n_estimators: 2500
+    learning_rate: 0.005
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: "hist"
+    device: "cuda"
+  proxy_params:
+    n_estimators: 500
+    learning_rate: 0.01
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: "hist"
+    device: "cuda"
+
+calibration:
+  validate: false
+  basis: "Original SMAP baseline parity is not comparable after the no-SMAP input policy."
+  expected_r2: 0.7703
+  expected_rmse: 0.0488
+  r2_tolerance: 0.0005
+  rmse_tolerance: 0.0005
+
+selection:
+  canonical_profile: "mi300"
+  canonical_mi_k: 300
+  top_k: 50
+  elasticnet_k: 60
+  bootstrap_k: 60
+  stability_min_freq: 0.6
+  stability_min_keep: 20
+
+audit:
+  profiles:
+    - "mi120"
+    - "mi300"
+    - "legacy_forced_bypass"
+    - "no_mi"
+    - "mi300_repaired"
+  stability_n_boot: 20
+  stability_sample_fraction: 0.8
+
+search:
+  workers: 8
+  deadline_minutes: 120
+  final_reserve_minutes: 15
+  candidate_pool_size: 69
+  global_feature_min: 40
+  global_feature_max: 69
+  normalization_sizes: [40, 50, 60, 69]
+  delta_addition_counts: [0]
+  max_rounds: 6
+  exact_attempts_per_round: 4
+
+provenance:
+  input_candidate_pool: "Generated from non-SMAP WA candidate evidence; persisted as feature_selection_artifacts/candidate_pool.csv"
+  no_smap_policy: "drop every feature containing SMAP, case-insensitively, before MI, ElasticNet, stability, wrapper, audit, or model fitting"
+
+seeds:
+  files:
+    legacy_8_2_forced_bypass: "notebooks/experiment/derived_8.2-feature-selection-2.1/artifacts/derived_8.2/c1_baseline_bypass_off/selected_features.json"
+    current_8_4_c0: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c0_baseline_bypass_on/selected_features.json"
+    current_8_4_c1_true_off: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c1_baseline_bypass_off/selected_features.json"
+    current_8_4_c2: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c2_xgb/selected_features.json"
+    current_8_4_c2b: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c2b_xgb_softcorr/selected_features.json"
+    current_8_4_c2c: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c2c_xgb_nocorr/selected_features.json"
+    current_8_4_c2d: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c2d_xgb_softcorr_k65/selected_features.json"
+    current_8_4_c3: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c3_xgb_no_coverage/selected_features.json"
+    current_8_4_c4: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c4_hybrid/selected_features.json"
+    current_8_4_c5: "notebooks/experiment/derived_8.4-feature-selection-1.0/artifacts/derived_8.4/c5_rf/selected_features.json"
+  metadata:
+    historical_8_2_v3:
+      path: "data/splits/derived_8.2/dataset_metadata.py"
+      attribute: "OVERALL_SELECTED_FEATURES_V3"

@@ -1,0 +1,8 @@
+{
+  "config_path": "/scratch/group/p.cis250607.000/MDR-Project/notebooks/experiment/derived_8.4-ece-model-salvage-1.1/feature_selection_config.yaml",
+  "stage": "all",
+  "workers": 8,
+  "deadline_minutes": 120,
+  "audit_bootstrap": 20,
+  "search_rounds": 6
+}

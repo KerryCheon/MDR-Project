@@ -1,0 +1,6 @@
+artifacts/checkpoints/
+artifacts/predictions/
+artifacts/slurm/
+feature_selection_artifacts/slurm/
+reference_artifacts/slurm/
+__pycache__/
