@@ -1,0 +1,121 @@
+{
+  "notebook": "ece-input-weather-overlay-1.0.ipynb",
+  "parent_experiment": "derived_8.4-ece-model-salvage-1.1",
+  "best_model_id": "Global_Single_60_no_smap_fs60",
+  "seeds": [
+    42,
+    7,
+    13
+  ],
+  "aggregation": "mean over chart seeds",
+  "ece_input_source": "data/splits/derived_8.4_ece_v3/test.csv",
+  "target": "soil_moisture_5cm",
+  "ece_stations": [
+    "ECE_BBG_Lost_Meadow",
+    "ECE_BBG_Main_St",
+    "ECE_Renton_Garden_North",
+    "ECE_Renton_Garden_Shed",
+    "ECE_Renton_Home"
+  ],
+  "n_rows_aligned": 150,
+  "raw_drivers": [
+    "precip_mm",
+    "LST_modis",
+    "G_API",
+    "G_DSLR",
+    "G_rain_sum_3d",
+    "G_rain_sum_7d",
+    "G_rain_sum_30d"
+  ],
+  "note": "No T2M/air-temperature column in ECE v3 test split; LST_modis is the temperature proxy.",
+  "event_response_note": "d_pred vs precip uses same-day precip (diff[t] vs precip[t]); Spearman rho is robust to zero-inflated precip_mm.",
+  "pooled_dpred_vs_precip": {
+    "pearson": 0.2364,
+    "spearman_rho": 0.1473,
+    "spearman_p": 0.0771,
+    "n": 145
+  },
+  "soil_moisture_ylim": [
+    0.0,
+    0.25
+  ],
+  "rain_ylim_mm": [
+    0.0,
+    20.0
+  ],
+  "lst_ylim_K": [
+    297.0,
+    303.0
+  ],
+  "api_dslr_ylim": [
+    0.0,
+    20.0
+  ],
+  "gvp_crosscheck_max_abs_diff": 9.71445146547012e-17,
+  "per_station_pearson": {
+    "ECE_BBG_Lost_Meadow": {
+      "r_pred_vs_precip_mm": 0.1009,
+      "r_pred_vs_LST_modis": 0.162,
+      "r_pred_vs_G_API": 0.8018,
+      "r_pred_vs_G_DSLR": -0.2511,
+      "r_pred_vs_G_rain_sum_3d": 0.5472,
+      "r_pred_vs_G_rain_sum_7d": 0.6591,
+      "r_pred_vs_G_rain_sum_30d": 0.8614,
+      "r_dpred_vs_precip": 0.1576,
+      "rho_dpred_vs_precip": 0.2095,
+      "p_dpred_vs_precip": 0.2754
+    },
+    "ECE_BBG_Main_St": {
+      "r_pred_vs_precip_mm": 0.1459,
+      "r_pred_vs_LST_modis": 0.2321,
+      "r_pred_vs_G_API": 0.8516,
+      "r_pred_vs_G_DSLR": -0.3125,
+      "r_pred_vs_G_rain_sum_3d": 0.6062,
+      "r_pred_vs_G_rain_sum_7d": 0.7173,
+      "r_pred_vs_G_rain_sum_30d": 0.89,
+      "r_dpred_vs_precip": 0.1167,
+      "rho_dpred_vs_precip": 0.1885,
+      "p_dpred_vs_precip": 0.3273
+    },
+    "ECE_Renton_Garden_North": {
+      "r_pred_vs_precip_mm": 0.1439,
+      "r_pred_vs_LST_modis": 0.1292,
+      "r_pred_vs_G_API": 0.8445,
+      "r_pred_vs_G_DSLR": -0.6251,
+      "r_pred_vs_G_rain_sum_3d": 0.668,
+      "r_pred_vs_G_rain_sum_7d": 0.6976,
+      "r_pred_vs_G_rain_sum_30d": 0.8837,
+      "r_dpred_vs_precip": 0.3155,
+      "rho_dpred_vs_precip": 0.0731,
+      "p_dpred_vs_precip": 0.7064
+    },
+    "ECE_Renton_Garden_Shed": {
+      "r_pred_vs_precip_mm": 0.142,
+      "r_pred_vs_LST_modis": 0.1297,
+      "r_pred_vs_G_API": 0.8445,
+      "r_pred_vs_G_DSLR": -0.6172,
+      "r_pred_vs_G_rain_sum_3d": 0.6725,
+      "r_pred_vs_G_rain_sum_7d": 0.7052,
+      "r_pred_vs_G_rain_sum_30d": 0.887,
+      "r_dpred_vs_precip": 0.3067,
+      "rho_dpred_vs_precip": 0.0731,
+      "p_dpred_vs_precip": 0.7064
+    },
+    "ECE_Renton_Home": {
+      "r_pred_vs_precip_mm": 0.1639,
+      "r_pred_vs_LST_modis": 0.2863,
+      "r_pred_vs_G_API": 0.8255,
+      "r_pred_vs_G_DSLR": -0.4274,
+      "r_pred_vs_G_rain_sum_3d": 0.7645,
+      "r_pred_vs_G_rain_sum_7d": 0.6731,
+      "r_pred_vs_G_rain_sum_30d": 0.8318,
+      "r_dpred_vs_precip": 0.2363,
+      "rho_dpred_vs_precip": 0.1558,
+      "p_dpred_vs_precip": 0.4196
+    }
+  },
+  "figures": [
+    "figures/ece_all_sensors_input_overlay_rainfall.png",
+    "figures/ece_all_sensors_input_overlay_temperature.png"
+  ]
+}

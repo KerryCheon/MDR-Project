@@ -604,6 +604,28 @@ All generated paths below use the notebook-relative `figures/<filename>` form. T
 
 ![ece_ECE_Renton_Home_global_feature_sizes_trend.png](figures/ece_ECE_Renton_Home_global_feature_sizes_trend.png)
 
+## Input weather overlay (companion to best-1.1 validation)
+
+Notebook `ece-input-weather-overlay-1.0.ipynb` reuses the aligned Best-1.1 predictions and overlays raw ECE input drivers on the same 5-station layout and soil-moisture `ylim [0, 0.25]` as the validation chart above; only ground truth and Best 1.1 are drawn. The ECE test split has no T2M/air-temperature column, so `LST_modis` is the temperature proxy. The values below come strictly from the overlay notebook stdout; provenance: `input_overlay_provenance.json`.
+
+```text
+Best model: Global_Single_60_no_smap_fs60 (mean over seeds [42, 7, 13]); inputs from data/splits/derived_8.4_ece_v3/test.csv (150 rows, 5 stations x 30 dates 2026-07-20 to 2026-08-19).
+The early-window prediction hump (peaking 2026-07-26/27) tracks the G_rain_sum_3d/7d and G_API rise after the 07-23 and 07-26 rain events, then decays as G_API drains and G_DSLR grows. Daily precip_mm spikes and LST_modis (a coarse stepwise composite, flat for days at a time) barely correlate with prediction level, and day-to-day prediction changes respond only weakly to same-day rain (Spearman rho +0.07 to +0.21 per station, none significant at 0.05; pooled rho +0.15, p=0.077, n=145). Prediction level follows antecedent wetness, not daily weather.
+G_rain_sum_30d shows the strongest per-station level correlation (+0.83 to +0.89) but only +0.57 pooled: a near-constant 30-day accumulator acts as a station level offset rather than event tracking, so it is reported here and not plotted.
+
+Per-station Pearson r(Best-1.1, driver); d_pred vs same-day precip with Spearman rho/p:
+station                      r_precip r_rain3d r_rain7d r_rain30d   r_LST   r_API  r_DSLR  r_dpred rho_dpred       p
+ECE_BBG_Lost_Meadow             +0.10    +0.55    +0.66     +0.86   +0.16   +0.80   -0.25    +0.16     +0.21   0.275
+ECE_BBG_Main_St                 +0.15    +0.61    +0.72     +0.89   +0.23   +0.85   -0.31    +0.12     +0.19   0.327
+ECE_Renton_Garden_North         +0.14    +0.67    +0.70     +0.88   +0.13   +0.84   -0.63    +0.32     +0.07   0.706
+ECE_Renton_Garden_Shed          +0.14    +0.67    +0.71     +0.89   +0.13   +0.84   -0.62    +0.31     +0.07   0.706
+ECE_Renton_Home                 +0.16    +0.76    +0.67     +0.83   +0.29   +0.83   -0.43    +0.24     +0.16   0.420
+```
+
+![ece_all_sensors_input_overlay_rainfall.png](figures/ece_all_sensors_input_overlay_rainfall.png)
+
+![ece_all_sensors_input_overlay_temperature.png](figures/ece_all_sensors_input_overlay_temperature.png)
+
 ## Reproduction
 
 ```bash
@@ -612,6 +634,7 @@ uv run --no-sync python run_feature_selection.py --stage all
 uv run --no-sync python run_model_salvage.py
 uv run --no-sync python build_notebook.py
 nb execute derived_8.4-ece-model-salvage-1.1.ipynb --uv --timeout 1800
+nb execute ece-input-weather-overlay-1.0.ipynb --uv --timeout 600
 uv run --no-sync python update_readme.py
 ```
 

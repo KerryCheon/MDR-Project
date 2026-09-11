@@ -62,6 +62,7 @@ step uv run --no-sync python build_notebook.py
 
 cd ../..
 step nb execute experiment/derived_8.4-ece-model-salvage-1.1/derived_8.4-ece-model-salvage-1.1.ipynb --uv --timeout 1800
+step nb execute experiment/derived_8.4-ece-model-salvage-1.1/ece-input-weather-overlay-1.0.ipynb --uv --timeout 600
 cd experiment/derived_8.4-ece-model-salvage-1.1
 
 step uv run --no-sync python update_readme.py

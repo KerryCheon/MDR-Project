@@ -459,12 +459,26 @@ def test_readme_has_variable_size_section_and_valid_figure_links():
     assert "## Global model version comparison" in text
     assert "## Multi-panel ECE sensor comparisons" in text
     assert "## Original versus best 1.1 global validation" in text
+    assert "## Input weather overlay" in text
+    overlay_provenance = json.loads(
+        (EXP_DIR / "input_overlay_provenance.json").read_text(encoding="utf-8")
+    )
+    assert overlay_provenance["best_model_id"] == "Global_Single_60_no_smap_fs60"
+    assert overlay_provenance["n_rows_aligned"] == 150
+    assert overlay_provenance["figures"] == [
+        "figures/ece_all_sensors_input_overlay_rainfall.png",
+        "figures/ece_all_sensors_input_overlay_temperature.png",
+    ]
     links = [Path(match) for match in re.findall(r"\]\((figures/[^)]+\.png)\)", text)]
     assert links
     assert all((EXP_DIR / link).exists() for link in links)
     assert len([link for link in links if "global_model_versions" in link.name]) == 5
     assert len([link for link in links if "_multipanel.png" in link.name]) == 4
     assert len([link for link in links if "global_best_validation" in link.name]) == 1
+    assert [link.name for link in links if "input_overlay" in link.name] == [
+        "ece_all_sensors_input_overlay_rainfall.png",
+        "ece_all_sensors_input_overlay_temperature.png",
+    ]
 
 
 def test_readme_tables_fences_and_provenance_are_well_formed():

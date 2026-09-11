@@ -10,13 +10,18 @@ from pathlib import Path
 
 EXP_DIR = Path(__file__).resolve().parent
 NOTEBOOK = EXP_DIR / "derived_8.4-ece-model-salvage-1.1.ipynb"
+OVERLAY_NOTEBOOK = EXP_DIR / "ece-input-weather-overlay-1.0.ipynb"
 README = EXP_DIR / "README.md"
+EXPECTED_OVERLAY_FIGURES = [
+    "ece_all_sensors_input_overlay_rainfall.png",
+    "ece_all_sensors_input_overlay_temperature.png",
+]
 
 
-def notebook_outputs() -> str:
+def notebook_outputs(notebook: Path) -> str:
     """Read executed stream outputs through nb without parsing display wrappers."""
     result = subprocess.run(
-        ["nb", "read", str(NOTEBOOK), "--json"],
+        ["nb", "read", str(notebook), "--json"],
         check=True,
         capture_output=True,
         text=True,
@@ -186,7 +191,17 @@ def _validate_readme_content(content: str) -> None:
 def main() -> None:
     if not NOTEBOOK.exists():
         raise FileNotFoundError(NOTEBOOK)
-    sections = extract_sections(notebook_outputs())
+    if not OVERLAY_NOTEBOOK.exists():
+        raise FileNotFoundError(
+            f"{OVERLAY_NOTEBOOK} (run the overlay notebook at least once before regenerating)"
+        )
+    sections = extract_sections(notebook_outputs(NOTEBOOK))
+    overlay_sections = extract_sections(notebook_outputs(OVERLAY_NOTEBOOK))
+    if "INPUT_OVERLAY" not in overlay_sections:
+        raise RuntimeError(
+            "Overlay notebook stdout is missing REPORT_BEGIN::INPUT_OVERLAY "
+            "(execute ece-input-weather-overlay-1.0.ipynb with --uv first)"
+        )
     required = {
         "SELECTION", "INPUT_AUDIT", "FEATURE_AUDIT", "ROUTER_AUDIT", "METRICS",
         "REFERENCE_COMPARISON", "SALVAGE_1_1_VS_1_0", "FEATURE_SELECTION_ROUND", "OLD_NEW_EFFECT",
@@ -221,6 +236,17 @@ def main() -> None:
         raise RuntimeError(
             "BEST_GLOBAL_VALIDATION must contain exactly one diagnostic chart."
         )
+    overlay_names = _figure_names(overlay_sections["INPUT_OVERLAY"])
+    if overlay_names != EXPECTED_OVERLAY_FIGURES:
+        raise RuntimeError(
+            "INPUT_OVERLAY must contain exactly the rainfall and temperature overlay charts."
+        )
+    overlay_body = _without_figure_markers(overlay_sections["INPUT_OVERLAY"])
+    if "REPORT_BEGIN::" in overlay_body or "REPORT_END::" in overlay_body:
+        raise RuntimeError("INPUT_OVERLAY body leaked report markers.")
+    overlay_links = "\n\n".join(
+        f"![{name}](figures/{name})" for name in overlay_names
+    )
     trend_names = [
         line.strip().removeprefix("-").strip()
         for line in sections["FIGURES"].splitlines()
@@ -346,6 +372,16 @@ All generated paths below use the notebook-relative `figures/<filename>` form. T
 
 {figure_links}
 
+## Input weather overlay (companion to best-1.1 validation)
+
+Notebook `ece-input-weather-overlay-1.0.ipynb` reuses the aligned Best-1.1 predictions and overlays raw ECE input drivers on the same 5-station layout and soil-moisture `ylim [0, 0.25]` as the validation chart above; only ground truth and Best 1.1 are drawn. The ECE test split has no T2M/air-temperature column, so `LST_modis` is the temperature proxy. The values below come strictly from the overlay notebook stdout; provenance: `input_overlay_provenance.json`.
+
+```text
+{overlay_body}
+```
+
+{overlay_links}
+
 ## Reproduction
 
 ```bash
@@ -354,6 +390,7 @@ uv run --no-sync python run_feature_selection.py --stage all
 uv run --no-sync python run_model_salvage.py
 uv run --no-sync python build_notebook.py
 nb execute derived_8.4-ece-model-salvage-1.1.ipynb --uv --timeout 1800
+nb execute ece-input-weather-overlay-1.0.ipynb --uv --timeout 600
 uv run --no-sync python update_readme.py
 ```
 
