@@ -43,6 +43,14 @@ def test_config_has_all_requested_model_families_and_seeds():
     }
 
 
+def test_all_models_have_one_original_reference_mapping():
+    config = yaml.safe_load((EXP_DIR / "config.yaml").read_text(encoding="utf-8"))
+    mappings = {model["id"]: model["parent_reference"] for model in config["models"]}
+    assert len(mappings) == 7
+    assert all(mappings.values())
+    assert len(set(mappings.values())) == 7
+
+
 def test_drop_smap_removes_every_case_variant():
     runner = _runner()
     assert runner.drop_smap(["G_API", "SMAP_x", "smap_lag", "LST_modis"]) == ["G_API", "LST_modis"]
@@ -94,13 +102,96 @@ def test_special_gates_are_deterministic_and_two_regime():
     assert np.array_equal(seasonal.predict(frame), np.array([0, 1]))
 
 
+def _synthetic_reference_comparison() -> pd.DataFrame:
+    config = yaml.safe_load((EXP_DIR / "config.yaml").read_text(encoding="utf-8"))
+    rows = []
+    for model in config["models"]:
+        for seed in config["seeds"]:
+            for dataset, window, new_rmse in (
+                ("ece_spatial", "spatial_ece_v3_full", 0.8),
+                ("wa_temporal", "temporal_full", 1.2),
+            ):
+                row = {
+                    "model_id": model["id"],
+                    "seed": seed,
+                    "dataset": dataset,
+                    "window": window,
+                    "scope": "__pooled__",
+                    "reference_config_id": model["parent_reference"],
+                    "reference_only": True,
+                    "rmse_original": 1.0,
+                    "rmse_no_smap": new_rmse,
+                    "diff_pearson": 0.2,
+                    "diff_pearson_original": 0.1,
+                }
+                for metric in ["mae", "bias", "ubrmse", "r2", "pearson"]:
+                    row[f"{metric}_original"] = 0.5
+                    row[f"{metric}_no_smap"] = 0.6
+                rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def test_old_vs_new_effects_have_complete_paired_seed_coverage():
+    runner = _runner()
+    config = runner.load_configuration()
+    comparison = _synthetic_reference_comparison()
+    seed_effects, summary = runner.build_old_vs_new_effects(
+        comparison,
+        expected_seeds=config["seeds"],
+        expected_model_ids=[model["id"] for model in config["models"]],
+    )
+    assert len(seed_effects) == 7 * 5 * 2
+    assert len(summary) == 7 * 2
+    assert not seed_effects.duplicated(["model_id", "seed", "split"]).any()
+    assert set(seed_effects.groupby(["model_id", "split"])["seed"].nunique()) == {5}
+
+
+def test_old_vs_new_effect_signs_percentages_and_trend_changes():
+    runner = _runner()
+    comparison = _synthetic_reference_comparison()
+    seed_effects, summary = runner.build_old_vs_new_effects(
+        comparison,
+        expected_seeds=[42, 7, 13, 101, 123],
+    )
+    ece = seed_effects[seed_effects["split"] == "ECE spatial"].iloc[0]
+    wa = seed_effects[seed_effects["split"] == "WA temporal"].iloc[0]
+    assert ece["rmse_change_no_smap_minus_original"] == pytest.approx(-0.2)
+    assert ece["effect_rmse"] == pytest.approx(0.2)
+    assert ece["rmse_change_pct_no_smap_vs_original"] == pytest.approx(-20.0)
+    assert ece["effect_rmse_pct"] == pytest.approx(20.0)
+    assert ece["improved"] and not ece["worsened"]
+    assert wa["rmse_change_no_smap_minus_original"] == pytest.approx(0.2)
+    assert wa["effect_rmse"] == pytest.approx(0.2)
+    assert wa["rmse_change_pct_no_smap_vs_original"] == pytest.approx(20.0)
+    assert wa["effect_rmse_pct"] == pytest.approx(20.0)
+    assert wa["worsened"] and not wa["improved"]
+    assert set(summary.loc[summary["split"] == "ECE spatial", "improved_seeds"]) == {5}
+    assert set(summary.loc[summary["split"] == "ECE spatial", "worsened_seeds"]) == {0}
+    assert set(summary.loc[summary["split"] == "WA temporal", "improved_seeds"]) == {0}
+    assert set(summary.loc[summary["split"] == "WA temporal", "worsened_seeds"]) == {5}
+    assert set(summary["pearson_change_mean"].round(8)) == {0.1}
+    assert set(summary["diff_pearson_change_mean"].round(8)) == {0.1}
+
+
+def test_old_vs_new_effects_reject_duplicate_pairs():
+    runner = _runner()
+    comparison = _synthetic_reference_comparison()
+    duplicate = pd.concat([comparison, comparison.iloc[[0]]], ignore_index=True)
+    with pytest.raises(ValueError, match="Duplicate paired reference rows"):
+        runner.build_old_vs_new_effects(duplicate)
+
+
 def test_generated_outputs_have_complete_coverage_when_present():
     summary_path = EXP_DIR / "summary.csv"
     seed_metrics_path = EXP_DIR / "seed_metrics.csv"
-    if not summary_path.exists() or not seed_metrics_path.exists():
+    effect_seed_path = EXP_DIR / "old_vs_new_effect_seed.csv"
+    effect_summary_path = EXP_DIR / "old_vs_new_effect_summary.csv"
+    if not summary_path.exists() or not seed_metrics_path.exists() or not effect_seed_path.exists() or not effect_summary_path.exists():
         pytest.skip("Full experiment outputs are generated by the GPU job.")
     summary = pd.read_csv(summary_path, low_memory=False)
     seed_metrics = pd.read_csv(seed_metrics_path, low_memory=False)
+    effect_seed = pd.read_csv(effect_seed_path, low_memory=False)
+    effect_summary = pd.read_csv(effect_summary_path, low_memory=False)
     expected_models = {
         "Clustering_V0_Full_k2_no_smap",
         "Clustering_Backbone54_k2_no_smap",
@@ -116,6 +207,13 @@ def test_generated_outputs_have_complete_coverage_when_present():
     pooled = summary[summary["scope"] == "__pooled__"]
     assert set(pooled["model_id"]) == expected_models
     assert set(pooled["window"]) == {"temporal_full", "temporal_summer_2025", "spatial_ece_v3_full"}
+    assert len(effect_seed) == 7 * 5 * 2
+    assert len(effect_summary) == 7 * 2
+    assert not effect_seed.duplicated(["model_id", "seed", "split"]).any()
+    assert set(effect_seed.groupby(["model_id", "split"])["seed"].nunique()) == {5}
+    assert set(effect_summary["model_id"]) == expected_models
+    assert set(effect_summary["split"]) == {"ECE spatial", "WA temporal"}
+    assert effect_summary["pearson_change_mean"].notna().all()
 
 
 def test_smap_invariance_output_is_zero_when_present():
@@ -138,3 +236,14 @@ def test_readme_figure_links_include_figure_directory_when_present():
     assert figure_targets
     assert all(target.startswith("figures/") for target in figure_targets)
     assert all((EXP_DIR / target).exists() for target in figure_targets)
+
+
+def test_readme_contains_old_vs_new_effect_section_when_report_is_present():
+    readme_path = EXP_DIR / "README.md"
+    figure_path = EXP_DIR / "figures/old_vs_new_rmse_effect.png"
+    if not readme_path.exists() or not figure_path.exists():
+        pytest.skip("The comparison report is generated after notebook execution.")
+    readme = readme_path.read_text(encoding="utf-8")
+    assert "## Effect of Removing SMAP: ECE Benefit vs WA Degradation" in readme
+    assert "(figures/old_vs_new_rmse_effect.png)" in readme
+    assert "effect_rmse_mean" in readme

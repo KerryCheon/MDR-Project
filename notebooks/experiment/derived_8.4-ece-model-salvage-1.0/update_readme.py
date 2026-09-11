@@ -25,27 +25,40 @@ def notebook_outputs() -> str:
 def extract_sections(text: str) -> dict[str, str]:
     outputs = re.findall(r"@@output .*?\n```text\n(.*?)\n```", text, flags=re.DOTALL)
     sections: dict[str, str] = {}
-    for output in outputs:
-        for match in re.finditer(
-            r"REPORT_BEGIN::([A-Z_]+)\n(.*?)\nREPORT_END::\1",
-            output,
-            flags=re.DOTALL,
-        ):
-            sections[match.group(1)] = match.group(2).strip()
+    combined_output = "\n".join(outputs)
+    for match in re.finditer(
+        r"REPORT_BEGIN::([A-Z_]+)\n(.*?)\nREPORT_END::\1",
+        combined_output,
+        flags=re.DOTALL,
+    ):
+        sections[match.group(1)] = match.group(2).strip()
     return sections
+
+
+def split_effect_report(section: str) -> tuple[str, str]:
+    figure_lines = [line.removeprefix("FIGURE::").strip() for line in section.splitlines() if line.startswith("FIGURE::")]
+    if len(figure_lines) != 1 or not figure_lines[0].endswith(".png") or Path(figure_lines[0]).name != figure_lines[0]:
+        raise RuntimeError("OLD_NEW_EFFECT must contain exactly one generated PNG filename.")
+    figure_name = figure_lines[0]
+    figure_path = EXP_DIR / "figures" / figure_name
+    if not figure_path.exists():
+        raise FileNotFoundError(figure_path)
+    report = "\n".join(line for line in section.splitlines() if not line.startswith("FIGURE::")).strip()
+    return report, figure_name
 
 
 def main() -> None:
     if not NOTEBOOK.exists():
         raise FileNotFoundError(NOTEBOOK)
     sections = extract_sections(notebook_outputs())
-    required = {"INPUT_AUDIT", "FEATURE_AUDIT", "ROUTER_AUDIT", "METRICS", "REFERENCE_COMPARISON", "SMAP_INVARIANCE", "FIGURES"}
+    required = {"INPUT_AUDIT", "FEATURE_AUDIT", "ROUTER_AUDIT", "METRICS", "REFERENCE_COMPARISON", "OLD_NEW_EFFECT", "SMAP_INVARIANCE", "FIGURES"}
     missing = sorted(required - sections.keys())
     if missing:
         raise RuntimeError(f"Notebook stdout is missing report sections: {missing}")
 
     figure_paths = [line.strip().removeprefix("-").strip() for line in sections["FIGURES"].splitlines() if line.strip()]
     figure_lines = "\n\n".join(f"![{path}](figures/{path})" for path in figure_paths)
+    effect_report, effect_figure = split_effect_report(sections["OLD_NEW_EFFECT"])
     content = f"""# Experiment: `derived_8.4-ece-model-salvage-1.0`
 
 ## Objective
@@ -81,6 +94,14 @@ The temporal results include the complete 2023–2025 WA test period and the mat
 Original SMAP-trained results are reference-only and are not used for fitting.
 
 {sections['REFERENCE_COMPARISON']}
+
+## Effect of Removing SMAP: ECE Benefit vs WA Degradation
+
+The paired summary below reports the five-seed effect for each model on the pooled five-station ECE set and pooled seven-station WA temporal test. Positive ECE effect values are benefits (original RMSE − no-SMAP RMSE); positive WA effect values are degradations (no-SMAP RMSE − original RMSE). Pearson change is the available level/trend-correlation comparison. The original runs remain reference-only.
+
+{effect_report}
+
+![old_vs_new_rmse_effect.png](figures/{effect_figure})
 
 ## No-SMAP invariance
 

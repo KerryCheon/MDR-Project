@@ -117,6 +117,25 @@ else:
     columns = ["model_id", "seed", "dataset", "rmse_no_smap", "rmse_original", "rmse_delta_no_smap_minus_original", "pearson_no_smap", "pearson_original"]
     print(comparison[columns].to_markdown(index=False, floatfmt=".6f"))
 print("REPORT_END::REFERENCE_COMPARISON")"""),
+        markdown("""## Effect of Removing SMAP: ECE Benefit vs WA Degradation
+
+This paired five-seed summary uses the original model only as a reference. ECE benefit is defined as original RMSE minus no-SMAP RMSE, while WA degradation is defined as no-SMAP RMSE minus original RMSE; positive values therefore have the stated interpretation in each panel."""),
+        code("""effect_summary = pd.read_csv(EXP_DIR / "old_vs_new_effect_summary.csv", low_memory=False)
+effect_columns = [
+    "model_id", "split", "n_seeds", "rmse_original_mean", "rmse_original_std",
+    "rmse_no_smap_mean", "rmse_no_smap_std", "effect_rmse_mean", "effect_rmse_std",
+    "effect_rmse_pct_mean", "effect_rmse_pct_std", "improved_seeds", "worsened_seeds",
+    "pearson_change_mean", "diff_pearson_change_mean",
+]
+print("REPORT_BEGIN::OLD_NEW_EFFECT")
+if effect_summary.empty:
+    print("No paired old-vs-new rows available.")
+else:
+    print(effect_summary[effect_columns].sort_values(["split", "effect_rmse_mean"], ascending=[True, False]).to_markdown(index=False, floatfmt=".6f"))
+    print("Trend correlation is Pearson change; first-difference Pearson change is unavailable because the original reference summaries do not contain first-difference predictions.")
+effect_figure = runner.make_old_vs_new_effect_figure(effect_summary, EXP_DIR / "figures")
+print(f"FIGURE::{effect_figure.name}")
+print("REPORT_END::OLD_NEW_EFFECT")"""),
     ])
 
     add_batch([

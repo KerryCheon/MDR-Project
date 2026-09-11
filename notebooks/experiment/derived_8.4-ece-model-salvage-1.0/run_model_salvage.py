@@ -508,6 +508,210 @@ def build_reference_comparison(seed_metrics: pd.DataFrame, references: pd.DataFr
     return merged
 
 
+_EFFECT_SPLITS = {
+    ("ece_spatial", "spatial_ece_v3_full"): ("ECE spatial", "ECE benefit"),
+    ("wa_temporal", "temporal_full"): ("WA temporal", "WA degradation"),
+}
+_EFFECT_METRICS = ["rmse", "mae", "bias", "ubrmse", "r2", "pearson", "diff_pearson"]
+
+
+def _mean_std(values: pd.Series) -> tuple[float, float]:
+    numeric = pd.to_numeric(values, errors="coerce").dropna()
+    if numeric.empty:
+        return float("nan"), float("nan")
+    return float(numeric.mean()), float(numeric.std(ddof=1)) if len(numeric) > 1 else 0.0
+
+
+def _reference_value(row: pd.Series, metric: str, side: str) -> float:
+    """Read a metric from either the current or a future reference artifact."""
+    if metric == "diff_pearson":
+        candidates = (
+            ["diff_pearson_no_smap", "diff_pearson"]
+            if side == "no_smap"
+            else ["diff_pearson_original"]
+        )
+    else:
+        candidates = [f"{metric}_{side}"]
+    for column in candidates:
+        if column in row.index:
+            value = pd.to_numeric(pd.Series([row[column]]), errors="coerce").iloc[0]
+            return float(value) if pd.notna(value) else float("nan")
+    return float("nan")
+
+
+def build_old_vs_new_effects(
+    reference_comparison: pd.DataFrame,
+    expected_seeds: Iterable[int] | None = None,
+    expected_model_ids: Iterable[str] | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Build paired seed and summary effects from the reference comparison table.
+
+    RMSE changes are retained in the generic ``no_smap - original`` direction.
+    ``effect_rmse`` then uses the report-facing direction: ECE benefit is
+    ``original - no_smap`` and WA degradation is ``no_smap - original``.
+    """
+    seed_columns = [
+        "model_id", "seed", "split", "effect_label", "dataset", "window",
+        "reference_config_id", "rmse_original", "rmse_no_smap",
+        "rmse_change_no_smap_minus_original", "rmse_change_abs",
+        "rmse_change_pct_no_smap_vs_original", "effect_rmse", "effect_rmse_pct",
+        "improved", "worsened",
+    ]
+    summary_columns = [
+        "model_id", "split", "effect_label", "dataset", "window", "reference_config_id",
+        "n_seeds", "improved_seeds", "worsened_seeds",
+    ]
+    for metric in _EFFECT_METRICS:
+        summary_columns.extend([
+            f"{metric}_original_mean", f"{metric}_original_std",
+            f"{metric}_no_smap_mean", f"{metric}_no_smap_std",
+            f"{metric}_change_mean", f"{metric}_change_std",
+        ])
+    summary_columns.extend([
+        "rmse_change_abs_mean", "rmse_change_abs_std",
+        "rmse_change_pct_mean", "rmse_change_pct_std",
+        "effect_rmse_mean", "effect_rmse_std",
+        "effect_rmse_pct_mean", "effect_rmse_pct_std",
+    ])
+
+    if reference_comparison.empty:
+        return pd.DataFrame(columns=seed_columns), pd.DataFrame(columns=summary_columns)
+
+    required = {"model_id", "seed", "dataset", "window", "scope", "reference_config_id"}
+    missing = sorted(required - set(reference_comparison.columns))
+    if missing:
+        raise ValueError(f"reference_comparison is missing required columns: {missing}")
+
+    source = reference_comparison[
+        reference_comparison["scope"].eq("__pooled__")
+        & reference_comparison.set_index(["dataset", "window"]).index.isin(_EFFECT_SPLITS)
+    ].copy()
+    if source.empty:
+        return pd.DataFrame(columns=seed_columns), pd.DataFrame(columns=summary_columns)
+
+    keys = ["model_id", "seed", "dataset", "window"]
+    if source.duplicated(keys).any():
+        duplicate_rows = source.loc[source.duplicated(keys, keep=False), keys].to_dict(orient="records")
+        raise ValueError(f"Duplicate paired reference rows: {duplicate_rows}")
+
+    model_ids = sorted(source["model_id"].astype(str).unique())
+    if expected_model_ids is not None:
+        expected_models = {str(model_id) for model_id in expected_model_ids}
+        missing_models = sorted(expected_models - set(model_ids))
+        if missing_models:
+            raise ValueError(f"Missing model/reference comparisons: {missing_models}")
+        unexpected_models = sorted(set(model_ids) - expected_models)
+        if unexpected_models:
+            raise ValueError(f"Unexpected model/reference comparisons: {unexpected_models}")
+
+    mapping_counts = source.groupby("model_id")["reference_config_id"].nunique()
+    invalid_mappings = mapping_counts[mapping_counts != 1]
+    if not invalid_mappings.empty:
+        raise ValueError("Each model must map to exactly one original reference configuration.")
+
+    expected_seed_set = None if expected_seeds is None else {int(seed) for seed in expected_seeds}
+    expected_splits = set(_EFFECT_SPLITS)
+    expected_pairs = {(model_id, split) for model_id in model_ids for split in expected_splits}
+    found_pairs = {
+        (str(row["model_id"]), (str(row["dataset"]), str(row["window"])))
+        for _, row in source.iterrows()
+    }
+    missing_pairs = sorted(expected_pairs - found_pairs)
+    if missing_pairs:
+        raise ValueError(f"Missing comparison splits: {missing_pairs}")
+
+    seed_rows: list[dict[str, Any]] = []
+    for _, row in source.sort_values(keys).iterrows():
+        split, effect_label = _EFFECT_SPLITS[(str(row["dataset"]), str(row["window"]))]
+        rmse_original = _reference_value(row, "rmse", "original")
+        rmse_no_smap = _reference_value(row, "rmse", "no_smap")
+        rmse_change = rmse_no_smap - rmse_original
+        effect_rmse = -rmse_change if split == "ECE spatial" else rmse_change
+        rmse_change_pct = rmse_change / rmse_original * 100.0 if rmse_original else float("nan")
+        effect_pct = -rmse_change_pct if split == "ECE spatial" else rmse_change_pct
+        seed_row: dict[str, Any] = {
+            "model_id": str(row["model_id"]),
+            "seed": int(row["seed"]),
+            "split": split,
+            "effect_label": effect_label,
+            "dataset": str(row["dataset"]),
+            "window": str(row["window"]),
+            "reference_config_id": str(row["reference_config_id"]),
+            "rmse_original": rmse_original,
+            "rmse_no_smap": rmse_no_smap,
+            "rmse_change_no_smap_minus_original": rmse_change,
+            "rmse_change_abs": abs(rmse_change),
+            "rmse_change_pct_no_smap_vs_original": rmse_change_pct,
+            "effect_rmse": effect_rmse,
+            "effect_rmse_pct": effect_pct,
+            "improved": bool(rmse_change < 0),
+            "worsened": bool(rmse_change > 0),
+        }
+        for metric in _EFFECT_METRICS:
+            new_value = _reference_value(row, metric, "no_smap")
+            original_value = _reference_value(row, metric, "original")
+            seed_row[f"{metric}_original"] = original_value
+            seed_row[f"{metric}_no_smap"] = new_value
+            seed_row[f"{metric}_change"] = new_value - original_value
+        seed_rows.append(seed_row)
+
+    seed_effects = pd.DataFrame(seed_rows)
+    if expected_seed_set is not None:
+        actual_by_pair = seed_effects.groupby(["model_id", "split"])["seed"].agg(lambda values: set(values))
+        invalid_pairs = {
+            pair: sorted(expected_seed_set - set(seeds))
+            for pair, seeds in actual_by_pair.items()
+            if set(seeds) != expected_seed_set
+        }
+        if invalid_pairs:
+            raise ValueError(f"Each model/split must contain exactly expected seeds: {invalid_pairs}")
+
+    summary_rows: list[dict[str, Any]] = []
+    for (model_id, split), group in seed_effects.groupby(["model_id", "split"], sort=True):
+        first = group.iloc[0]
+        summary_row: dict[str, Any] = {
+            "model_id": model_id,
+            "split": split,
+            "effect_label": first["effect_label"],
+            "dataset": first["dataset"],
+            "window": first["window"],
+            "reference_config_id": first["reference_config_id"],
+            "n_seeds": int(group["seed"].nunique()),
+            "improved_seeds": int(group["improved"].sum()),
+            "worsened_seeds": int(group["worsened"].sum()),
+        }
+        for metric in _EFFECT_METRICS:
+            for suffix, values in (
+                ("original", group[f"{metric}_original"]),
+                ("no_smap", group[f"{metric}_no_smap"]),
+                ("change", group[f"{metric}_change"]),
+            ):
+                mean, std = _mean_std(values)
+                summary_row[f"{metric}_{suffix}_mean"] = mean
+                summary_row[f"{metric}_{suffix}_std"] = std
+        for column in ["rmse_change_abs", "rmse_change_pct_no_smap_vs_original", "effect_rmse", "effect_rmse_pct"]:
+            mean, std = _mean_std(group[column])
+            output_name = {
+                "rmse_change_pct_no_smap_vs_original": "rmse_change_pct",
+                "effect_rmse": "effect_rmse",
+                "effect_rmse_pct": "effect_rmse_pct",
+            }.get(column, f"{column}_mean")
+            if column == "rmse_change_abs":
+                summary_row["rmse_change_abs_mean"] = mean
+                summary_row["rmse_change_abs_std"] = std
+            elif column == "rmse_change_pct_no_smap_vs_original":
+                summary_row["rmse_change_pct_mean"] = mean
+                summary_row["rmse_change_pct_std"] = std
+            else:
+                summary_row[f"{output_name}_mean"] = mean
+                summary_row[f"{output_name}_std"] = std
+        summary_rows.append(summary_row)
+
+    return seed_effects[seed_columns + [
+        f"{metric}_{suffix}" for metric in _EFFECT_METRICS for suffix in ("original", "no_smap", "change")
+    ]], pd.DataFrame(summary_rows, columns=summary_columns)
+
+
 def build_router_audit(specs: list[dict[str, Any]], routers: dict[str, Any], data: DataBundle,
                        config: dict[str, Any]) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
@@ -609,6 +813,65 @@ def make_trend_figures(predictions: pd.DataFrame, output_dir: Path) -> list[Path
     return paths
 
 
+def make_old_vs_new_effect_figure(effect_summary: pd.DataFrame, output_dir: Path) -> Path:
+    """Plot the paired ECE benefit and WA degradation with five-seed error bars."""
+    import matplotlib.pyplot as plt
+
+    required = {"model_id", "split", "effect_rmse_mean", "effect_rmse_std"}
+    missing = sorted(required - set(effect_summary.columns))
+    if missing:
+        raise ValueError(f"Effect summary is missing figure columns: {missing}")
+    model_order = [
+        "Clustering_V0_Full_k2_no_smap",
+        "Clustering_Backbone54_k2_no_smap",
+        "Trained_Gating_k2_no_smap",
+        "Univariate_G_API_k2_no_smap",
+        "Clustering_Dynamic_k2_no_smap",
+        "Seasonal_Binary_k2_no_smap",
+        "Global_Single_54_no_smap",
+    ]
+    labels = {
+        "Clustering_V0_Full_k2_no_smap": "V0 KMeans",
+        "Clustering_Backbone54_k2_no_smap": "Backbone54 KMeans",
+        "Trained_Gating_k2_no_smap": "Trained gate",
+        "Univariate_G_API_k2_no_smap": "G_API gate",
+        "Clustering_Dynamic_k2_no_smap": "Dynamic gate",
+        "Seasonal_Binary_k2_no_smap": "Seasonal gate",
+        "Global_Single_54_no_smap": "Global 54-lineage",
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5.5), sharey=False)
+    for ax, split, title, color in (
+        (axes[0], "ECE spatial", "ECE benefit\n(original RMSE − no-SMAP RMSE)", "#2a9d8f"),
+        (axes[1], "WA temporal", "WA degradation\n(no-SMAP RMSE − original RMSE)", "#e76f51"),
+    ):
+        subset = effect_summary[effect_summary["split"].eq(split)].set_index("model_id")
+        missing_models = [model_id for model_id in model_order if model_id not in subset.index]
+        if missing_models:
+            raise ValueError(f"Effect summary is missing {split} models: {missing_models}")
+        subset = subset.loc[model_order]
+        x = np.arange(len(model_order))
+        ax.bar(
+            x,
+            subset["effect_rmse_mean"].to_numpy(dtype=float),
+            yerr=subset["effect_rmse_std"].to_numpy(dtype=float),
+            color=color,
+            alpha=0.88,
+            capsize=4,
+        )
+        ax.axhline(0.0, color="black", linewidth=0.9)
+        ax.set_title(title)
+        ax.set_ylabel("RMSE difference")
+        ax.set_xticks(x, [labels[model_id] for model_id in model_order], rotation=38, ha="right")
+        ax.grid(axis="y", alpha=0.25)
+    fig.suptitle("No-SMAP versus original SMAP-trained models (mean ± seed SD)")
+    fig.tight_layout()
+    path = output_dir / "old_vs_new_rmse_effect.png"
+    fig.savefig(path, dpi=180)
+    plt.close(fig)
+    return path
+
+
 def run_experiment(config: dict[str, Any], seeds: list[int], smoke: bool,
                    resume: bool, device_override: str | None = None) -> None:
     global PREDICTION_DIR, CHECKPOINT_DIR
@@ -668,6 +931,13 @@ def run_experiment(config: dict[str, Any], seeds: list[int], smoke: bool,
     references.to_csv(EXP_DIR / "reference_metrics.csv", index=False)
     comparison = build_reference_comparison(seed_metrics, references)
     comparison.to_csv(EXP_DIR / "reference_comparison.csv", index=False)
+    effect_seed, effect_summary = build_old_vs_new_effects(
+        comparison,
+        expected_seeds=seeds,
+        expected_model_ids=[spec["id"] for spec in specs],
+    )
+    effect_seed.to_csv(EXP_DIR / "old_vs_new_effect_seed.csv", index=False)
+    effect_summary.to_csv(EXP_DIR / "old_vs_new_effect_summary.csv", index=False)
     write_smap_invariance(data, specs, routers, config, params)
     print(f"[complete] models={len(specs)} seeds={len(seeds)} prediction_rows={len(predictions)}")
 
