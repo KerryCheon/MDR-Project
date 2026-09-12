@@ -1,0 +1,48 @@
+# ece-input-diagnose-1.0 config
+# All paths are repo-root relative. No hard-coded absolute paths.
+experiment: "ece-input-diagnose-1.0"
+purpose: >-
+  Focused hourly-resolution comparison on the largest raining days: test whether
+  ECE sensors capture rain events within the day and quantify how daily averaging
+  smooths or obscures the response. Follows up on
+  derived_8.4-ece-model-salvage-1.1/figures/ece_all_sensors_input_overlay_rainfall.png
+  (prediction tracks rainfall while daily ground truth looks flat).
+
+repo_paths:
+  salvage_dir: "notebooks/experiment/derived_8.4-ece-model-salvage-1.1"
+  salvage_predictions: "notebooks/experiment/derived_8.4-ece-model-salvage-1.1/predictions.csv"
+  salvage_provenance: "notebooks/experiment/derived_8.4-ece-model-salvage-1.1/global_best_validation_provenance.json"
+  ece_test: "data/splits/derived_8.4_ece_v3/test.csv"
+  ece_raw_dir: "src/pipeline/data/raw/_ECE"
+  et_reference: "notebooks/experiment/derived_8.4-ece-model-salvage-1.1/ece_et_reference.csv"
+  prior_audit_dir: "notebooks/experiment/ece-daily-mean-1.0"
+  figures_dir: "notebooks/experiment/ece-input-diagnose-1.0/figures"
+  hourly_rain_reference: "notebooks/experiment/ece-input-diagnose-1.0/hourly_rain_reference.csv"
+  fetch_rain_script: "notebooks/experiment/ece-input-diagnose-1.0/fetch_hourly_rain.py"
+
+ece_files:
+  ECE_BBG_Main_St: "Soil Moisture Data (July 19 – August 20, 2026)(Main St (BBG)).csv"
+  ECE_BBG_Lost_Meadow: "Soil Moisture Data (July 19 – August 20, 2026)(Lost Meadow Trail (BBG)).csv"
+  ECE_Renton_Home: "Soil Moisture Data (July 19 – August 20, 2026)(Renton Home).csv"
+  ECE_Renton_Garden_North: "Soil Moisture Data (July 19 – August 20, 2026)(Renton SG (North)).csv"
+  ECE_Renton_Garden_Shed: "Soil Moisture Data (July 19 – August 20, 2026)(Renton SG (Shed)).csv"
+
+params:
+  seattle_time_col: "Timestamp (Seattle Time)"
+  utc_time_col: "Timestamp (UTC)"
+  sm_col: "Soil Moisture (%)"
+  # Focus windows: 3 largest pooled daily-max precip days (2026-07-23, 2026-07-26,
+  # 2026-08-02) plus the nonzero neighbor 2026-07-25, extended with dry context
+  # days: day-before for event A (07-22), day-after for event B (07-27) and
+  # event C (08-03). All context days have 0.0 pooled precip and full rows
+  # (unlike 08-01, which is fully missing on all stations).
+  focus_days: ["2026-07-22", "2026-07-23", "2026-07-25", "2026-07-26", "2026-07-27", "2026-08-02", "2026-08-03"]
+  event_windows:
+    event_A: ["2026-07-22", "2026-07-23"]
+    event_B: ["2026-07-25", "2026-07-26", "2026-07-27"]
+    event_C: ["2026-08-02", "2026-08-03"]
+  best_model_id: "Global_Single_60_no_smap_fs60"
+  seeds: [42, 7, 13]
+  min_hours_per_day: 18
+  eval_start: "2026-07-20"
+  eval_end: "2026-08-19"
