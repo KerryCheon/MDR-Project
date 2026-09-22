@@ -9,32 +9,41 @@ This document is the technical-report backbone for writing the full paper withou
 
 ## 0. Locked framing decisions
 
-1. **The contribution is controlled router design, NOT a novel MoE architecture or a universal K=2 claim.**
-   - The model is a hard-gated, cluster-wise XGBoost formulation that can be described as a mixture-of-experts model.
-   - Our data: K=2 is best among tested K ∈ {1,2,3,4}; deployment elsewhere may require another K.
-2. **Primary claim: inference-available covariates can support regional specialization without in-situ target labels.**
-   - Use “in-situ-target-label-free” or “target-label-free,” not “proxy-free.”
-   - The shared backbone contains current and lagged SMAP-derived soil-moisture features, so the primary router is satellite-soil-moisture-informed.
-3. **The paper is an empirical router-comparison study.**
-   - Hold the expert type, 54-feature prediction backbone, split, and evaluation protocol fixed while comparing target-derived, heuristic, and covariate-defined routers.
-   - Do not claim that supervised routers generally fail; the negative result applies to the tested `Trained_Gating_k2` router trained from an in-situ target threshold.
-4. **Use “covariate-defined regional strata” rather than “climate regimes” as the main term.**
-   - The winning partition is station-pure and influenced by static/site descriptors; report east/west and station-group composition descriptively.
-   - Do not infer causal hydrologic mechanisms from feature correlations without subject-matter validation.
-5. **No regime-specific feature selection.** Every headline configuration uses the identical shared 54-feature backbone. Delta-feature arms are OUT of the main claim; retain only the existing robustness note.
-6. **Venue-agnostic, CS/IEEE-leaning outline.**
-   - Keep the ML/AI application and IEEE AIIoT routes open.
-   - Minimize geoscience-process interpretation because the author team is CS/ECE rather than hydrology.
-7. **ECE sensors remain a conditional deployment audit.**
-   - Default = short stress-test subsection with heavy caveats, not a superiority claim.
-8. **OOS/out-of-state remains limitations-only.**
-   - Regional specialization is evaluated as a within-region prior; out-of-region failure is not hidden.
-9. **Paper 1 remains the genealogy, not the novelty claim.**
-   - Cite paper 1 for dataset preparation, feature selection, preprocessing, and prior global/regime analyses after W-new verifies the submitted PDF.
-   - Historical internal gates remain context only and are never mixed into current result tables.
-10. **Prior-attempt depth is retained but narrowed.**
-   - Explain why router provenance matters, while distinguishing target-derived labels, satellite proxies, heuristics, and deployable covariates.
-   - Do not describe the paper as the first soil-moisture MoE or first clustered soil-moisture model.
+1. **Claim is multi-regime vs single-regime, NOT "K=2 is universal."**
+   - Our data: K=2 is best among tested K ∈ {1,2,3,4} (K=1 = global baseline).
+   - Deployment elsewhere may need larger K; K-selection guidance is a contribution, not a fixed answer.
+2. **No regime-specific feature selection.** Every configuration (global and all routers) uses the identical shared 54-feature backbone. Delta-feature arms (c0/c1) are OUT of the main claim; at most a one-paragraph robustness note that historical test-selected deltas barely change results (0.8126 vs 0.8118) and val-selected deltas fail.
+3. **Venue-agnostic outline.** Sections written so the same material works for:
+   (a) ML conference (NeurIPS/ICML workshops, AAAI/ACL-app tracks, KDD application),
+   (b) AI-for-science / geoscience ML venue (AGU Fall Meeting abstract → paper, IEEE IGARSS/CIKM application track),
+   (c) IEEE AIIoT-style applied venue (same family as paper 1).
+   Length knobs marked per section (short = 6–8 pp; full = 10–12 pp).
+4. **ECE sensors: conditional inclusion** (see §7 + works-to-do W4). Default = short "deployment stress test" subsection with heavy caveats, not a headline result. Drop entirely if reviewers/PI prefer a pure CS story.
+5. **OOS/out-of-state: Limitations only** (one paragraph + numbers), per prior decision.
+6. **Sequel positioning to paper 1 (NEW in v2).**
+   - Paper 1 = *Enhancing Spatial and Temporal Coverage of Soil Moisture Estimation Using Satellite and Weather-Driven Machine Learning* (submitted IEEE manuscript, `paper/`).
+   - Cite paper 1 for foundations: dataset preparation, feature-selection pipeline, preprocessing, global single-regime baseline performance, and (if present in the submitted PDF — verify in W-new) the prior three-regime/oracle analysis and gating limitations.
+   - This paper does NOT re-litigate those results; it answers the open question paper 1 left: *what routing signal actually makes regime specialization deployable?*
+   - Historical internal experiments (gating v19–v25, threshold recalibrations, adapted-training) are prior-work context only — never mixed into our result tables as comparable rows across dataset versions.
+7. **Design principle as a first-class contribution (NEW in v2).**
+   - Failed family A: route on the target or a proxy of it (thresholds on true/predicted SM, classifier trained to reproduce regime labels derived from y) → circular + misrouting compounds through hard gates.
+   - Failed family B: supervised/heuristic routers on weak signals (learned classifier, seasonal-only, single-index) → unstable across splits (our in-paper foil: `Trained_Gating_k2`).
+   - Working family C: **unsupervised routing on the shared covariate backbone** (KMeans) → never sees the target at routing time; yields station-pure, physically interpretable regimes.
+   - Headline framing: "route on covariates, not on the target."
+8. **Prior-attempt depth in the paper body (NEW in v2, default).**
+   - Intro: one tight paragraph on the genealogy (global ceiling → 3-regime MoE idea → deployable routing failed → paper 1 shipped global).
+   - Optional appendix/context table ("prior design attempts", dataset-labeled, not ranked against current results) — include only if venue has room; default = omit from main results, keep in outline as available material.
+   - All historical numbers attributed to paper 1 or clearly marked as internal prior work with dataset version tags (e.g. `derived_9.0`, `derived_8.1_pos`).
+
+---
+### v3 clarifications layered on the retained decisions
+
+- **Controlled router design, not novel architecture:** describe the implemented model as a hard-gated, cluster-wise XGBoost mixture-of-experts formulation. The contribution is the controlled router comparison, not a new MoE architecture.
+- **Primary routing provenance:** the main covariate router is in-situ-target-label-free, but it is not proxy-free: the shared 54-feature backbone includes current, lagged, and rolling SMAP-derived soil-moisture features.
+- **Empirical comparison:** hold the expert type, shared backbone, split, and evaluation protocol fixed while comparing target-derived, heuristic, and covariate-defined routers.
+- **Narrow supervised-router claim:** treat the v2 supervised/heuristic failure language as historical motivation. The current negative result applies specifically to the tested `Trained_Gating_k2` router trained from an in-situ target threshold; do not generalize it to supervised routers as a class.
+- **Terminology and interpretation:** use “covariate-defined regional strata” for the current partition. Station purity, east/west composition, and feature separation are descriptive associations; they do not establish causal climate or hydrologic mechanisms without subject-matter validation.
+- **Default venue posture:** retain the v2 venue options, while using the CS/IEEE-leaning presentation and minimizing geoscience-process interpretation unless the target venue and reviewers support expanding it.
 
 ---
 
@@ -57,7 +66,7 @@ Avoid titles that claim a novel MoE architecture, universal covariate-defined re
 
 ## 2. Abstract skeleton (6 sentences — v3 router-design framing)
 
-1. Problem: a single regional tabular model may compromise across station groups with different covariate-to-target mappings, but a deployable router cannot use the in-situ target label.
+1. Problem: regional soil-moisture data combine stations with different environmental conditions, site characteristics, and covariate distributions. A single pooled estimator uses one shared mapping across these groups, while expert specialization requires a routing rule that identifies which mapping to use for each prediction. That rule must operate without the contemporaneous in-situ soil-moisture target—the quantity being estimated—and instead rely on inputs available at deployment.
 2. Approach: compare target-derived, heuristic, and inference-available covariate routers under a fixed hard-gated XGBoost expert design; the primary KMeans router is in-situ-target-label-free but uses satellite-soil-moisture-informed features.
 3. Result temporal: R² 0.812 vs 0.780 (RMSE 0.044 vs 0.048), 30 seeds, p < 1e-12, sample bootstrap ΔR² +0.035 [0.019, 0.055], p = 0.0005.
 4. Result spatial (in-state LOSO): mean R² 0.64 vs 0.58, wins 6/7 stations (descriptive).
