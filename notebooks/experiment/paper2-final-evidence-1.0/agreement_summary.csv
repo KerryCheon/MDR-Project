@@ -1,0 +1,9 @@
+split,router,n_rows,cluster_0_rows,cluster_1_rows,mean_station_purity
+trainval,V0_Full,14608,10624,3984,1.0
+trainval,Backbone,14608,10624,3984,1.0
+trainval,GuardedV-A,14608,10624,3984,1.0
+trainval,StationMeanV-B,14608,10624,3984,1.0
+test,V0_Full,6620,4817,1803,1.0
+test,Backbone,6620,4817,1803,0.9997085862025733
+test,GuardedV-A,6620,4817,1803,1.0
+test,StationMeanV-B,6620,4817,1803,1.0

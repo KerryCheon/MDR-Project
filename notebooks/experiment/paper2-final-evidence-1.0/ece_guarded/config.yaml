@@ -1,0 +1,100 @@
+experiment:
+  name: "paper2-final-evidence-1.0-guarded-ece"
+  objective: "Evaluate the Guarded shared-54 router on unseen canonical ECE v3 sensors under fixed WA-only experts and input-only availability policies."
+  constraint: "ECE strictly unseen; routers, thresholds, experts, and the Global_Single_54 baseline fit/calibrate from Washington data only; no manual station routing and no ECE-driven choices."
+  parent_evaluation: "derived_8.4-formal-eval-2.0-ece"
+  prior_experiment: "notebooks/experiment/derived_8.4-ece-router-salvage-1.1"
+  router_sources:
+    reference_families: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/eval_formal/routers.py"
+    guarded_family: "notebooks/experiment/paper2-final-evidence-1.0/routing_opt/routers.py"
+  model_params_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/config.yaml"
+
+datasets:
+  training: "data/splits/derived_8.4"
+  ece_v3: "data/splits/derived_8.4_ece_v3"
+
+target_column: "soil_moisture_5cm"
+seeds: [42, 7, 13, 101, 123]
+
+# c0_0_c1_0 variants: identical 54-feature expert backbone, no delta additions.
+# Map dry/wet policies semantically from WA trainval; Guarded canonical labels flip local indices.
+families:
+  - Clustering_V0_Full_k2
+  - Clustering_Backbone54_k2
+  - Guarded_Backbone54_k2
+
+# Keep the two legacy families' salvage-local labels intact (c0 is the
+# established dry-oracle arm). Guarded canonicalizes its drier fit-frame
+# partition to local c1. `c0_only`/`c1_only` in the outputs are semantic aliases
+# so their family-local expert indices must be read from routing_audit.json.
+semantic_mapping:
+  Clustering_V0_Full_k2:
+    dry_expert_index: 0
+    source: "derived_8.4-ece-router-salvage-2.0 c0=dry convention"
+  Clustering_Backbone54_k2:
+    dry_expert_index: 0
+    source: "derived_8.4-ece-router-salvage-2.0 c0=dry convention"
+  Guarded_Backbone54_k2:
+    resolution: "minimum_wa_canonical_feature"
+    source: "Guarded router fit-frame canonicalization; c1=drier"
+
+# Single-regime global baseline reference (fit on WA trainval only, direct prediction).
+# Global_Single_54: 54-feature shared backbone. Reference row only, never a fallback.
+baselines:
+  - Global_Single_54
+
+# `as_routed`: static KMeans hard; `auto_hard`: availability gate to G_API or
+# static hard; `auto_soft`: WA-calibrated static/G_API blending.
+# `c0_only` is the manual dry-expert oracle and `c1_only` the wet-expert
+# diagnostic. Policy names are semantic across families, not local indices.
+policies:
+  - as_routed
+  - auto_hard
+  - auto_soft
+  - c0_only
+  - c1_only
+
+deployable:
+  - as_routed
+  - auto_hard
+  - auto_soft
+  - direct
+
+oracle:
+  - c0_only
+
+diagnostic:
+  - c1_only
+
+# Availability gate (input-only, no target): a row is "router-unreliable" when
+# its full SMAP router-feature block is native-missing, OR its overall router
+# miss rate exceeds tau. Rule + tau are pre-registered here; the WA
+# synthetic-masking calibration in run_auto.py verifies (on WA val only) that
+# the auxiliary router wins exactly in that regime.
+gate:
+  tau_miss_rate: 0.10
+  smap_block_rule: "all_smap_router_features_nan"
+
+# Ambiguity + blending (WA-only fit): margin = |d0 - d1| under the family's own
+# scaler/centroids. wa_percentile sets the ambiguous cutoff; T is grid-selected
+# on WA val only (experts fit on WA train, scored on WA val, ECE never touched).
+blend:
+  wa_percentile: 5
+  temperature_grid: [0.25, 0.5, 1.0, 2.0]
+  aux_pseudo_distance: "wa_median_margin"
+
+model_params:
+  n_estimators: 2500
+  learning_rate: 0.005
+  max_depth: 9
+  min_child_weight: 8
+  gamma: 0.0
+  reg_lambda: 0.75
+  reg_alpha: 0.03
+  subsample: 0.9
+  colsample_bytree: 0.8
+  tree_method: hist
+  device: cpu
+  n_jobs: 1
+
+canonical_feature: "SMAP_sm_pm_interp_rollmean30"

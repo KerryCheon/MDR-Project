@@ -1,0 +1,17 @@
+family,policy_id,semantic_label,family_local_expert_index,dry_expert_index,wet_expert_index,mapping_source,wa_canonical_feature_drier_index,semantic_dry_matches_canonical_feature_minimum,deployable,ece_used_for_mapping_or_calibration
+Clustering_V0_Full_k2,as_routed,static router prediction,,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,True,False
+Clustering_V0_Full_k2,auto_hard,WA-calibrated availability-gated prediction,,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,True,False
+Clustering_V0_Full_k2,auto_soft,WA-calibrated availability-gated blend,,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,True,False
+Clustering_V0_Full_k2,c0_only,manual dry-expert oracle,0.0,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,False,False
+Clustering_V0_Full_k2,c1_only,wet-expert diagnostic,1.0,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,False,False
+Clustering_Backbone54_k2,as_routed,static router prediction,,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,True,False
+Clustering_Backbone54_k2,auto_hard,WA-calibrated availability-gated prediction,,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,True,False
+Clustering_Backbone54_k2,auto_soft,WA-calibrated availability-gated blend,,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,True,False
+Clustering_Backbone54_k2,c0_only,manual dry-expert oracle,0.0,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,False,False
+Clustering_Backbone54_k2,c1_only,wet-expert diagnostic,1.0,0.0,1.0,derived_8.4-ece-router-salvage-2.0 c0=dry convention,1.0,False,False,False
+Guarded_Backbone54_k2,as_routed,static router prediction,,1.0,0.0,Guarded router fit-frame canonicalization; c1=drier,1.0,True,True,False
+Guarded_Backbone54_k2,auto_hard,WA-calibrated availability-gated prediction,,1.0,0.0,Guarded router fit-frame canonicalization; c1=drier,1.0,True,True,False
+Guarded_Backbone54_k2,auto_soft,WA-calibrated availability-gated blend,,1.0,0.0,Guarded router fit-frame canonicalization; c1=drier,1.0,True,True,False
+Guarded_Backbone54_k2,c0_only,manual dry-expert oracle,1.0,1.0,0.0,Guarded router fit-frame canonicalization; c1=drier,1.0,True,False,False
+Guarded_Backbone54_k2,c1_only,wet-expert diagnostic,0.0,1.0,0.0,Guarded router fit-frame canonicalization; c1=drier,1.0,True,False,False
+Global_Single_54,direct,direct global reference,,,,not_applicable,,,True,False

@@ -1,0 +1,9 @@
+strategy_name,display_name,evidence_role,source_harness,n_seeds,mean_r2,seed_sd_r2,seed_ci95_low,seed_ci95_high,mean_rmse,interval_scope
+Clustering_V0_Full_k2,V0 (sensitivity),sensitivity_anchored,derived_8.4-formal-eval-1.0,30,0.8118429663371349,0.0013693193343164774,0.8113316540945197,0.8123542785797502,0.04418687638323012,expert seed variation only
+Guarded_Backbone54_k2,Guarded backbone (primary),paired_in_harness,paper2-final-evidence-1.0,30,0.8118429663371349,0.0013693193343164774,0.8113316540945197,0.8123542785797502,0.04418687638323012,expert seed variation only
+Clustering_Backbone54_k2,Backbone (paired ablation),paired_in_harness,paper2-final-evidence-1.0,30,0.8117237199127312,0.001369011561417172,0.8112125225944052,0.8122349172310571,0.044200876597845634,expert seed variation only
+Clustering_Dynamic_k2,Dynamic covariate (sensitivity),sensitivity_anchored,derived_8.4-formal-eval-1.0,30,0.7854641369495883,0.0009947731542850162,0.785092682549096,0.7858355913500805,0.04718290479528779,expert seed variation only
+Global_Single,Global (sensitivity),sensitivity_anchored,derived_8.4-formal-eval-1.0,30,0.7797940453067711,0.0012791686020170976,0.7793163959008297,0.7802716947127125,0.0478022798608347,expert seed variation only
+Seasonal_Binary_k2,Seasonal (sensitivity),sensitivity_anchored,derived_8.4-formal-eval-1.0,30,0.770019527736968,0.001558614001682883,0.7694375317039025,0.7706015237700335,0.048851614607952884,expert seed variation only
+Univariate_G_API_k2,G_API (sensitivity),sensitivity_anchored,derived_8.4-formal-eval-1.0,30,0.7675661611964641,0.000938325564980203,0.7672157846722235,0.7679165377207048,0.04911166675427065,expert seed variation only
+Trained_Gating_k2,Target-derived gate (sensitivity),sensitivity_anchored,derived_8.4-formal-eval-1.0,30,0.7353592203012718,0.0010953805290347465,0.7349501984896448,0.7357682421128987,0.05240386698711994,expert seed variation only

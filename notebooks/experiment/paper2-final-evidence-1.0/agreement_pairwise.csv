@@ -1,0 +1,13 @@
+split,A,B,ARI,agree
+trainval,V0_Full,Backbone,1.0,1.0
+trainval,V0_Full,GuardedV-A,1.0,1.0
+trainval,V0_Full,StationMeanV-B,1.0,1.0
+trainval,Backbone,GuardedV-A,1.0,1.0
+trainval,Backbone,StationMeanV-B,1.0,1.0
+trainval,GuardedV-A,StationMeanV-B,1.0,1.0
+test,V0_Full,Backbone,0.9987,0.9997
+test,V0_Full,GuardedV-A,1.0,1.0
+test,V0_Full,StationMeanV-B,1.0,1.0
+test,Backbone,GuardedV-A,0.9987,0.9997
+test,Backbone,StationMeanV-B,0.9987,0.9997
+test,GuardedV-A,StationMeanV-B,1.0,1.0

@@ -1,0 +1,104 @@
+{
+  "experiment": "paper2-final-evidence-1.0",
+  "outline": "writeup2/outline-v6.md",
+  "status": "completed",
+  "date": "2026-09-23",
+  "data": {
+    "washington_split": "data/splits/derived_8.4",
+    "ece_split": "data/splits/derived_8.4_ece_v3",
+    "ece_eval_rows": 150,
+    "ece_stations": 5,
+    "ece_period": [
+      "2026-07-20",
+      "2026-08-19"
+    ]
+  },
+  "routing_reproduction": {
+    "source_protocol": "notebooks/experiment/derived_8.4-routing-optimize-1.0/config.yaml",
+    "device": "cuda",
+    "gpu": "h100",
+    "partition": "gpu_debug",
+    "seed_protocol": "pinned source configuration",
+    "jobs": {
+      "temporal": "2156723",
+      "loso": "2156724",
+      "loso_dependency": "afterok:2156723"
+    },
+    "run_status": "completed",
+    "temporal_start": "2026-09-23T02:37:11-05:00",
+    "temporal_node": "ac098",
+    "temporal_elapsed": "00:49:53",
+    "observed_gpu": "NVIDIA H100 PCIe",
+    "temporal_output_rows": {
+      "temporal_seed_summary.csv": 90,
+      "temporal_seed_station.csv": 630,
+      "temporal_seed_year.csv": 270,
+      "temporal_seed_cluster.csv": 180
+    },
+    "seed_42_replication_checks": "Backbone, Guarded, and StationMean passed",
+    "loso_start": "2026-09-23T03:27:19-05:00",
+    "loso_node": "ac098",
+    "loso_seed_count": 5,
+    "loso_held_out_stations": 7,
+    "loso_expected_fold_rows": 105,
+    "loso_elapsed": "00:57:03",
+    "loso_output_rows": {
+      "loso_seed_station.csv": 105,
+      "loso_seed_year.csv": 315,
+      "loso_seed_cluster.csv": 210
+    },
+    "loso_seed_42_replication_check": "Backbone passed; mean R2 0.6171"
+  },
+  "guarded_ece": {
+    "config": "ece_guarded/config.yaml",
+    "device": "cpu",
+    "seeds": [
+      42,
+      7,
+      13,
+      101,
+      123
+    ],
+    "families": [
+      "Clustering_V0_Full_k2",
+      "Clustering_Backbone54_k2",
+      "Guarded_Backbone54_k2"
+    ],
+    "policies": [
+      "as_routed",
+      "auto_hard",
+      "auto_soft",
+      "c0_only",
+      "c1_only",
+      "direct"
+    ],
+    "job": "2156812",
+    "superseded_first_pass_job": "2156725",
+    "semantic_policy_mapping": {
+      "Clustering_V0_Full_k2": {"dry_expert_index": 0, "wet_expert_index": 1, "source": "salvage 2.0 C0=dry"},
+      "Clustering_Backbone54_k2": {"dry_expert_index": 0, "wet_expert_index": 1, "source": "salvage 2.0 C0=dry"},
+      "Guarded_Backbone54_k2": {"dry_expert_index": 1, "wet_expert_index": 0, "source": "Guarded WA canonicalization"},
+      "oracle_and_diagnostic_deployable": false
+    },
+    "run_status": "completed",
+    "first_pass_elapsed": "00:30:46",
+    "corrected_elapsed": "00:29:38",
+    "config_code_hash": "325188070c594f33",
+    "semantic_mapping_conflict": "Both WA canonical feature and target means place local 1 lower for all three families; preserve historical salvage C0 for V0/Backbone as user directed"
+  },
+  "source_comparators": {
+    "temporal_sensitivity": "notebooks/experiment/derived_8.4-formal-eval-1.0/temporal_seed_summary.csv",
+    "role": "sensitivity-anchored rows; not paired with Guarded"
+  },
+  "notebooks": [
+    "notebooks/experiment/paper2-final-evidence-1.0/notebooks/paper2_main_figures.ipynb",
+    "notebooks/experiment/paper2-final-evidence-1.0/notebooks/paper2_ece_supplement.ipynb"
+  ],
+  "completed_stages": {
+    "routing_agreement": "completed via analyze_agreement.py",
+    "guarded_ece": "completed_corrected_mapping",
+    "ece_supplement_notebook": "executed via nb execute --uv; T7_T9 and F5 figures exported",
+    "gpu_routing": "completed; temporal T1 and LOSO L1 passed pinned seed-42 checks",
+    "main_figures_notebook": "executed via nb execute --uv; F1_T8 figure and CSV tables exported"
+  }
+}

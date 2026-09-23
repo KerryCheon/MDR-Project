@@ -1,0 +1,4 @@
+config_id,config_label,strategy_name,delta_source,is_baseline,cluster_0_count,cluster_1_count,n_global_features,n_add0,n_add1
+Guarded_Backbone54_k2_c0_0_c1_0,"Guarded_Backbone54_k2  c0=0, c1=0",Guarded_Backbone54_k2,none,False,0,0,54,0,0
+StationMean_Backbone54_k2_c0_0_c1_0,"StationMean_Backbone54_k2  c0=0, c1=0",StationMean_Backbone54_k2,none,False,0,0,54,0,0
+Clustering_Backbone54_k2_c0_0_c1_0,"Clustering_Backbone54_k2  c0=0, c1=0",Clustering_Backbone54_k2,none,False,0,0,54,0,0

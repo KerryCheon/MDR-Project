@@ -1,0 +1,8 @@
+held_out,ARI_tr_V0_Full_vs_Backbone,ARI_te_V0_Full_vs_Backbone,ARI_tr_Backbone_vs_GuardedV-A,ARI_te_Backbone_vs_GuardedV-A,ARI_tr_Backbone_vs_StationMeanV-B,ARI_te_Backbone_vs_StationMeanV-B,ARI_tr_GuardedV-A_vs_StationMeanV-B,ARI_te_GuardedV-A_vs_StationMeanV-B,guarded_fallback_rate_te
+BeaverPass_WA_990,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+CayusePass_WA,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+Darrington,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+Paradise_WA,0.9902,0.0,0.9902,1.0,0.9902,1.0,1.0,1.0,1.0
+Quinault,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+SourdoughGulch_WA_985,0.1315,1.0,0.3491,1.0,0.3383,1.0,0.4199,1.0,1.0
+Spokane,0.1919,0.0,0.3297,1.0,0.3297,1.0,1.0,1.0,1.0
