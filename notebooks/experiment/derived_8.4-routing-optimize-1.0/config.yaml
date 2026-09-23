@@ -1,0 +1,147 @@
+# Configuration for derived_8.4-routing-optimize-1.0 — Guarded backbone routing
+#
+# Scope: routing diagnostics ONLY (CPU, no XGBoost training). Fits KMeans routers
+# on trainval (or per-LOSO-fold trainval) and reports agreement / purity /
+# K-sweep / margin diagnostics. Expert training (temporal 30-seed / LOSO 5-seed)
+# reuses derived_8.4-formal-eval-1.0 drivers and is NOT part of this experiment.
+data:
+  target: "soil_moisture_5cm"
+  metadata_path: "data/splits/derived_8.4/dataset_metadata.py"
+  splits:
+    train: "data/splits/derived_8.4/train.csv"
+    val: "data/splits/derived_8.4/val.csv"
+    test: "data/splits/derived_8.4/test.csv"
+
+router:
+  seed: 42
+  tau: 0.10
+  canonical_feature: "SMAP_sm_pm_interp_rollmean30"
+  holdout_column: "station_id"
+
+k_sweep: [2, 3, 4]
+
+# Reference replication anchors (frozen; must reproduce exactly at seed 42):
+#   full-trainval group sizes 10624/3984, ARI(V0, Backbone)=1.0 (gating-analysis-1.0)
+#   LOSO no-delta means: V0 0.63434 vs Backbone 0.617115 (eval-1.4)
+replication:
+  full_trainval_group_sizes: [10624, 3984]
+  ari_v0_backbone_full_trainval: 1.0
+  # Training-run anchors (checked by run_temporal.py / run_loso.py at seed 42):
+  # Backbone54 (0,0) temporal pooled R2 = eval-1.3 full baseline (identical router
+  # on the full trainval + identical expert hyperparameters). Guarded/StationMean
+  # anchor to eval-1.1's V0_Full (Backbone c0=0,c1=0) 0.814334 instead: §R2 shows
+  # both guards reproduce the V0 test partition exactly (ARI=1.0), so they must
+  # reproduce V0's number, not Backbone's (Backbone mixes 2 test rows).
+  temporal_r2:
+    Clustering_Backbone54_k2_c0_0_c1_0: 0.814205
+    Guarded_Backbone54_k2_c0_0_c1_0: 0.814334
+    StationMean_Backbone54_k2_c0_0_c1_0: 0.814334
+  loso_mean_r2:
+    Clustering_Backbone54_k2_c0_0_c1_0: 0.6171
+
+model:
+  # Router seed: fixed at 42 (config identity; delta additions are tied to the
+  # seed-42 cluster labels, same rationale as formal-eval-1.0).
+  router_seed: 42
+  # Expert hyperparameters — identical to derived_8.4-eval-1.1/-1.3/-1.4 and
+  # derived_8.4-formal-eval-1.0 (xgboost 3.2.0).
+  exact_params:
+    n_estimators: 2500
+    learning_rate: 0.005
+    max_depth: 9
+    min_child_weight: 8
+    gamma: 0.0
+    reg_lambda: 0.75
+    reg_alpha: 0.03
+    subsample: 0.9
+    colsample_bytree: 0.8
+    tree_method: "hist"
+    device: "cuda"
+
+# Pinned no-delta configurations (train_ev/configs.py resolves these; the driver
+# rewrites pinned_configurations.json with the resolved dicts before any run).
+# Order: primary candidate first, challenger second, replication anchor third
+# (also the --max-configs smoke order).
+pinned_configs:
+  Guarded_Backbone54_k2_c0_0_c1_0: {strategy: Guarded_Backbone54_k2, c0: 0, c1: 0, additions_source: none}
+  StationMean_Backbone54_k2_c0_0_c1_0: {strategy: StationMean_Backbone54_k2, c0: 0, c1: 0, additions_source: none}
+  Clustering_Backbone54_k2_c0_0_c1_0: {strategy: Clustering_Backbone54_k2, c0: 0, c1: 0, additions_source: none}
+
+seeds:
+  # 30 temporal seeds (seed 42 first: exact replication anchor; same list as formal-eval-1.0).
+  temporal: [42, 7, 13, 21, 55, 99, 123, 2024, 3141, 2718, 808, 1618, 2357, 3333, 4321,
+             5555, 6789, 7777, 8888, 9091, 101, 202, 303, 404, 505, 606, 707, 909, 1111, 2222]
+  # 5 LOSO seeds (subset of the temporal list for consistency).
+  loso: [42, 7, 13, 21, 55]
+
+temporal:
+  save_weights: true
+  save_predictions: true
+  predictions_dir: "predictions"
+  models_dir: "models"
+  n_parallel: 8
+  data_version: 1
+
+loso:
+  save_weights: true
+  save_predictions: true
+  predictions_dir: "predictions_loso"
+  holdout_column: "station_id"
+  n_parallel: 8
+  data_version: 1
+
+shared_backbone_54:
+  - precip_mm
+  - s2_b4
+  - s2_b8
+  - SMAP_sm_pm_interp
+  - D_sin_DOY
+  - D_cos_DOY
+  - E_SAR_ratio
+  - G_API
+  - G_DSLR
+  - G_rain_sum_3d
+  - G_rain_sum_7d
+  - SMAP_sm_pm_interp_lag7
+  - SMAP_sm_pm_interp_lag30
+  - SMAP_sm_pm_interp_rollrange7
+  - SMAP_sm_pm_interp_rollmean30
+  - SMAP_sm_pm_interp_rollrange30
+  - SMAP_sm_interp_rollrange7
+  - SMAP_ampm_diff_interp
+  - V_rollrng_G_API_kobs7
+  - V_rollmax_F_NDMI_kobs30
+  - A_d_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs7
+  - V_rollmin_E_SAR_ratio_kobs30
+  - V_rollmax_E_SAR_ratio_kobs30
+  - V_rollmin_LST_modis_kobs30
+  - V_ema_LST_modis_kobs30
+  - V_rollmax_F_NDVI_kobs14
+  - V_rollmax_F_NDVI_kobs30
+  - V_ema_F_NDVI_kobs30
+  - C_lag_F_NDVI_kobs30
+  - A_grad_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs14
+  - V_rollrng_E_SAR_diff_kobs30
+  - V_rollmax_E_SAR_diff_kobs30
+  - A_grad_s2_b11_kobs30
+  - V_rollrng_s2_b11_kobs30
+  - V_rollmin_s2_b11_kobs30
+  - V_rollmin_s2_b12_kobs30
+  - A_d_SMAP_sm_interp_kobs30
+  - V_rollmin_SMAP_sm_interp_kobs14
+  - V_rollmin_SMAP_sm_interp_kobs30
+  - E_rough_s1_vh_kobs14
+  - J_aspect_deg
+  - J_bio_bio02
+  - J_bio_bio13
+  - J_lc_code
+  - J_soil_texture_usda_b0
+  - sin_year
+  - cos_year
+  - SMAP_x_year
+  - D_z_F_NDMI
+  - D_z_LST_modis
+  - D_fft_dom_LST_modis_kobs30
+  - D_fft_ent_LST_modis_kobs30
