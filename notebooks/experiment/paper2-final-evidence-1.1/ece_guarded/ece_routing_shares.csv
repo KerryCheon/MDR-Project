@@ -1,0 +1,16 @@
+family,policy,dry_assigned_weight_mean,complementary_weight_mean,dry_assigned_dominant_fraction
+Clustering_Backbone54_k2,as_routed,0.30666666666666664,0.6933333333333334,0.30666666666666664
+Clustering_Backbone54_k2,auto_hard,1.0,0.0,1.0
+Clustering_Backbone54_k2,auto_soft,0.9999995435382856,4.5646171442648154e-07,1.0
+Clustering_Backbone54_k2,c0_only,1.0,0.0,1.0
+Clustering_Backbone54_k2,c1_only,0.0,1.0,0.0
+Clustering_V0_Full_k2,as_routed,0.46,0.54,0.46
+Clustering_V0_Full_k2,auto_hard,1.0,0.0,1.0
+Clustering_V0_Full_k2,auto_soft,0.9999993887371376,6.112628624377336e-07,1.0
+Clustering_V0_Full_k2,c0_only,1.0,0.0,1.0
+Clustering_V0_Full_k2,c1_only,0.0,1.0,0.0
+Guarded_Backbone54_k2,as_routed,0.6933333333333334,0.30666666666666664,0.6933333333333334
+Guarded_Backbone54_k2,auto_hard,0.0,1.0,0.0
+Guarded_Backbone54_k2,auto_soft,4.564617144483353e-07,0.9999995435382856,0.0
+Guarded_Backbone54_k2,c0_only,1.0,0.0,1.0
+Guarded_Backbone54_k2,c1_only,0.0,1.0,0.0

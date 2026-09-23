@@ -1,0 +1,175 @@
+{
+  "experiment": "paper2-final-evidence-1.1",
+  "status": "complete",
+  "created": "2026-09-23",
+  "outline": {
+    "path": "writeup2/outline-v7.md",
+    "based_on": "writeup2/outline-v6.md",
+    "status": "updated",
+    "final_paper_assembled": false
+  },
+  "data": {
+    "washington_split": "data/splits/derived_8.4",
+    "ece_split": "data/splits/derived_8.4_ece_v3",
+    "ece_period": ["2026-07-20", "2026-08-19"],
+    "ece_rows": 150,
+    "ece_stations": 5,
+    "rows_per_station": 30,
+    "washington_and_ece_stations_disjoint": true
+  },
+  "ece_run": {
+    "script": "ece_guarded/run_guarded.py",
+    "config": "ece_guarded/config.yaml",
+    "router_source": "routing_opt/routers.py",
+    "device": "cpu",
+    "partition": "cpu",
+    "slurm_job_id": "2158403",
+    "slurm_job_state": "COMPLETED",
+    "slurm_exit_code": "0:0",
+    "slurm_elapsed": "00:31:44",
+    "slurm_node": "ac063",
+    "slurm_started": "2026-09-23 17:00:50 CDT",
+    "slurm_completed": "2026-09-23 17:32:34 CDT",
+    "seeds": [42, 7, 13, 101, 123],
+    "families": [
+      "Clustering_V0_Full_k2",
+      "Clustering_Backbone54_k2",
+      "Guarded_Backbone54_k2",
+      "Global_Single_54"
+    ],
+    "routed_policies": [
+      "as_routed",
+      "auto_hard",
+      "auto_soft",
+      "c0_only",
+      "c1_only"
+    ],
+    "global_reference_policy": "direct",
+    "row_counts": {
+      "seed_metrics": 80,
+      "station_metrics": 400,
+      "predictions_v3": 11250,
+      "summary": 16,
+      "wa_calibration": 28
+    },
+    "fitting_and_evaluation": {
+      "static_routers_and_main_experts": "Washington trainval only",
+      "auxiliary_calibration_experts": "Washington train only",
+      "calibration_and_guarded_mapping_selection": "Washington validation only",
+      "ece_targets_used_for_fitting_or_mapping": false,
+      "ece_targets_used_for_final_scoring_only": true
+    },
+    "availability_gate": {
+      "ece_rows": 150,
+      "gated_rows": 150,
+      "gate_share": 1.0,
+      "mean_smap_miss_rate": 1.0,
+      "validated_for": [
+        "Clustering_V0_Full_k2",
+        "Clustering_Backbone54_k2",
+        "Guarded_Backbone54_k2"
+      ]
+    },
+    "guarded_gapi_mapping": {
+      "selected": {
+        "gapi_class_0_local_expert": 0,
+        "gapi_class_1_local_expert": 1,
+        "masked_wa_validation_rmse": 0.07396518184352849
+      },
+      "candidates": [
+        {
+          "gapi_class_0_local_expert": 0,
+          "gapi_class_1_local_expert": 1,
+          "masked_wa_validation_rmse": 0.07396518184352849,
+          "selected": true
+        },
+        {
+          "gapi_class_0_local_expert": 1,
+          "gapi_class_1_local_expert": 0,
+          "masked_wa_validation_rmse": 0.11717976676399142,
+          "selected": false
+        }
+      ],
+      "selection_rule": "minimum RMSE on synthetic-SMAP-masked Washington validation",
+      "tie_break": "G_API class 0 to local c0",
+      "ece_used_for_selection": false
+    },
+    "family_oracle_index_convention": {
+      "Clustering_V0_Full_k2": {
+        "dry_assigned_local_expert": 0,
+        "complementary_local_expert": 1
+      },
+      "Clustering_Backbone54_k2": {
+        "dry_assigned_local_expert": 0,
+        "complementary_local_expert": 1
+      },
+      "Guarded_Backbone54_k2": {
+        "dry_assigned_local_expert": 1,
+        "complementary_local_expert": 0
+      }
+    },
+    "washington_means_by_family_local_index": {
+      "canonical_feature": "SMAP_sm_pm_interp_rollmean30",
+      "local_c0": {
+        "canonical_feature_mean": 0.43598074953187127,
+        "target_mean": 0.2216475903614458
+      },
+      "local_c1": {
+        "canonical_feature_mean": 0.18007780263258694,
+        "target_mean": 0.20937324297188756
+      },
+      "dry_assignment_matches_canonical_feature_minimum": {
+        "Clustering_V0_Full_k2": false,
+        "Clustering_Backbone54_k2": false,
+        "Guarded_Backbone54_k2": true
+      }
+    },
+    "deployable_flags": {
+      "c0_only": false,
+      "c1_only": false,
+      "as_routed": true,
+      "auto_hard": true,
+      "auto_soft": true,
+      "direct": true
+    },
+    "guarded_auto_hard_overlap": {
+      "gapi_class_0_share_on_ece": 1.0,
+      "rows_checked": 750,
+      "predictions_match_complementary_local_c0_diagnostic": true,
+      "diagnostic_deployable": false
+    }
+  },
+  "notebook": {
+    "path": "notebooks/paper2_ece_supplement.ipynb",
+    "command": "nb execute experiment/paper2-final-evidence-1.1/notebooks/paper2_ece_supplement.ipynb --uv --timeout 3600",
+    "status": "executed_successfully",
+    "execution_exit_code": 0,
+    "tables": [
+      "ece_guarded/ece_policy_summary.csv",
+      "ece_guarded/ece_station_policy_summary.csv",
+      "ece_guarded/ece_routing_shares.csv",
+      "ece_guarded/ece_routing_shares_by_station.csv",
+      "ece_guarded/policy_crosswalk.csv",
+      "ece_guarded/routing_audit.csv",
+      "ece_guarded/site_descriptors.csv",
+      "ece_guarded/f5_guarded_daily_overlay.csv",
+      "ece_guarded/salvage_c0_dry_comparison_by_seed.csv",
+      "ece_guarded/salvage_c0_dry_comparison_summary.csv"
+    ],
+    "figures": [
+      "figures/T7_T9_ece_diagnostics.png",
+      "figures/F5_guarded_ece_overlay.png"
+    ]
+  },
+  "source_sha256": {
+    "ece_guarded/run_guarded.py": "de21ef4beed2e229e8d9b21be83173940daea160b24db9b5de99e2557d76e0d2",
+    "ece_guarded/config.yaml": "6cacc0947eb58b4604c34e046fa4c6c9561f876d537fe42c89ee16a625e6f016",
+    "routing_opt/routers.py": "6e4192050089864ec1071a22e6e3f81e1c97012760dbbea3b027a7e61dcfc2c3",
+    "notebooks/paper2_ece_supplement.ipynb": "f4579805c370c27693086ab737651cdf0ffbd7ceae1f6d122774d830905bcbd9"
+  },
+  "files": {
+    "slurm_stdout": "ece_guarded/slurm/p2-ece-1p1-2158403.out",
+    "slurm_stderr": "ece_guarded/slurm/p2-ece-1p1-2158403.err",
+    "checkpoints": "ece_guarded/checkpoints/"
+  }
+}

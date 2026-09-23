@@ -1,0 +1,116 @@
+experiment:
+  name: "paper2-final-evidence-1.1-ece-missingness-aware"
+  objective: "Reproduce salvage missingness-aware ECE v3 routing for V0/Backbone and calibrate the Guarded G_API class-to-expert mapping on Washington only."
+  constraint: "ECE strictly unseen; routers, thresholds, experts, and the Global_Single_54 baseline fit/calibrate from Washington data only; no manual station routing and no ECE-driven choices."
+  parent_evaluation: "derived_8.4-formal-eval-2.0-ece"
+  prior_experiment: "notebooks/experiment/derived_8.4-ece-router-salvage-2.0"
+  router_sources:
+    reference_families: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/eval_formal/routers.py"
+    guarded_family: "notebooks/experiment/paper2-final-evidence-1.1/routing_opt/routers.py"
+  model_params_source: "notebooks/experiment/derived_8.4-formal-eval-2.0-ece/config.yaml"
+
+datasets:
+  training: "data/splits/derived_8.4"
+  ece_v3: "data/splits/derived_8.4_ece_v3"
+
+target_column: "soil_moisture_5cm"
+seeds: [42, 7, 13, 101, 123]
+
+# c0_0_c1_0 variants: identical 54-feature expert backbone, no delta additions.
+families:
+  - Clustering_V0_Full_k2
+  - Clustering_Backbone54_k2
+  - Guarded_Backbone54_k2
+
+# Preserve the approved family-specific dry/wet oracle convention. The labels
+# are experiment conventions, not proof of physical regimes.
+semantic_mapping:
+  Clustering_V0_Full_k2:
+    dry_expert_index: 0
+    source: "derived_8.4-ece-router-salvage-2.0 c0=dry convention"
+  Clustering_Backbone54_k2:
+    dry_expert_index: 0
+    source: "derived_8.4-ece-router-salvage-2.0 c0=dry convention"
+  Guarded_Backbone54_k2:
+    resolution: "minimum_wa_canonical_feature"
+    source: "Guarded router fit-frame canonicalization; local c1 has lower canonical SMAP mean"
+
+# G_API classes have no inherent dry/wet meaning. V0/Backbone preserve salvage
+# 2.0's direct class-to-local-index behavior. For Guarded, both permutations
+# are scored on synthetic-SMAP-masked WA validation using calibration experts
+# fit on WA train. Exact ties select G_API class 0 -> local c0.
+auxiliary_mapping:
+  Clustering_V0_Full_k2:
+    mode: "fixed_local_index"
+    gapi_class_0_local_expert: 0
+    source: "derived_8.4-ece-router-salvage-2.0 direct G_API class-to-local-index mapping"
+  Clustering_Backbone54_k2:
+    mode: "fixed_local_index"
+    gapi_class_0_local_expert: 0
+    source: "derived_8.4-ece-router-salvage-2.0 direct G_API class-to-local-index mapping"
+  Guarded_Backbone54_k2:
+    mode: "wa_synthetic_mask_min_rmse"
+    tie_break_gapi_class_0_local_expert: 0
+    source: "minimum RMSE on synthetic-SMAP-masked Washington validation"
+
+# Single-regime global baseline reference (fit on WA trainval only, direct prediction).
+# Global_Single_54: 54-feature shared backbone. Reference row only, never a fallback.
+baselines:
+  - Global_Single_54
+
+# `as_routed`: static KMeans hard; `auto_hard`: availability gate to G_API or
+# static hard; `auto_soft`: WA-calibrated static/G_API blending.
+# `c0_only` is the manual dry-assigned oracle and `c1_only` the complementary
+# diagnostic under the approved family convention. Consult the audit for local
+# indices and measured Washington means.
+policies:
+  - as_routed
+  - auto_hard
+  - auto_soft
+  - c0_only
+  - c1_only
+
+deployable:
+  - as_routed
+  - auto_hard
+  - auto_soft
+  - direct
+
+oracle:
+  - c0_only
+
+diagnostic:
+  - c1_only
+
+# Availability gate (input-only, no target): a row is "router-unreliable" when
+# its full SMAP router-feature block is native-missing, OR its overall router
+# miss rate exceeds tau. Rule + tau are pre-registered here; the WA
+# synthetic-masking calibration in run_guarded.py scores Guarded's G_API
+# class-to-local-expert mapping on WA val only.
+gate:
+  tau_miss_rate: 0.10
+  smap_block_rule: "all_smap_router_features_nan"
+
+# Ambiguity + blending (WA-only fit): margin = |d0 - d1| under the family's own
+# scaler/centroids. wa_percentile sets the ambiguous cutoff; T is grid-selected
+# on WA val only (experts fit on WA train, scored on WA val, ECE never touched).
+blend:
+  wa_percentile: 5
+  temperature_grid: [0.25, 0.5, 1.0, 2.0]
+  aux_pseudo_distance: "wa_median_margin"
+
+model_params:
+  n_estimators: 2500
+  learning_rate: 0.005
+  max_depth: 9
+  min_child_weight: 8
+  gamma: 0.0
+  reg_lambda: 0.75
+  reg_alpha: 0.03
+  subsample: 0.9
+  colsample_bytree: 0.8
+  tree_method: hist
+  device: cpu
+  n_jobs: 1
+
+canonical_feature: "SMAP_sm_pm_interp_rollmean30"
