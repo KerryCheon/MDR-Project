@@ -6,11 +6,13 @@ Historical predecessors: `outline-v2.md`–`outline-v5.md` (all kept unchanged) 
 This document is the technical-report backbone for writing the full paper without manually digging through experiment notebooks. Every number below is already present in an executed report notebook README (stdout tables), in paper 1, or in repo docs explicitly marked as historical/prior-work sources; the claims ledger (W1) freezes the mapping before drafting.
 
 v6 diff vs v5 (targeted final coherence pass):
-- §3: add one concise data-to-evaluation flow and treat `derived_8.4` as the canonical study split, without describing earlier split lineage.
+- §3: add one concise data-to-evaluation flow and treat `derived_8.4` as the canonical study split, without describing dataset evolution.
 - §§0/3/4/6.4/9: make reuse of the 2023–2025 test period for backbone and model selection an explicit limitation; distinguish pre-specified guard criteria from independent confirmation.
 - Abstract/§6.1/C3: remove the test-delta V0 bootstrap from the Guarded primary claim; retain it only as a clearly labeled sensitivity result or omit it.
 - ECE ledger: normalize the three result groups to C9a/C9b/C9c and mark Guarded-on-ECE evidence as pending until its run is complete.
 - §3/§4: define `trainval` and antecedent precipitation index (API) on first use.
+- §4: record the shared XGBoost expert settings and disclose their test-era selection provenance.
+- §6/C0/R5: label paper 1's R² 0.822 as historical context from a different dataset and protocol, not a directly comparable result; remove the dataset-evolution ledger claim.
 
 v4 diff vs v3 (complete list; all other lines unchanged in substance):
 - D9 (§0): primary = `Guarded_Backbone54_k2 (0,0)`; V0 = sensitivity; routing features shared-54-only; W2 pre-registration disclosed.
@@ -37,7 +39,7 @@ v5 diff vs v4 (complete list; all other lines unchanged in substance):
 1. **Claim is multi-regime vs single-regime, NOT "K=2 is universal."**
    - Our data: K=2 is best among tested K ∈ {1,2,3,4} (K=1 = global baseline).
    - Deployment elsewhere may need larger K; K-selection guidance is a contribution, not a fixed answer.
-2. **No regime-specific feature selection.** Every configuration (global and all routers) uses the identical shared 54-feature backbone. Delta-feature arms (c0/c1) are OUT of the main claim; at most a one-paragraph sensitivity note that the historical test-selected delta changed R² from 0.8118 to 0.8126 while validation-selected deltas failed. The shared backbone and some model choices were selected using the same 2023–2025 test period, so the reported scores are development-split evidence, not independent confirmation; sharing features does not remove that selection bias.
+2. **No regime-specific feature selection.** Every configuration (global and all routers) uses the identical shared 54-feature backbone. Delta-feature arms (c0/c1) are OUT of the main claim; at most a one-paragraph sensitivity note that the historical test-selected delta changed R² from 0.8118 to 0.8126 while validation-selected deltas failed. The shared backbone, XGBoost hyperparameters, and some other model choices were selected using the same 2023–2025 test period, so the reported scores are development-split evidence, not independent confirmation; sharing features does not remove that selection bias.
 3. **Venue-agnostic outline.** Sections written so the same material works for:
    (a) ML conference (NeurIPS/ICML workshops, AAAI/ACL-app tracks, KDD application),
    (b) AI-for-science / geoscience ML venue (AGU Fall Meeting abstract → paper, IEEE IGARSS/CIKM application track),
@@ -143,12 +145,10 @@ Each section lists: goal · claims · numbers to quote · source (experiment pat
 
 - `derived_8.4`: 7 WA stations; train 2017–20 (9,803) / val 2021–22 (4,805) / test 2023–25 (6,620). Define `trainval` as train + validation (14,608 rows) when first used. Include a concise station list or table with one-line descriptors (east/west, elevation).
 - Stations: BeaverPass_WA_990, CayusePass_WA, Darrington, Paradise_WA, Quinault, SourdoughGulch_WA_985, Spokane.
-- **Dataset evolution paragraph:** earlier expansion roughly doubled station count; many added stations removed for data-quality issues and because the current feature set lacks snow/SWE variables needed for snowpack-dominated sites (alpine stations out of scope; cite `docs/plans/20260721-remove-incomplete-stations.md`, `docs/plans/20260726-stations-removal.md`). Result: clean, deployment-relevant 7-station split. One sentence: snowpack regimes are future work (SWE/Snow Depth features), not a silent omission.
 - Feature backbone: 54 shared features (identical for every model) — name the source (`derived_8.4-feature-selection-2.0` / eval-1.1 `selected_features.json`); foundations of feature engineering cite paper 1. State that this backbone was selected using the same 2023–2025 test period and then shared across arms: sharing controls the comparison but does not remove selection bias.
 - *(v4 NEW one-liner):* the primary router uses this identical backbone — there is no separate router feature source to justify or port (the legacy 50-feature V0 set survives only as a sensitivity reference, §4).
 - Target: `soil_moisture_5cm`; metrics: R², RMSE, MAE, bias (+ Pearson where useful).
-- **Cross-dataset caution (R5):** any comparison to paper 1's 0.822 must note different split/dataset version/protocol; never place it in the same ranking table as `derived_8.4` rows without a footnote.
-- Sources: `data/splits/derived_8.4/split_meta.json`; `src/pipeline/README.md` and `src/pipeline/main.py` for the processing sequence; `writeup/sections/shared/preprocessing.tex` and `features.tex` for the publication-level description; `derived_8.4-formal-eval-1.0` protocol; `derived_8.4-gating-analysis-1.0` feature-list tables; paper 1 §data/features; station-removal plans.
+- Sources: `data/splits/derived_8.4/split_meta.json`; `src/pipeline/README.md` and `src/pipeline/main.py` for the processing sequence; `writeup/sections/shared/preprocessing.tex` and `features.tex` for the publication-level description; `derived_8.4-formal-eval-1.0` protocol; `derived_8.4-gating-analysis-1.0` feature-list tables; paper 1 §data/features.
 
 ### §4 Method: hard-gated cluster-wise XGBoost (MoE formulation) [all venues]
 
@@ -176,11 +176,12 @@ Each section lists: goal · claims · numbers to quote · source (experiment pat
 - **Pre-specified promotion note (R12):** the guard design and promotion bars were fixed before the follow-up training run (temporal ±0.003, LOSO ±0.010), and both pass. State that the 2023–2025 test period had already informed feature/model selection, so this pre-specification does not create an independent confirmation set.
 - Router families compared: the six v3 configurations plus the guarded primary; V0 appears only as the appendix sensitivity row.
 - Training protocol: routers fit on trainval only; experts per group; 30 temporal seeds; LOSO 5 seeds × 7 folds with per-fold refitting. State exactly which components are stochastic.
+- **Shared XGBoost expert settings:** XGBoost 3.2.0 with 2,500 trees, learning rate 0.005, max depth 9, minimum child weight 8, gamma 0, α=0.03 and λ=0.75 regularization, and row/column subsampling 0.9/0.8 (`tree_method=hist`). These settings are shared across the global and routed experts; they came from test-era tuning and are part of the test-guided model-selection limitation (§9).
 - Statistics: report seed-level intervals and tests, BH-FDR, block bootstrap, and LOSO summaries with each comparison's configuration and harness identified. Seed variation measures expert fitting stochasticity only; it does not include feature/model-selection uncertainty. Global/gating comparisons are sensitivity-anchored to `formal-eval-1.0`; the only paired in-harness comparison is Guarded vs unguarded Backbone. The cited `ΔR² +0.035` sample bootstrap is specifically V0 with test-selected `c0=0, c1=10` and is sensitivity-only, not evidence for the Guarded no-delta primary.
 - **K-selection disclosure:** the recommended protocol selects K using train/validation or predeclared clustering diagnostics and reserves test for final evaluation. In this study, the test period was also used in feature/model selection; disclose this reuse when presenting results. *(The routing-optimize K-sweep reproduces gating-analysis indices exactly on trainval and provides a per-region recomputable diagnostic.)*
 - **Feature-availability disclosure:** distinguish in-situ target labels from satellite soil-moisture proxies and state whether each input exists at intended deployment time.
 - No claim is made that hard routing is superior to soft routing; the paper compares the implemented hard-gated router families only. Margin/availability fallback machinery is reported as implemented-but-advisory in one sentence (it never triggers on WA data).
-- Sources: `derived_8.4-formal-eval-1.0`; `derived_8.4-routing-optimize-1.0` (guard spec, agreement + training runs); `derived_8.4-gating-analysis-1.0`; `eval11/routers.py`; `derived_8.4-regime-interpretation-1.1`; direct literature listed in §2.
+- Sources: `derived_8.4-formal-eval-1.0` (including its `config.yaml` and README for exact XGBoost settings and test-era tuning provenance); `derived_8.4-routing-optimize-1.0` (guard spec, agreement + training runs and `config.yaml`); `derived_8.4-gating-analysis-1.0`; `eval11/routers.py`; `derived_8.4-regime-interpretation-1.1`; direct literature listed in §2.
 
 ### §5 Partition diagnostics: covariate-defined regional strata
 
@@ -210,7 +211,7 @@ Each section lists: goal · claims · numbers to quote · source (experiment pat
 - The sample bootstrap ΔR² +0.035 [0.019, 0.055], p = 0.0005, and RMSE −0.0040, p = 0.0005, belong to V0 with test-selected `c0=0, c1=10`; report only as a sensitivity result, never as evidence for the Guarded no-delta primary. Omit from the abstract and main headline table.
 - **Router-design sentence:** specialization is not sufficient by itself; the sensitivity-anchored V0 no-delta comparison favors the two-regime model over the global baseline, while the tested target-derived gate underperforms. For Guarded, the direct in-harness comparison is against unguarded Backbone, with a near-tie temporally and gains on 3/7 LOSO folds. These are development-split findings, not a universal ranking of supervised versus unsupervised routers.
 - Seed-42 note (one line): Guarded seed-42 reproduces eval-1.1's V0-backbone 0.814334 exactly — the guard recovers the legacy-partition number on shared-54 features.
-- Optional footnote only (not a table row): paper 1 reported 0.822 under a different dataset/split — not directly comparable (R5).
+- Optional footnote only (not a table row): paper 1's R² 0.822 is a historical result on a different dataset and protocol; include it only as context, not as a directly comparable baseline or ranked result (R5).
 - Source: `derived_8.4-routing-optimize-1.0` T1 (primary + ablation) + `formal-eval-1.0` temporal seed table (sensitivity rows).
 - Figure F1: bar/dot temporal R² with 95% intervals across ~8 configs; label these as seed-level intervals that reflect expert random-state variation, not sampling or selection uncertainty (NEW figure notebook).
 
@@ -233,7 +234,7 @@ Each section lists: goal · claims · numbers to quote · source (experiment pat
 
 - Guarded no-delta (0.8118) is close to the historical V0 test-selected delta arm (0.8126); treat this only as a descriptive sensitivity comparison, not evidence independent of test-guided selection.
 - Val-selected deltas historically UNDERPERFORM global (0.735 vs 0.780) → selection instability exists in this benchmark; our simplified no-delta protocol avoids it.
-- **Required selection caveat:** the shared 54-feature backbone was selected using 2023–2025 test performance, and some model/router choices were also made after examining this period. Treat all test scores as development-split evidence rather than independent confirmation; shared features improve comparability but do not eliminate selection bias. Seed intervals reflect expert random-state variation, not uncertainty from feature, router, or model selection.
+- **Required selection caveat:** the shared 54-feature backbone and XGBoost hyperparameters were selected using 2023–2025 test-era evidence, and some router/model choices were also made after examining this period. Treat all test scores as development-split evidence rather than independent confirmation; shared features improve comparability but do not eliminate selection bias. Seed intervals reflect expert random-state variation, not uncertainty from feature, router, or model selection.
 - Source: `derived_8.4-formal-eval-1.0` delta-robustness table + caveat bullets.
 
 #### 6.5 (Optional, venue-dependent) Prior-attempts context material
@@ -275,7 +276,7 @@ Each section lists: goal · claims · numbers to quote · source (experiment pat
 ### §9 Limitations [required]
 
 - n = 7 LOSO, low power; partial 2025 coverage; seed variation does not cover router stochasticity (routers fixed).
-- **Test-set reuse / selection bias:** the 54-feature backbone and some reported router/model choices were selected or promoted after inspecting the same 2023–2025 period used for evaluation. The test results are therefore development-split evidence, not untouched confirmatory estimates; both absolute scores and apparent winner advantages may be optimistic. Seed-level intervals do not capture this selection uncertainty. Independent confirmation requires a new time period or external dataset.
+- **Test-set reuse / selection bias:** the 54-feature backbone and shared XGBoost hyperparameters, along with some router/model choices, were selected or promoted after inspecting the same 2023–2025 period used for evaluation. The test results are therefore development-split evidence, not untouched confirmatory estimates; both absolute scores and apparent winner advantages may be optimistic. Seed-level intervals do not capture this selection uncertainty. Independent confirmation requires a new time period or external dataset.
 - **Guard-specific limitations (NEW):** (i) majority voting uses `station_id` at inference for known stations — legitimate as a consistency rule over an unsupervised partition, but it is station-identity-adjacent and must not be described as discovering regimes; (ii) the guard acts on training composition, not on unseen-station routing — unseen rows use per-sample predictions, so no direct transfer gain should be claimed beyond what LOSO measures; (iii) `StationMeanV-B` (0.634) trails `GuardedV-A` (0.638) and is reported as a challenger null, not a second method.
 - **OOS paragraph:** train on 7 WA → 10 out-of-state stations: ALL models degrade (station-mean R² negative for every config; pooled global 0.206 vs best two-regime ~0.11–0.14; two-regime worse than global, e.g. V0_Full no-delta wins 2/10). Frame: regime specialization is a within-region prior; outside the region both experts and router are OOD — consistent with regional scope, not a hidden result. Source: `derived_8.4-formal-eval-2.0` summary + Table 1 (no-delta rows only). *(v4: OOS rows predate the guard; do not imply guard numbers there.)*
 - **Snowpack / feature-space boundary:** stations under alpine snowpack dynamics removed/out-of-scope because the feature set lacks SWE/snow depth; algorithm gating cannot fix missing physics (cite station-removal plan). Future work: SWE integration.
@@ -319,7 +320,7 @@ Each section lists: goal · claims · numbers to quote · source (experiment pat
 
 | # | Claim | Config / source | Number | Artifact |
 |---|-------|-----------------|--------|----------|
-| C0 | Prior work: global baseline + regime motivation | paper 1 | R² 0.822 (paper-1 protocol) | `paper/` PDF |
+| C0 | Prior-paper context: global baseline + regime motivation | paper 1 | R² 0.822; different dataset and protocol, so not directly comparable to `derived_8.4` | `paper/` PDF |
 | C1 | Prior work: specialization potential under oracle; deployable routing was the gap | paper 1 (if in PDF) / internal prior | oracle ≫ global; e2e routing weak | paper 1 §three_regime (verify) |
 | C2 | Two-regime > global temporal (OURS; development-split evidence) | Guarded primary; global comparison sensitivity-anchored to V0 no-delta | 0.8118 vs 0.7798; Δ +0.032 and seed-level p < 1e-12 are from V0 no-delta vs global, not a paired Guarded comparison | `routing-optimize-1.0` T1 + `formal-eval-1.0` |
 | C3 | Sensitivity-only sample-level bootstrap (not Guarded primary) | V0 `c0=0, c1=10` (test-selected delta) vs global | ΔR² +0.035 [0.019, 0.055], p = 0.0005; RMSE −0.0040, p = 0.0005 | `formal-eval-1.0` bootstrap |
@@ -333,7 +334,6 @@ Each section lists: goal · claims · numbers to quote · source (experiment pat
 | C9c | ECE deployable availability-gated fix ties oracle (WA-only calibration) | `auto_hard/auto_soft` (gate τ=0.10, T WA-tuned, ECE unseen) | pooled RMSE `0.058` (= oracle `0.059` within seed noise); `c0_only` marked `deployable=false` | `ece-router-salvage-2.0` stdout/CSVs |
 | C16 | (NEW in v5) Covariate proximity governs ECE transfer, not geography (diagnostic interpretation, not SOTA claim) | dry/lowland expert (Spokane+Sourdough) vs wet-mountain expert on lowland ECE (51–157m) | qualitative + C9b/C9c numbers; static router misroutes Lost_Meadow 100% / Renton_Home ~90% to wet expert while dry-routed policies send 100% to dry expert | salvage routing audits + `station_static_features.csv` |
 | C10 | ECE daily means hide diurnal/event response | n/a | hourly range 0.035 vs daily step 0.0025 | `ece-input-diagnose-1.0` |
-| C11 | Dataset evolution: expansion → prune → 7 stations (quality + snow fit) | plans | 5→13→7 (approx.; verify exact counts) | removal plans + split_meta |
 | C12 | Design lesson: router provenance matters under the fixed benchmark | C5 + method narrative | qualitative; target-derived foil is specific, not universal | §8.1 |
 | C13 | Primary router is in-situ-target-label-free but satellite-SM-informed | shared backbone + router table | SMAP features present; deployment availability required | §3/§4 |
 | C14 | (NEW) Guarded ablation: consistency enforcement closes the Backbone→V0 gap | Guarded vs Backbone, same harness, paired | temporal +0.0001 (30/30); LOSO +0.018 (5/5) | `routing-optimize-1.0` T1/L1 |
@@ -362,7 +362,7 @@ Every draft sentence must map to a ledger row; no orphan numbers. C0/C1 must be 
 ## 7. Works to do (ordered)
 
 - **W0′** Freeze v6 claim scope: primary = Guarded (0,0) no-delta; V0 = appendix sensitivity; middle-path motivation depth; ECE = diagnostic discussion + supplementary panel (NOT a SOTA claim); Guarded-on-ECE result remains pending until run; leave `outline-v2.md` through `outline-v5.md` unchanged. *(decision, no code)*
-- **W-new** Open `paper/*.pdf` and confirm whether three-regime/oracle/limitation content is in the **submitted** manuscript (vs only `writeup/`); record which C0/C1 sentences are safely citable to paper 1. Also confirm exact station counts over time for C11 (5→13→7) from split history before freezing numbers.
+- **W-new** Open `paper/*.pdf` and confirm whether three-regime/oracle/limitation content is in the **submitted** manuscript (vs only `writeup/`); record which C0/C1 sentences are safely citable to paper 1.
 - **W1** Write full claims ledger → `writeup2/claims-ledger.md` from `routing-optimize-1.0` (T1/L1/T8/R3/R3b) + `formal-eval-1.0` / `2.0` / `2.1` + `ece-router-salvage-1.1` (C9b oracle/poison rows) + `ece-router-salvage-2.0` (C9c deployable rows + WA calibration) + new Guarded-on-ECE run (once executed) + `gating-analysis` + `ece-input-diagnose` READMEs (stdout-only numbers for our results; paper-1 citations for C0/C1). Use C9a/C9b/C9c + C16; mark cross-harness rows as sensitivity-anchored vs paired; mark every `c0_only` row `deployable=false`; mark Guarded-on-ECE values pending until execution.
 - **W2** Related-work search + BibTeX: include the direct soil-moisture MoE papers, clustered soil-moisture models, seasonal-regime work, and hydrology MoE/router papers listed in §2; verify DOI/venue metadata and tag venue-fit. Add one positioning sentence for the ECE collaboration differentiator (live in-situ deployment no SOTA benchmark offers) without overstating novelty.
 - **W3** Figure notebooks: (a) main `notebooks/experiment/paper2-figures-1.0/` producing F1 (+F4/F6 if kept) with Guarded primary row + T8 panel; (b, NEW in v5) supplementary ECE diagnostic panel producing T7/T9/F5-supp from salvage CSVs (`summary/station_metrics/routing_audit/predictions_v3`) + `station_static_features.csv`; both via `nb execute --uv`; figures saved under the experiment dir(s); tables in writeup2 filled only from notebook stdout.
@@ -390,7 +390,7 @@ Not doing (this paper): presenting ECE as a SOTA-beating claim; presenting `c0_o
 - **R15 (NEW in v5):** ECE oracle (`c0_only`) misread as a deployable method — mitigate: every C9b row/table/figure caption carries `manual oracle ceiling, deployable=false`; deployable claim restricted to C9c `auto_hard/auto_soft` with WA-only calibration stated.
 - **R16 (NEW in v5):** Salvage-vs-Guarded label flip (`C0`=dry vs Guarded canonical `c1`=drier) causes inverted expert comparison — mitigate: §4 label-flip box + dry-expert-index verification step in W4′; supp panel uses "dry/lowland" / "wet-mountain" words, never bare c0/c1, outside Methods.
 - **R11:** Causal geoscience interpretation exceeds team expertise — mitigate: report descriptive associations only and require subject-matter validation before strengthening claims.
-- **R5 (v3):** Cross-dataset number confusion (paper 1's 0.822 vs our 0.780/0.812) — mitigate: never co-rank; footnote-only comparisons; dataset version tags on any historical table (T0).
+- **R5 (v3):** Cross-dataset number confusion (paper 1's 0.822 vs `derived_8.4`) — label the prior-paper value as historical context from a different dataset and protocol; do not compare or co-rank it with current results.
 - **R6 (v3):** Over-attributing unpublished internal failure numbers as if peer-reviewed — mitigate: cite paper 1 for what it actually contains (W-new); label internal numbers "prior/internal analysis" or omit from camera-ready.
 - **R7 (v3):** Sequel narrative reads as dumping on paper 1 — mitigate: tone = "open question left by prior work," contributions credit paper 1 for pipeline + diagnosis.
 - **R12 (NEW in v4):** Guard reads as post-hoc engineering to recover V0 numbers — mitigate: state that promotion bars were fixed before the follow-up run, but the benchmark test had already informed feature/model choices; the pre-specification limits within-run tuning and does not make results independent confirmation. Use ablation + mechanism tables to show where the guard acts.
@@ -410,7 +410,7 @@ Not doing (this paper): presenting ECE as a SOTA-beating claim; presenting `c0_o
 | `docs/gating.md` | Internal history of threshold/hard/soft/classifier gates (understanding; cite only if venue accepts tech report) |
 | `docs/plans/20260703-why-MoE.md` | Motivation background only (re-verify any number before quoting) |
 | `docs/plans/20260721-remove-incomplete-stations.md` | Dataset pruning: incomplete stations |
-| `docs/plans/20260726-stations-removal.md` | Dataset pruning: snowpack/out-of-scope stations |
+| `docs/plans/20260726-stations-removal.md` | Station inclusion/exclusion decisions |
 | `notebooks/experiment/derived_8.4-formal-eval-1.0/` | Sensitivity rows: temporal + LOSO formal stats vs global/gating/deltas (V0 arms) |
 | `notebooks/experiment/derived_8.4-routing-optimize-1.0/` | Primary results: guard spec, R1–R4 agreement/K-sweep, T1 temporal, L1/T8 LOSO (slurm job 2155747) |
 | `notebooks/experiment/derived_8.4-gating-analysis-1.0/` | K-sweep, purity, regime composition, separating features |
