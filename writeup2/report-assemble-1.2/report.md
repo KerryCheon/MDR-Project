@@ -61,21 +61,25 @@ For all analyses, R², RMSE, MAE, and bias refer to daily volumetric soil moistu
 
 ## 4. How the regional models work
 
-The primary regional model assigns each station-day observation to one of two groups with K-means on the shared 54 environmental and satellite features, then predicts soil moisture with the XGBoost predictor fitted for that group. Each observation uses one predictor rather than a blend. The unguarded model uses the same features and predictor type but assigns every row from its own features, without the station-majority rule. The global model uses one predictor for all observations.
+The question this paper tests is multi-regime versus single-regime: whether fitting one predictor per group beats fitting one predictor for all observations. The regional family therefore pairs a group router with one XGBoost predictor per group, and each station-day observation is handled by exactly one predictor — there is no blending across predictors. Hard assignment is a deployability choice rather than an accuracy claim: a soft-blend fallback policy run on the ECE set matches the hard fallback at reported precision (Table 8), so the simpler deployable rule is kept; that comparison covers only the short ECE window (§8). This contrasts with the soft-membership and adaptive-weighting designs in the literature (§1), which this study does not test.
+
+The group count k=2 is a Washington setting, not a finding: two groups performed best on these seven stations, and the training-and-validation number-of-groups comparison behind that choice is reported in Table 4 (§7). Deployments to other regions should re-run that comparison on local data rather than assume two groups.
+
+On the Washington fit data, the drier-labeled group contains Spokane and Sourdough Gulch; the other group contains Beaver Pass, Cayuse Pass, Darrington, Paradise, and Quinault. Labels are canonicalized after each fit so the drier group — lower fit-data mean of the 30-day rolling SMAP feature `SMAP_sm_pm_interp_rollmean30` — carries a consistent label, but labels can still change across refits. The Washington fit-frame means of that SMAP feature are 0.435981 for canonical group 0 and 0.180078 for group 1, with corresponding target means 0.221648 and 0.209373; group numbers are model labels, not physical class labels. Table 5 (§7) profiles which features differ most between the groups.
+
+Per-day K-means assignment can split one station's rows across groups, so each group-specific predictor would train on a shifting slice of that station. The station-majority rule keeps each fitted station in a single group — the station's most common fit-frame group, with ties broken toward the smaller group id — and keeping known stations together changes which training examples each predictor sees. That rule is the only difference between the primary model and its unguarded twin, so the paired gaps in §§5–6 (+0.000119 temporal R², +0.018000 LOSO R²) measure exactly the rule's effect. For a new station or a row without a station id, assignment falls back to the per-day nearest-centroid label. Rows whose SMAP block is entirely missing, or whose overall missing-data rate exceeds the fitted gate, are flagged by an input-only availability check so the ECE shortfall (§8) can be described honestly.
 
 The shared XGBoost predictors use 2,500 histogram trees, learning rate 0.005, depth 9, minimum child weight 8, gamma 0, alpha 0.03, lambda 0.75, row subsampling 0.9, and column subsampling 0.8. These settings were tuned during the same test era and contribute to the development-split limitation. Only the XGBoost `random_state` varies across seeds; the routers are fixed at seed 42.
 
-| Model | Exact grouping rule (inputs → groups) | In-situ target used for grouping? | SMAP input to the grouping step |
-| --- | --- | --- | --- |
-| Target-threshold grouping | XGB classifier (same XGBoost settings) on the earlier 50-feature set, trained to predict whether that day's in-situ soil moisture is below 0.16 m³/m³; at predict time it uses only features, but its labels came from the target, so it is undeployable | Yes (to train the gate) | Not needed for the gate itself |
-| Seasonal grouping | Calendar month only: May–Oct → group 0 (dry season), Nov–Apr → group 1 (wet season); no fitting | No | None |
-| Precipitation-index grouping | Single feature `G_API` (antecedent precipitation index): split at the fit-data median, low → group 0, high → group 1; the median is refit on each fit frame | No | None |
-| Dynamic-feature grouping | K-means (k=2, standardized, mean-imputed, seed 42, `n_init=10`) on exactly 3 time-varying features: `SMAP_sm_pm_interp_lag1`, `G_API`, `LST_modis` | No | One lagged SMAP proxy (`SMAP_sm_pm_interp_lag1`) |
-| Primary regional model | K-means (k=2, same recipe) on all 54 shared features, **plus station-majority rule**: a fitted station gets its most common fit-frame group; new/missing/gated rows use the per-day K-means label | No | Current, lagged, and rolling SMAP proxies (part of the 54) |
-| Unguarded two-regime model | Same 54-feature K-means as the primary model, per-day assignment for every row (no station-majority rule) | No | Same as primary |
-| Single-regime global model | No groups; one XGBoost on all 54 features | No | SMAP only inside the predictor, not a grouping step |
-
-**How the K-means grouping is formed.** Using fit data only, the model fills missing feature values with the fit-frame column means, standardizes the features, and fits K-means with k=2 (seed 42, `n_init=10`). Cluster labels are canonicalized after each fit so the drier group (lower fit-data mean of `SMAP_sm_pm_interp_rollmean30`) carries a consistent label. For a station present during fitting, the primary model uses that station's most common group (deterministic tie-break: smaller group id). For a new station or a row without a station id, it assigns the row from its features by nearest centroid. Keeping known stations together changes which training examples each group-specific predictor sees. Rows whose SMAP block is entirely missing, or whose overall missing-data rate exceeds the fitted gate, are flagged by an input-only availability check so the ECE shortfall (§8) can be described honestly.
+| Model | Grouping inputs | Assignment rule |
+| --- | --- | --- |
+| Target-threshold grouping | Earlier 50-feature set, plus in-situ labels to train the gate (undeployable) | XGB classifier (same XGBoost settings) predicts whether that day's in-situ soil moisture is below 0.16 m³/m³; at predict time it uses only features |
+| Seasonal grouping | Calendar month | May–Oct → group 0 (dry season), Nov–Apr → group 1 (wet season); no fitting |
+| Precipitation-index grouping | Single feature `G_API` (antecedent precipitation index) | Split at the fit-data median (refit on each fit frame), low → group 0, high → group 1 |
+| Dynamic-feature grouping | 3 time-varying features: `SMAP_sm_pm_interp_lag1`, `G_API`, `LST_modis` | K-means (k=2, standardized, mean-imputed, seed 42, `n_init=10`) |
+| Primary regional model | All 54 shared features, including current, lagged, and rolling SMAP proxies | 54-feature K-means (same recipe as above) **plus station-majority rule**: a fitted station gets its most common fit-frame group; new/missing/gated rows use the per-day label |
+| Unguarded two-regime model | Same 54 features | Same 54-feature K-means, per-day assignment for every row (no station-majority rule) |
+| Single-regime global model | No grouping (SMAP only inside the predictor, not a grouping step) | One XGBoost on all 54 features |
 
 The main comparison is between the primary regional model and its unguarded twin. The global model and the simpler grouping rules above provide context. The precipitation-index rule is the only SMAP-free grouping, so it doubles as the ECE fallback in §8. Because the shared test period informed feature and model choices, all results here are development evidence rather than independent confirmation. An earlier 50-feature regional variant (V0) is retained as background in Appendix B only.
 
@@ -128,7 +132,7 @@ The main comparison is between the primary regional model and its unguarded twin
 
 ## 7. Partition diagnostics and feature interpretation
 
-**Table 4. Number-of-groups comparison using training and validation data.** Lower Davies–Bouldin and higher Calinski–Harabasz favor two groups here; silhouette is slightly higher at three. These summary measures do not establish physical meaning or the best choice for future data.
+**Table 4. Number-of-groups comparison using training and validation data.** Lower Davies–Bouldin and higher Calinski–Harabasz favor two groups here; silhouette is slightly higher at three. These summary measures do not establish physical meaning or the best choice for future data. Deployments to other regions should re-run this comparison on local data rather than assume two groups.
 
 | Number of groups | Silhouette | Calinski–Harabasz | Davies–Bouldin | Trainval station agreement | Smallest group share |
 | --- | --- | --- | --- | --- | --- |
@@ -136,7 +140,7 @@ The main comparison is between the primary regional model and its unguarded twin
 | 3 | 0.226 | 3589.4 | 1.815 | 0.833 | 0.264 |
 | 4 | 0.188 | 2855.0 | 2.015 | 0.695 | 0.147 |
 
-For the seven Washington stations, the drier-labeled group contains Spokane and Sourdough Gulch; the other group contains Beaver Pass, Cayuse Pass, Darrington, Paradise, and Quinault. This is a sample-specific pattern across the Cascade side and eastern Washington. The five-station group includes both lower-elevation sites and mountain sites, so the groups are not a strict mountain-versus-lowland split. The primary model keeps known stations in one group by design; this consistency is a model rule rather than independent evidence of a physical classification. Group labels can change when the model is refit (they are re-canonicalized each time).
+For the seven Washington stations (membership stated in §4), this is a sample-specific pattern across the Cascade side and eastern Washington. The five-station group includes both lower-elevation sites and mountain sites, so the groups are not a strict mountain-versus-lowland split. The primary model keeps known stations in one group by design; this consistency is a model rule rather than independent evidence of a physical classification.
 
 **Table 5. Features that differ most between the two groups.** Separation index is a saved 0–1 group-difference score from the earlier gating analysis of the same Washington split (1 = groups do not overlap on that feature); the target itself is excluded from the ranking. Profile attributes need not be router inputs — this table profiles what the groups look like, not what the K-means saw.
 
@@ -157,7 +161,7 @@ For the seven Washington stations, the drier-labeled group contains Spokane and 
 
 ## 8. Regional model interpretation at ECE stations
 
-The primary regional model divides Washington observations into two groups — one holding Beaver Pass, Cayuse Pass, Darrington, Paradise, and Quinault on the western/Cascade side, the other holding Spokane and Sourdough Gulch east of the Cascades — and fits one soil-moisture predictor per group. This is a sample-specific pattern that overlaps imperfectly with elevation: the western group includes both lower-elevation and mountain stations. The groups should not be read as a general mountain-versus-lowland classification.
+The primary regional model (§4) fits one soil-moisture predictor per Washington group. This is a sample-specific pattern that overlaps imperfectly with elevation: the five-station group includes both lower-elevation and mountain stations. The groups should not be read as a general mountain-versus-lowland classification.
 
 The five ECE collaboration stations are outside the seven-station Washington training set, so the results show how the learned predictors behave at new sites. The ECE set contains 150 daily observations from 5 stations between 2026-07-20 and 2026-08-19, with 30 observations per site. It is a short evaluation window; the site-level results show how errors vary across those locations.
 
