@@ -15,13 +15,6 @@ All models in this report predict the same thing — **daily volumetric soil moi
 - **Unguarded two-regime model.** The identical two-regime model **without** the station-majority rule: every row is assigned from its own features by nearest K-means centroid. This is the only directly paired ablation of the primary model (same features, same predictors, same seeds).
 - **Single-regime global model.** One XGBoost predictor fitted on all observations, no grouping. The global model reported here is re-run on the **same seven stations, same 54 features, and same test period** as the regional models, so it is a contemporary comparator. Do not confuse it with the first paper's R² of 0.822, which used five stations and a different protocol (§2) and must not be ranked against the numbers here.
 
-### How to read the comparisons (replaces the old "comparison role" column)
-
-- **Main paired result:** primary vs. unguarded two-regime model. Same seeds, same fitting/evaluation procedure. Only differences between these two rows can be read as a controlled effect of the station-majority rule.
-- **Contemporary context:** seasonal, precipitation-index, dynamic-feature, target-threshold, and global single-regime rows in the same tables. These were all run on the current seven-station data with the same predictor settings, but they come from a different saved evaluation harness/run than the paired comparison, so treat gaps as background, not as formal paired tests.
-- **Previous-paper anchor:** the first paper's R² 0.822 only (§2). Different stations, different data — never subtract it from numbers here.
-- R², RMSE, MAE, and bias refer to daily volumetric soil moisture at 5 cm; error metrics use m³/m³. Seed intervals measure variation across XGBoost predictor random seeds only (the K-means router stays at seed 42). They do not measure uncertainty from station sampling, feature selection, model selection, or reuse of the test period during development.
-
 ## 1. Executive synthesis and paper thesis
 
 **Study question.** Does grouping daily observations by their satellite, weather, and site features, then fitting one soil-moisture predictor per group, improve estimates across Washington stations? The **primary regional model** (two K-means groups + one XGBoost predictor per group + station-majority rule) is the method under test. We compare it against the unguarded version of the same two-regime model and against the single-regime global model and simpler grouping rules described in §4. The study evaluates which grouping signals are useful on this dataset; it does not propose a new model architecture or a universal number of groups.
@@ -64,7 +57,7 @@ The global model and each regional predictor use the same **54** features. The p
 
 Temporal evaluation trains on training plus validation and evaluates the later test years at the seven known stations. In leave-one-station-out (LOSO) evaluation, the model is refit using six stations and evaluated on the seventh (seven held-out folds total); information from the held-out station is excluded from imputation, scaling, grouping, and thresholds. Temporal results average 30 XGBoost seeds; LOSO results use five seeds per held-out station. The K-means router itself is fixed at seed 42 throughout, because per-group feature additions are tied to one clustering.
 
-For all analyses, R² measures explained variance, RMSE and MAE measure error size, bias is signed mean prediction error, and ubRMSE removes the mean bias component. Seed-level 95% t intervals and paired seed tests answer different questions and should not be interchanged. A seven-station LOSO win count is descriptive and has little inferential power.
+For all analyses, R², RMSE, MAE, and bias refer to daily volumetric soil moisture at 5 cm; error metrics use m³/m³. R² measures explained variance, RMSE and MAE measure error size, bias is signed mean prediction error, and ubRMSE removes the mean bias component. Seed intervals measure variation across XGBoost predictor random seeds only (the K-means router stays at seed 42). They do not measure uncertainty from station sampling, feature selection, model selection, or reuse of the test period during development. Seed-level 95% t intervals and paired seed tests answer different questions and should not be interchanged. A seven-station LOSO win count is descriptive and has little inferential power.
 
 ## 4. How the regional models work
 
@@ -72,19 +65,19 @@ The primary regional model assigns each station-day observation to one of two gr
 
 The shared XGBoost predictors use 2,500 histogram trees, learning rate 0.005, depth 9, minimum child weight 8, gamma 0, alpha 0.03, lambda 0.75, row subsampling 0.9, and column subsampling 0.8. These settings were tuned during the same test era and contribute to the development-split limitation. Only the XGBoost `random_state` varies across seeds; the routers are fixed at seed 42.
 
-| Model | Exact grouping rule (inputs → groups) | In-situ target used for grouping? | SMAP input to the grouping step | How to read it |
-| --- | --- | --- | --- | --- |
-| Target-threshold grouping | XGB classifier (same XGBoost settings) on the earlier 50-feature set, trained to predict whether that day's in-situ soil moisture is below 0.16 m³/m³; at predict time it uses only features, but its labels came from the target | Yes (to train the gate) | Not needed for the gate itself | Contemporary context; undeployable because the target is unavailable at prediction time |
-| Seasonal grouping | Calendar month only: May–Oct → group 0 (dry season), Nov–Apr → group 1 (wet season); no fitting | No | None | Contemporary context |
-| Precipitation-index grouping | Single feature `G_API` (antecedent precipitation index): split at the fit-data median, low → group 0, high → group 1; the median is refit on each fit frame | No | None | Contemporary context; the only SMAP-free rule, reused as the ECE fallback (§8) |
-| Dynamic-feature grouping | K-means (k=2, standardized, mean-imputed, seed 42, `n_init=10`) on exactly 3 time-varying features: `SMAP_sm_pm_interp_lag1`, `G_API`, `LST_modis` | No | One lagged SMAP proxy (`SMAP_sm_pm_interp_lag1`) | Contemporary context |
-| Primary regional model | K-means (k=2, same recipe) on all 54 shared features, **plus station-majority rule**: a fitted station gets its most common fit-frame group; new/missing/gated rows use the per-day K-means label | No | Current, lagged, and rolling SMAP proxies (part of the 54) | **Headline model** |
-| Unguarded two-regime model | Same 54-feature K-means as the primary model, per-day assignment for every row (no station-majority rule) | No | Same as primary | **Paired ablation**: the only controlled comparison against the primary model |
-| Single-regime global model | No groups; one XGBoost on all 54 features | No | SMAP only inside the predictor, not a grouping step | Contemporary context (re-run on current data, not the first paper's number) |
+| Model | Exact grouping rule (inputs → groups) | In-situ target used for grouping? | SMAP input to the grouping step |
+| --- | --- | --- | --- |
+| Target-threshold grouping | XGB classifier (same XGBoost settings) on the earlier 50-feature set, trained to predict whether that day's in-situ soil moisture is below 0.16 m³/m³; at predict time it uses only features, but its labels came from the target, so it is undeployable | Yes (to train the gate) | Not needed for the gate itself |
+| Seasonal grouping | Calendar month only: May–Oct → group 0 (dry season), Nov–Apr → group 1 (wet season); no fitting | No | None |
+| Precipitation-index grouping | Single feature `G_API` (antecedent precipitation index): split at the fit-data median, low → group 0, high → group 1; the median is refit on each fit frame | No | None |
+| Dynamic-feature grouping | K-means (k=2, standardized, mean-imputed, seed 42, `n_init=10`) on exactly 3 time-varying features: `SMAP_sm_pm_interp_lag1`, `G_API`, `LST_modis` | No | One lagged SMAP proxy (`SMAP_sm_pm_interp_lag1`) |
+| Primary regional model | K-means (k=2, same recipe) on all 54 shared features, **plus station-majority rule**: a fitted station gets its most common fit-frame group; new/missing/gated rows use the per-day K-means label | No | Current, lagged, and rolling SMAP proxies (part of the 54) |
+| Unguarded two-regime model | Same 54-feature K-means as the primary model, per-day assignment for every row (no station-majority rule) | No | Same as primary |
+| Single-regime global model | No groups; one XGBoost on all 54 features | No | SMAP only inside the predictor, not a grouping step |
 
 **How the K-means grouping is formed.** Using fit data only, the model fills missing feature values with the fit-frame column means, standardizes the features, and fits K-means with k=2 (seed 42, `n_init=10`). Cluster labels are canonicalized after each fit so the drier group (lower fit-data mean of `SMAP_sm_pm_interp_rollmean30`) carries a consistent label. For a station present during fitting, the primary model uses that station's most common group (deterministic tie-break: smaller group id). For a new station or a row without a station id, it assigns the row from its features by nearest centroid. Keeping known stations together changes which training examples each group-specific predictor sees. Rows whose SMAP block is entirely missing, or whose overall missing-data rate exceeds the fitted gate, are flagged by an input-only availability check so the ECE shortfall (§8) can be described honestly.
 
-The main comparison is between the primary regional model and its unguarded twin. The global model and the simpler grouping rules above provide context. Because the shared test period informed feature and model choices, all results here are development evidence rather than independent confirmation. An earlier 50-feature regional variant (V0) is retained as background in Appendix B only.
+The main comparison is between the primary regional model and its unguarded twin. The global model and the simpler grouping rules above provide context. The precipitation-index rule is the only SMAP-free grouping, so it doubles as the ECE fallback in §8. Because the shared test period informed feature and model choices, all results here are development evidence rather than independent confirmation. An earlier 50-feature regional variant (V0) is retained as background in Appendix B only.
 
 ## 5. Primary temporal results
 
