@@ -14,6 +14,7 @@ All models in this report predict the same thing — **daily volumetric soil moi
 - **Primary regional model.** The two-regime model **plus a station-majority rule**: a station already seen during fitting is always assigned to whichever group most of its fit-period days fell in (ties go to the smaller group id). Rows from a new station, rows without a station id, or rows failing the missing-data gate fall back to the per-day K-means assignment. We call this the **primary regional model** throughout and report its numbers as the headline result.
 - **Unguarded two-regime model.** The identical two-regime model **without** the station-majority rule: every row is assigned from its own features by nearest K-means centroid. This is the only directly paired ablation of the primary model (same features, same predictors, same seeds).
 - **Single-regime global model.** One XGBoost predictor fitted on all observations, no grouping. The global model reported here is re-run on the **same seven stations, same 54 features, and same test period** as the regional models, so it is a contemporary comparator. Do not confuse it with the first paper's R² of 0.822, which used five stations and a different protocol (§2) and must not be ranked against the numbers here.
+- **ECE stations.** Five new in-situ soil-moisture sensor stations deployed by the collaborating ECE team, disjoint from the seven Washington training stations. They contribute a short late-summer evaluation window (150 daily rows) used only to test how the Washington-fitted predictors behave at new sites with missing satellite inputs (§8).
 
 ## 1. Executive synthesis and paper thesis
 
@@ -41,17 +42,17 @@ Clustered soil-moisture models also precede this work: [Chakrabarti et al. (2016
 
 The study combines in-situ soil-moisture observations with satellite, weather, and site information. It uses 9803 training rows (2017–2020), 4805 validation rows (2021–2022), and 6620 later-period test rows (2023–2025). Training plus validation is 14608 rows fitted together (called "trainval" in file names). The prediction target is daily soil moisture at 5 cm. Source and processing details are recorded in the claims ledger and provenance manifest.
 
-**Seven Washington study stations.** The network column identifies the source of the in-situ observations. Coordinates, elevation, and group membership provide site context; group membership is not a causal climate classification. Group numbers are local to this study.
+**Seven Washington study stations.** The network column identifies the source of the in-situ observations. Coordinates, elevation, and trainval row counts provide site context. No station is hand-assigned to a group anywhere in this report; grouping always comes from the fitted routers described in §4.
 
-| Station | Data network | Lat. | Lon. | Elevation m | Trainval local group | Trainval rows |
-| --- | --- | --- | --- | --- | --- | --- |
-| Beaver Pass | SNOTEL | 48.88 | -121.26 | 1125 | 0 | 2185 |
-| Cayuse Pass | SNOTEL | 46.87 | -121.53 | 1588 | 0 | 2042 |
-| Darrington | NOAA USCRN | 48.54 | -121.45 | 166 | 0 | 2048 |
-| Paradise | SNOTEL | 46.78 | -121.75 | 1564 | 0 | 2189 |
-| Quinault | NOAA USCRN | 47.51 | -123.81 | 88 | 0 | 2160 |
-| Sourdough Gulch | SNOTEL | 46.23 | -117.40 | 1164 | 1 | 2191 |
-| Spokane | NOAA USCRN | 47.42 | -117.53 | 705 | 1 | 1793 |
+| Station | Data network | Lat. | Lon. | Elevation m | Trainval rows |
+| --- | --- | --- | --- | --- | --- |
+| Beaver Pass | SNOTEL | 48.88 | -121.26 | 1125 | 2185 |
+| Cayuse Pass | SNOTEL | 46.87 | -121.53 | 1588 | 2042 |
+| Darrington | NOAA USCRN | 48.54 | -121.45 | 166 | 2048 |
+| Paradise | SNOTEL | 46.78 | -121.75 | 1564 | 2189 |
+| Quinault | NOAA USCRN | 47.51 | -123.81 | 88 | 2160 |
+| Sourdough Gulch | SNOTEL | 46.23 | -117.40 | 1164 | 2191 |
+| Spokane | NOAA USCRN | 47.42 | -117.53 | 705 | 1793 |
 
 The global model and each regional predictor use the same **54** features. The primary regional model uses those same features to form groups; it does not require a separate hand-picked grouping feature set. Inputs include SMAP soil-moisture proxies, Sentinel-derived indices, weather and antecedent precipitation, terrain, climate, land cover, and temporal summaries. The grouping does not use in-situ target labels, though it does use satellite soil-moisture information. The complete feature list appears in Appendix A. The shared feature set makes the model comparison easier to interpret, while its selection using the 2023–2025 test period remains a limitation.
 
@@ -105,14 +106,13 @@ The main comparison is between the primary regional model and its unguarded twin
 
 ## 6. In-state spatial generalization: LOSO
 
-**Table 2. Station-mean leave-one-station-out results.** Each model uses five XGBoost seeds across seven held-out Washington stations. Only the first two rows are paired; the global rows are contemporary context from a different saved run.
+**Table 2. Station-mean leave-one-station-out results.** Each model uses five XGBoost seeds across seven held-out Washington stations. Only the first two rows are paired; the global row is contemporary context from a different saved run.
 
 | Model | Seeds × held-out sites | Station-mean R² | Station-mean RMSE |
 | --- | --- | --- | --- |
 | Primary regional model | 5 × 7 | 0.6379 | 0.0558 |
 | Regional model without station consistency | 5 × 7 | 0.6199 | 0.0571 |
 | Existing global model | 5 × 7 | 0.5795 | 0.0610 |
-| Earlier global model | 5 × 7 | 0.5907 | 0.0601 |
 
 **Analysis.** The primary model's paired mean advantage over the unguarded two-regime model is +0.018000 R², with improvements on 3 held-out stations and ties on 4. This is the clearest spatial result in the paired comparison. The global-model gap is context only; it does not supply a direct paired comparison or a test of fold-by-fold wins. With seven stations, the fold count describes this set of locations and is not a population estimate.
 
@@ -132,7 +132,7 @@ The main comparison is between the primary regional model and its unguarded twin
 
 ## 7. Partition diagnostics and feature interpretation
 
-**Table 4. Number-of-groups comparison using training and validation data.** Lower Davies–Bouldin and higher Calinski–Harabasz favor two groups here; silhouette is slightly higher at three. These summary measures do not establish physical meaning or the best choice for future data. Deployments to other regions should re-run this comparison on local data rather than assume two groups.
+**Table 4. Number-of-groups comparison using training and validation data.** Lower Davies–Bouldin and higher Calinski–Harabasz favor two groups here; silhouette is slightly higher at three. The Calinski–Harabasz index compares between-group spread to within-group spread (higher means more compact, better-separated groups); the Davies–Bouldin index averages each group's similarity to its most similar group (lower means better separated). These summary measures do not establish physical meaning or the best choice for future data. Deployments to other regions should re-run this comparison on local data rather than assume two groups.
 
 | Number of groups | Silhouette | Calinski–Harabasz | Davies–Bouldin | Trainval station agreement | Smallest group share |
 | --- | --- | --- | --- | --- | --- |
@@ -271,9 +271,82 @@ The claims ledger distinguishes **confirmed within the saved protocol**, **conte
 
 ## Appendix A. Exact shared 54-feature backbone
 
-The following list is inserted directly from the saved feature record. It is the shared predictor input used by the global model and regional specialists. It is supplied here so the paper author can report or audit the precise feature provenance without searching experiment files.
+The 54 features are grouped below by theme so the list reads as model inputs rather than a name dump. Names are exact pipeline identifiers (backticked); the one-line gloss says what each feature measures. Name prefixes encode the transform family: `V_` rolling-window statistics, `A_` changes and slopes, `C_` lags and memory, `D_` seasonal or spectral transforms, `E_` radar physics, `G_` hydrologic and weather inputs, `J_` static site descriptors, `F_` optical indices, and bare `SMAP_` satellite soil moisture. A `_kobsK` window covers the last K valid observations, not calendar days, which keeps rolling statistics stable across satellite revisit and cloud gaps.
 
-`precip_mm`, `s2_b4`, `s2_b8`, `SMAP_sm_pm_interp`, `D_sin_DOY`, `D_cos_DOY`, `E_SAR_ratio`, `G_API`, `G_DSLR`, `G_rain_sum_3d`, `G_rain_sum_7d`, `SMAP_sm_pm_interp_lag7`, `SMAP_sm_pm_interp_lag30`, `SMAP_sm_pm_interp_rollrange7`, `SMAP_sm_pm_interp_rollmean30`, `SMAP_sm_pm_interp_rollrange30`, `SMAP_sm_interp_rollrange7`, `SMAP_ampm_diff_interp`, `V_rollrng_G_API_kobs7`, `V_rollmax_F_NDMI_kobs30`, `A_d_E_SAR_ratio_kobs30`, `V_rollmax_E_SAR_ratio_kobs7`, `V_rollmin_E_SAR_ratio_kobs30`, `V_rollmax_E_SAR_ratio_kobs30`, `V_rollmin_LST_modis_kobs30`, `V_ema_LST_modis_kobs30`, `V_rollmax_F_NDVI_kobs14`, `V_rollmax_F_NDVI_kobs30`, `V_ema_F_NDVI_kobs30`, `C_lag_F_NDVI_kobs30`, `A_grad_E_SAR_diff_kobs30`, `V_rollmax_E_SAR_diff_kobs14`, `V_rollrng_E_SAR_diff_kobs30`, `V_rollmax_E_SAR_diff_kobs30`, `A_grad_s2_b11_kobs30`, `V_rollrng_s2_b11_kobs30`, `V_rollmin_s2_b11_kobs30`, `V_rollmin_s2_b12_kobs30`, `A_d_SMAP_sm_interp_kobs30`, `V_rollmin_SMAP_sm_interp_kobs14`, `V_rollmin_SMAP_sm_interp_kobs30`, `E_rough_s1_vh_kobs14`, `J_aspect_deg`, `J_bio_bio02`, `J_bio_bio13`, `J_lc_code`, `J_soil_texture_usda_b0`, `sin_year`, `cos_year`, `SMAP_x_year`, `D_z_F_NDMI`, `D_z_LST_modis`, `D_fft_dom_LST_modis_kobs30`, `D_fft_ent_LST_modis_kobs30`
+**Precipitation and hydrologic memory (6 features).** Rain actually observed at the station, plus decaying memory of past rain.
+
+- `precip_mm`: daily ERA5-Land precipitation at the station point (mm)
+- `G_API`: antecedent precipitation index: exponentially decayed rain memory
+- `G_DSLR`: days since last rain: dry-down duration
+- `G_rain_sum_3d`: calendar 3-day cumulative rainfall (true days)
+- `G_rain_sum_7d`: calendar 7-day cumulative rainfall (true days)
+- `V_rollrng_G_API_kobs7`: rolling range of API over the last 7 observations
+
+**Satellite soil moisture - SMAP (12 features).** Coarse satellite moisture and its recent history, the grouping's main signal.
+
+- `SMAP_sm_pm_interp`: SMAP evening-pass soil moisture, gap-filled to daily
+- `SMAP_sm_pm_interp_lag7`: evening SMAP value shifted back 7 days
+- `SMAP_sm_pm_interp_lag30`: evening SMAP value shifted back 30 days
+- `SMAP_sm_pm_interp_rollrange7`: 7-day rolling range of evening SMAP
+- `SMAP_sm_pm_interp_rollmean30`: 30-day rolling mean of evening SMAP
+- `SMAP_sm_pm_interp_rollrange30`: 30-day rolling range of evening SMAP
+- `SMAP_sm_interp_rollrange7`: 7-day rolling range of combined AM+PM SMAP
+- `SMAP_ampm_diff_interp`: morning-minus-evening SMAP: diurnal dry-down signal
+- `A_d_SMAP_sm_interp_kobs30`: 30-observation first difference of combined SMAP: wetting/drying step
+- `V_rollmin_SMAP_sm_interp_kobs14`: rolling minimum of combined SMAP over 14 observations
+- `V_rollmin_SMAP_sm_interp_kobs30`: rolling minimum of combined SMAP over 30 observations
+- `SMAP_x_year`: SMAP-by-year interaction: long-term sensor drift term
+
+**Radar - Sentinel-1 SAR (10 features).** Microwave backscatter physics and its recent volatility.
+
+- `E_SAR_ratio`: VV/VH backscatter ratio: vegetation/soil-moisture sensitive
+- `A_d_E_SAR_ratio_kobs30`: 30-observation first difference of the SAR ratio
+- `V_rollmax_E_SAR_ratio_kobs7`: rolling maximum of the SAR ratio over 7 observations
+- `V_rollmin_E_SAR_ratio_kobs30`: rolling minimum of the SAR ratio over 30 observations
+- `V_rollmax_E_SAR_ratio_kobs30`: rolling maximum of the SAR ratio over 30 observations
+- `A_grad_E_SAR_diff_kobs30`: linear slope of the VV-minus-VH difference over 30 observations
+- `V_rollmax_E_SAR_diff_kobs14`: rolling maximum of the SAR difference over 14 observations
+- `V_rollrng_E_SAR_diff_kobs30`: rolling range of the SAR difference over 30 observations
+- `V_rollmax_E_SAR_diff_kobs30`: rolling maximum of the SAR difference over 30 observations
+- `E_rough_s1_vh_kobs14`: surface-roughness proxy: rolling variability of VH backscatter over 14 observations
+
+**Vegetation and optical - Sentinel-2 (12 features).** Greenness, canopy water, and shortwave-infrared moisture bands.
+
+- `s2_b4`: Sentinel-2 Red band B4 (665 nm) surface reflectance
+- `s2_b8`: Sentinel-2 near-infrared band B8 (842 nm) surface reflectance
+- `A_grad_s2_b11_kobs30`: slope of SWIR1 B11 (1610 nm) over 30 observations: moisture trend
+- `V_rollrng_s2_b11_kobs30`: rolling range of B11 over 30 observations
+- `V_rollmin_s2_b11_kobs30`: rolling minimum of B11 over 30 observations
+- `V_rollmin_s2_b12_kobs30`: rolling minimum of SWIR2 B12 (2190 nm) over 30 observations
+- `V_rollmax_F_NDMI_kobs30`: rolling maximum of NDMI (NIR-SWIR canopy-water index) over 30 observations
+- `V_rollmax_F_NDVI_kobs14`: rolling maximum of NDVI (red-NIR greenness) over 14 observations
+- `V_rollmax_F_NDVI_kobs30`: rolling maximum of NDVI over 30 observations
+- `V_ema_F_NDVI_kobs30`: exponential moving average of NDVI over 30 observations
+- `C_lag_F_NDVI_kobs30`: NDVI value lagged 30 observations
+- `D_z_F_NDMI`: seasonal z-score anomaly of NDMI vs its monthly climatology
+
+**Land-surface temperature (5 features).** MODIS temperature level, anomaly, and periodicity.
+
+- `V_rollmin_LST_modis_kobs30`: rolling minimum of MODIS land-surface temperature over 30 observations: cold extreme
+- `V_ema_LST_modis_kobs30`: exponential moving average of land-surface temperature over 30 observations
+- `D_z_LST_modis`: seasonal z-score anomaly of land-surface temperature
+- `D_fft_dom_LST_modis_kobs30`: dominant Fourier frequency of temperature over 30 observations: periodicity
+- `D_fft_ent_LST_modis_kobs30`: spectral entropy of temperature over 30 observations: signal complexity
+
+**Calendar and seasonal cycle (4 features).** Where the day sits in the annual and multi-year cycle.
+
+- `D_sin_DOY`: sine of day-of-year: seasonal cycle phase
+- `D_cos_DOY`: cosine of day-of-year: seasonal cycle quadrature
+- `sin_year`: sine of fractional year: multi-year cyclic trend
+- `cos_year`: cosine of fractional year: multi-year quadrature
+
+**Static site descriptors (5 features).** Terrain, climate normals, land cover, and soil at the station (no time variation).
+
+- `J_aspect_deg`: SRTM terrain aspect in degrees at the station
+- `J_bio_bio02`: WorldClim mean diurnal temperature range (1970-2000 normals)
+- `J_bio_bio13`: WorldClim precipitation of wettest month (1970-2000 normals)
+- `J_lc_code`: land-cover class code (ESA WorldCover/NLCD)
+- `J_soil_texture_usda_b0`: FAO HWSD USDA soil-texture class at the surface
 
 ## Appendix B. Earlier V0 regional model
 

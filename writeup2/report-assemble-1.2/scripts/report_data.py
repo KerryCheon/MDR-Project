@@ -78,6 +78,115 @@ def source_path(key: str) -> Path:
     return REPO_ROOT / SOURCES[key]
 
 
+# Appendix A groups the shared backbone by theme. Each feature keeps its exact
+# pipeline name (backticked) with a one-line gloss adapted from the tracked
+# per-feature glossary in docs/selected-features.md ("derived_8.4 - 54 Features").
+# Name prefixes follow the derived-split convention (docs/features.md): V_ =
+# rolling-window statistics, A_ = changes/slopes, C_ = lags/memory, D_ =
+# seasonal/spectral transforms, E_ = radar physics, G_ = hydrologic/weather,
+# J_ = static site descriptors, F_ = optical indices, bare SMAP_ = satellite
+# soil moisture; _kobsK windows cover the last K valid observations, not days.
+FEATURE_GROUPS: list[tuple[str, str, list[tuple[str, str]]]] = [
+    ("Precipitation and hydrologic memory (6 features)",
+     "Rain actually observed at the station, plus decaying memory of past rain.",
+     [
+         ("precip_mm", "daily ERA5-Land precipitation at the station point (mm)"),
+         ("G_API", "antecedent precipitation index: exponentially decayed rain memory"),
+         ("G_DSLR", "days since last rain: dry-down duration"),
+         ("G_rain_sum_3d", "calendar 3-day cumulative rainfall (true days)"),
+         ("G_rain_sum_7d", "calendar 7-day cumulative rainfall (true days)"),
+         ("V_rollrng_G_API_kobs7", "rolling range of API over the last 7 observations"),
+     ]),
+    ("Satellite soil moisture - SMAP (12 features)",
+     "Coarse satellite moisture and its recent history, the grouping's main signal.",
+     [
+         ("SMAP_sm_pm_interp", "SMAP evening-pass soil moisture, gap-filled to daily"),
+         ("SMAP_sm_pm_interp_lag7", "evening SMAP value shifted back 7 days"),
+         ("SMAP_sm_pm_interp_lag30", "evening SMAP value shifted back 30 days"),
+         ("SMAP_sm_pm_interp_rollrange7", "7-day rolling range of evening SMAP"),
+         ("SMAP_sm_pm_interp_rollmean30", "30-day rolling mean of evening SMAP"),
+         ("SMAP_sm_pm_interp_rollrange30", "30-day rolling range of evening SMAP"),
+         ("SMAP_sm_interp_rollrange7", "7-day rolling range of combined AM+PM SMAP"),
+         ("SMAP_ampm_diff_interp", "morning-minus-evening SMAP: diurnal dry-down signal"),
+         ("A_d_SMAP_sm_interp_kobs30", "30-observation first difference of combined SMAP: wetting/drying step"),
+         ("V_rollmin_SMAP_sm_interp_kobs14", "rolling minimum of combined SMAP over 14 observations"),
+         ("V_rollmin_SMAP_sm_interp_kobs30", "rolling minimum of combined SMAP over 30 observations"),
+         ("SMAP_x_year", "SMAP-by-year interaction: long-term sensor drift term"),
+     ]),
+    ("Radar - Sentinel-1 SAR (10 features)",
+     "Microwave backscatter physics and its recent volatility.",
+     [
+         ("E_SAR_ratio", "VV/VH backscatter ratio: vegetation/soil-moisture sensitive"),
+         ("A_d_E_SAR_ratio_kobs30", "30-observation first difference of the SAR ratio"),
+         ("V_rollmax_E_SAR_ratio_kobs7", "rolling maximum of the SAR ratio over 7 observations"),
+         ("V_rollmin_E_SAR_ratio_kobs30", "rolling minimum of the SAR ratio over 30 observations"),
+         ("V_rollmax_E_SAR_ratio_kobs30", "rolling maximum of the SAR ratio over 30 observations"),
+         ("A_grad_E_SAR_diff_kobs30", "linear slope of the VV-minus-VH difference over 30 observations"),
+         ("V_rollmax_E_SAR_diff_kobs14", "rolling maximum of the SAR difference over 14 observations"),
+         ("V_rollrng_E_SAR_diff_kobs30", "rolling range of the SAR difference over 30 observations"),
+         ("V_rollmax_E_SAR_diff_kobs30", "rolling maximum of the SAR difference over 30 observations"),
+         ("E_rough_s1_vh_kobs14", "surface-roughness proxy: rolling variability of VH backscatter over 14 observations"),
+     ]),
+    ("Vegetation and optical - Sentinel-2 (12 features)",
+     "Greenness, canopy water, and shortwave-infrared moisture bands.",
+     [
+         ("s2_b4", "Sentinel-2 Red band B4 (665 nm) surface reflectance"),
+         ("s2_b8", "Sentinel-2 near-infrared band B8 (842 nm) surface reflectance"),
+         ("A_grad_s2_b11_kobs30", "slope of SWIR1 B11 (1610 nm) over 30 observations: moisture trend"),
+         ("V_rollrng_s2_b11_kobs30", "rolling range of B11 over 30 observations"),
+         ("V_rollmin_s2_b11_kobs30", "rolling minimum of B11 over 30 observations"),
+         ("V_rollmin_s2_b12_kobs30", "rolling minimum of SWIR2 B12 (2190 nm) over 30 observations"),
+         ("V_rollmax_F_NDMI_kobs30", "rolling maximum of NDMI (NIR-SWIR canopy-water index) over 30 observations"),
+         ("V_rollmax_F_NDVI_kobs14", "rolling maximum of NDVI (red-NIR greenness) over 14 observations"),
+         ("V_rollmax_F_NDVI_kobs30", "rolling maximum of NDVI over 30 observations"),
+         ("V_ema_F_NDVI_kobs30", "exponential moving average of NDVI over 30 observations"),
+         ("C_lag_F_NDVI_kobs30", "NDVI value lagged 30 observations"),
+         ("D_z_F_NDMI", "seasonal z-score anomaly of NDMI vs its monthly climatology"),
+     ]),
+    ("Land-surface temperature (5 features)",
+     "MODIS temperature level, anomaly, and periodicity.",
+     [
+         ("V_rollmin_LST_modis_kobs30", "rolling minimum of MODIS land-surface temperature over 30 observations: cold extreme"),
+         ("V_ema_LST_modis_kobs30", "exponential moving average of land-surface temperature over 30 observations"),
+         ("D_z_LST_modis", "seasonal z-score anomaly of land-surface temperature"),
+         ("D_fft_dom_LST_modis_kobs30", "dominant Fourier frequency of temperature over 30 observations: periodicity"),
+         ("D_fft_ent_LST_modis_kobs30", "spectral entropy of temperature over 30 observations: signal complexity"),
+     ]),
+    ("Calendar and seasonal cycle (4 features)",
+     "Where the day sits in the annual and multi-year cycle.",
+     [
+         ("D_sin_DOY", "sine of day-of-year: seasonal cycle phase"),
+         ("D_cos_DOY", "cosine of day-of-year: seasonal cycle quadrature"),
+         ("sin_year", "sine of fractional year: multi-year cyclic trend"),
+         ("cos_year", "cosine of fractional year: multi-year quadrature"),
+     ]),
+    ("Static site descriptors (5 features)",
+     "Terrain, climate normals, land cover, and soil at the station (no time variation).",
+     [
+         ("J_aspect_deg", "SRTM terrain aspect in degrees at the station"),
+         ("J_bio_bio02", "WorldClim mean diurnal temperature range (1970-2000 normals)"),
+         ("J_bio_bio13", "WorldClim precipitation of wettest month (1970-2000 normals)"),
+         ("J_lc_code", "land-cover class code (ESA WorldCover/NLCD)"),
+         ("J_soil_texture_usda_b0", "FAO HWSD USDA soil-texture class at the surface"),
+     ]),
+]
+
+
+def feature_groups_block(features: list[str]) -> str:
+    """Render the themed Appendix A block; every backbone feature appears once."""
+    seen: list[str] = []
+    parts = []
+    for title, summary, items in FEATURE_GROUPS:
+        parts.append(f"**{title}.** {summary}")
+        parts.append("")
+        parts.extend(f"- `{name}`: {gloss}" for name, gloss in items)
+        parts.append("")
+        seen.extend(name for name, _ in items)
+    if sorted(seen) != sorted(features) or len(seen) != 54:
+        raise ValueError("Appendix A theme mapping does not cover the 54 shared features exactly once")
+    return "\n".join(parts).rstrip("\n")
+
+
 def ledger_source_link(relative: str, label: str | None = None) -> str:
     digest = hashlib.sha256((REPO_ROOT / relative).read_bytes()).hexdigest()
     return f"[{label or relative}](../../{relative.replace(' ', '%20')}) (SHA-256: `{digest}`)"
@@ -331,7 +440,7 @@ def build_context() -> dict[str, str]:
     context["TEST_N"] = str(split["rows"]["test"])
     context["TRAINVAL_N"] = str(split["rows"]["train"] + split["rows"]["val"])
     context["FEATURE_COUNT"] = str(len(features))
-    context["FEATURE_LIST"] = ", ".join(f"`{item}`" for item in features)
+    context["FEATURE_GROUPS"] = feature_groups_block(features)
     ece_split_rows = read_csv("ece_split")
     context["ECE_ROWS"] = str(len(ece_split_rows))
     context["ECE_STATIONS"] = str(len({row["station_id"] for row in ece_split_rows}))
@@ -355,8 +464,8 @@ def build_context() -> dict[str, str]:
     for name in split["stations"]:
         row = static[name]
         cluster = composition[name]
-        station_rows.append([station_display_names[name], networks[name], fmt(row["latitude"], 2), fmt(row["longitude"], 2), fmt(row["J_elev_m"], 0), cluster["dominant_cluster"], cluster["n"]])
-    context["WA_STATION_TABLE"] = md_table(["Station", "Data network", "Lat.", "Lon.", "Elevation m", "Trainval local group", "Trainval rows"], station_rows)
+        station_rows.append([station_display_names[name], networks[name], fmt(row["latitude"], 2), fmt(row["longitude"], 2), fmt(row["J_elev_m"], 0), cluster["n"]])
+    context["WA_STATION_TABLE"] = md_table(["Station", "Data network", "Lat.", "Lon.", "Elevation m", "Trainval rows"], station_rows)
 
     name_map = {
         "Guarded_Backbone54_k2": "Primary regional model",
@@ -406,7 +515,6 @@ def build_context() -> dict[str, str]:
         loso_rows.append([name_map[strategy], "5 × 7", fmt(value), fmt(mean(by_strategy[strategy], "rmse"))])
     for config_id, label in (
         ("Global_Single_54", "Existing global model"),
-        ("Baseline_V0_50", "Earlier global model"),
     ):
         row = one(formal_loso, config_id=config_id)
         loso_values[config_id] = number(row["loso_mean_r2"])

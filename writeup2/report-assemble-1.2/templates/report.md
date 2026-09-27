@@ -14,6 +14,7 @@ All models in this report predict the same thing — **daily volumetric soil moi
 - **Primary regional model.** The two-regime model **plus a station-majority rule**: a station already seen during fitting is always assigned to whichever group most of its fit-period days fell in (ties go to the smaller group id). Rows from a new station, rows without a station id, or rows failing the missing-data gate fall back to the per-day K-means assignment. We call this the **primary regional model** throughout and report its numbers as the headline result.
 - **Unguarded two-regime model.** The identical two-regime model **without** the station-majority rule: every row is assigned from its own features by nearest K-means centroid. This is the only directly paired ablation of the primary model (same features, same predictors, same seeds).
 - **Single-regime global model.** One XGBoost predictor fitted on all observations, no grouping. The global model reported here is re-run on the **same seven stations, same 54 features, and same test period** as the regional models, so it is a contemporary comparator. Do not confuse it with the first paper's R² of 0.822, which used five stations and a different protocol (§2) and must not be ranked against the numbers here.
+- **ECE stations.** Five new in-situ soil-moisture sensor stations deployed by the collaborating ECE team, disjoint from the seven Washington training stations. They contribute a short late-summer evaluation window (150 daily rows) used only to test how the Washington-fitted predictors behave at new sites with missing satellite inputs (§8).
 
 ## 1. Executive synthesis and paper thesis
 
@@ -41,7 +42,7 @@ Clustered soil-moisture models also precede this work: [Chakrabarti et al. (2016
 
 The study combines in-situ soil-moisture observations with satellite, weather, and site information. It uses {{TRAIN_N}} training rows (2017–2020), {{VAL_N}} validation rows (2021–2022), and {{TEST_N}} later-period test rows (2023–2025). Training plus validation is {{TRAINVAL_N}} rows fitted together (called "trainval" in file names). The prediction target is daily soil moisture at 5 cm. Source and processing details are recorded in the claims ledger and provenance manifest.
 
-**Seven Washington study stations.** The network column identifies the source of the in-situ observations. Coordinates, elevation, and group membership provide site context; group membership is not a causal climate classification. Group numbers are local to this study.
+**Seven Washington study stations.** The network column identifies the source of the in-situ observations. Coordinates, elevation, and trainval row counts provide site context. No station is hand-assigned to a group anywhere in this report; grouping always comes from the fitted routers described in §4.
 
 {{WA_STATION_TABLE}}
 
@@ -89,7 +90,7 @@ The main comparison is between the primary regional model and its unguarded twin
 
 ## 6. In-state spatial generalization: LOSO
 
-**Table 2. Station-mean leave-one-station-out results.** Each model uses five XGBoost seeds across seven held-out Washington stations. Only the first two rows are paired; the global rows are contemporary context from a different saved run.
+**Table 2. Station-mean leave-one-station-out results.** Each model uses five XGBoost seeds across seven held-out Washington stations. Only the first two rows are paired; the global row is contemporary context from a different saved run.
 
 {{LOSO_TABLE}}
 
@@ -103,7 +104,7 @@ The main comparison is between the primary regional model and its unguarded twin
 
 ## 7. Partition diagnostics and feature interpretation
 
-**Table 4. Number-of-groups comparison using training and validation data.** Lower Davies–Bouldin and higher Calinski–Harabasz favor two groups here; silhouette is slightly higher at three. These summary measures do not establish physical meaning or the best choice for future data. Deployments to other regions should re-run this comparison on local data rather than assume two groups.
+**Table 4. Number-of-groups comparison using training and validation data.** Lower Davies–Bouldin and higher Calinski–Harabasz favor two groups here; silhouette is slightly higher at three. The Calinski–Harabasz index compares between-group spread to within-group spread (higher means more compact, better-separated groups); the Davies–Bouldin index averages each group's similarity to its most similar group (lower means better separated). These summary measures do not establish physical meaning or the best choice for future data. Deployments to other regions should re-run this comparison on local data rather than assume two groups.
 
 {{K_TABLE}}
 
@@ -201,9 +202,9 @@ The claims ledger distinguishes **confirmed within the saved protocol**, **conte
 
 ## Appendix A. Exact shared 54-feature backbone
 
-The following list is inserted directly from the saved feature record. It is the shared predictor input used by the global model and regional specialists. It is supplied here so the paper author can report or audit the precise feature provenance without searching experiment files.
+The 54 features are grouped below by theme so the list reads as model inputs rather than a name dump. Names are exact pipeline identifiers (backticked); the one-line gloss says what each feature measures. Name prefixes encode the transform family: `V_` rolling-window statistics, `A_` changes and slopes, `C_` lags and memory, `D_` seasonal or spectral transforms, `E_` radar physics, `G_` hydrologic and weather inputs, `J_` static site descriptors, `F_` optical indices, and bare `SMAP_` satellite soil moisture. A `_kobsK` window covers the last K valid observations, not calendar days, which keeps rolling statistics stable across satellite revisit and cloud gaps.
 
-{{FEATURE_LIST}}
+{{FEATURE_GROUPS}}
 
 ## Appendix B. Earlier V0 regional model
 
