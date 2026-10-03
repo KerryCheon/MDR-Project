@@ -350,8 +350,9 @@ def validate_sources() -> None:
             raise ValueError("oracle incorrectly marked deployable")
     guard_auto = one(ece_policy, family="Guarded_Backbone54_k2", policy="auto_hard")
     check_close(number(guard_auto["rmse_mean"]), 0.0577680985766914, "ECE notebook stdout Guarded auto RMSE")
-    # Table 8 shows the primary model only because the unguarded deployable
-    # rows are identical on this ECE set; enforce that identity here so the
+    # Table 8 shows the station-majority regional model only because the rows
+    # of the same model without the station consistency guarantee are identical
+    # on this ECE set; enforce that identity here so the
     # "bit-identical" prose cannot go stale if the artifacts change.
     for policy in ("as_routed", "auto_hard"):
         guard_row = one(ece_policy, family="Guarded_Backbone54_k2", policy=policy)
@@ -393,7 +394,7 @@ def validate_sources() -> None:
 def source_manifest() -> dict:
     inputs = {**SOURCES, **EXTRA_PROVENANCE}
     return {
-        "assembly": "report-assemble-1.2",
+        "assembly": "report-assemble-1.3",
         "source_precedence": {
             "final_evaluation_batch": {
                 "main_temporal_loso": EVIDENCE_10,
@@ -468,8 +469,8 @@ def build_context() -> dict[str, str]:
     context["WA_STATION_TABLE"] = md_table(["Station", "Data network", "Lat.", "Lon.", "Elevation m", "Trainval rows"], station_rows)
 
     name_map = {
-        "Guarded_Backbone54_k2": "Primary regional model",
-        "Clustering_Backbone54_k2": "Regional model without station consistency",
+        "Guarded_Backbone54_k2": "station-majority regional model",
+        "Clustering_Backbone54_k2": "station-majority regional model without station consistency guarantee",
         "Clustering_V0_Full_k2": "Earlier V0 regional model",
         "Global_Single": "Existing global model",
         "Clustering_Dynamic_k2": "Changing-covariate grouping",
@@ -538,7 +539,7 @@ def build_context() -> dict[str, str]:
         t8_rows.append([station_display_names.get(station, station), fmt(row["guarded_mean_r2"]), fmt(row["backbone_mean_r2"]), signed(row["mean_r2_difference"]),
                         f"{row['winning_seeds']}/{row['tied_seeds']}", fmt(fold["ARI_tr_V0_Full_vs_Backbone"], 3),
                         fmt(fold["ARI_tr_Backbone_vs_GuardedV-A"], 3)])
-    context["T8_TABLE"] = md_table(["Held-out station", "Primary model R²", "Unguarded two-regime R²", "Difference", "Wins / ties (5 seeds)", "Train-group agreement: older 50-feat. vs 54-feat.", "Train-group agreement: unguarded vs primary"], t8_rows)
+    context["T8_TABLE"] = md_table(["Held-out station", "Station-majority regional model R²", "station-majority regional model without station consistency guarantee R²", "Difference", "Wins / ties (5 seeds)", "Train-group agreement: older 50-feat. vs 54-feat.", "Train-group agreement: with vs without station consistency guarantee"], t8_rows)
     context["FOLD_GAINS"] = str(sum(number(row["mean_r2_difference"]) > 0 for row in t8))
     context["FOLD_TIES"] = str(sum(number(row["mean_r2_difference"]) == 0 for row in t8))
 
@@ -565,8 +566,8 @@ def build_context() -> dict[str, str]:
 
     family_names = {
         "Clustering_V0_Full_k2": "Earlier V0 regional model",
-        "Clustering_Backbone54_k2": "Regional model without station consistency",
-        "Guarded_Backbone54_k2": "Primary regional model",
+        "Clustering_Backbone54_k2": "station-majority regional model without station consistency guarantee",
+        "Guarded_Backbone54_k2": "station-majority regional model",
         "Global_Single_54": "Existing global model",
     }
     policy_names = {
@@ -583,8 +584,9 @@ def build_context() -> dict[str, str]:
         if row["policy_id"] in {"c0_only", "c1_only"}
     }
     ece_rows = []
-    # 1.2: show the primary model plus the global reference only. The unguarded
-    # two-regime deployable rows are bit-identical on this ECE set (all 150 rows
+    # 1.3: show the station-majority regional model plus the global reference only. The
+    # same model without the station consistency guarantee has deployable rows
+    # that are bit-identical on this ECE set (all 150 rows
     # take the same fallback branch), so repeating them doubles the table
     # without adding information; the text states the identity instead.
     # The soft-blend fallback matches the hard fallback at reported precision.
@@ -658,7 +660,7 @@ def build_context() -> dict[str, str]:
                              fmt(routed_station["rmse_mean"], 4), fmt(auto_station["rmse_mean"], 4),
                              fmt(global_station["rmse_mean"], 4), signed(auto_station["bias_mean"], 4),
                              fmt(share["dry_assigned_weight_mean"], 3)])
-    context["ECE_STATION_TABLE"] = md_table(["ECE station", "Elev. m", "Annual precip. descriptor mm", "Primary usual RMSE", "Primary alternate RMSE", "Global RMSE", "Alternate bias", "Weight on comparator predictor"], station_rows)
+    context["ECE_STATION_TABLE"] = md_table(["ECE station", "Elev. m", "Annual precip. descriptor mm", "Station-majority usual RMSE", "Station-majority alternate RMSE", "Global RMSE", "Alternate bias", "Weight on comparator predictor"], station_rows)
 
     legacy = one(read_csv("ece_legacy"), Category="Clustering vs Global", **{"Comparison (A vs B)": "Clustering (V0) vs Global-54"})
     context["ECE_LEGACY_DIFF"] = signed(legacy["Station Mean ΔRMSE (A−B)"], 6)

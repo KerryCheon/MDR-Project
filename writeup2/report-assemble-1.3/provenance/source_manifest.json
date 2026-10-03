@@ -1,0 +1,181 @@
+{
+  "assembly": "report-assemble-1.3",
+  "extraction": "scripts/report_data.py reads saved CSV/JSON; no model fitting or raw-data inference",
+  "inputs": {
+    "agreement": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/agreement_summary.csv",
+      "sha256": "092f122df037080c21fed3468bfde3c8d143474e29097fec7e1eb3273ed8ca43"
+    },
+    "composition": {
+      "path": "notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_station_composition_Clustering_Backbone54_k2.csv",
+      "sha256": "a22de2051e04999eea3cf8f8e3f549e71684d0d190dda7b5b1802b5dc10bbc04"
+    },
+    "ece_audit": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/routing_audit.json",
+      "sha256": "8711902aa19620cc34dddcba4f85d204a11cab834a79c049d32d2c6164f1e945"
+    },
+    "ece_calibration": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/wa_calibration.csv",
+      "sha256": "a00a428fad94acbd96730457942696f8859ba9a232cc8020d1cfbf876683efee"
+    },
+    "ece_config": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/config.yaml",
+      "sha256": "6cacc0947eb58b4604c34e046fa4c6c9561f876d537fe42c89ee16a625e6f016"
+    },
+    "ece_crosswalk": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/policy_crosswalk.csv",
+      "sha256": "60a4606aeba0a1d427931582cc0f2abdd82e9d84ec5bdca69dc24898224b8abe"
+    },
+    "ece_legacy": {
+      "path": "notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3/spatial_focused_no_delta_pairwise.csv",
+      "sha256": "7b6acdbdfdd7af5f132d699c971711f5c542aed94ad7ca78ae19b26ba8571290"
+    },
+    "ece_manifest": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/run_manifest.json",
+      "sha256": "16c7567b658e3bf70577b0cd870d2230a4024365facd4de1a3d5e37159d94b4e"
+    },
+    "ece_notebook": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/notebooks/paper2_ece_supplement.ipynb",
+      "sha256": "f4579805c370c27693086ab737651cdf0ffbd7ceae1f6d122774d830905bcbd9"
+    },
+    "ece_overlay": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/f5_guarded_daily_overlay.csv",
+      "sha256": "7838e211ee51d678fe976bb522190cc4593fa20b0ed1ac3c1a679d7b0f830b37"
+    },
+    "ece_policy": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/ece_policy_summary.csv",
+      "sha256": "dae4da9b678cb9aea9e863f4669521f67a26407c7d430875026c3c5432723e03"
+    },
+    "ece_runner": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/run_guarded.py",
+      "sha256": "de21ef4beed2e229e8d9b21be83173940daea160b24db9b5de99e2557d76e0d2"
+    },
+    "ece_seed": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/seed_metrics.csv",
+      "sha256": "c92a894e81ee45b6ed18755e651cfdae13b7ec2d137bf34ceadea07450d189ba"
+    },
+    "ece_shares": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/ece_routing_shares_by_station.csv",
+      "sha256": "62fc12fe52cf614d6e12d1d3e133893af69120c0652a2e621cf1dea1490ac6ba"
+    },
+    "ece_sites": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/site_descriptors.csv",
+      "sha256": "393fe6bff0908a581a964ff156261ee8736345e131fe7839106cebe0e093e7aa"
+    },
+    "ece_split": {
+      "path": "data/splits/derived_8.4_ece_v3/test.csv",
+      "sha256": "6153823a20bfd3b5800782eb184836c727d15c007ed533dea7774904025c6e24"
+    },
+    "ece_station": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/ece_station_policy_summary.csv",
+      "sha256": "fda2815eeac86cedf36238ebfa7839243170984646c9f9040a99e0b1ee57eb9e"
+    },
+    "features": {
+      "path": "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/selected_features.json",
+      "sha256": "1b0d259964198239ffeb162b1216a41943057979e879892421b8902bf5a755c5"
+    },
+    "fold_agreement": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/loso_fold_agreement.csv",
+      "sha256": "cc1e2e49ed979dffee29595cf46780da32c825902973421d1e02608269353ea0"
+    },
+    "formal_delta": {
+      "path": "notebooks/experiment/derived_8.4-formal-eval-1.0/delta_robustness_summary.csv",
+      "sha256": "62a879ba1102a804291b93f6181282f5ffcf4509f90163709476fbf9d7621b6b"
+    },
+    "formal_loso": {
+      "path": "notebooks/experiment/derived_8.4-formal-eval-1.0/loso_config_summary.csv",
+      "sha256": "b458cfd6518de014720816f57328cf68fdb7022b2896ade971b32f35642d8dff"
+    },
+    "formal_pair": {
+      "path": "notebooks/experiment/derived_8.4-formal-eval-1.0/temporal_pairwise_focused.csv",
+      "sha256": "01f00145c67416433567e51d4738a75e2698f063bb3fbeeb08ccd3c4f766aae6"
+    },
+    "hourly": {
+      "path": "notebooks/experiment/ece-input-diagnose-1.0/smoothing_summary.csv",
+      "sha256": "e021181fdece2b7df99e9d9d8b8d1ebb1fa91068b0c18b68ac717b642bae8d38"
+    },
+    "k_sweep": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/k_sweep_quality.csv",
+      "sha256": "9725cb6c8a25c83f87e42ed1628b613d7f7ff6ee9d8176e3e081c0f119adf716"
+    },
+    "loso_seed": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/loso_seed_station.csv",
+      "sha256": "ff3b72e3d86bc2577b7d799e57f2f543f398aeab81629600b646904a137e90d1"
+    },
+    "main_config": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/config.yaml",
+      "sha256": "2bf985b5d9e7834ec9c79749d6d8a0b8f2315f5be96ca01cbca1f5f231fe896f"
+    },
+    "main_manifest": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/run_manifest.json",
+      "sha256": "6ea293d30a2fb0c2eebc11c6d3658282ded82c1e76431a133644c97f091d433f"
+    },
+    "main_notebook": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/notebooks/paper2_main_figures.ipynb",
+      "sha256": "7a31a052d765c107065c4ddb55e7ca1d6e78aa9fd300bdf403153045c15fd5d6"
+    },
+    "main_seed": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/main_temporal_seed_comparison.csv",
+      "sha256": "3f8191f1818cfe1c92e7f967ad4ebd9de9604497d8f14dcf6f8313ee6f041ea1"
+    },
+    "main_summary": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/main_temporal_summary.csv",
+      "sha256": "96cdf48b9f1ae7b8aa3bf247c7a1fdf8c2061b02fd739a37dc0376b8112c8d04"
+    },
+    "oos": {
+      "path": "notebooks/experiment/derived_8.4-formal-eval-2.0/spatial_focused_no_delta_summary.csv",
+      "sha256": "e2ef9f333f96389c9b29d27ca9203594fb202fe69aef6d12838c545b32a0d17e"
+    },
+    "outline": {
+      "path": "writeup2/outline-v7.md",
+      "sha256": "20063ee82f2dbee8a00d05f5b21ceece1086a2306a0d14398b3044492945d367"
+    },
+    "paper1": {
+      "path": "paper/Enhancing Spatial and Temporal Coverage of Soil Moisture Estimation Using Satellite and Weather- Driven Machine Learning.pdf",
+      "sha256": "dc4a43a3f647ace644d0d75bcffc9fb00ae4da7268c00aa1b6c796bfe2aed824"
+    },
+    "profile": {
+      "path": "notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_profile_summary_Clustering_Backbone54_k2.csv",
+      "sha256": "5d9a921c5c50f0a1344402dc3ce4439fda5a793fff1a79dbffa9a1ea4f4458d8"
+    },
+    "split": {
+      "path": "data/splits/derived_8.4/split_meta.json",
+      "sha256": "3fa586056438b08dfc134ff5caff50181e11aa1a7485e24acdea4f9a5ade0594"
+    },
+    "station_config": {
+      "path": "data/splits/derived_8.4/config.yaml",
+      "sha256": "e785f8fc9cfad8a4250ca91e5fb5d12b936cdbe7b9a2af4812944f4f22929e9d"
+    },
+    "t8": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/t8_loso_station_summary.csv",
+      "sha256": "7f26b05307a176d9450140d0365289f89404edcdf2cabe68753a1880a18cfbb3"
+    },
+    "wa_static": {
+      "path": "data/splits/derived_8.4/station_static_features.csv",
+      "sha256": "e40aba353db66b583ba8439eff150245af8156bfebb21f9f031808168a8469ea"
+    }
+  },
+  "protocol": {
+    "ece_expert_seeds": [
+      42,
+      7,
+      13,
+      101,
+      123
+    ],
+    "ece_split": "derived_8.4_ece_v3",
+    "ece_target_use": "final scoring only",
+    "loso_expert_seeds": 5,
+    "loso_held_out_stations": 7,
+    "temporal_expert_seeds": 30,
+    "washington_split": "derived_8.4"
+  },
+  "source_precedence": {
+    "final_evaluation_batch": {
+      "ece_results": "notebooks/experiment/paper2-final-evidence-1.1",
+      "main_temporal_loso": "notebooks/experiment/paper2-final-evidence-1.0"
+    },
+    "historical_sources": "context or explicitly labeled sensitivity only",
+    "outline": "writeup2/outline-v7.md"
+  }
+}

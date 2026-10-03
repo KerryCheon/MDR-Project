@@ -1,34 +1,24 @@
 # Regional Models for Daily Soil-Moisture Estimation in Washington
 
-## Technical report assembly 1.2 — Paper 2 handoff
+## Technical report assembly 1.3 — Paper 2 handoff
 
 > **Purpose.** This technical report supports drafting the second paper. It records the methods, results, interpretation, evidence boundaries, and source trail in one place. The assembled Markdown is the canonical text; `report.pdf` is its reading copy. It is written so an external reader can follow it without opening any other file in the repository.
 >
 > **Evidence rule.** This report presents the Washington temporal and leave-one-station-out (LOSO) evaluation together with the ECE station evaluation as one final evidence batch. They use different station sets and evaluation protocols. Exact source paths, run identities, and hashes are recorded in the claims ledger and provenance manifest. All reported values are inserted from saved artifacts by `scripts/report_data.py`; no models are fitted during report assembly.
 
-### The three main models (read this first)
-
-All models in this report predict the same thing — **daily volumetric soil moisture at 5 cm depth (m³/m³)** — from the same **shared set of 54 satellite, weather, and site features** (§3, full list in Appendix A), using the same XGBoost predictor settings (§4). They differ only in **how they group daily observations before fitting predictors**:
-
-- **Two-regime regional model (the family under test).** A K-means router with k=2 divides each station-day observation into one of two groups, then a separate XGBoost predictor is fitted for each group. Each new observation is handled by exactly one of the two predictors (no blending). The router is fitted on fit data only (mean-impute → standardize → K-means with seed 42, `n_init=10`); cluster labels are canonicalized after each fit so the drier group — lower fit-data mean of the 30-day rolling SMAP feature `SMAP_sm_pm_interp_rollmean30` — has a consistent label.
-- **Primary regional model.** The two-regime model **plus a station-majority rule**: a station already seen during fitting is always assigned to whichever group most of its fit-period days fell in (ties go to the smaller group id). Rows from a new station, rows without a station id, or rows failing the missing-data gate fall back to the per-day K-means assignment. We call this the **primary regional model** throughout and report its numbers as the headline result.
-- **Unguarded two-regime model.** The identical two-regime model **without** the station-majority rule: every row is assigned from its own features by nearest K-means centroid. This is the only directly paired ablation of the primary model (same features, same predictors, same seeds).
-- **Single-regime global model.** One XGBoost predictor fitted on all observations, no grouping. The global model reported here is re-run on the **same seven stations, same 54 features, and same test period** as the regional models, so it is a contemporary comparator. Do not confuse it with the first paper's R² of 0.822, which used five stations and a different protocol (§2) and must not be ranked against the numbers here.
-- **ECE stations.** Five new in-situ soil-moisture sensor stations deployed by the collaborating ECE team, disjoint from the seven Washington training stations. They contribute a short late-summer evaluation window (150 daily rows) used only to test how the Washington-fitted predictors behave at new sites with missing satellite inputs (§8).
-
 ## 1. Executive synthesis and paper thesis
 
-**Study question.** Does grouping daily observations by their satellite, weather, and site features, then fitting one soil-moisture predictor per group, improve estimates across Washington stations? The **primary regional model** (two K-means groups + one XGBoost predictor per group + station-majority rule) is the method under test. We compare it against the unguarded version of the same two-regime model and against the single-regime global model and simpler grouping rules described in §4. The study evaluates which grouping signals are useful on this dataset; it does not propose a new model architecture or a universal number of groups.
+**Study question.** Does grouping daily observations by their satellite, weather, and site features, then fitting one soil-moisture predictor per group, improve estimates across Washington stations? All regional models in this report share one shape — a K-means router with k=2 sends each station-day observation to exactly one of two XGBoost predictors, with no blending — and they differ only in how that router assigns an observation (§4). The method under test is the **station-majority regional model**. Its paired ablation is the same model without the station consistency guarantee, and the comparator is a single-regime global model with one predictor for all observations; the simpler grouping rules sit alongside them in §4. The study evaluates which grouping signals are useful on this dataset; it does not propose a new model architecture or a universal number of groups.
 
-**Primary finding.** The primary regional model has temporal R² **0.811843** (seed SD 0.001369; RMSE 0.044187) over 30 predictor seeds on the 2023–2025 development test period. The unguarded two-regime model has R² **0.811724**, a small difference of **+0.000119 R²**. In leave-one-station-out evaluation, the primary model averages **0.637877 R²** versus **0.619877** for the unguarded model, a difference of **+0.018000** across five seeds and seven held-out stations. The station table locates the gain in 3 folds; 4 folds tie.
+**Primary finding.** The station-majority regional model has temporal R² **0.811843** (seed SD 0.001369; RMSE 0.044187) over 30 predictor seeds on the 2023–2025 development test period. The same model without the station consistency guarantee has R² **0.811724**, a small difference of **+0.000119 R²**. In leave-one-station-out evaluation, the station-majority regional model averages **0.637877 R²** versus **0.619877** for the model without the guarantee, a difference of **+0.018000** across five seeds and seven held-out stations. The station table locates the gain in 3 folds; 4 folds tie.
 
-**Comparison context.** The contemporary global model has temporal R² **0.779794** and LOSO R² **0.579500**. The apparent primary-model gaps of **+0.0320** temporal and **+0.0584** LOSO are background context from a different saved run, not paired tests — only the primary-vs-unguarded difference above is controlled. A grouping that learns its split from the in-situ target itself has temporal R² **0.735359**; that target is unavailable when making predictions, so it is shown only to illustrate the ceiling/cheating case. These results describe the specific methods and data evaluated here.
+**Comparison context.** The contemporary global model has temporal R² **0.779794** and LOSO R² **0.579500**. The apparent gaps of the station-majority regional model over it, **+0.0320** temporal and **+0.0584** LOSO, are background context from a different saved run, not paired tests — only the station-majority-versus-twin difference above is controlled. A grouping that learns its split from the in-situ target itself has temporal R² **0.735359**; that target is unavailable when making predictions, so it is shown only to illustrate the ceiling/cheating case. These results describe the specific methods and data evaluated here.
 
-**ECE result.** On five ECE collaboration stations, the primary regional model's standard K-means assignment has pooled RMSE **0.167431** because the SMAP satellite inputs it expects are entirely missing there. With a fallback assignment based on the available antecedent-precipitation index, pooled RMSE is **0.057768**, close to the global model's **0.058634**. The next sections explain how the regional groups relate to the Washington sites and how the ECE comparison should be read.
+**ECE result.** On five ECE collaboration stations — new in-situ soil-moisture sensor sites deployed by the collaborating ECE team, disjoint from the seven Washington training stations (§8) — the station-majority regional model's standard K-means assignment has pooled RMSE **0.167431** because the SMAP satellite inputs it expects are entirely missing there. With a fallback assignment based on the available antecedent-precipitation index, pooled RMSE is **0.057768**, close to the global model's **0.058634**. The next sections explain how the regional groups relate to the Washington sites and how the ECE comparison should be read.
 
 **Most important constraint for the paper.** The shared 54-feature set and XGBoost settings were influenced by the same test period used here, as were later group-assignment and model choices. Every 2023–2025 result is development-split evidence rather than untouched confirmation. A future independent time period or external dataset is needed to estimate the true advantage without this selection bias.
 
-**Suggested working title.** “Regional Models for Soil-Moisture Estimation in Washington.” In technical sections, the method can be described as two XGBoost predictors selected by feature-based groups. The primary model's station-majority rule is one defined part of that approach.
+**Suggested working title.** “Regional Models for Soil-Moisture Estimation in Washington.” In technical sections, the method can be described as two XGBoost predictors selected by feature-based groups. The station-majority rule is one defined part of that approach.
 
 ## 2. Relationship to the first paper and literature
 
@@ -54,7 +44,7 @@ The study combines in-situ soil-moisture observations with satellite, weather, a
 | Sourdough Gulch | SNOTEL | 46.23 | -117.40 | 1164 | 2191 |
 | Spokane | NOAA USCRN | 47.42 | -117.53 | 705 | 1793 |
 
-The global model and each regional predictor use the same **54** features. The primary regional model uses those same features to form groups; it does not require a separate hand-picked grouping feature set. Inputs include SMAP soil-moisture proxies, Sentinel-derived indices, weather and antecedent precipitation, terrain, climate, land cover, and temporal summaries. The grouping does not use in-situ target labels, though it does use satellite soil-moisture information. The complete feature list appears in Appendix A. The shared feature set makes the model comparison easier to interpret, while its selection using the 2023–2025 test period remains a limitation.
+Every model compared in this report predicts the same target — daily volumetric soil moisture at 5 cm depth (m³/m³) — from the same **54** satellite, weather, and site features (full list in Appendix A) and with the same XGBoost predictor settings (§4); they differ only in how daily observations are grouped before predictors are fitted. The station-majority regional model uses those same features to form its groups; it does not require a separate hand-picked grouping feature set. Inputs include SMAP soil-moisture proxies, Sentinel-derived indices, weather and antecedent precipitation, terrain, climate, land cover, and temporal summaries. The grouping does not use in-situ target labels, though it does use satellite soil-moisture information. The complete feature list appears in Appendix A. The shared feature set makes the model comparison easier to interpret, while its selection using the 2023–2025 test period remains a limitation.
 
 Temporal evaluation trains on training plus validation and evaluates the later test years at the seven known stations. In leave-one-station-out (LOSO) evaluation, the model is refit using six stations and evaluated on the seventh (seven held-out folds total); information from the held-out station is excluded from imputation, scaling, grouping, and thresholds. Temporal results average 30 XGBoost seeds; LOSO results use five seeds per held-out station. The K-means router itself is fixed at seed 42 throughout, because per-group feature additions are tied to one clustering.
 
@@ -62,13 +52,13 @@ For all analyses, R², RMSE, MAE, and bias refer to daily volumetric soil moistu
 
 ## 4. How the regional models work
 
-The question this paper tests is multi-regime versus single-regime: whether fitting one predictor per group beats fitting one predictor for all observations. The regional family therefore pairs a group router with one XGBoost predictor per group, and each station-day observation is handled by exactly one predictor — there is no blending across predictors. Hard assignment is a deployability choice rather than an accuracy claim: a soft-blend fallback policy run on the ECE set matches the hard fallback at reported precision (Table 8), so the simpler deployable rule is kept; that comparison covers only the short ECE window (§8). This contrasts with the soft-membership and adaptive-weighting designs in the literature (§1), which this study does not test.
+The question this paper tests is multi-regime versus single-regime: whether fitting one predictor per group beats fitting one predictor for all observations. The regional family under test is therefore the **two-regime regional model**: a group router with k=2 paired with one XGBoost predictor per group, so each station-day observation is handled by exactly one predictor and there is no blending across predictors. The router is fitted on fit data only — mean-impute, then standardize, then K-means with seed 42 and `n_init=10` — and its labels are canonicalized after each fit, as described below. Two of these models carry the headline numbers; they differ only in the assignment rule applied on top of that router, which is introduced below. Hard assignment is a deployability choice rather than an accuracy claim: a soft-blend fallback policy run on the ECE set matches the hard fallback at reported precision (Table 8), so the simpler deployable rule is kept; that comparison covers only the short ECE window (§8). This contrasts with the soft-membership and adaptive-weighting designs in the literature (§1), which this study does not test.
 
 The group count k=2 is a Washington setting, not a finding: two groups performed best on these seven stations, and the training-and-validation number-of-groups comparison behind that choice is reported in Table 4 (§7). Deployments to other regions should re-run that comparison on local data rather than assume two groups.
 
 On the Washington fit data, the drier-labeled group contains Spokane and Sourdough Gulch; the other group contains Beaver Pass, Cayuse Pass, Darrington, Paradise, and Quinault. Labels are canonicalized after each fit so the drier group — lower fit-data mean of the 30-day rolling SMAP feature `SMAP_sm_pm_interp_rollmean30` — carries a consistent label, but labels can still change across refits. The Washington fit-frame means of that SMAP feature are 0.435981 for canonical group 0 and 0.180078 for group 1, with corresponding target means 0.221648 and 0.209373; group numbers are model labels, not physical class labels. Table 5 (§7) profiles which features differ most between the groups.
 
-Per-day K-means assignment can split one station's rows across groups, so each group-specific predictor would train on a shifting slice of that station. The station-majority rule keeps each fitted station in a single group — the station's most common fit-frame group, with ties broken toward the smaller group id — and keeping known stations together changes which training examples each predictor sees. That rule is the only difference between the primary model and its unguarded twin, so the paired gaps in §§5–6 (+0.000119 temporal R², +0.018000 LOSO R²) measure exactly the rule's effect. For a new station or a row without a station id, assignment falls back to the per-day nearest-centroid label. Rows whose SMAP block is entirely missing, or whose overall missing-data rate exceeds the fitted gate, are flagged by an input-only availability check so the ECE shortfall (§8) can be described honestly.
+Per-day K-means assignment can split one station's rows across groups, so each group-specific predictor would train on a shifting slice of that station. The station-majority rule exists to prevent that: it keeps all observations of the same station within a single regime, assigning every fitted station to its most common fit-frame group with ties broken toward the smaller group id, and keeping known stations together changes which training examples each predictor sees. A model fitted with that rule is the **station-majority regional model**; the identical model without it — every row assigned from its own features by nearest K-means centroid — is reported as the station-majority regional model without station consistency guarantee. The rule is the only difference between the two, so the paired gaps in §§5–6 (+0.000119 temporal R², +0.018000 LOSO R²) measure exactly its effect. For a new station or a row without a station id, assignment falls back to the per-day nearest-centroid label. Rows whose SMAP block is entirely missing, or whose overall missing-data rate exceeds the fitted gate, are flagged by an input-only availability check so the ECE shortfall (§8) can be described honestly.
 
 The shared XGBoost predictors use 2,500 histogram trees, learning rate 0.005, depth 9, minimum child weight 8, gamma 0, alpha 0.03, lambda 0.75, row subsampling 0.9, and column subsampling 0.8. These settings were tuned during the same test era and contribute to the development-split limitation. Only the XGBoost `random_state` varies across seeds; the routers are fixed at seed 42.
 
@@ -78,31 +68,31 @@ The shared XGBoost predictors use 2,500 histogram trees, learning rate 0.005, de
 | Seasonal grouping | Calendar month | May–Oct → group 0 (dry season), Nov–Apr → group 1 (wet season); no fitting |
 | Precipitation-index grouping | Single feature `G_API` (antecedent precipitation index) | Split at the fit-data median (refit on each fit frame), low → group 0, high → group 1 |
 | Dynamic-feature grouping | 3 time-varying features: `SMAP_sm_pm_interp_lag1`, `G_API`, `LST_modis` | K-means (k=2, standardized, mean-imputed, seed 42, `n_init=10`) |
-| Primary regional model | All 54 shared features, including current, lagged, and rolling SMAP proxies | 54-feature K-means (same recipe as above) **plus station-majority rule**: a fitted station gets its most common fit-frame group; new/missing/gated rows use the per-day label |
-| Unguarded two-regime model | Same 54 features | Same 54-feature K-means, per-day assignment for every row (no station-majority rule) |
+| station-majority regional model | All 54 shared features, including current, lagged, and rolling SMAP proxies | 54-feature K-means (same recipe as above) **plus station-majority rule**: a fitted station gets its most common fit-frame group; new/missing/gated rows use the per-day label |
+| station-majority regional model without station consistency guarantee | Same 54 features | Same 54-feature K-means, per-day assignment for every row (no station-majority rule) |
 | Single-regime global model | No grouping (SMAP only inside the predictor, not a grouping step) | One XGBoost on all 54 features |
 
-The main comparison is between the primary regional model and its unguarded twin. The global model and the simpler grouping rules above provide context. The precipitation-index rule is the only SMAP-free grouping, so it doubles as the ECE fallback in §8. Because the shared test period informed feature and model choices, all results here are development evidence rather than independent confirmation. An earlier 50-feature regional variant (V0) is retained as background in Appendix B only.
+The main comparison is between the station-majority regional model and the same model without the station consistency guarantee. The global model and the simpler grouping rules above provide context: the global model is re-run on the same seven stations, the same 54 features, and the same test period as the regional models, so it is a contemporary comparator, and its single-regime form must not be ranked against the first paper's R² of 0.822, which used five stations and a different protocol (§2). The precipitation-index rule is the only SMAP-free grouping, so it doubles as the ECE fallback in §8. Because the shared test period informed feature and model choices, all results here are development evidence rather than independent confirmation. An earlier 50-feature regional variant (V0) is retained as background in Appendix B only.
 
 ## 5. Primary temporal results
 
-**Table 1. Temporal results on the 2023–2025 test period.** Seed SD and 95% CI show variation across the 30 XGBoost random seeds (router fixed). Only the primary-vs-unguarded gap is a paired test; every other gap in this table is contemporary context from a different saved run — do not read them as formal wins. RMSE, MAE, and bias are m³/m³.
+**Table 1. Temporal results on the 2023–2025 test period.** Seed SD and 95% CI show variation across the 30 XGBoost random seeds (router fixed). Only the gap between the station-majority regional model and the same model without the station consistency guarantee is a paired test; every other gap in this table is contemporary context from a different saved run — do not read them as formal wins. RMSE, MAE, and bias are m³/m³.
 
 | Model | Seeds | R² | Seed SD | 95% seed CI | RMSE | MAE | Bias |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Primary regional model | 30 | 0.8118 | 0.0014 | [0.8113, 0.8124] | 0.0442 | 0.0340 | 0.0060 |
-| Regional model without station consistency | 30 | 0.8117 | 0.0014 | [0.8112, 0.8122] | 0.0442 | 0.0340 | 0.0060 |
+| station-majority regional model | 30 | 0.8118 | 0.0014 | [0.8113, 0.8124] | 0.0442 | 0.0340 | 0.0060 |
+| station-majority regional model without station consistency guarantee | 30 | 0.8117 | 0.0014 | [0.8112, 0.8122] | 0.0442 | 0.0340 | 0.0060 |
 | Changing-covariate grouping | 30 | 0.7855 | 0.0010 | [0.7851, 0.7858] | 0.0472 | 0.0363 | 0.0096 |
 | Existing global model | 30 | 0.7798 | 0.0013 | [0.7793, 0.7803] | 0.0478 | 0.0369 | 0.0100 |
 | Seasonal grouping | 30 | 0.7700 | 0.0016 | [0.7694, 0.7706] | 0.0489 | 0.0377 | 0.0107 |
 | Precipitation-index grouping | 30 | 0.7676 | 0.0009 | [0.7672, 0.7679] | 0.0491 | 0.0381 | 0.0106 |
 | Target-threshold grouping | 30 | 0.7354 | 0.0011 | [0.7350, 0.7358] | 0.0524 | 0.0388 | 0.0145 |
 
-**Analysis.** The primary regional model and the unguarded two-regime model are nearly tied temporally: their mean R² difference is +0.000119, smaller than the seed SD shown above, though its direction is consistent across the 30 paired seeds. The global and simpler-grouping rows score lower in this saved comparison, but those are context rows rather than paired tests against the primary model. The earlier 50-feature variant is kept out of this table; see Appendix B.
+**Analysis.** The station-majority regional model and the same model without the station consistency guarantee are nearly tied temporally: their mean R² difference is +0.000119, smaller than the seed SD shown above, though its direction is consistent across the 30 paired seeds. The global and simpler-grouping rows score lower in this saved comparison, but those are context rows rather than paired tests against the station-majority regional model. The earlier 50-feature variant is kept out of this table; see Appendix B.
 
 ![Temporal multi-seed comparison and paired LOSO fold differences](figures/main_temporal_and_loso.png)
 
-*Figure 1.* Model comparison from saved evaluation tables. In the carried-forward figure, "Guarded primary" is the primary regional model defined above, "Backbone ablation" is the unguarded two-regime model, and "V0 sensitivity" is the earlier 50-feature model detailed in Appendix B. Error bars show predictor-seed variation, not selection uncertainty.
+*Figure 1.* Model comparison from saved evaluation tables. Row labels use the model names stated in the text; the earlier 50-feature model is the V0 variant detailed in Appendix B. Error bars show predictor-seed variation, not selection uncertainty.
 
 ## 6. In-state spatial generalization: LOSO
 
@@ -110,15 +100,15 @@ The main comparison is between the primary regional model and its unguarded twin
 
 | Model | Seeds × held-out sites | Station-mean R² | Station-mean RMSE |
 | --- | --- | --- | --- |
-| Primary regional model | 5 × 7 | 0.6379 | 0.0558 |
-| Regional model without station consistency | 5 × 7 | 0.6199 | 0.0571 |
+| station-majority regional model | 5 × 7 | 0.6379 | 0.0558 |
+| station-majority regional model without station consistency guarantee | 5 × 7 | 0.6199 | 0.0571 |
 | Existing global model | 5 × 7 | 0.5795 | 0.0610 |
 
-**Analysis.** The primary model's paired mean advantage over the unguarded two-regime model is +0.018000 R², with improvements on 3 held-out stations and ties on 4. This is the clearest spatial result in the paired comparison. The global-model gap is context only; it does not supply a direct paired comparison or a test of fold-by-fold wins. With seven stations, the fold count describes this set of locations and is not a population estimate.
+**Analysis.** The station-majority regional model's paired mean advantage over the same model without the station consistency guarantee is +0.018000 R², with improvements on 3 held-out stations and ties on 4. This is the clearest spatial result in the paired comparison. The global-model gap is context only; it does not supply a direct paired comparison or a test of fold-by-fold wins. With seven stations, the fold count describes this set of locations and is not a population estimate.
 
 **Table 3. Paired LOSO results by held-out station.** The two agreement columns are adjusted Rand index (ARI) scores between alternative training-set partitions: higher means the two procedures divided the six training stations more similarly. Lower agreement means the group assignments changed more after refitting.
 
-| Held-out station | Primary model R² | Unguarded two-regime R² | Difference | Wins / ties (5 seeds) | Train-group agreement: older 50-feat. vs 54-feat. | Train-group agreement: unguarded vs primary |
+| Held-out station | Station-majority regional model R² | station-majority regional model without station consistency guarantee R² | Difference | Wins / ties (5 seeds) | Train-group agreement: older 50-feat. vs 54-feat. | Train-group agreement: with vs without station consistency guarantee |
 | --- | --- | --- | --- | --- | --- | --- |
 | Sourdough Gulch | 0.3699 | 0.3108 | +0.0591 | 5/0 | 0.132 | 0.349 |
 | Spokane | 0.6083 | 0.5568 | +0.0514 | 5/0 | 0.192 | 0.330 |
@@ -140,7 +130,7 @@ The main comparison is between the primary regional model and its unguarded twin
 | 3 | 0.226 | 3589.4 | 1.815 | 0.833 | 0.264 |
 | 4 | 0.188 | 2855.0 | 2.015 | 0.695 | 0.147 |
 
-For the seven Washington stations (membership stated in §4), this is a sample-specific pattern across the Cascade side and eastern Washington. The five-station group includes both lower-elevation sites and mountain sites, so the groups are not a strict mountain-versus-lowland split. The primary model keeps known stations in one group by design; this consistency is a model rule rather than independent evidence of a physical classification.
+For the seven Washington stations (membership stated in §4), this is a sample-specific pattern across the Cascade side and eastern Washington. The five-station group includes both lower-elevation sites and mountain sites, so the groups are not a strict mountain-versus-lowland split. The station-majority regional model keeps known stations in one group by design; this consistency is a model rule rather than independent evidence of a physical classification.
 
 **Table 5. Features that differ most between the two groups.** Separation index is a saved 0–1 group-difference score from the earlier gating analysis of the same Washington split (1 = groups do not overlap on that feature); the target itself is excluded from the ranking. Profile attributes need not be router inputs — this table profiles what the groups look like, not what the K-means saw.
 
@@ -161,20 +151,20 @@ For the seven Washington stations (membership stated in §4), this is a sample-s
 
 ## 8. Regional model interpretation at ECE stations
 
-The primary regional model (§4) fits one soil-moisture predictor per Washington group. This is a sample-specific pattern that overlaps imperfectly with elevation: the five-station group includes both lower-elevation and mountain stations. The groups should not be read as a general mountain-versus-lowland classification.
+The station-majority regional model (§4) fits one soil-moisture predictor per Washington group. This is a sample-specific pattern that overlaps imperfectly with elevation: the five-station group includes both lower-elevation and mountain stations. The groups should not be read as a general mountain-versus-lowland classification.
 
-The five ECE collaboration stations are outside the seven-station Washington training set, so the results show how the learned predictors behave at new sites. The ECE set contains 150 daily observations from 5 stations between 2026-07-20 and 2026-08-19, with 30 observations per site. It is a short evaluation window; the site-level results show how errors vary across those locations.
+The five ECE collaboration stations are new in-situ sensor sites deployed by the collaborating ECE team, disjoint from and outside the seven-station Washington training set, so the results show how the learned predictors behave at new sites. The ECE set contains 150 daily observations from 5 stations between 2026-07-20 and 2026-08-19, with 30 observations per site. It is a short late-summer evaluation window; the site-level results show how errors vary across those locations.
 
 The ECE observations contain none of the SMAP features used in the standard Washington grouping (100% SMAP missing rate on the 150 rows). We therefore report the standard K-means assignment alongside a fallback assignment based on the available antecedent-precipitation index (`G_API`): split at the Washington-fit median, low → the Washington-drier predictor, high → the other predictor. Which fallback direction to use was fixed on SMAP-masked Washington validation data before scoring any ECE target; ECE targets were used only to score predictions. Single-predictor rows (run one Washington predictor on every ECE row) are non-deployable references that show what each predictor does on its own.
 
-For the primary regional model, Washington fit data associates the western/Cascade-side stations with one predictor and Spokane plus Sourdough Gulch with the other. In the ECE tables, predictor indices 0 and 1 refer to the two fitted predictors within each model; those indices do not assign universal climate labels to ECE stations.
+For the station-majority regional model, Washington fit data associates the western/Cascade-side stations with one predictor and Spokane plus Sourdough Gulch with the other. In the ECE tables, predictor indices 0 and 1 refer to the two fitted predictors within each model; those indices do not assign universal climate labels to ECE stations.
 
 **Table 6. Mapping the precipitation-based fallback to each model's predictors.** Predictor indices are specific to each model fit; they are not climate labels. The fixed single-predictor rows are non-deployable references.
 
 | Model | Precipitation class 0 → predictor | Class 1 → predictor | Fixed comparator predictor | Other predictor | Comparator usable from inputs? | Index with lower WA SMAP mean? |
 | --- | --- | --- | --- | --- | --- | --- |
-| Regional model without station consistency | index 0 | index 1 | index 0 | index 1 | no | no |
-| Primary regional model | index 0 | index 1 | index 1 | index 0 | no | yes |
+| station-majority regional model without station consistency guarantee | index 0 | index 1 | index 0 | index 1 | no | no |
+| station-majority regional model | index 0 | index 1 | index 1 | index 0 | no | yes |
 
 In the Washington fit data, the mean of `SMAP_sm_pm_interp_rollmean30` is 0.435981 in one group and 0.180078 in the other; corresponding target means are 0.221648 and 0.209373. These summaries describe the fitted groups; group numbers are model labels, not physical class labels.
 
@@ -185,21 +175,21 @@ In the Washington fit data, the mean of `SMAP_sm_pm_interp_rollmean30` is 0.4359
 | index 0 | index 1 | 0.073965 | yes |
 | index 1 | index 0 | 0.117180 | no |
 
-**Table 8. Pooled ECE results over five predictor seeds (primary model + references).** Error metrics are m³/m³. R² is omitted because target variance is very small over this short window. The unguarded two-regime model's deployable rows are bit-identical to the primary model's on this ECE set (standard RMSE 0.167431, fallback RMSE 0.057768), so they are stated here rather than repeated as extra rows; the soft-blend fallback matches the hard fallback at reported precision and is omitted. "Usable from observed inputs?" marks deployable assignments versus single-predictor diagnostic references.
+**Table 8. Pooled ECE results over five predictor seeds (station-majority regional model + references).** Error metrics are m³/m³. R² is omitted because target variance is very small over this short window. The deployable rows of the same model without the station consistency guarantee are bit-identical to the station-majority regional model's on this ECE set (standard RMSE 0.167431, fallback RMSE 0.057768), so they are stated here rather than repeated as extra rows; the soft-blend fallback matches the hard fallback at reported precision and is omitted. "Usable from observed inputs?" marks deployable assignments versus single-predictor diagnostic references.
 
 | Model | Assignment or reference | Usable from observed inputs? | RMSE ± seed SD | MAE | Bias | ubRMSE |
 | --- | --- | --- | --- | --- | --- | --- |
-| Primary regional model | Usual fitted assignment | yes | 0.167431 ± 0.003401 | 0.147346 | +0.141932 | 0.088816 |
-| Primary regional model | Precipitation-based assignment | yes | 0.057768 ± 0.000617 | 0.050167 | +0.028654 | 0.050158 |
-| Primary regional model | Single regional predictor 1 (reference) | no | 0.192536 ± 0.004021 | 0.185650 | +0.185650 | 0.051020 |
-| Primary regional model | Single regional predictor 0 (reference) | no | 0.057768 ± 0.000617 | 0.050167 | +0.028654 | 0.050158 |
+| station-majority regional model | Usual fitted assignment | yes | 0.167431 ± 0.003401 | 0.147346 | +0.141932 | 0.088816 |
+| station-majority regional model | Precipitation-based assignment | yes | 0.057768 ± 0.000617 | 0.050167 | +0.028654 | 0.050158 |
+| station-majority regional model | Single regional predictor 1 (reference) | no | 0.192536 ± 0.004021 | 0.185650 | +0.185650 | 0.051020 |
+| station-majority regional model | Single regional predictor 0 (reference) | no | 0.057768 ± 0.000617 | 0.050167 | +0.028654 | 0.050158 |
 | Existing global model | Single global predictor | yes | 0.058634 ± 0.000735 | 0.050623 | +0.015122 | 0.056635 |
 
 **Analysis.** The precipitation-based fallback reduces pooled RMSE relative to the standard K-means assignment by 0.109663 m³/m³. Its RMSE is 0.057768, close to the global model's 0.058634 (difference -0.000866). All 150 rows fall in precipitation class 0. Under the mapping chosen with Washington validation, that class points to the Washington-wetter predictor. Its result matches that predictor run alone (RMSE 0.057768); the other predictor run alone has RMSE 0.192536. In other words, on this short late-summer ECE window the fallback test exercises only one of the two regional predictors — it checks whether that predictor transfers, not whether the two-predictor system beats the global model.
 
 **Table 9. ECE station-level errors and site context.** Elevation and annual precipitation describe the sites; they do not explain model error by themselves. The final column summarizes the fallback assignment's weight on the fixed comparison predictor (0.000 at every site: every ECE row took the same branch).
 
-| ECE station | Elev. m | Annual precip. descriptor mm | Primary usual RMSE | Primary alternate RMSE | Global RMSE | Alternate bias | Weight on comparator predictor |
+| ECE station | Elev. m | Annual precip. descriptor mm | Station-majority usual RMSE | Station-majority alternate RMSE | Global RMSE | Alternate bias | Weight on comparator predictor |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Bellevue Botanical Garden Lost Meadow | 52 | 1019 | 0.0480 | 0.0480 | 0.0619 | +0.0415 | 0.000 |
 | Bellevue Botanical Garden Main Street | 51 | 1018 | 0.2105 | 0.0490 | 0.0414 | +0.0464 | 0.000 |
@@ -209,21 +199,21 @@ In the Washington fit data, the mean of `SMAP_sm_pm_interp_rollmean30` is 0.4359
 
 **Analysis.** Errors vary across the five sites, so the pooled result does not describe every location. This short evaluation helps interpret the regional predictors and their assignments at new stations. Its Washington-selected mapping and late-summer observations do not establish full-season performance or a universal regime definition. ECE targets did not determine the mapping.
 
-![Primary regional model assignment options and ECE station results](figures/ece_policies_and_stations.png)
+![Station-majority regional model assignment options and ECE station results](figures/ece_policies_and_stations.png)
 
-*Figure 2.* ECE pooled and station-level RMSE. In the carried-forward plot, "Guarded" means the primary regional model; its fixed single-predictor bars are model-specific diagnostic references, not deployable assignments.
+*Figure 2.* ECE pooled and station-level RMSE, labeled with the model names stated in the text. Its fixed single-predictor bars are model-specific diagnostic references, not deployable assignments.
 
-![ECE daily observations and primary regional model predictions](figures/ece_guarded_daily_overlay.png)
+![ECE daily observations and station-majority regional model predictions](figures/ece_guarded_daily_overlay.png)
 
-*Figure 3.* Daily observations and model predictions at the five ECE stations. "Guarded" in the carried-forward plot refers to the primary regional model; fixed single-predictor traces are model-specific diagnostic references.
+*Figure 3.* Daily observations and model predictions at the five ECE stations, labeled with the model names stated in the text. Fixed single-predictor traces are model-specific diagnostic references.
 
 An earlier comparison of a regional model and the global model was effectively tied: station-mean ΔRMSE (regional model minus global) +0.000250, with 2 / 5 station wins and sign-test p=1.000. A separate hourly analysis found median within-day sensor range 0.0349 versus median absolute day-to-day daily-target step 0.0025 in its focus windows. These observations help describe the daily measurement setting; the ECE results here remain a short, site-specific view of the regional models.
 
 ## 9. Robustness, negative evidence, and limits
 
-The primary regional model uses the shared feature set described in §4. Earlier feature-set comparisons are kept in Appendix B.
+The station-majority regional model uses the shared feature set described in §4. Earlier feature-set comparisons are kept in Appendix B.
 
-**Out-of-state comparison (one paragraph, details in ledger).** Earlier Washington-trained regional and comparator configurations evaluated on ten out-of-state stations all have negative station-mean R² (table in the claims ledger source below); the two-group variants show no reliable transfer beyond the region. These are not results for the primary regional model, so they appear here as a scope boundary, not a result table.
+**Out-of-state comparison (one paragraph, details in ledger).** Earlier Washington-trained regional and comparator configurations evaluated on ten out-of-state stations all have negative station-mean R² (table in the claims ledger source below); the two-group variants show no reliable transfer beyond the region. These are not results for the station-majority regional model, so they appear here as a scope boundary, not a result table.
 
 | Earlier model or grouping | 10-station mean R² | 10-station mean RMSE | Pooled R² |
 | --- | --- | --- | --- |
@@ -242,7 +232,7 @@ The primary regional model uses the shared feature set described in §4. Earlier
 ## 10. Paper contribution decisions and writing guidance
 
 1. **Introduce the models in plain language.** Explain the two-regime idea, the two XGBoost predictors, the single-regime global comparator, and the station-majority rule before using any implementation names.
-2. **Lead with the one paired result.** Report the temporal near-tie and the LOSO differences for primary vs. unguarded together. Present every other model gap as contemporary context, not as a test.
+2. **Lead with the one paired result.** Report the temporal near-tie and the LOSO differences for the station-majority regional model versus the same model without the station consistency guarantee together. Present every other model gap as contemporary context, not as a test.
 3. **Explain the Washington groups.** Describe the five west/Cascade-side stations and two eastern stations as a sample-specific pattern, with the mountain and lowland context stated accurately.
 4. **Use the ECE section to interpret model behavior.** Explain the SMAP shortfall, the Washington-selected precipitation fallback, pooled and site-level errors, and the daily overlay — including the fact that all 150 ECE rows took the same fallback branch. Keep the small sample and short window in view.
 5. **State the development-split status in abstract, results, and limitations.** Independent confirmation requires new dates or sites and a selection protocol that keeps final evaluation untouched. Future work can test the number of groups, a global fallback, more station types and snowpack features, full-season ECE data, and a direct paired regional-versus-global station holdout comparison.
@@ -350,23 +340,23 @@ The 54 features are grouped below by theme so the list reads as model inputs rat
 
 ## Appendix B. Earlier V0 regional model
 
-The V0 model is an earlier 50-feature K-means regional variant retained to show how the current comparison developed. It is not part of the main claim. The primary model uses the shared 54-feature input and the station-majority rule described in §4. In the main text, V0 appears only here; the metrics and their comparison limits are collected below.
+The V0 model is an earlier 50-feature K-means regional variant retained to show how the current comparison developed. It is not part of the main claim. The station-majority regional model uses the shared 54-feature input and the station-majority rule described in §4. In the main text, V0 appears only here; the metrics and their comparison limits are collected below.
 
 | Historical model | Temporal R² | LOSO R² | Role |
 | --- | --- | --- | --- |
 | V0 regional model | 0.8118 | 0.6372 | Historical reference |
 
-**Earlier V0 feature-set comparison.** The table compares the shared V0 feature set with a version that added features selected using Washington validation. These results describe V0 only and are not a comparison of the primary model.
+**Earlier V0 feature-set comparison.** The table compares the shared V0 feature set with a version that added features selected using Washington validation. These results describe V0 only and are not a comparison of the station-majority regional model.
 
 | Feature set | Temporal R² (mean ± seed SD) | LOSO R² |
 | --- | --- | --- |
 | Shared features only (V0) | 0.8118 ± 0.0014 | 0.6372 |
 | Washington validation-selected additions (V0) | 0.7351 ± 0.0025 | 0.5060 |
 
-**Earlier out-of-state results.** These V0 results are part of the background record; they do not describe the current primary model.
+**Earlier out-of-state results.** These V0 results are part of the background record; they do not describe the current station-majority regional model.
 
 | Earlier model or grouping | 10-station mean R² | 10-station mean RMSE | Pooled R² |
 | --- | --- | --- | --- |
 | Earlier V0 regional model (50 features) | -0.599 | 0.090 | 0.1260 ± 0.0044 |
 
-The temporal and LOSO entries come from separate saved evaluations and are background context; they are not paired comparisons with the primary model. In an earlier comparison without regime-specific feature additions, V0 exceeded the global model by +0.0320 [0.0313, 0.0328], p=7.1e-37 temporal R². This result belongs to V0 and its saved evaluation only; it does not establish a significance result for the primary model. The main temporal figure retains V0 as a visual reference, while the results tables in §§5–6 focus on the current primary and unguarded two-regime models.
+The temporal and LOSO entries come from separate saved evaluations and are background context; they are not paired comparisons with the station-majority regional model. In an earlier comparison without regime-specific feature additions, V0 exceeded the global model by +0.0320 [0.0313, 0.0328], p=7.1e-37 temporal R². This result belongs to V0 and its saved evaluation only; it does not establish a significance result for the station-majority regional model. The main temporal figure retains V0 as a visual reference, while the results tables in §§5–6 focus on the station-majority regional model and the same model without the station consistency guarantee.
