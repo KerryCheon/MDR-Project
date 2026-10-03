@@ -350,10 +350,11 @@ def validate_sources() -> None:
             raise ValueError("oracle incorrectly marked deployable")
     guard_auto = one(ece_policy, family="Guarded_Backbone54_k2", policy="auto_hard")
     check_close(number(guard_auto["rmse_mean"]), 0.0577680985766914, "ECE notebook stdout Guarded auto RMSE")
-    # Table 8 shows the station-majority regional model only because the rows
-    # of the same model without the station consistency guarantee are identical
-    # on this ECE set; enforce that identity here so the
-    # "bit-identical" prose cannot go stale if the artifacts change.
+    # Table 8 shows the station-majority shared-feature cluster-routed
+    # multi-regime model only because the rows of the same model without the
+    # station consistency guarantee are identical on this ECE set; enforce that
+    # identity here so the "bit-identical" prose cannot go stale if the
+    # artifacts change.
     for policy in ("as_routed", "auto_hard"):
         guard_row = one(ece_policy, family="Guarded_Backbone54_k2", policy=policy)
         backbone_row = one(ece_policy, family="Clustering_Backbone54_k2", policy=policy)
@@ -469,11 +470,11 @@ def build_context() -> dict[str, str]:
     context["WA_STATION_TABLE"] = md_table(["Station", "Data network", "Lat.", "Lon.", "Elevation m", "Trainval rows"], station_rows)
 
     name_map = {
-        "Guarded_Backbone54_k2": "station-majority regional model",
-        "Clustering_Backbone54_k2": "station-majority regional model without station consistency guarantee",
-        "Clustering_V0_Full_k2": "Earlier V0 regional model",
-        "Global_Single": "Existing global model",
-        "Clustering_Dynamic_k2": "Changing-covariate grouping",
+        "Guarded_Backbone54_k2": "station-majority shared-feature cluster-routed multi-regime model",
+        "Clustering_Backbone54_k2": "shared-feature cluster-routed multi-regime model without station consistency guarantee",
+        "Clustering_V0_Full_k2": "Earlier V0 multi-regime model",
+        "Global_Single": "Existing single-regime global model",
+        "Clustering_Dynamic_k2": "Three-feature K-means grouping",
         "Seasonal_Binary_k2": "Seasonal grouping",
         "Univariate_G_API_k2": "Precipitation-index grouping",
         "Trained_Gating_k2": "Target-threshold grouping",
@@ -515,7 +516,7 @@ def build_context() -> dict[str, str]:
         loso_values[strategy] = value
         loso_rows.append([name_map[strategy], "5 × 7", fmt(value), fmt(mean(by_strategy[strategy], "rmse"))])
     for config_id, label in (
-        ("Global_Single_54", "Existing global model"),
+        ("Global_Single_54", "Existing single-regime global model"),
     ):
         row = one(formal_loso, config_id=config_id)
         loso_values[config_id] = number(row["loso_mean_r2"])
@@ -529,7 +530,7 @@ def build_context() -> dict[str, str]:
     v0_temporal = one(main, strategy_name="Clustering_V0_Full_k2")
     v0_loso = one(formal_loso, config_id="Clustering_V0_Full_k2_c0_0_c1_0")
     context["V0_CONTEXT_TABLE"] = md_table(["Historical model", "Temporal R²", "LOSO R²", "Role"], [[
-        "V0 regional model", fmt(v0_temporal["mean_r2"]), fmt(v0_loso["loso_mean_r2"]), "Historical reference"
+        "V0 multi-regime model", fmt(v0_temporal["mean_r2"]), fmt(v0_loso["loso_mean_r2"]), "Historical reference"
     ]])
     fold_agreement = {row["held_out"]: row for row in read_csv("fold_agreement")}
     t8_rows = []
@@ -539,7 +540,7 @@ def build_context() -> dict[str, str]:
         t8_rows.append([station_display_names.get(station, station), fmt(row["guarded_mean_r2"]), fmt(row["backbone_mean_r2"]), signed(row["mean_r2_difference"]),
                         f"{row['winning_seeds']}/{row['tied_seeds']}", fmt(fold["ARI_tr_V0_Full_vs_Backbone"], 3),
                         fmt(fold["ARI_tr_Backbone_vs_GuardedV-A"], 3)])
-    context["T8_TABLE"] = md_table(["Held-out station", "Station-majority regional model R²", "station-majority regional model without station consistency guarantee R²", "Difference", "Wins / ties (5 seeds)", "Train-group agreement: older 50-feat. vs 54-feat.", "Train-group agreement: with vs without station consistency guarantee"], t8_rows)
+    context["T8_TABLE"] = md_table(["Held-out station", "Station-majority shared-feature cluster-routed multi-regime model R²", "shared-feature cluster-routed multi-regime model without station consistency guarantee R²", "Difference", "Wins / ties (5 seeds)", "Train-group agreement: older 50-feat. vs 54-feat.", "Train-group agreement: with vs without station consistency guarantee"], t8_rows)
     context["FOLD_GAINS"] = str(sum(number(row["mean_r2_difference"]) > 0 for row in t8))
     context["FOLD_TIES"] = str(sum(number(row["mean_r2_difference"]) == 0 for row in t8))
 
@@ -565,10 +566,10 @@ def build_context() -> dict[str, str]:
     ])
 
     family_names = {
-        "Clustering_V0_Full_k2": "Earlier V0 regional model",
-        "Clustering_Backbone54_k2": "station-majority regional model without station consistency guarantee",
-        "Guarded_Backbone54_k2": "station-majority regional model",
-        "Global_Single_54": "Existing global model",
+        "Clustering_V0_Full_k2": "Earlier V0 multi-regime model",
+        "Clustering_Backbone54_k2": "shared-feature cluster-routed multi-regime model without station consistency guarantee",
+        "Guarded_Backbone54_k2": "station-majority shared-feature cluster-routed multi-regime model",
+        "Global_Single_54": "Existing single-regime global model",
     }
     policy_names = {
         "as_routed": "Usual fitted assignment",
@@ -584,18 +585,19 @@ def build_context() -> dict[str, str]:
         if row["policy_id"] in {"c0_only", "c1_only"}
     }
     ece_rows = []
-    # 1.3: show the station-majority regional model plus the global reference only. The
-    # same model without the station consistency guarantee has deployable rows
-    # that are bit-identical on this ECE set (all 150 rows
-    # take the same fallback branch), so repeating them doubles the table
-    # without adding information; the text states the identity instead.
-    # The soft-blend fallback matches the hard fallback at reported precision.
+    # 1.3: show the station-majority shared-feature cluster-routed multi-regime
+    # model plus the global reference only. The same model without the station
+    # consistency guarantee has deployable rows that are bit-identical on this
+    # ECE set (all 150 rows take the same fallback branch), so repeating them
+    # doubles the table without adding information; the text states the
+    # identity instead. The soft-blend fallback matches the hard fallback at
+    # reported precision.
     for row in sorted(
         (item for item in ece if item["family"] in ("Guarded_Backbone54_k2", "Global_Single_54") and item["policy"] != "auto_soft"),
         key=lambda item: (list(family_names).index(item["family"]), policy_order[item["policy"]]),
     ):
         policy = row["policy"]
-        policy_label = policy_names[policy] if policy in policy_names else f"Single regional predictor {fixed_indices[(row['family'], policy)]} (reference)"
+        policy_label = policy_names[policy] if policy in policy_names else f"Single regime predictor {fixed_indices[(row['family'], policy)]} (reference)"
         ece_rows.append([family_names[row["family"]], policy_label, "yes" if row["deployable"] == "True" else "no",
                          f"{fmt(row['rmse_mean'], 6)} ± {fmt(row['rmse_std'], 6)}", fmt(row["mae_mean"], 6),
                          signed(row["bias_mean"], 6), fmt(row["ubrmse_mean"], 6)])
@@ -660,7 +662,7 @@ def build_context() -> dict[str, str]:
                              fmt(routed_station["rmse_mean"], 4), fmt(auto_station["rmse_mean"], 4),
                              fmt(global_station["rmse_mean"], 4), signed(auto_station["bias_mean"], 4),
                              fmt(share["dry_assigned_weight_mean"], 3)])
-    context["ECE_STATION_TABLE"] = md_table(["ECE station", "Elev. m", "Annual precip. descriptor mm", "Station-majority usual RMSE", "Station-majority alternate RMSE", "Global RMSE", "Alternate bias", "Weight on comparator predictor"], station_rows)
+    context["ECE_STATION_TABLE"] = md_table(["ECE station", "Elev. m", "Annual precip. descriptor mm", "Usual-assignment RMSE", "Precipitation-assignment RMSE", "Single-regime global RMSE", "Precipitation-assignment bias", "Weight on comparator predictor"], station_rows)
 
     legacy = one(read_csv("ece_legacy"), Category="Clustering vs Global", **{"Comparison (A vs B)": "Clustering (V0) vs Global-54"})
     context["ECE_LEGACY_DIFF"] = signed(legacy["Station Mean ΔRMSE (A−B)"], 6)
@@ -670,12 +672,12 @@ def build_context() -> dict[str, str]:
     oos = read_csv("oos")
     oos_labels = {
         "Baseline Model (50 V0 feats)": "Earlier global baseline (50 features)",
-        "Clustering (54 backbone)": "Regional model (54 shared features)",
-        "Clustering (50 V0 features)": "Earlier V0 regional model (50 features)",
+        "Clustering (54 backbone)": "shared-feature cluster-routed multi-regime model without station consistency guarantee (54 features)",
+        "Clustering (50 V0 features)": "Earlier V0 multi-regime model (50 features)",
         "Seasonal Binary (Summer/Winter)": "Seasonal grouping",
         "Univariate G_API split": "Precipitation-index grouping",
-        "Global Single Model (54 feats)": "Existing global model (54 features)",
-        "Clustering (Dynamic features)": "Changing-covariate grouping",
+        "Global Single Model (54 feats)": "Existing single-regime global model (54 features)",
+        "Clustering (Dynamic features)": "Three-feature K-means grouping",
         "Trained Gating Classifier": "Target-threshold grouping",
     }
     oos_rows = []

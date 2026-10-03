@@ -103,7 +103,7 @@ def main() -> int:
         raise ValueError("internal model identifiers appear in reader-facing report text")
     if re.search(r"SHA-256: `[0-9a-f]{64}`", report):
         raise ValueError("source hashes should appear in the claims ledger and manifest, not reader-facing report prose")
-    if "\n## Appendix B." not in report or "Earlier V0 regional model (50 features)" in report.split("## Appendix B.", 1)[0]:
+    if "\n## Appendix B." not in report or "Earlier V0 multi-regime model (50 features)" in report.split("## Appendix B.", 1)[0]:
         raise ValueError("V0 results are not confined to the historical appendix")
     if re.search(r"## 8\. Regional model interpretation at ECE stations\n\n###", report):
         raise ValueError("Section 8 must begin directly with the regional-model explanation")
@@ -112,25 +112,36 @@ def main() -> int:
     if "paper2-final-evidence-1.0/ece_guarded" in report:
         raise ValueError("an obsolete ECE source path leaked into report text")
     # 1.3 external-readability checks: no revived comparison-role taxonomy,
-    # explicit small-feature grouping rules, one name per model, and the 1.2
-    # read-first glossary plus its "primary regional model" alias stay retired.
+    # explicit small-feature grouping rules, one name per model, and every
+    # 1.2/early-1.3 alias (including the generic "regional model" forms) stays
+    # retired.
     for required in (
         "station-majority rule",
-        "station-majority regional model",
+        "station-majority shared-feature cluster-routed multi-regime model",
         "without station consistency guarantee",
-        "two-regime regional model",
+        "shared-feature cluster-routed multi-regime model",
         "within a single regime",
         "May–Oct",
         "SMAP_sm_pm_interp_lag1",
         "0.16",
         "bit-identical",
         "contemporary context",
+        "Existing single-regime global model",
+        "Three-feature K-means grouping",
+        "Earlier V0 multi-regime model",
     ):
         if required not in report:
             raise ValueError(f"report 1.3 is missing required explicit content: {required}")
     if "Comparison role" in report or "Historical reference:" in report or "| paired comparison |" in report:
         raise ValueError("report 1.3 revived the comparison-role taxonomy")
-    retired = re.compile(r"primary regional model|unguarded|read this first|three main models", re.IGNORECASE)
+    retired = re.compile(
+        r"primary regional model|unguarded|read this first|three main models"
+        r"|station-majority regional model|two-regime regional model"
+        r"|existing global model|contemporary global model"
+        r"|changing-covariate grouping|dynamic-feature grouping"
+        r"|single regional predictor|v0 regional model|regional model \(54",
+        re.IGNORECASE,
+    )
     for filename, text in (
         ("report.md", report),
         ("claims-ledger.md", ledger),
