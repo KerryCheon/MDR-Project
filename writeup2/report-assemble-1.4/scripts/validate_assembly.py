@@ -81,7 +81,7 @@ def main() -> int:
         "# Regional Models for Daily Soil-Moisture Estimation in Washington", "10.1109/AIIoT68874.2026.11569136",
         "## 1. Executive synthesis", "## 5. Primary temporal results", "## 6. In-state spatial generalization",
         "## 8. Regional model interpretation at ECE stations", "## 9. Robustness", "## 10. Paper contribution",
-        "## 12. References", "## Appendix A.", "test period",
+        "## 11. References", "## Appendix A.", "test period",
         "antecedent-precipitation index", "Washington validation", "seven held-out",
         "0.579737", "minimum station purity",
     ):
