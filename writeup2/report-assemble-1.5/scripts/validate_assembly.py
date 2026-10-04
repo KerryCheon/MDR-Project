@@ -133,6 +133,9 @@ def main() -> int:
         "never as a predictive feature",
         "fixed 0.10 threshold",
         "not claimed to be optimal for routing",
+        "in-situ soil-moisture target is never an input",
+        "Target used?",
+        "Yes — training only",
     ):
         if required not in report:
             raise ValueError(f"report 1.5 is missing required explicit content: {required}")
