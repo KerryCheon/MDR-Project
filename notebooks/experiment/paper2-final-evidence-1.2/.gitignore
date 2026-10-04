@@ -1,0 +1,12 @@
+# Regenerable trained boosters, row-level model predictions, and job caches.
+models/*
+predictions/*
+predictions_loso/*
+artifacts/*
+!artifacts/slurm/
+artifacts/slurm/*
+!artifacts/slurm/.gitkeep
+ece_guarded/checkpoints/*
+ece_guarded/slurm/*
+__pycache__/
+*.pyc

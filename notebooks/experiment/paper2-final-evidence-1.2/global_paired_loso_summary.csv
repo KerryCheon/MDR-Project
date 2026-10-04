@@ -1,0 +1,2 @@
+strategy_name,evidence_role,source_harness,loso_mean_r2,loso_mean_rmse
+Global_Single,paired_in_harness,paper2-final-evidence-1.2,0.5797371923742318,0.060989708481597876

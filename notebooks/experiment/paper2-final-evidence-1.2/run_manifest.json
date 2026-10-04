@@ -1,0 +1,39 @@
+{
+  "experiment": "paper2-final-evidence-1.2",
+  "purpose": "Paired Global_Single refit replacing sensitivity-anchored Global rows",
+  "status": "completed",
+  "date": "2026-10-03",
+  "code_provenance": "run_temporal.py, run_loso.py, run_worker.py, train_ev/, routing_opt/ verbatim copies of paper2-final-evidence-1.0; only config.yaml pinned_configs (+Global_Single_54) and header differ",
+  "protocol": {
+    "washington_split": "data/splits/derived_8.4",
+    "features": "shared 54-feature backbone (config.yaml:shared_backbone_54, identical to 1.0)",
+    "exact_params": "2500 trees, lr 0.005, d9, min_child 8, gamma 0, lambda 0.75, alpha 0.03, subsample 0.9, colsample 0.8, hist/cuda (identical to 1.0)",
+    "router_seed": 42,
+    "temporal_seeds": [42, 7, 13, 21, 55, 99, 123, 2024, 3141, 2718, 808, 1618, 2357, 3333, 4321, 5555, 6789, 7777, 8888, 9091, 101, 202, 303, 404, 505, 606, 707, 909, 1111, 2222],
+    "loso_seeds": [42, 7, 13, 21, 55],
+    "loso_held_out_stations": 7
+  },
+  "jobs": {
+    "temporal": "2185508",
+    "loso": "2185509",
+    "loso_dependency": "afterok:2185508",
+    "partition": "gpu (moved from gpu_debug: H100 node ac098 was down; same H100 arch on ac055)",
+    "node": "ac055",
+    "observed_gpu": "NVIDIA H100 PCIe",
+    "temporal_elapsed": "~00:09:46 (30 jobs, n_parallel 8)",
+    "loso_elapsed": "~00:10:52 (35 jobs, n_parallel 8)"
+  },
+  "outputs": {
+    "temporal_seed_summary.csv": 30,
+    "temporal_seed_station.csv": 210,
+    "loso_seed_station.csv": 35,
+    "global_paired_temporal_summary.csv": "mean_r2 0.779794, seed_sd 0.001279, rmse 0.047802",
+    "global_paired_loso_summary.csv": "station-mean r2 0.579737, rmse 0.060990"
+  },
+  "reproduction_checks": {
+    "temporal_vs_formal_seed_rows": "30/30 bit-identical (max|diff| = 0.00)",
+    "loso_vs_formal_seed_rows": "35/35 identical to 1e-17 (CSV repr noise only)",
+    "loso_summary_note": "formal loso_config_summary.csv reports 0.579500, but the mean of formal loso_seed_station.csv Global rows is 0.579737 (identical to this refit); the summary value appears stale/differently aggregated",
+    "paired_vs_1.0_guarded_temporal": "mean Guarded-Global R2 diff +0.032049, Guarded higher on 30/30 seeds"
+  }
+}

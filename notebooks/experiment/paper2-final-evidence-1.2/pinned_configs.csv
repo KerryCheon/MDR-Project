@@ -1,0 +1,2 @@
+config_id,config_label,strategy_name,delta_source,is_baseline,cluster_0_count,cluster_1_count,n_global_features,n_add0,n_add1
+Global_Single_54,"Global_Single  c0=0, c1=0",Global_Single,none,False,0,0,54,0,0

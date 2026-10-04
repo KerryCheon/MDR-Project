@@ -1,0 +1,2 @@
+strategy_name,display_name,evidence_role,source_harness,n_seeds,mean_r2,seed_sd_r2,mean_rmse
+Global_Single,Global (paired),paired_in_harness,paper2-final-evidence-1.2,30,0.7797940453067711,0.0012791686020170976,0.0478022798608347
