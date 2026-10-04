@@ -110,6 +110,8 @@ def main() -> int:
         raise ValueError("Section 8 must begin directly with the regional-model explanation")
     if "C22" not in ledger or "Unresolved future work" not in ledger:
         raise ValueError("claims ledger does not record station metadata and the open fallback work")
+    if "C25" not in ledger or "controlled experiment varying only training-data amount" not in ledger:
+        raise ValueError("claims ledger does not record the specialization-versus-data evidence and its boundary")
     if "C5" not in ledger or "paired" not in ledger:
         raise ValueError("claims ledger does not record the paired global comparison")
     if "paper2-final-evidence-1.0/ece_guarded" in report:
@@ -136,6 +138,8 @@ def main() -> int:
         "in-situ soil-moisture target is never an input",
         "Target used?",
         "Yes — training only",
+        "**Contribution relative to the first paper.**",
+        "**Why regional specialization helps, and when more data may not.**",
     ):
         if required not in report:
             raise ValueError(f"report 1.5 is missing required explicit content: {required}")

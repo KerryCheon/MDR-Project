@@ -35,6 +35,8 @@ SOURCES = {
     "t8": f"{EVIDENCE_10}/t8_loso_station_summary.csv",
     "fold_agreement": f"{EVIDENCE_10}/loso_fold_agreement.csv",
     "k_sweep": f"{EVIDENCE_10}/k_sweep_quality.csv",
+    "temporal_seed_cluster": f"{EVIDENCE_10}/temporal_seed_cluster.csv",
+    "delta_grid": "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/delta_grid.csv",
     "composition": "notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_station_composition_Clustering_Backbone54_k2.csv",
     "profile": "notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_profile_summary_Clustering_Backbone54_k2.csv",
     "global_temporal_seed": f"{EVIDENCE_12}/global_paired_temporal_seed.csv",
@@ -488,6 +490,33 @@ def validate_sources() -> None:
     if crosswalk["ece_used_for_mapping_or_calibration"] != "False" or crosswalk["deployable"] != "True":
         raise ValueError("Guarded policy deployability/calibration provenance changed")
 
+    # Section 7 specialization discussion: per-regime specialist metrics and the
+    # per-regime feature-addition grid, both anchored to their saved artifacts.
+    cluster_rows = read_csv("temporal_seed_cluster")
+    for cluster, anchor_r2, anchor_bias in (
+        ("0", 0.7989032555009037, 0.00887969006902288),
+        ("1", 0.8419359789045798, -0.0018471804156466936),
+    ):
+        group = [row for row in cluster_rows
+                 if row["config_id"].startswith("Guarded_Backbone54_k2") and row["cluster"] == cluster]
+        if len(group) != 30 or len({row["seed"] for row in group}) != 30:
+            raise ValueError(f"per-cluster temporal seed coverage changed: cluster {cluster}")
+        if {row["n_train"] for row in group} != ({"10624"} if cluster == "0" else {"3984"}):
+            raise ValueError(f"per-cluster training size changed: cluster {cluster}")
+        check_close(mean(group, "r2"), anchor_r2, f"per-cluster R2 cluster {cluster}", tolerance=1e-9)
+        check_close(mean(group, "bias"), anchor_bias, f"per-cluster bias cluster {cluster}", tolerance=1e-9)
+    check_close(mean(global_temporal, "bias"), 0.01003860659709445, "paired-global mean bias", tolerance=1e-9)
+
+    delta = {row["candidate_id"]: row for row in read_csv("delta_grid")}
+    for candidate, anchor in (
+        ("delta_c0_0_c1_0", 0.8143343367764553),
+        ("delta_c0_10_c1_0", 0.7890715142526764),
+        ("delta_c0_0_c1_10", 0.8150371780573779),
+    ):
+        if candidate not in delta:
+            raise ValueError(f"per-regime feature-addition candidate missing: {candidate}")
+        check_close(number(delta[candidate]["pooled_r2"]), anchor, f"feature-addition pooled R2 {candidate}", tolerance=1e-9)
+
 
 def source_manifest() -> dict:
     inputs = {**SOURCES, **EXTRA_PROVENANCE}
@@ -730,6 +759,19 @@ def build_context() -> dict[str, str]:
     context["GROUP_C0_N"] = str(int(group_sizes[0]))
     context["GROUP_C1_N"] = str(int(group_sizes[1]))
     context["MIN_STATION_PURITY"] = fmt(min(number(row["purity"]) for row in read_csv("composition")), 3)
+    # Section 7 specialization discussion: per-regime specialist metrics
+    # (paper-2 Guarded fit) and the per-regime feature-addition grid.
+    cluster_rows = read_csv("temporal_seed_cluster")
+    for cluster, r2_key, bias_key in (("0", "PERCLUSTER_C0_R2", "C0_BIAS"), ("1", "PERCLUSTER_C1_R2", "C1_BIAS")):
+        group = [row for row in cluster_rows
+                 if row["config_id"].startswith("Guarded_Backbone54_k2") and row["cluster"] == cluster]
+        context[r2_key] = fmt(mean(group, "r2"), 4)
+        context[bias_key] = fmt(mean(group, "bias"), 4)
+    context["GLOBAL_POOLED_BIAS"] = fmt(mean(global_temporal, "bias"), 4)
+    delta = {row["candidate_id"]: row for row in read_csv("delta_grid")}
+    context["SAT_BASE_R2"] = fmt(delta["delta_c0_0_c1_0"]["pooled_r2"], 4)
+    context["SAT_C0_ADD10_R2"] = fmt(delta["delta_c0_10_c1_0"]["pooled_r2"], 4)
+    context["SAT_C1_ADD10_R2"] = fmt(delta["delta_c0_0_c1_10"]["pooled_r2"], 4)
     profile = [row for row in read_csv("profile") if row["feature"] != "soil_moisture_5cm"]
     profile.sort(key=lambda row: number(row["separation_index"]), reverse=True)
     context["PROFILE_TABLE"] = md_table(["Feature", "Separation index", "Median c0", "Median c1"], [

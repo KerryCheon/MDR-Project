@@ -6,6 +6,10 @@
       "path": "notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_station_composition_Clustering_Backbone54_k2.csv",
       "sha256": "a22de2051e04999eea3cf8f8e3f549e71684d0d190dda7b5b1802b5dc10bbc04"
     },
+    "delta_grid": {
+      "path": "notebooks/experiment/derived_8.4-feature-selection-2.0/artifacts/delta_grid.csv",
+      "sha256": "66ae673bf0d521124761dad9fc0a65eb3a04a65e1cbe6880e10e557ef30890fa"
+    },
     "ece_audit": {
       "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/routing_audit.json",
       "sha256": "8711902aa19620cc34dddcba4f85d204a11cab834a79c049d32d2c6164f1e945"
@@ -161,6 +165,10 @@
     "t8": {
       "path": "notebooks/experiment/paper2-final-evidence-1.0/t8_loso_station_summary.csv",
       "sha256": "7f26b05307a176d9450140d0365289f89404edcdf2cabe68753a1880a18cfbb3"
+    },
+    "temporal_seed_cluster": {
+      "path": "notebooks/experiment/paper2-final-evidence-1.0/temporal_seed_cluster.csv",
+      "sha256": "923fa54185299d294bf809f88e5713c9f3282c083fe39634decedab68c4e7e69"
     },
     "wa_static": {
       "path": "data/splits/derived_8.4/station_static_features.csv",
