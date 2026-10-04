@@ -18,6 +18,7 @@ REPO_ROOT = ASSEMBLY_ROOT.parents[1]
 EVIDENCE_10 = "notebooks/experiment/paper2-final-evidence-1.0"
 EVIDENCE_11 = "notebooks/experiment/paper2-final-evidence-1.1"
 EVIDENCE_12 = "notebooks/experiment/paper2-final-evidence-1.2"
+FORMAL_10 = "notebooks/experiment/derived_8.4-formal-eval-1.0"
 
 SOURCES = {
     "outline": "writeup2/outline-v7.md",
@@ -41,6 +42,7 @@ SOURCES = {
     "global_loso_seed": f"{EVIDENCE_12}/global_paired_loso_seed_station.csv",
     "global_loso_summary": f"{EVIDENCE_12}/global_paired_loso_summary.csv",
     "global_manifest": f"{EVIDENCE_12}/run_manifest.json",
+    "formal_loso": f"{FORMAL_10}/loso_config_summary.csv",
     "oos": "notebooks/experiment/derived_8.4-formal-eval-2.0/spatial_focused_no_delta_summary.csv",
     "ece_legacy": "notebooks/experiment/derived_8.4-formal-eval-2.1-ece-v3/spatial_focused_no_delta_pairwise.csv",
     "ece_manifest": f"{EVIDENCE_11}/run_manifest.json",
@@ -341,6 +343,24 @@ def validate_sources() -> None:
     check_close(number(guard["mean_r2"]), 0.8118429663371349, "main notebook stdout Guarded R2")
     check_close(number(backbone["mean_r2"]), 0.8117237199127312, "main notebook stdout Backbone R2")
 
+    # Heuristic context rows: sensitivity-anchored temporal coverage, 30 seeds each.
+    for strategy in ("Clustering_Dynamic_k2", "Seasonal_Binary_k2",
+                     "Univariate_G_API_k2", "Trained_Gating_k2"):
+        group = [item for item in main_seed
+                 if item["strategy_name"] == strategy and item["evidence_role"] == "sensitivity_anchored"]
+        if len(group) != 30 or len({item["seed"] for item in group}) != 30:
+            raise ValueError(f"heuristic temporal seed coverage: {strategy}")
+        summary_row = one(main_summary, strategy_name=strategy)
+        check_close(mean(group, "r2"), number(summary_row["mean_r2"]), f"heuristic temporal R2 {strategy}")
+
+    # Heuristic context LOSO rows: no-delta configs from the saved formal summary.
+    formal_loso = read_csv("formal_loso")
+    for config_id in ("Clustering_Dynamic_k2_c0_0_c1_0", "Seasonal_Binary_k2_c0_0_c1_0",
+                      "Univariate_G_API_k2_c0_0_c1_0", "Trained_Gating_k2_c0_0_c1_0"):
+        row = one(formal_loso, config_id=config_id)
+        if int(row["n_stations"]) != 7:
+            raise ValueError(f"heuristic LOSO station coverage: {config_id}")
+
     # 1.2 paired-global temporal rows: 30 seeds, same seed set as 1.0 Guarded.
     global_temporal = read_csv("global_temporal_seed")
     check_paired_harness(global_temporal, "paired-global temporal")
@@ -480,7 +500,7 @@ def source_manifest() -> dict:
                 "ece_results": EVIDENCE_11,
             },
             "outline": SOURCES["outline"],
-            "historical_sources": "scope boundaries only (out-of-state, earlier ECE comparison)",
+            "historical_sources": "labeled unpaired context (heuristic grouping rows) and scope boundaries (out-of-state, earlier ECE comparison)",
         },
         "extraction": "scripts/report_data.py reads saved CSV/JSON; no model fitting or raw-data inference",
         "inputs": {
@@ -561,6 +581,10 @@ def build_context() -> dict[str, str]:
         "Guarded_Backbone54_k2": "station-majority shared-feature cluster-routed multi-regime model",
         "Clustering_Backbone54_k2": "shared-feature cluster-routed multi-regime model without station consistency guarantee",
         "Global_Single": "Existing single-regime global model",
+        "Clustering_Dynamic_k2": "Three-feature K-means grouping",
+        "Seasonal_Binary_k2": "Seasonal grouping",
+        "Univariate_G_API_k2": "Precipitation-index grouping",
+        "Trained_Gating_k2": "Target-threshold grouping",
     }
     guard = one(main, strategy_name="Guarded_Backbone54_k2")
     backbone = one(main, strategy_name="Clustering_Backbone54_k2")
@@ -593,8 +617,21 @@ def build_context() -> dict[str, str]:
             f"[{fmt(ci_low)}, {fmt(ci_high)}]",
             fmt(mean_rmse), fmt(mae), fmt(bias),
         ])
+    # Simpler-grouping rows, shown for context.
+    for strategy in ("Clustering_Dynamic_k2", "Seasonal_Binary_k2",
+                     "Univariate_G_API_k2", "Trained_Gating_k2"):
+        summary_row = one(main, strategy_name=strategy)
+        group = [item for item in main_seed if item["strategy_name"] == strategy and item["evidence_role"] == "sensitivity_anchored"]
+        temporal_rows.append([
+            name_map[strategy], "30",
+            fmt(summary_row["mean_r2"]), fmt(summary_row["seed_sd_r2"]),
+            f"[{fmt(summary_row['seed_ci95_low'])}, {fmt(summary_row['seed_ci95_high'])}]",
+            fmt(summary_row["mean_rmse"]), fmt(mean(group, "mae")), fmt(mean(group, "bias")),
+        ])
     temporal_rows.sort(key=lambda row: float(row[5]))
     context["TEMPORAL_TABLE"] = md_table(["Model", "Seeds", "R²", "Seed SD", "95% seed CI", "RMSE", "MAE", "Bias"], temporal_rows)
+    gate_row = one(main, strategy_name="Trained_Gating_k2")
+    context["GATE_R2"] = fmt(gate_row["mean_r2"], 6)
     context["GUARD_R2"] = fmt(guard["mean_r2"], 6)
     context["GUARD_RMSE"] = fmt(guard["mean_rmse"], 6)
     context["GUARD_SD"] = fmt(guard["seed_sd_r2"], 6)
@@ -628,6 +665,16 @@ def build_context() -> dict[str, str]:
         [name_map["Clustering_Backbone54_k2"], "5 × 7", fmt(backbone_loso_mean), fmt(mean(by_strategy["Clustering_Backbone54_k2"], "rmse"))],
         [name_map["Global_Single"], "5 × 7", fmt(global_loso_mean), fmt(mean(global_loso, "rmse"))],
     ]
+    # Simpler-grouping LOSO rows, shown for context.
+    formal_loso = read_csv("formal_loso")
+    for config_id, strategy in (
+        ("Clustering_Dynamic_k2_c0_0_c1_0", "Clustering_Dynamic_k2"),
+        ("Seasonal_Binary_k2_c0_0_c1_0", "Seasonal_Binary_k2"),
+        ("Univariate_G_API_k2_c0_0_c1_0", "Univariate_G_API_k2"),
+        ("Trained_Gating_k2_c0_0_c1_0", "Trained_Gating_k2"),
+    ):
+        row = one(formal_loso, config_id=config_id)
+        loso_rows.append([name_map[strategy], "5 × 7", fmt(row["loso_mean_r2"]), fmt(row["loso_mean_rmse"])])
     context["LOSO_TABLE"] = md_table(["Model", "Seeds × held-out sites", "Station-mean R²", "Station-mean RMSE"], loso_rows)
     context["GUARD_LOSO"] = fmt(guard_loso_mean, 6)
     context["BACKBONE_LOSO"] = fmt(backbone_loso_mean, 6)

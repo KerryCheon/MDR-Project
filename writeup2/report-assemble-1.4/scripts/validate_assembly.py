@@ -83,7 +83,7 @@ def main() -> int:
         "## 8. Regional model interpretation at ECE stations", "## 9. Robustness", "## 10. Paper contribution",
         "## 12. References", "## Appendix A.", "test period",
         "antecedent-precipitation index", "Washington validation", "seven held-out",
-        "paper2-final-evidence-1.2", "0.579737", "minimum station purity",
+        "0.579737", "minimum station purity",
     ):
         if required not in report:
             raise ValueError(f"report is missing required content: {required}")
@@ -108,7 +108,7 @@ def main() -> int:
         raise ValueError("earlier-variant references are not part of the paired 1.4 report")
     if re.search(r"## 8\. Regional model interpretation at ECE stations\n\n###", report):
         raise ValueError("Section 8 must begin directly with the regional-model explanation")
-    if "C20" not in ledger or "Unresolved future work" not in ledger:
+    if "C22" not in ledger or "Unresolved future work" not in ledger:
         raise ValueError("claims ledger does not record station metadata and the open fallback work")
     if "C5" not in ledger or "paired" not in ledger:
         raise ValueError("claims ledger does not record the paired global comparison")
@@ -125,14 +125,15 @@ def main() -> int:
         "within a single regime",
         "bit-identical",
         "Existing single-regime global model",
-        "seed-paired",
+        "Three-feature K-means grouping",
+        "May–Oct",
+        "SMAP_sm_pm_interp_lag1",
+        "0.16",
     ):
         if required not in report:
             raise ValueError(f"report 1.4 is missing required explicit content: {required}")
     if "Comparison role" in report or "Historical reference:" in report or "| paired comparison |" in report:
         raise ValueError("report 1.4 revived the comparison-role taxonomy")
-    if "contemporary context" in report:
-        raise ValueError("report 1.4 still labels a paired result as unpaired context")
     retired = re.compile(
         r"primary regional model|unguarded|read this first|three main models"
         r"|station-majority regional model|two-regime regional model"

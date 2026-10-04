@@ -74,6 +74,10 @@
       "path": "notebooks/experiment/paper2-final-evidence-1.0/loso_fold_agreement.csv",
       "sha256": "cc1e2e49ed979dffee29595cf46780da32c825902973421d1e02608269353ea0"
     },
+    "formal_loso": {
+      "path": "notebooks/experiment/derived_8.4-formal-eval-1.0/loso_config_summary.csv",
+      "sha256": "b458cfd6518de014720816f57328cf68fdb7022b2896ade971b32f35642d8dff"
+    },
     "global_config": {
       "path": "notebooks/experiment/paper2-final-evidence-1.2/config.yaml",
       "sha256": "40ef468394144b8db642a7ba6acb4ad2b962472a06dee64d4cc9bd4f49f438e2"
@@ -185,7 +189,7 @@
       "main_temporal_loso": "notebooks/experiment/paper2-final-evidence-1.0",
       "paired_global": "notebooks/experiment/paper2-final-evidence-1.2"
     },
-    "historical_sources": "scope boundaries only (out-of-state, earlier ECE comparison)",
+    "historical_sources": "labeled unpaired context (heuristic grouping rows) and scope boundaries (out-of-state, earlier ECE comparison)",
     "outline": "writeup2/outline-v7.md"
   }
 }
