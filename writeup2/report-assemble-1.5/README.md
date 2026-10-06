@@ -49,6 +49,16 @@ There is no up-front model glossary. Each model is named and described the first
 - Added a §3 **Data sources and preparation** paragraph that names the data sources (NOAA USCRN and USDA ISMN SNOTEL, SMAP, Sentinel-1, Sentinel-2, MODIS, ERA5-Land, and static SRTM/WorldClim/WorldCover/HWSD descriptors) and states that the dataset reuses the first paper's multi-source pipeline: acquisition, temporal alignment, ensemble imputation, smoothing, and feature engineering.
 - Added a §3 **Feature selection** paragraph describing the shared 54-feature backbone as continuing the project's feature-selection and validation pipeline, with a matching claims-ledger row (C28).
 
+## Analysis and big-ideas pass (1.5 revision)
+
+Synthesis only; no new experiments, sources, or numbers. Each addition reuses evidence already reported and stays in the report's interpretation framing.
+
+- Added a §2 **Central thesis and testable hypotheses** block: the input-to-moisture mapping is regime-dependent, and covariate routing that is observable at prediction time and stable under station holdout can recover part of that structure (H1), assignment rather than location is what matters (H2), availability governs transfer (H3), and specialization is fragile when a regime loses data or the covariates shift (H4). Each hypothesis points to evidence in §§1, 6, 7, 8, or 9.
+- Added a §4 **Why this design** paragraph that presents each element (the simpler grouping rules, shared-feature clustering, label canonicalization, station consistency, availability gate) as a response to a specific failure mode.
+- Added a §7 **Mechanism** paragraph (labeled interpretation, no new numbers) explaining why the global model loses ground (loss dominated by the high-variance regime, competing early splits, boundary smoothing) and why hard routing both recovers and risks step errors.
+- Added a §9 **When specialization fails** synthesis unifying the three observed failure modes: unavailable routing signal, covariate shift beyond the fitted range, and loss of a regime's representatives.
+- Added §10 item 6, a reusable deployment protocol: choose k on local data, verify routing-covariate availability, evaluate by station holdout, and treat grouping choices as per-deployment hyperparameters. This states the multi-regime-versus-single-regime framing as a transferable procedure.
+
 ## Earlier changes (1.2 → 1.3)
 
 - Deleted the opening glossary that listed every model before any results. Its content is now woven in where it is needed: the shared target/features/XGBoost statement moved to §3, the family and station-majority rule definitions to §4, the global-comparator caveat to §4, the router fit recipe to §4, and the ECE-station definition to §1 and §8.
