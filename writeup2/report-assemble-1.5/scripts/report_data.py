@@ -117,7 +117,7 @@ FEATURE_GROUPS: list[tuple[str, str, list[tuple[str, str]]]] = [
          ("G_rain_sum_7d", "calendar 7-day cumulative rainfall (true days)"),
          ("V_rollrng_G_API_kobs7", "rolling range of API over the last 7 observations"),
      ]),
-    ("Satellite soil moisture - SMAP (12 features)",
+    ("Satellite soil moisture — SMAP (12 features)",
      "Coarse satellite moisture and its recent history, the grouping's main signal.",
      [
          ("SMAP_sm_pm_interp", "SMAP evening-pass soil moisture, gap-filled to daily"),
@@ -133,7 +133,7 @@ FEATURE_GROUPS: list[tuple[str, str, list[tuple[str, str]]]] = [
          ("V_rollmin_SMAP_sm_interp_kobs30", "rolling minimum of combined SMAP over 30 observations"),
          ("SMAP_x_year", "SMAP-by-year interaction: long-term sensor drift term"),
      ]),
-    ("Radar - Sentinel-1 SAR (10 features)",
+    ("Radar — Sentinel-1 SAR (10 features)",
      "Microwave backscatter physics and its recent volatility.",
      [
          ("E_SAR_ratio", "VV/VH backscatter ratio: vegetation/soil-moisture sensitive"),
@@ -147,7 +147,7 @@ FEATURE_GROUPS: list[tuple[str, str, list[tuple[str, str]]]] = [
          ("V_rollmax_E_SAR_diff_kobs30", "rolling maximum of the SAR difference over 30 observations"),
          ("E_rough_s1_vh_kobs14", "surface-roughness proxy: rolling variability of VH backscatter over 14 observations"),
      ]),
-    ("Vegetation and optical - Sentinel-2 (12 features)",
+    ("Vegetation and optical — Sentinel-2 (12 features)",
      "Greenness, canopy water, and shortwave-infrared moisture bands.",
      [
          ("s2_b4", "Sentinel-2 Red band B4 (665 nm) surface reflectance"),
@@ -834,7 +834,7 @@ def build_context() -> dict[str, str]:
         key=lambda item: (list(family_names).index(item["family"]), policy_order[item["policy"]]),
     ):
         policy = row["policy"]
-        policy_label = policy_names[policy] if policy in policy_names else f"Single regime predictor {fixed_indices[(row['family'], policy)]} (reference)"
+        policy_label = policy_names[policy] if policy in policy_names else f"Single-specialist reference (index {fixed_indices[(row['family'], policy)]})"
         ece_rows.append([family_names[row["family"]], policy_label, "yes" if row["deployable"] == "True" else "no",
                          f"{fmt(row['rmse_mean'], 4)} ± {fmt(row['rmse_std'], 4)}", fmt(row["mae_mean"], 4),
                          signed(row["bias_mean"], 4), fmt(row["ubrmse_mean"], 4)])
@@ -866,7 +866,7 @@ def build_context() -> dict[str, str]:
                            f"index {int(number(row['complementary_local_expert_index']))}",
                            "no" if oracle["deployable"] == "False" else "yes",
                            "yes" if row["dry_assignment_matches_canonical_feature_minimum"] == "True" else "no"])
-    context["ECE_CROSSWALK"] = md_table(["Model", "Precipitation class 0 → predictor", "Class 1 → predictor", "Fixed comparator predictor", "Other predictor", "Comparator usable from inputs?", "Index with lower WA SMAP mean?"], cross_rows)
+    context["ECE_CROSSWALK"] = md_table(["Model", "Precipitation class 0 → specialist", "Class 1 → specialist", "Fixed comparator specialist", "Other specialist", "Comparator usable from inputs?", "Index with lower WA SMAP mean?"], cross_rows)
     # The v1.1 crosswalk records the same fit-frame means for every family.
     cross_guard = one(crosswalk, family="Guarded_Backbone54_k2", policy_id="auto_hard")
     context["WA_SMAP_C0"] = fmt(cross_guard["wa_canonical_smap_mean_local_c0"], 4)
@@ -903,7 +903,7 @@ def build_context() -> dict[str, str]:
                              fmt(routed_station["rmse_mean"], 4), fmt(auto_station["rmse_mean"], 4),
                              fmt(global_station["rmse_mean"], 4), signed(auto_station["bias_mean"], 4),
                              fmt(share["dry_assigned_weight_mean"], 3)])
-    context["ECE_STATION_TABLE"] = md_table(["ECE station", "Elev. m", "Annual precip. descriptor mm", "Usual-assignment RMSE", "Precipitation-assignment RMSE", "Single-regime global RMSE", "Precipitation-assignment bias", "Weight on comparator predictor"], station_rows)
+    context["ECE_STATION_TABLE"] = md_table(["ECE station", "Elev. m", "Annual precip. descriptor mm", "Usual-assignment RMSE", "Precipitation-assignment RMSE", "Single-regime global RMSE", "Precipitation-assignment bias", "Weight on comparator specialist"], station_rows)
     routed_station_rmse = [number(one(ece_station, family="Guarded_Backbone54_k2", policy="as_routed", station=station)["rmse_mean"]) for station in sites]
     context["ECE_ROUTED_SITE_MIN"] = fmt(min(routed_station_rmse), 4)
     context["ECE_ROUTED_SITE_MAX"] = fmt(max(routed_station_rmse), 4)

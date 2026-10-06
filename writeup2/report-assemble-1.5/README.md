@@ -71,6 +71,8 @@ Synthesis only; no new experiments, sources, or numbers. Each addition reuses ev
 - Added a rounding convention to §3 (four-decimal display, differences from unrounded values).
 - Wording polish: "in their in-situ means", "§8/§9", "future-work" redundancy, figure caption.
 - Renamed the approach from "Regional Models" to "Multi-Regime Models" (title, §8 heading, working title, and the specialist references "regional predictor"/"regional labels" → "regime predictor"/"regime labels"). The generic "regional" uses in the literature sentences were kept, since "regional" is still accurate there. `validate_assembly.py` required strings were updated to match.
+- Terminology pass: defined each fitted group as a regime and its per-group XGBoost model as a specialist in §4, then unified the per-group-model term to "specialist" (retiring "expert" outside literature/MoE phrases). Table 7/9 labels and Figure 1/2 text were aligned ("expert-seed" → "specialist-seed", "forced-expert" → "forced-specialist"), and the two figures were regenerated from `report_figures.ipynb`.
+- Fixed two overclaims (grouping source in §3; "only in the assignment rule" scope), numbered the in-text citations [1]–[11] to match §11, and made small consistency fixes (Appendix heading punctuation, Table 3/4/7/8 cross-references, "test period" wording).
 
 ## Earlier changes (1.2 → 1.3)
 
