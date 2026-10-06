@@ -56,7 +56,6 @@ SOURCES = {
     "ece_calibration": f"{EVIDENCE_11}/ece_guarded/wa_calibration.csv",
     "ece_sites": f"{EVIDENCE_11}/ece_guarded/site_descriptors.csv",
     "ece_shares": f"{EVIDENCE_11}/ece_guarded/ece_routing_shares_by_station.csv",
-    "ece_overlay": f"{EVIDENCE_11}/ece_guarded/f5_guarded_daily_overlay.csv",
     "hourly": "notebooks/experiment/ece-input-diagnose-1.0/smoothing_summary.csv",
 }
 
@@ -490,6 +489,26 @@ def validate_sources() -> None:
     if crosswalk["ece_used_for_mapping_or_calibration"] != "False" or crosswalk["deployable"] != "True":
         raise ValueError("Guarded policy deployability/calibration provenance changed")
 
+    # Section 8 interpretation: the two Washington groups separate strongly on
+    # longitude/wetness but only weakly on elevation, while the ECE sites sit far
+    # below both group medians. Anchor the profile and site descriptors used in
+    # the prose.
+    profile_anchor = {row["feature"]: row for row in read_csv("profile")}
+    check_close(number(profile_anchor["elev"]["separation_index"]), 0.208, "group elevation separation", tolerance=1e-9)
+    check_close(number(profile_anchor["elev"]["median_cluster0"]), 1205.0942, "group 0 median elevation", tolerance=1e-9)
+    check_close(number(profile_anchor["elev"]["median_cluster1"]), 1160.5261, "group 1 median elevation", tolerance=1e-9)
+    site_rows = read_csv("ece_sites")
+    check_close(min(number(row["J_elev_m"]) for row in site_rows), 51.0, "ECE site min elevation", tolerance=1e-9)
+    check_close(max(number(row["J_elev_m"]) for row in site_rows), 157.0, "ECE site max elevation", tolerance=1e-9)
+    check_close(min(number(row["J_bio_bio12"]) for row in site_rows), 1018.0, "ECE site min precipitation descriptor", tolerance=1e-9)
+    check_close(max(number(row["J_bio_bio12"]) for row in site_rows), 1227.0, "ECE site max precipitation descriptor", tolerance=1e-9)
+    routed_stations = [row for row in read_csv("ece_station")
+                       if row["family"] == "Guarded_Backbone54_k2" and row["policy"] == "as_routed"]
+    if len(routed_stations) != 5:
+        raise ValueError("ECE routed station coverage changed")
+    check_close(min(number(row["rmse_mean"]) for row in routed_stations), 0.0479510908994335, "ECE routed station min RMSE", tolerance=1e-9)
+    check_close(max(number(row["rmse_mean"]) for row in routed_stations), 0.24252405030086113, "ECE routed station max RMSE", tolerance=1e-9)
+
     # Section 7 specialization discussion: per-regime specialist metrics and the
     # per-regime feature-addition grid, both anchored to their saved artifacts.
     cluster_rows = read_csv("temporal_seed_cluster")
@@ -772,11 +791,16 @@ def build_context() -> dict[str, str]:
     context["SAT_BASE_R2"] = fmt(delta["delta_c0_0_c1_0"]["pooled_r2"], 4)
     context["SAT_C0_ADD10_R2"] = fmt(delta["delta_c0_10_c1_0"]["pooled_r2"], 4)
     context["SAT_C1_ADD10_R2"] = fmt(delta["delta_c0_0_c1_10"]["pooled_r2"], 4)
-    profile = [row for row in read_csv("profile") if row["feature"] != "soil_moisture_5cm"]
+    profile_rows = read_csv("profile")
+    profile_anchor = {row["feature"]: row for row in profile_rows}
+    profile = [row for row in profile_rows if row["feature"] != "soil_moisture_5cm"]
     profile.sort(key=lambda row: number(row["separation_index"]), reverse=True)
     context["PROFILE_TABLE"] = md_table(["Feature", "Separation index", "Median c0", "Median c1"], [
         [row["feature"], fmt(row["separation_index"], 3), fmt(row["median_cluster0"], 3), fmt(row["median_cluster1"], 3)] for row in profile[:10]
     ])
+    context["PROFILE_ELEV_SEPARATION"] = fmt(profile_anchor["elev"]["separation_index"], 3)
+    context["PROFILE_ELEV_C0"] = fmt(profile_anchor["elev"]["median_cluster0"], 0)
+    context["PROFILE_ELEV_C1"] = fmt(profile_anchor["elev"]["median_cluster1"], 0)
 
     family_names = {
         "Clustering_V0_Full_k2": "Earlier V0 multi-regime model",
@@ -856,6 +880,10 @@ def build_context() -> dict[str, str]:
     ])
 
     sites = {row["station_id"]: row for row in read_csv("ece_sites")}
+    context["ECE_ELEV_MIN"] = fmt(min(number(row["J_elev_m"]) for row in sites.values()), 0)
+    context["ECE_ELEV_MAX"] = fmt(max(number(row["J_elev_m"]) for row in sites.values()), 0)
+    context["ECE_PRECIP_MIN"] = fmt(min(number(row["J_bio_bio12"]) for row in sites.values()), 0)
+    context["ECE_PRECIP_MAX"] = fmt(max(number(row["J_bio_bio12"]) for row in sites.values()), 0)
     ece_display_names = {
         "ECE_BBG_Lost_Meadow": "Bellevue Botanical Garden Lost Meadow",
         "ECE_BBG_Main_St": "Bellevue Botanical Garden Main Street",
@@ -876,6 +904,9 @@ def build_context() -> dict[str, str]:
                              fmt(global_station["rmse_mean"], 4), signed(auto_station["bias_mean"], 4),
                              fmt(share["dry_assigned_weight_mean"], 3)])
     context["ECE_STATION_TABLE"] = md_table(["ECE station", "Elev. m", "Annual precip. descriptor mm", "Usual-assignment RMSE", "Precipitation-assignment RMSE", "Single-regime global RMSE", "Precipitation-assignment bias", "Weight on comparator predictor"], station_rows)
+    routed_station_rmse = [number(one(ece_station, family="Guarded_Backbone54_k2", policy="as_routed", station=station)["rmse_mean"]) for station in sites]
+    context["ECE_ROUTED_SITE_MIN"] = fmt(min(routed_station_rmse), 4)
+    context["ECE_ROUTED_SITE_MAX"] = fmt(max(routed_station_rmse), 4)
 
     legacy = one(read_csv("ece_legacy"), Category="Clustering vs Global", **{"Comparison (A vs B)": "Clustering (V0) vs Global-54"})
     context["ECE_LEGACY_DIFF"] = signed(legacy["Station Mean ΔRMSE (A−B)"], 6)

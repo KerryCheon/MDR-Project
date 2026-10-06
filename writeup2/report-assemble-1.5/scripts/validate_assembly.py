@@ -22,7 +22,6 @@ LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 FIGURES = (
     "main_temporal_and_loso.png",
     "ece_policies_and_stations.png",
-    "ece_guarded_daily_overlay.png",
 )
 
 
@@ -112,6 +111,8 @@ def main() -> int:
         raise ValueError("claims ledger does not record station metadata and the open fallback work")
     if "C25" not in ledger or "controlled experiment varying only training-data amount" not in ledger:
         raise ValueError("claims ledger does not record the specialization-versus-data evidence and its boundary")
+    if "C27" not in ledger or "only weakly on elevation" not in ledger:
+        raise ValueError("claims ledger does not record the ECE regional-label interpretation and its boundary")
     if "C5" not in ledger or "paired" not in ledger:
         raise ValueError("claims ledger does not record the paired global comparison")
     if "paper2-final-evidence-1.0/ece_guarded" in report:
@@ -140,6 +141,7 @@ def main() -> int:
         "Yes — training only",
         "**Contribution relative to the first paper.**",
         "**Why regional specialization helps, and when more data may not.**",
+        "**What the ECE sites reveal about the regional labels.**",
     ):
         if required not in report:
             raise ValueError(f"report 1.5 is missing required explicit content: {required}")

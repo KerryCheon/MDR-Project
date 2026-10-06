@@ -38,10 +38,6 @@
       "path": "notebooks/experiment/paper2-final-evidence-1.1/notebooks/paper2_ece_supplement.ipynb",
       "sha256": "f4579805c370c27693086ab737651cdf0ffbd7ceae1f6d122774d830905bcbd9"
     },
-    "ece_overlay": {
-      "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/f5_guarded_daily_overlay.csv",
-      "sha256": "7838e211ee51d678fe976bb522190cc4593fa20b0ed1ac3c1a679d7b0f830b37"
-    },
     "ece_policy": {
       "path": "notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/ece_policy_summary.csv",
       "sha256": "dae4da9b678cb9aea9e863f4669521f67a26407c7d430875026c3c5432723e03"
