@@ -59,6 +59,10 @@ Synthesis only; no new experiments, sources, or numbers. Each addition reuses ev
 - Added a §9 **When specialization fails** synthesis unifying the three observed failure modes: unavailable routing signal, covariate shift beyond the fitted range, and loss of a regime's representatives.
 - Added §10 item 6, a reusable deployment protocol: choose k on local data, verify routing-covariate availability, evaluate by station holdout, and treat grouping choices as per-deployment hyperparameters. This states the multi-regime-versus-single-regime framing as a transferable procedure.
 
+## Statistical reporting note (1.5 revision)
+
+- Added a §3 **On p-values** note stating that p-values are not reported because the effective sample is small (seven held-out stations, one 2023–2025 test period) and the 30 temporal runs are seed replicates rather than independent units. Seed intervals, matched-seed differences, and per-fold win/loss counts are reported instead. The claims-ledger Reporting constraints carry the same statement.
+
 ## Earlier changes (1.2 → 1.3)
 
 - Deleted the opening glossary that listed every model before any results. Its content is now woven in where it is needed: the shared target/features/XGBoost statement moved to §3, the family and station-majority rule definitions to §4, the global-comparator caveat to §4, the router fit recipe to §4, and the ECE-station definition to §1 and §8.
