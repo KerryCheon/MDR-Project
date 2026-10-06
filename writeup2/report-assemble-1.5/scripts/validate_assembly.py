@@ -77,9 +77,9 @@ def main() -> int:
     report = (ROOT / "report.md").read_text(encoding="utf-8")
     ledger = (ROOT / "claims-ledger.md").read_text(encoding="utf-8")
     for required in (
-        "# Regional Models for Daily Soil-Moisture Estimation in Washington", "10.1109/AIIoT68874.2026.11569136",
+        "# Multi-Regime Models for Daily Soil-Moisture Estimation in Washington", "10.1109/AIIoT68874.2026.11569136",
         "## 1. Executive synthesis", "## 5. Primary temporal results", "## 6. In-state spatial generalization",
-        "## 8. Regional model interpretation at ECE stations", "## 9. Robustness", "## 10. Paper contribution",
+        "## 8. Multi-regime model interpretation at ECE stations", "## 9. Robustness", "## 10. Paper contribution",
         "## 11. References", "## Appendix A.", "test period",
         "antecedent-precipitation index", "Washington validation", "seven held-out",
         "0.5797", "minimum station purity",
@@ -105,14 +105,14 @@ def main() -> int:
         raise ValueError("source hashes should appear in the claims ledger and manifest, not reader-facing report prose")
     if "V0" in report:
         raise ValueError("earlier-variant references are not part of the paired 1.5 report")
-    if re.search(r"## 8\. Regional model interpretation at ECE stations\n\n###", report):
-        raise ValueError("Section 8 must begin directly with the regional-model explanation")
+    if re.search(r"## 8\. Multi-regime model interpretation at ECE stations\n\n###", report):
+        raise ValueError("Section 8 must begin directly with the multi-regime-model explanation")
     if "C22" not in ledger or "Unresolved future work" not in ledger:
         raise ValueError("claims ledger does not record station metadata and the open fallback work")
     if "C25" not in ledger or "controlled experiment varying only training-data amount" not in ledger:
         raise ValueError("claims ledger does not record the specialization-versus-data evidence and its boundary")
     if "C27" not in ledger or "only weakly on elevation" not in ledger:
-        raise ValueError("claims ledger does not record the ECE regional-label interpretation and its boundary")
+        raise ValueError("claims ledger does not record the ECE regime-label interpretation and its boundary")
     if "C5" not in ledger or "paired" not in ledger:
         raise ValueError("claims ledger does not record the paired global comparison")
     if "paper2-final-evidence-1.0/ece_guarded" in report:
@@ -140,8 +140,8 @@ def main() -> int:
         "Target used?",
         "Yes — training only",
         "**Contribution relative to the first paper.**",
-        "**Why regional specialization helps, and when more data may not.**",
-        "**What the ECE sites reveal about the regional labels.**",
+        "**Why regime specialization helps, and when more data may not.**",
+        "**What the ECE sites reveal about the regime labels.**",
     ):
         if required not in report:
             raise ValueError(f"report 1.5 is missing required explicit content: {required}")
@@ -184,7 +184,7 @@ def main() -> int:
         if (
             len(reader.pages) < 8
             or "Appendix A. Exact shared" not in pdf_text
-            or "Regional model interpretation at ECE stations" not in pdf_text
+            or "Multi-regime model interpretation at ECE stations" not in pdf_text
         ):
             raise ValueError("PDF text or page coverage is incomplete")
         if excluded_result.search(pdf_text):

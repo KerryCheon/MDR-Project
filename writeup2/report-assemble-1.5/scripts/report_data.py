@@ -676,10 +676,11 @@ def build_context() -> dict[str, str]:
             f"[{fmt(summary_row['seed_ci95_low'])}, {fmt(summary_row['seed_ci95_high'])}]",
             fmt(summary_row["mean_rmse"]), fmt(mean(group, "mae")), fmt(mean(group, "bias")),
         ])
-    temporal_rows.sort(key=lambda row: float(row[5]))
     context["TEMPORAL_TABLE"] = md_table(["Model", "Seeds", "R²", "Seed SD", "95% seed CI", "RMSE", "MAE", "Bias"], temporal_rows)
     gate_row = one(main, strategy_name="Trained_Gating_k2")
     context["GATE_R2"] = fmt(gate_row["mean_r2"], 4)
+    three_feature_row = one(main, strategy_name="Clustering_Dynamic_k2")
+    context["THREE_FEATURE_R2"] = fmt(three_feature_row["mean_r2"], 4)
     context["GUARD_R2"] = fmt(guard["mean_r2"], 4)
     context["GUARD_RMSE"] = fmt(guard["mean_rmse"], 4)
     context["GUARD_SD"] = fmt(guard["seed_sd_r2"], 4)

@@ -38,16 +38,16 @@ There is no up-front model glossary. Each model is named and described the first
 ## What changed since 1.4
 
 - Rewrote §4 as a concept-only method core, framed as an original design. It now gives the routing idea, the K-means router recipe and label canonicalization, k=2 as a Washington scope choice, the station-majority rule as a controlled comparison, assignment for unseen/missing/gated rows with the fixed 0.10 availability gate and fit-frame margin fallback, an explicit temporal and leave-one-station-out fit/predict procedure, and a provenance note that the router reuses the global model's 54-feature set without claiming it is optimal for routing.
-- Removed all performance gaps and win/tie/loss counts from §4; those results remain in §§5–6, which are unchanged. No new evidence, numbers, or model fits: §1–§3 and §5–§10 are unchanged from 1.4.
+- Removed all performance gaps and win/tie/loss counts from §4; those results remain in §§5–6. No new evidence, numbers, or model fits were introduced in that rewrite; the later 1.5-revision passes documented below added provenance, analysis, and a statistical-reporting note without new numbers.
 - Retargeted the versioned report-figures notebook to this directory; the temporal/LOSO and ECE policy/site figures are unchanged.
 - Added a §2 **Contribution relative to the first paper** paragraph that frames the work as a controlled study of the grouping/routing step (answering a question the first paper left as future work) rather than a new architecture.
 - Added a §7 discussion of specialization versus data: each specialist is fitted on a subset of the rows yet matches or beats the all-data global predictor on its own group, additional inputs did not help the larger/ saturated group, and the global model carries larger pooled bias. Every figure comes from saved artifacts (`temporal_seed_cluster.csv`, the paired-global temporal rows, and the per-regime feature-addition `delta_grid.csv`), the point is labeled as interpretation, no controlled data-quantity experiment is claimed, and no station set is compared across dataset versions.
-- Overhauled §8 from a results recap into an interpretation of the regional labels. It now reads the Washington split as a wet/maritime versus drier/seasonal contrast (separation index 1.00 on longitude and wettest-month precipitation, 0.93 on satellite soil moisture, only 0.21 on elevation) with elevation a secondary axis, and shows that at the new lowland ECE sites the error follows the expert a row is routed to rather than the site location. It removes the daily-overlay figure and keeps the ECE policy/site figure, so the report has two figures; the ECE tables and all numbers are unchanged, and the elevation/hydroclimate and ECE site values are anchored in `report_data.py` from the group profile and site descriptors. It also states that routing stays automatic — the input-availability gate applies the fallback and the class-to-expert direction is fixed once on Washington validation — so the per-site comparisons are diagnostics, not a manual regime-selection step.
+- Overhauled §8 from a results recap into an interpretation of the regime labels. It now reads the Washington split as a wet/maritime versus drier/seasonal contrast (separation index 1.00 on longitude and wettest-month precipitation, 0.93 on satellite soil moisture, only 0.21 on elevation) with elevation a secondary axis, and shows that at the new lowland ECE sites the error follows the expert a row is routed to rather than the site location. It removes the daily-overlay figure and keeps the ECE policy/site figure, so the report has two figures; the ECE tables and all numbers are unchanged, and the elevation/hydroclimate and ECE site values are anchored in `report_data.py` from the group profile and site descriptors. It also states that routing stays automatic — the input-availability gate applies the fallback and the class-to-expert direction is fixed once on Washington validation — so the per-site comparisons are diagnostics, not a manual regime-selection step.
 
 ## Provenance additions (1.5 revision)
 
 - Added a §3 **Data sources and preparation** paragraph that names the data sources (NOAA USCRN and USDA ISMN SNOTEL, SMAP, Sentinel-1, Sentinel-2, MODIS, ERA5-Land, and static SRTM/WorldClim/WorldCover/HWSD descriptors) and states that the dataset reuses the first paper's multi-source pipeline: acquisition, temporal alignment, ensemble imputation, smoothing, and feature engineering.
-- Added a §3 **Feature selection** paragraph describing the shared 54-feature backbone as continuing the project's feature-selection and validation pipeline, with a matching claims-ledger row (C28).
+- Added a §3 **Feature selection** paragraph describing the shared 54-feature backbone as produced by a later run of the project's feature-selection and validation pipeline over this study's station mix, with a matching claims-ledger row (C28).
 
 ## Analysis and big-ideas pass (1.5 revision)
 
@@ -62,6 +62,15 @@ Synthesis only; no new experiments, sources, or numbers. Each addition reuses ev
 ## Statistical reporting note (1.5 revision)
 
 - Added a §3 **On p-values** note stating that p-values are not reported because the effective sample is small (seven held-out stations, one 2023–2025 test period) and the 30 temporal runs are seed replicates rather than independent units. Seed intervals, matched-seed differences, and per-fold win/loss counts are reported instead. The claims-ledger Reporting constraints carry the same statement.
+
+## Consistency audit (1.5 revision)
+
+- Fixed the §3 feature-selection attribution: the 54-feature backbone is a later run of the same pipeline over this study's station mix, not the first paper's feature set. Synced ledger row C28.
+- Defined the matched protocol in §3 (same split, LOSO folds, target, 54 features, XGBoost configuration, seed list, and evaluation rows) and replaced the ambiguous "first three rows use the same protocol" wording in §4, the Table 1 and Table 2 captions, and the Figure 1 caption with the explicit model names.
+- Removed the performance sort from the temporal table in `report_data.py` so Table 1 lists the three matched models first and the context rows after, matching §4 and Table 2. Added a §5 note that the three-feature context rule also edges the global model but is unpaired.
+- Added a rounding convention to §3 (four-decimal display, differences from unrounded values).
+- Wording polish: "in their in-situ means", "§8/§9", "future-work" redundancy, figure caption.
+- Renamed the approach from "Regional Models" to "Multi-Regime Models" (title, §8 heading, working title, and the specialist references "regional predictor"/"regional labels" → "regime predictor"/"regime labels"). The generic "regional" uses in the literature sentences were kept, since "regional" is still accurate there. `validate_assembly.py` required strings were updated to match.
 
 ## Earlier changes (1.2 → 1.3)
 
