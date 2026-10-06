@@ -679,14 +679,14 @@ def build_context() -> dict[str, str]:
     temporal_rows.sort(key=lambda row: float(row[5]))
     context["TEMPORAL_TABLE"] = md_table(["Model", "Seeds", "R²", "Seed SD", "95% seed CI", "RMSE", "MAE", "Bias"], temporal_rows)
     gate_row = one(main, strategy_name="Trained_Gating_k2")
-    context["GATE_R2"] = fmt(gate_row["mean_r2"], 6)
-    context["GUARD_R2"] = fmt(guard["mean_r2"], 6)
-    context["GUARD_RMSE"] = fmt(guard["mean_rmse"], 6)
-    context["GUARD_SD"] = fmt(guard["seed_sd_r2"], 6)
-    context["BACKBONE_R2"] = fmt(backbone["mean_r2"], 6)
-    context["GLOBAL_R2"] = fmt(global_mean_r2, 6)
-    context["GLOBAL_SD"] = fmt(global_sd_r2, 6)
-    context["GUARD_BACKBONE_DIFF"] = signed(number(guard["mean_r2"]) - number(backbone["mean_r2"]), 6)
+    context["GATE_R2"] = fmt(gate_row["mean_r2"], 4)
+    context["GUARD_R2"] = fmt(guard["mean_r2"], 4)
+    context["GUARD_RMSE"] = fmt(guard["mean_rmse"], 4)
+    context["GUARD_SD"] = fmt(guard["seed_sd_r2"], 4)
+    context["BACKBONE_R2"] = fmt(backbone["mean_r2"], 4)
+    context["GLOBAL_R2"] = fmt(global_mean_r2, 4)
+    context["GLOBAL_SD"] = fmt(global_sd_r2, 4)
+    context["GUARD_BACKBONE_DIFF"] = signed(number(guard["mean_r2"]) - number(backbone["mean_r2"]), 4)
 
     # Seed-paired Guarded-minus-Global temporal differences (joined on seed).
     guard_by_seed = {item["seed"]: number(item["r2"]) for item in guard_seed}
@@ -694,7 +694,7 @@ def build_context() -> dict[str, str]:
     guard_global_diffs = [guard_by_seed[seed] - global_by_seed[seed] for seed in guard_by_seed]
     if set(guard_by_seed) != set(global_by_seed):
         raise ValueError("Guarded/Global temporal seed sets do not match for pairing")
-    context["GUARD_GLOBAL_DIFF"] = signed(statistics.mean(guard_global_diffs), 6)
+    context["GUARD_GLOBAL_DIFF"] = signed(statistics.mean(guard_global_diffs), 4)
     context["GUARD_GLOBAL_GAP"] = signed(statistics.mean(guard_global_diffs), 4)
     wins, ties, losses = paired_wins(guard_global_diffs)
     context["GUARD_GLOBAL_WINS"] = str(wins)
@@ -724,11 +724,11 @@ def build_context() -> dict[str, str]:
         row = one(formal_loso, config_id=config_id)
         loso_rows.append([name_map[strategy], "5 × 7", fmt(row["loso_mean_r2"]), fmt(row["loso_mean_rmse"])])
     context["LOSO_TABLE"] = md_table(["Model", "Seeds × held-out sites", "Station-mean R²", "Station-mean RMSE"], loso_rows)
-    context["GUARD_LOSO"] = fmt(guard_loso_mean, 6)
-    context["BACKBONE_LOSO"] = fmt(backbone_loso_mean, 6)
-    context["GLOBAL_LOSO"] = fmt(global_loso_mean, 6)
-    context["GUARD_LOSO_DIFF"] = signed(guard_loso_mean - backbone_loso_mean, 6)
-    context["GUARD_GLOBAL_LOSO_DIFF"] = signed(guard_loso_mean - global_loso_mean, 6)
+    context["GUARD_LOSO"] = fmt(guard_loso_mean, 4)
+    context["BACKBONE_LOSO"] = fmt(backbone_loso_mean, 4)
+    context["GLOBAL_LOSO"] = fmt(global_loso_mean, 4)
+    context["GUARD_LOSO_DIFF"] = signed(guard_loso_mean - backbone_loso_mean, 4)
+    context["GUARD_GLOBAL_LOSO_DIFF"] = signed(guard_loso_mean - global_loso_mean, 4)
     context["GUARD_GLOBAL_LOSO_GAP"] = signed(guard_loso_mean - global_loso_mean, 4)
 
     fold_agreement = {row["held_out"]: row for row in read_csv("fold_agreement")}
@@ -737,9 +737,8 @@ def build_context() -> dict[str, str]:
         station = row["station"]
         fold = fold_agreement[station]
         t8_rows.append([station_display_names.get(station, station), fmt(row["guarded_mean_r2"]), fmt(row["backbone_mean_r2"]), signed(row["mean_r2_difference"]),
-                        f"{row['winning_seeds']}/{row['tied_seeds']}", fmt(fold["ARI_tr_V0_Full_vs_Backbone"], 3),
-                        fmt(fold["ARI_tr_Backbone_vs_GuardedV-A"], 3)])
-    context["T8_TABLE"] = md_table(["Held-out station", "Station-majority shared-feature cluster-routed multi-regime model R²", "shared-feature cluster-routed multi-regime model without station consistency guarantee R²", "Difference", "Wins / ties (5 seeds)", "Train-group agreement: older 50-feat. vs 54-feat.", "Train-group agreement: with vs without station consistency guarantee"], t8_rows)
+                        f"{row['winning_seeds']}/{row['tied_seeds']}", fmt(fold["ARI_tr_Backbone_vs_GuardedV-A"], 3)])
+    context["T8_TABLE"] = md_table(["Held-out station", "Station-majority shared-feature cluster-routed multi-regime model R²", "shared-feature cluster-routed multi-regime model without station consistency guarantee R²", "Difference", "Wins / ties (5 seeds)", "Train-group agreement: with vs without station consistency guarantee"], t8_rows)
     context["FOLD_GAINS"] = str(sum(number(row["mean_r2_difference"]) > 0 for row in t8))
     context["FOLD_TIES"] = str(sum(number(row["mean_r2_difference"]) == 0 for row in t8))
 
@@ -836,25 +835,25 @@ def build_context() -> dict[str, str]:
         policy = row["policy"]
         policy_label = policy_names[policy] if policy in policy_names else f"Single regime predictor {fixed_indices[(row['family'], policy)]} (reference)"
         ece_rows.append([family_names[row["family"]], policy_label, "yes" if row["deployable"] == "True" else "no",
-                         f"{fmt(row['rmse_mean'], 6)} ± {fmt(row['rmse_std'], 6)}", fmt(row["mae_mean"], 6),
-                         signed(row["bias_mean"], 6), fmt(row["ubrmse_mean"], 6)])
+                         f"{fmt(row['rmse_mean'], 4)} ± {fmt(row['rmse_std'], 4)}", fmt(row["mae_mean"], 4),
+                         signed(row["bias_mean"], 4), fmt(row["ubrmse_mean"], 4)])
     context["ECE_TABLE"] = md_table(["Model", "Assignment or reference", "Usable from observed inputs?", "RMSE ± seed SD", "MAE", "Bias", "ubRMSE"], ece_rows)
     auto = one(ece, family="Guarded_Backbone54_k2", policy="auto_hard")
     routed = one(ece, family="Guarded_Backbone54_k2", policy="as_routed")
     global_ece = one(ece, family="Global_Single_54", policy="direct")
-    context["ECE_AUTO_RMSE"] = fmt(auto["rmse_mean"], 6)
-    context["ECE_ROUTED_RMSE"] = fmt(routed["rmse_mean"], 6)
-    context["ECE_GLOBAL_RMSE"] = fmt(global_ece["rmse_mean"], 6)
-    context["ECE_AUTO_GLOBAL_GAP"] = signed(number(auto["rmse_mean"]) - number(global_ece["rmse_mean"]), 6)
-    context["ECE_AUTO_ROUTED_GAP"] = signed(number(auto["rmse_mean"]) - number(routed["rmse_mean"]), 6)
-    context["ECE_AUTO_ROUTED_REDUCTION"] = fmt(number(routed["rmse_mean"]) - number(auto["rmse_mean"]), 6)
+    context["ECE_AUTO_RMSE"] = fmt(auto["rmse_mean"], 4)
+    context["ECE_ROUTED_RMSE"] = fmt(routed["rmse_mean"], 4)
+    context["ECE_GLOBAL_RMSE"] = fmt(global_ece["rmse_mean"], 4)
+    context["ECE_AUTO_GLOBAL_GAP"] = signed(number(auto["rmse_mean"]) - number(global_ece["rmse_mean"]), 4)
+    context["ECE_AUTO_ROUTED_GAP"] = signed(number(auto["rmse_mean"]) - number(routed["rmse_mean"]), 4)
+    context["ECE_AUTO_ROUTED_REDUCTION"] = fmt(number(routed["rmse_mean"]) - number(auto["rmse_mean"]), 4)
     index_reference_policy = {
         index: policy
         for policy in ("c0_only", "c1_only")
         for index in [fixed_indices[("Guarded_Backbone54_k2", policy)]]
     }
-    context["ECE_INDEX0_RMSE"] = fmt(one(ece, family="Guarded_Backbone54_k2", policy=index_reference_policy[0])["rmse_mean"], 6)
-    context["ECE_INDEX1_RMSE"] = fmt(one(ece, family="Guarded_Backbone54_k2", policy=index_reference_policy[1])["rmse_mean"], 6)
+    context["ECE_INDEX0_RMSE"] = fmt(one(ece, family="Guarded_Backbone54_k2", policy=index_reference_policy[0])["rmse_mean"], 4)
+    context["ECE_INDEX1_RMSE"] = fmt(one(ece, family="Guarded_Backbone54_k2", policy=index_reference_policy[1])["rmse_mean"], 4)
 
     cross_rows = []
     for family in ("Clustering_Backbone54_k2", "Guarded_Backbone54_k2"):
@@ -869,13 +868,13 @@ def build_context() -> dict[str, str]:
     context["ECE_CROSSWALK"] = md_table(["Model", "Precipitation class 0 → predictor", "Class 1 → predictor", "Fixed comparator predictor", "Other predictor", "Comparator usable from inputs?", "Index with lower WA SMAP mean?"], cross_rows)
     # The v1.1 crosswalk records the same fit-frame means for every family.
     cross_guard = one(crosswalk, family="Guarded_Backbone54_k2", policy_id="auto_hard")
-    context["WA_SMAP_C0"] = fmt(cross_guard["wa_canonical_smap_mean_local_c0"], 6)
-    context["WA_SMAP_C1"] = fmt(cross_guard["wa_canonical_smap_mean_local_c1"], 6)
-    context["WA_TARGET_C0"] = fmt(cross_guard["wa_target_mean_local_c0"], 6)
-    context["WA_TARGET_C1"] = fmt(cross_guard["wa_target_mean_local_c1"], 6)
+    context["WA_SMAP_C0"] = fmt(cross_guard["wa_canonical_smap_mean_local_c0"], 4)
+    context["WA_SMAP_C1"] = fmt(cross_guard["wa_canonical_smap_mean_local_c1"], 4)
+    context["WA_TARGET_C0"] = fmt(cross_guard["wa_target_mean_local_c0"], 4)
+    context["WA_TARGET_C1"] = fmt(cross_guard["wa_target_mean_local_c1"], 4)
     candidate_rows = [row for row in calibration if row["family"] == "Guarded_Backbone54_k2" and row["setting"] == "smap_masked_val" and row["policy"].startswith("aux_hard_candidate_")]
     context["ECE_CALIBRATION_TABLE"] = md_table(["Precipitation class 0 →", "Precipitation class 1 →", "WA validation RMSE", "Chosen for ECE"], [
-        [f"index {int(number(row['gapi_class_0_local_expert']))}", f"index {int(number(row['gapi_class_1_local_expert']))}", fmt(row["rmse"], 6), "yes" if row["selected_for_ece"] == "True" else "no"]
+        [f"index {int(number(row['gapi_class_0_local_expert']))}", f"index {int(number(row['gapi_class_1_local_expert']))}", fmt(row["rmse"], 4), "yes" if row["selected_for_ece"] == "True" else "no"]
         for row in sorted(candidate_rows, key=lambda item: number(item["rmse"]))
     ])
 
@@ -909,13 +908,12 @@ def build_context() -> dict[str, str]:
     context["ECE_ROUTED_SITE_MAX"] = fmt(max(routed_station_rmse), 4)
 
     legacy = one(read_csv("ece_legacy"), Category="Clustering vs Global", **{"Comparison (A vs B)": "Clustering (V0) vs Global-54"})
-    context["ECE_LEGACY_DIFF"] = signed(legacy["Station Mean ΔRMSE (A−B)"], 6)
+    context["ECE_LEGACY_DIFF"] = signed(legacy["Station Mean ΔRMSE (A−B)"], 4)
     context["ECE_LEGACY_WINS"] = legacy["Station Wins (A < B)"]
     context["ECE_LEGACY_SIGN_P"] = fmt(legacy["Binomial Sign Test p"], 3)
 
     oos = read_csv("oos")
     oos_labels = {
-        "Baseline Model (50 V0 feats)": "Earlier global baseline (50 features)",
         "Clustering (54 backbone)": "shared-feature cluster-routed multi-regime model without station consistency guarantee (54 features)",
         "Seasonal Binary (Summer/Winter)": "Seasonal grouping",
         "Univariate G_API split": "Precipitation-index grouping",
@@ -926,13 +924,13 @@ def build_context() -> dict[str, str]:
     oos_rows = []
     for row in oos:
         architecture = row["Model Architecture"]
-        # The older 50-feature V0 variant is excluded from the 1.5 scope
-        # boundary; only the 54-feature configurations are shown.
-        if architecture == "Clustering (50 V0 features)":
+        # Only the 54-feature configurations are shown; the older 50-feature
+        # variants are outside this report's scope.
+        if architecture in {"Clustering (50 V0 features)", "Baseline Model (50 V0 feats)"}:
             continue
         label = oos_labels[architecture]
         oos_rows.append([label, fmt(row["Station Mean R²"], 3), fmt(row["Station Mean RMSE"], 3), row["Pooled R² (mean ± std)"]])
-    oos_headers = ["Earlier model or grouping", "10-station mean R²", "10-station mean RMSE", "Pooled R²"]
+    oos_headers = ["Model or grouping", "10-station mean R²", "10-station mean RMSE", "Pooled R²"]
     context["OOS_TABLE"] = md_table(oos_headers, oos_rows)
     hourly = read_csv("hourly")
     if not hourly:

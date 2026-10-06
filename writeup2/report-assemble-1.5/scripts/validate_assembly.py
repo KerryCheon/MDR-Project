@@ -82,7 +82,7 @@ def main() -> int:
         "## 8. Regional model interpretation at ECE stations", "## 9. Robustness", "## 10. Paper contribution",
         "## 11. References", "## Appendix A.", "test period",
         "antecedent-precipitation index", "Washington validation", "seven held-out",
-        "0.579737", "minimum station purity",
+        "0.5797", "minimum station purity",
     ):
         if required not in report:
             raise ValueError(f"report is missing required content: {required}")
