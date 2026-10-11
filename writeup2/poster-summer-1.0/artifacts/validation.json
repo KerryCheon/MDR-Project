@@ -1,0 +1,14 @@
+{
+  "slides": 1,
+  "pdf_pages": 1,
+  "dimensions_inches": [
+    36.0,
+    24.0
+  ],
+  "pdf_fonts_embedded": true,
+  "author_placeholders_editable": true,
+  "scene_items": 111,
+  "rendered_words": 497,
+  "charts": "vector PDF, 300 dpi PNG in PowerPoint",
+  "preview": "summer_showcase_preview.png"
+}

@@ -1,0 +1,1629 @@
+[
+  {
+    "kind": "image",
+    "x": 0.72,
+    "y": 0.32,
+    "w": 2.16,
+    "h": 1.9872,
+    "path": "assets/su_monogram.png",
+    "vector": null,
+    "name": "Seattle University monogram"
+  },
+  {
+    "kind": "image",
+    "x": 31.0,
+    "y": 0.76,
+    "w": 4.25,
+    "h": 1.8011152416356877,
+    "path": "assets/su_college.png",
+    "vector": null,
+    "name": "Seattle University college logo"
+  },
+  {
+    "kind": "text",
+    "x": 3.25,
+    "y": 0.38,
+    "w": 27.35,
+    "h": 1.63,
+    "text": "Two-Regime Models for Daily Soil-Moisture\nEstimation in Washington",
+    "lines": [
+      "Two-Regime Models for Daily Soil-Moisture",
+      "Estimation in Washington"
+    ],
+    "size": 48,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "Poster title",
+    "required_height": 1.5733333333333333
+  },
+  {
+    "kind": "text",
+    "x": 3.25,
+    "y": 2.02,
+    "w": 27.35,
+    "h": 0.48,
+    "text": "[Author names]  \u00b7  Mentored by [Mentor name, credentials]",
+    "lines": [
+      "[Author names] \u00b7 Mentored by [Mentor name, credentials]"
+    ],
+    "size": 24,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "Editable author and mentor placeholders",
+    "required_height": 0.3933333333333333
+  },
+  {
+    "kind": "text",
+    "x": 3.25,
+    "y": 2.52,
+    "w": 27.35,
+    "h": 0.44,
+    "text": "Department of Computer Science, Seattle University",
+    "lines": [
+      "Department of Computer Science, Seattle University"
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "Department affiliation",
+    "required_height": 0.3605555555555555
+  },
+  {
+    "kind": "text",
+    "x": 3.25,
+    "y": 3.0,
+    "w": 27.35,
+    "h": 0.28,
+    "text": "SUMMER RESEARCH SHOWCASE  \u00b7  2026",
+    "lines": [
+      "SUMMER RESEARCH SHOWCASE \u00b7 2026"
+    ],
+    "size": 15,
+    "color": "#697780",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.24583333333333332
+  },
+  {
+    "kind": "box",
+    "x": 0.55,
+    "y": 3.47,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Project Overview"
+  },
+  {
+    "kind": "text",
+    "x": 0.65,
+    "y": 3.4930000000000003,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Project Overview",
+    "lines": [
+      "Project Overview"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 4.25,
+    "w": 11.0,
+    "h": 0.88,
+    "text": "Why daily estimates?",
+    "lines": [
+      "Why daily estimates?"
+    ],
+    "size": 27,
+    "color": "#C00000",
+    "bold": true,
+    "align": "left",
+    "name": "",
+    "required_height": 0.4425
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 5.4,
+    "w": 11.0,
+    "h": 1.7,
+    "text": "Soil moisture informs irrigation and drought monitoring. Ground sensors provide local measurements; satellites cover larger areas but leave gaps in daily observations.",
+    "lines": [
+      "Soil moisture informs irrigation and drought monitoring. Ground",
+      "sensors provide local measurements; satellites cover larger",
+      "areas but leave gaps in daily observations."
+    ],
+    "size": 24,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.18
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 7.34,
+    "w": 11.0,
+    "h": 1.28,
+    "text": "We combine satellite, weather, and site data for daily soil-moisture estimation. Earlier work established the pipeline and a single global predictor.",
+    "lines": [
+      "We combine satellite, weather, and site data for daily",
+      "soil-moisture estimation. Earlier work established the pipeline",
+      "and a single global predictor."
+    ],
+    "size": 24,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.18
+  },
+  {
+    "kind": "box",
+    "x": 0.75,
+    "y": 8.91,
+    "w": 11.0,
+    "h": 1.76,
+    "fill": "#F5F1ED",
+    "stroke": "#DED5CD",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 0.97,
+    "y": 9.08,
+    "w": 10.56,
+    "h": 0.4,
+    "text": "THE SUMMER QUESTION",
+    "lines": [
+      "THE SUMMER QUESTION"
+    ],
+    "size": 20,
+    "color": "#C00000",
+    "bold": true,
+    "align": "left",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 0.97,
+    "y": 9.59,
+    "w": 10.56,
+    "h": 0.94,
+    "text": "Can two specialists improve estimates across Washington's contrasting conditions?",
+    "lines": [
+      "Can two specialists improve estimates across",
+      "Washington's contrasting conditions?"
+    ],
+    "size": 25,
+    "color": "#202B35",
+    "bold": true,
+    "align": "left",
+    "name": "",
+    "required_height": 0.8194444444444444
+  },
+  {
+    "kind": "box",
+    "x": 0.55,
+    "y": 11.09,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Study Area & Data"
+  },
+  {
+    "kind": "text",
+    "x": 0.65,
+    "y": 11.113,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Study Area & Data",
+    "lines": [
+      "Study Area & Data"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "image",
+    "x": 2.75,
+    "y": 11.95,
+    "w": 7,
+    "h": 4.5,
+    "path": "figures/washington_stations.png",
+    "vector": "figures/washington_stations.pdf",
+    "name": "washington_stations"
+  },
+  {
+    "kind": "text",
+    "x": 0.9500000000000001,
+    "y": 16.69,
+    "w": 10.6,
+    "h": 0.97,
+    "text": "Station colors show fitted memberships across western Washington, the Cascades, and the east.",
+    "lines": [
+      "Station colors show fitted memberships across western Washington, the",
+      "Cascades, and the east."
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.6555555555555554
+  },
+  {
+    "kind": "box",
+    "x": 0.8,
+    "y": 18.0,
+    "w": 3.35,
+    "h": 1.45,
+    "fill": "#F0F3F5",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 0.9,
+    "y": 18.12,
+    "w": 3.15,
+    "h": 0.64,
+    "text": "7",
+    "lines": [
+      "7"
+    ],
+    "size": 36,
+    "color": "#176E9B",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.59
+  },
+  {
+    "kind": "text",
+    "x": 0.9,
+    "y": 18.92,
+    "w": 3.15,
+    "h": 0.36,
+    "text": "public stations",
+    "lines": [
+      "public stations"
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3113888888888889
+  },
+  {
+    "kind": "box",
+    "x": 4.55,
+    "y": 18.0,
+    "w": 3.35,
+    "h": 1.45,
+    "fill": "#F0F3F5",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 4.6499999999999995,
+    "y": 18.12,
+    "w": 3.15,
+    "h": 0.64,
+    "text": "54",
+    "lines": [
+      "54"
+    ],
+    "size": 36,
+    "color": "#176E9B",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.59
+  },
+  {
+    "kind": "text",
+    "x": 4.6499999999999995,
+    "y": 18.92,
+    "w": 3.15,
+    "h": 0.36,
+    "text": "shared features",
+    "lines": [
+      "shared features"
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3113888888888889
+  },
+  {
+    "kind": "box",
+    "x": 8.3,
+    "y": 18.0,
+    "w": 3.35,
+    "h": 1.45,
+    "fill": "#F0F3F5",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 8.4,
+    "y": 18.12,
+    "w": 3.15,
+    "h": 0.64,
+    "text": "5 cm",
+    "lines": [
+      "5 cm"
+    ],
+    "size": 36,
+    "color": "#176E9B",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.59
+  },
+  {
+    "kind": "text",
+    "x": 8.4,
+    "y": 18.92,
+    "w": 3.15,
+    "h": 0.36,
+    "text": "target depth",
+    "lines": [
+      "target depth"
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3113888888888889
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 19.86,
+    "w": 11.0,
+    "h": 1.14,
+    "text": "Satellite, weather, and site features are aligned to daily observations; public in-situ sensors supply training targets.",
+    "lines": [
+      "Satellite, weather, and site features are aligned to daily",
+      "observations; public in-situ sensors supply training targets."
+    ],
+    "size": 23,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.7538888888888888
+  },
+  {
+    "kind": "box",
+    "x": 0.8,
+    "y": 21.38,
+    "w": 5.1,
+    "h": 1.02,
+    "fill": "#EDF3F6",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "box",
+    "x": 6.6,
+    "y": 21.38,
+    "w": 5.1,
+    "h": 1.02,
+    "fill": "#F5F1ED",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 0.9500000000000001,
+    "y": 21.5,
+    "w": 4.8,
+    "h": 0.7,
+    "text": "2017\u20132022\nFit period",
+    "lines": [
+      "2017\u20132022",
+      "Fit period"
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6883333333333332
+  },
+  {
+    "kind": "text",
+    "x": 6.75,
+    "y": 21.5,
+    "w": 4.8,
+    "h": 0.7,
+    "text": "2023\u20132025\nLater-year test",
+    "lines": [
+      "2023\u20132025",
+      "Later-year test"
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6883333333333332
+  },
+  {
+    "kind": "line",
+    "x1": 6.04,
+    "y1": 21.89,
+    "x2": 6.49,
+    "y2": 21.89,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": true
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 22.66,
+    "w": 11.0,
+    "h": 0.4,
+    "text": "Target: daily soil moisture (m\u00b3/m\u00b3).",
+    "lines": [
+      "Target: daily soil moisture (m\u00b3/m\u00b3)."
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.3113888888888889
+  },
+  {
+    "kind": "box",
+    "x": 12.3,
+    "y": 3.47,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Two-Regime Method"
+  },
+  {
+    "kind": "text",
+    "x": 12.4,
+    "y": 3.4930000000000003,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Two-Regime Method",
+    "lines": [
+      "Two-Regime Method"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 12.5,
+    "y": 4.26,
+    "w": 11.0,
+    "h": 1.2,
+    "text": "Group observations by their inputs, then fit an XGBoost specialist to each group's conditions.",
+    "lines": [
+      "Group observations by their inputs, then fit an XGBoost specialist",
+      "to each group's conditions."
+    ],
+    "size": 24,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.7866666666666666
+  },
+  {
+    "kind": "box",
+    "x": 12.5,
+    "y": 5.96,
+    "w": 3.4,
+    "h": 1.52,
+    "fill": "#F0F3F5",
+    "stroke": "#CED6DC",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 12.6,
+    "y": 6.12,
+    "w": 3.2,
+    "h": 0.35,
+    "text": "SATELLITE",
+    "lines": [
+      "SATELLITE"
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 12.58,
+    "y": 6.64,
+    "w": 3.24,
+    "h": 0.69,
+    "text": "Moisture, radar,\nvegetation, heat",
+    "lines": [
+      "Moisture, radar,",
+      "vegetation, heat"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6555555555555554
+  },
+  {
+    "kind": "line",
+    "x1": 14.2,
+    "y1": 7.54,
+    "x2": 14.2,
+    "y2": 7.98,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "box",
+    "x": 16.3,
+    "y": 5.96,
+    "w": 3.4,
+    "h": 1.52,
+    "fill": "#F0F3F5",
+    "stroke": "#CED6DC",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 16.400000000000002,
+    "y": 6.12,
+    "w": 3.2,
+    "h": 0.35,
+    "text": "WEATHER",
+    "lines": [
+      "WEATHER"
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 16.38,
+    "y": 6.64,
+    "w": 3.24,
+    "h": 0.69,
+    "text": "Rainfall and\nrecent history",
+    "lines": [
+      "Rainfall and",
+      "recent history"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6555555555555554
+  },
+  {
+    "kind": "line",
+    "x1": 18.0,
+    "y1": 7.54,
+    "x2": 18.0,
+    "y2": 7.98,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "box",
+    "x": 20.1,
+    "y": 5.96,
+    "w": 3.4,
+    "h": 1.52,
+    "fill": "#F0F3F5",
+    "stroke": "#CED6DC",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 20.200000000000003,
+    "y": 6.12,
+    "w": 3.2,
+    "h": 0.35,
+    "text": "SITE",
+    "lines": [
+      "SITE"
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 20.18,
+    "y": 6.64,
+    "w": 3.24,
+    "h": 0.69,
+    "text": "Terrain, climate,\nland cover",
+    "lines": [
+      "Terrain, climate,",
+      "land cover"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6555555555555554
+  },
+  {
+    "kind": "line",
+    "x1": 21.8,
+    "y1": 7.54,
+    "x2": 21.8,
+    "y2": 7.98,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 14.200000000000001,
+    "y1": 7.98,
+    "x2": 21.8,
+    "y2": 7.98,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 18.0,
+    "y1": 7.98,
+    "x2": 18.0,
+    "y2": 8.4,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": true
+  },
+  {
+    "kind": "box",
+    "x": 13.700000000000001,
+    "y": 8.5,
+    "w": 8.6,
+    "h": 1.55,
+    "fill": "#EEF2F4",
+    "stroke": "#92A2AD",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 13.850000000000001,
+    "y": 8.63,
+    "w": 8.3,
+    "h": 0.47,
+    "text": "Feature-based grouping",
+    "lines": [
+      "Feature-based grouping"
+    ],
+    "size": 27,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.4425
+  },
+  {
+    "kind": "text",
+    "x": 13.850000000000001,
+    "y": 9.23,
+    "w": 8.3,
+    "h": 0.39,
+    "text": "K-means selects a specialist",
+    "lines": [
+      "K-means selects a specialist"
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3441666666666666
+  },
+  {
+    "kind": "line",
+    "x1": 18.0,
+    "y1": 10.09,
+    "x2": 18.0,
+    "y2": 10.47,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 15.100000000000001,
+    "y1": 10.47,
+    "x2": 20.9,
+    "y2": 10.47,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 15.100000000000001,
+    "y1": 10.47,
+    "x2": 15.100000000000001,
+    "y2": 10.92,
+    "color": "#176E9B",
+    "width": 3,
+    "arrow": true
+  },
+  {
+    "kind": "line",
+    "x1": 20.9,
+    "y1": 10.47,
+    "x2": 20.9,
+    "y2": 10.92,
+    "color": "#B48024",
+    "width": 3,
+    "arrow": true
+  },
+  {
+    "kind": "box",
+    "x": 12.600000000000001,
+    "y": 11.06,
+    "w": 5.0,
+    "h": 2.2,
+    "fill": "#176E9B",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 12.750000000000002,
+    "y": 11.25,
+    "w": 4.7,
+    "h": 0.47,
+    "text": "Specialist A",
+    "lines": [
+      "Specialist A"
+    ],
+    "size": 28,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.4588888888888889
+  },
+  {
+    "kind": "text",
+    "x": 12.750000000000002,
+    "y": 11.94,
+    "w": 4.7,
+    "h": 0.82,
+    "text": "Wet / maritime\ninput conditions",
+    "lines": [
+      "Wet / maritime",
+      "input conditions"
+    ],
+    "size": 24,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.7866666666666666
+  },
+  {
+    "kind": "text",
+    "x": 12.750000000000002,
+    "y": 12.87,
+    "w": 4.7,
+    "h": 0.32,
+    "text": "XGBoost regressor",
+    "lines": [
+      "XGBoost regressor"
+    ],
+    "size": 18,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.295
+  },
+  {
+    "kind": "box",
+    "x": 18.4,
+    "y": 11.06,
+    "w": 5.0,
+    "h": 2.2,
+    "fill": "#B48024",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 18.549999999999997,
+    "y": 11.25,
+    "w": 4.7,
+    "h": 0.47,
+    "text": "Specialist B",
+    "lines": [
+      "Specialist B"
+    ],
+    "size": 28,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.4588888888888889
+  },
+  {
+    "kind": "text",
+    "x": 18.549999999999997,
+    "y": 11.94,
+    "w": 4.7,
+    "h": 0.82,
+    "text": "Drier / seasonal\ninput conditions",
+    "lines": [
+      "Drier / seasonal",
+      "input conditions"
+    ],
+    "size": 24,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.7866666666666666
+  },
+  {
+    "kind": "text",
+    "x": 18.549999999999997,
+    "y": 12.87,
+    "w": 4.7,
+    "h": 0.32,
+    "text": "XGBoost regressor",
+    "lines": [
+      "XGBoost regressor"
+    ],
+    "size": 18,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.295
+  },
+  {
+    "kind": "line",
+    "x1": 15.100000000000001,
+    "y1": 13.31,
+    "x2": 15.100000000000001,
+    "y2": 13.7,
+    "color": "#176E9B",
+    "width": 3,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 20.9,
+    "y1": 13.31,
+    "x2": 20.9,
+    "y2": 13.7,
+    "color": "#B48024",
+    "width": 3,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 15.100000000000001,
+    "y1": 13.7,
+    "x2": 20.9,
+    "y2": 13.7,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 18.0,
+    "y1": 13.7,
+    "x2": 18.0,
+    "y2": 14.15,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": true
+  },
+  {
+    "kind": "box",
+    "x": 13.5,
+    "y": 14.25,
+    "w": 9.0,
+    "h": 1.13,
+    "fill": "#202B35",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 13.700000000000001,
+    "y": 14.43,
+    "w": 8.6,
+    "h": 0.49,
+    "text": "Daily soil-moisture estimate",
+    "lines": [
+      "Daily soil-moisture estimate"
+    ],
+    "size": 27,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.4425
+  },
+  {
+    "kind": "text",
+    "x": 13.700000000000001,
+    "y": 15.01,
+    "w": 8.6,
+    "h": 0.31,
+    "text": "One observation \u2192 one specialist \u2192 one estimate",
+    "lines": [
+      "One observation \u2192 one specialist \u2192 one estimate"
+    ],
+    "size": 18,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.295
+  },
+  {
+    "kind": "text",
+    "x": 12.600000000000001,
+    "y": 15.69,
+    "w": 10.8,
+    "h": 0.71,
+    "text": "Known stations keep one specialist; new stations are assigned using their features.",
+    "lines": [
+      "Known stations keep one specialist; new stations are assigned using their",
+      "features."
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.6883333333333332
+  },
+  {
+    "kind": "text",
+    "x": 12.600000000000001,
+    "y": 16.48,
+    "w": 10.8,
+    "h": 0.69,
+    "text": "Grouping uses no observed in-situ targets.",
+    "lines": [
+      "Grouping uses no observed in-situ targets."
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "box",
+    "x": 12.3,
+    "y": 17.46,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "What the Regimes Capture"
+  },
+  {
+    "kind": "text",
+    "x": 12.4,
+    "y": 17.483,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "What the Regimes Capture",
+    "lines": [
+      "What the Regimes Capture"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "box",
+    "x": 12.5,
+    "y": 18.3,
+    "w": 5.2,
+    "h": 3.54,
+    "fill": "#F7F9FA",
+    "stroke": "#176E9B",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "box",
+    "x": 12.5,
+    "y": 18.3,
+    "w": 5.2,
+    "h": 0.09,
+    "fill": "#176E9B",
+    "stroke": null,
+    "rounded": false,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 12.68,
+    "y": 18.53,
+    "w": 4.84,
+    "h": 0.49,
+    "text": "Wet / maritime",
+    "lines": [
+      "Wet / maritime"
+    ],
+    "size": 25,
+    "color": "#176E9B",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.4097222222222222
+  },
+  {
+    "kind": "text",
+    "x": 12.68,
+    "y": 19.14,
+    "w": 4.84,
+    "h": 0.35,
+    "text": "5 training stations",
+    "lines": [
+      "5 training stations"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 12.68,
+    "y": 19.7,
+    "w": 4.84,
+    "h": 1.03,
+    "text": "Western Washington:\ncoastal and Cascade\nconditions together.",
+    "lines": [
+      "Western Washington:",
+      "coastal and Cascade",
+      "conditions together."
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.9833333333333333
+  },
+  {
+    "kind": "text",
+    "x": 12.68,
+    "y": 20.94,
+    "w": 4.84,
+    "h": 0.74,
+    "text": "Wettest-month rain: 391 mm\nSatellite moisture: 0.414 m\u00b3/m\u00b3",
+    "lines": [
+      "Wettest-month rain: 391 mm",
+      "Satellite moisture: 0.414 m\u00b3/m\u00b3"
+    ],
+    "size": 17.5,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.5736111111111111
+  },
+  {
+    "kind": "box",
+    "x": 18.3,
+    "y": 18.3,
+    "w": 5.2,
+    "h": 3.54,
+    "fill": "#F7F9FA",
+    "stroke": "#B48024",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "box",
+    "x": 18.3,
+    "y": 18.3,
+    "w": 5.2,
+    "h": 0.09,
+    "fill": "#B48024",
+    "stroke": null,
+    "rounded": false,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 18.48,
+    "y": 18.53,
+    "w": 4.84,
+    "h": 0.49,
+    "text": "Drier / seasonal",
+    "lines": [
+      "Drier / seasonal"
+    ],
+    "size": 25,
+    "color": "#B48024",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.4097222222222222
+  },
+  {
+    "kind": "text",
+    "x": 18.48,
+    "y": 19.14,
+    "w": 4.84,
+    "h": 0.35,
+    "text": "2 training stations",
+    "lines": [
+      "2 training stations"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 18.48,
+    "y": 19.7,
+    "w": 4.84,
+    "h": 1.03,
+    "text": "Eastern Washington:\nless rain and lower\nsatellite moisture.",
+    "lines": [
+      "Eastern Washington:",
+      "less rain and lower",
+      "satellite moisture."
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.9833333333333333
+  },
+  {
+    "kind": "text",
+    "x": 18.48,
+    "y": 20.94,
+    "w": 4.84,
+    "h": 0.74,
+    "text": "Wettest-month rain: 70 mm\nSatellite moisture: 0.192 m\u00b3/m\u00b3",
+    "lines": [
+      "Wettest-month rain: 70 mm",
+      "Satellite moisture: 0.192 m\u00b3/m\u00b3"
+    ],
+    "size": 17.5,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.5736111111111111
+  },
+  {
+    "kind": "text",
+    "x": 12.55,
+    "y": 22.11,
+    "w": 10.9,
+    "h": 0.94,
+    "text": "Group medians describe this Washington sample. Choose regime counts using local data.",
+    "lines": [
+      "Group medians describe this Washington sample. Choose regime counts using",
+      "local data."
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.6227777777777778
+  },
+  {
+    "kind": "box",
+    "x": 24.05,
+    "y": 3.47,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Results"
+  },
+  {
+    "kind": "text",
+    "x": 24.150000000000002,
+    "y": 3.4930000000000003,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Results",
+    "lines": [
+      "Results"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 4.2,
+    "w": 5.2,
+    "h": 0.64,
+    "text": "+0.0320 R\u00b2",
+    "lines": [
+      "+0.0320 R\u00b2"
+    ],
+    "size": 34,
+    "color": "#C00000",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.5572222222222222
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 4.96,
+    "w": 5.2,
+    "h": 0.37,
+    "text": "Later years",
+    "lines": [
+      "Later years"
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3441666666666666
+  },
+  {
+    "kind": "text",
+    "x": 30.05,
+    "y": 4.2,
+    "w": 5.2,
+    "h": 0.64,
+    "text": "+0.0581 R\u00b2",
+    "lines": [
+      "+0.0581 R\u00b2"
+    ],
+    "size": 34,
+    "color": "#C00000",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.5572222222222222
+  },
+  {
+    "kind": "text",
+    "x": 30.05,
+    "y": 4.96,
+    "w": 5.2,
+    "h": 0.37,
+    "text": "Held-out stations",
+    "lines": [
+      "Held-out stations"
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3441666666666666
+  },
+  {
+    "kind": "image",
+    "x": 24.3,
+    "y": 5.67,
+    "w": 10.9,
+    "h": 3.0,
+    "path": "figures/model_comparison.png",
+    "vector": "figures/model_comparison.pdf",
+    "name": "model_comparison"
+  },
+  {
+    "kind": "text",
+    "x": 24.3,
+    "y": 8.98,
+    "w": 10.9,
+    "h": 0.95,
+    "text": "Matched inputs and settings: 30 later-year runs; five per held-out station. Two-regime R\u00b2 leads in every later-year run.",
+    "lines": [
+      "Matched inputs and settings: 30 later-year runs; five per held-out station.",
+      "Two-regime R\u00b2 leads in every later-year run."
+    ],
+    "size": 19.5,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.6391666666666667
+  },
+  {
+    "kind": "text",
+    "x": 24.3,
+    "y": 10.1,
+    "w": 10.9,
+    "h": 0.45,
+    "text": "Where does specialization help?",
+    "lines": [
+      "Where does specialization help?"
+    ],
+    "size": 25,
+    "color": "#202B35",
+    "bold": true,
+    "align": "left",
+    "name": "",
+    "required_height": 0.4097222222222222
+  },
+  {
+    "kind": "image",
+    "x": 24.3,
+    "y": 10.78,
+    "w": 10.9,
+    "h": 3.55,
+    "path": "figures/held_out_station_effects.png",
+    "vector": "figures/held_out_station_effects.pdf",
+    "name": "held_out_station_effects"
+  },
+  {
+    "kind": "text",
+    "x": 24.3,
+    "y": 14.46,
+    "w": 10.9,
+    "h": 0.72,
+    "text": "Gains at four stations; losses at three. Eastern holdouts reduce representation of the smaller regime.",
+    "lines": [
+      "Gains at four stations; losses at three. Eastern holdouts reduce representation of",
+      "the smaller regime."
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.6227777777777778
+  },
+  {
+    "kind": "box",
+    "x": 24.05,
+    "y": 15.49,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "New Sensor Sites: Routing Matters"
+  },
+  {
+    "kind": "text",
+    "x": 24.150000000000002,
+    "y": 15.513,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "New Sensor Sites: Routing Matters",
+    "lines": [
+      "New Sensor Sites: Routing Matters"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 24.3,
+    "y": 16.29,
+    "w": 10.9,
+    "h": 0.91,
+    "text": "Missing SMAP inputs triggered automatic routing based on available precipitation history at five new ECE sites.",
+    "lines": [
+      "Missing SMAP inputs triggered automatic routing based on available",
+      "precipitation history at five new ECE sites."
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.6883333333333332
+  },
+  {
+    "kind": "image",
+    "x": 24.3,
+    "y": 17.5,
+    "w": 10.9,
+    "h": 2.15,
+    "path": "figures/ece_routing.png",
+    "vector": "figures/ece_routing.pdf",
+    "name": "ece_routing"
+  },
+  {
+    "kind": "text",
+    "x": 24.3,
+    "y": 19.85,
+    "w": 10.9,
+    "h": 0.99,
+    "text": "150 observations, July\u2013August 2026; one fallback specialist. Full-season evaluation remains.",
+    "lines": [
+      "150 observations, July\u2013August 2026; one fallback specialist. Full-season",
+      "evaluation remains."
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.6227777777777778
+  },
+  {
+    "kind": "box",
+    "x": 24.05,
+    "y": 21.01,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Takeaways"
+  },
+  {
+    "kind": "text",
+    "x": 24.150000000000002,
+    "y": 21.033,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Takeaways",
+    "lines": [
+      "Takeaways"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 24.3,
+    "y": 21.79,
+    "w": 10.9,
+    "h": 1.13,
+    "text": "Specialization helps when routing is reliable and training sites represent new conditions. Next: evaluate more stations and seasons with the ECE team's sensors.",
+    "lines": [
+      "Specialization helps when routing is reliable and training sites",
+      "represent new conditions. Next: evaluate more stations and seasons",
+      "with the ECE team's sensors."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.0816666666666666
+  },
+  {
+    "kind": "line",
+    "x1": 0.55,
+    "y1": 23.22,
+    "x2": 35.45,
+    "y2": 23.22,
+    "color": "#CBD3D8",
+    "width": 1,
+    "arrow": false
+  },
+  {
+    "kind": "text",
+    "x": 0.7,
+    "y": 23.31,
+    "w": 35.0,
+    "h": 0.48,
+    "text": "Sources: [1] Balkovec et al., IEEE AIIoT (2026), doi:10.1109/AIIoT68874.2026.11569136.  [2] MDR Project, technical report 1.5 (2026).\nIn-situ data: NOAA USCRN and USDA ISMN SNOTEL. New sensor-site evaluation in collaboration with the Seattle University ECE team.",
+    "lines": [
+      "Sources: [1] Balkovec et al., IEEE AIIoT (2026), doi:10.1109/AIIoT68874.2026.11569136. [2] MDR Project, technical report 1.5 (2026).",
+      "In-situ data: NOAA USCRN and USDA ISMN SNOTEL. New sensor-site evaluation in collaboration with the Seattle University ECE team."
+    ],
+    "size": 12,
+    "color": "#536875",
+    "bold": false,
+    "align": "left",
+    "name": "Sources and acknowledgment",
+    "required_height": 0.3933333333333333
+  }
+]

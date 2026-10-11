@@ -1,0 +1,204 @@
+@@notebook {"format":"ai-notebook","metadata":{"kernelspec":{"display_name":"Python 3 (ipykernel)","name":"python3"}}}
+
+@@cell {"cell_type":"markdown","id":"258d5f87-8e0a-4b0f-8c2a-2da5c54a6f86","index":0}
+# Summer soil-moisture showcase poster
+This notebook validates the report's saved evidence, generates every poster figure, and assembles the editable PowerPoint and print PDF. It does not refit models or change earlier experiment versions.
+
+
+@@cell {"cell_type":"markdown","id":"50f72ba5-60c8-4db5-a91f-6a7576cd4590","index":1}
+## 1. Environment and evidence
+The notebook uses the existing scientific environment and pinned poster-export dependencies. Every numerical result is derived from the report's validated tables, with matching random seeds and stations checked before plotting.
+
+@@cell {"cell_type":"code","execution_count":1,"id":"51cdbfd7-3a66-41fe-bbc0-d79d78779e30","index":2}
+```python
+from pathlib import Path
+import sys
+import subprocess
+from importlib import metadata
+
+cwd = Path.cwd().resolve()
+repo = next(parent for parent in (cwd, *cwd.parents) if (parent / "notebooks/uv.lock").is_file())
+poster_root = repo / "writeup2/poster-summer-1.0"
+requirements = poster_root / "requirements.txt"
+missing = []
+for line in requirements.read_text().splitlines():
+    if not line or line.startswith("#"):
+        continue
+    package, version = line.split("==")
+    try:
+        installed = metadata.version(package)
+    except metadata.PackageNotFoundError:
+        installed = None
+    if installed != version:
+        missing.append(line)
+if missing:
+    subprocess.run(["uv", "pip", "install", "--python", sys.executable, *missing], check=True, timeout=180)
+sys.path.insert(0, str(poster_root / "scripts"))
+import poster_data
+
+data = poster_data.load_evidence()
+result_table = poster_data.write_evidence(data)
+print("Evidence validation passed: 30 paired temporal seeds; 5 seeds × 7 held-out stations.")
+```
+
+@@output {"name":"stdout","output_type":"stream"}
+```text
+Profile fields: separation_index, median_cluster0, median_cluster1
+| Evaluation | Global | Two-regime |
+| --- | ---: | ---: |
+| Later-year R² | 0.7798 | 0.8118 |
+| Held-out-station mean R² | 0.5797 | 0.6379 |
+
+| ECE assignment | Pooled RMSE (m³/m³) |
+| --- | ---: |
+| Standard routing | 0.1674 |
+| Precipitation fallback | 0.0578 |
+| Global predictor | 0.0586 |
+
+All displayed metrics:
+{
+  "temporal_global": 0.7797940453067711,
+  "temporal_two": 0.8118429663371349,
+  "temporal_difference": 0.0320489210303636,
+  "temporal_wins": 30,
+  "loso_global": 0.5797371923742317,
+  "loso_two": 0.6378771461992312,
+  "loso_difference": 0.0581399538249995,
+  "loso_gains": 4,
+  "loso_losses": 3,
+  "ece_standard": 0.1674311718231191,
+  "ece_fallback": 0.0577680985766914,
+  "ece_global": 0.0586339626584574,
+  "features": 54,
+  "stations": 7,
+  "ece_rows": 150,
+  "ece_stations": 5,
+  "ece_start": "2026-07-20",
+  "ece_end": "2026-08-19"
+}
+
+Map: seven fitted memberships and source coordinates
+           name  dominant_cluster  latitude  longitude    n
+    Beaver Pass                 0 48.879300 -121.25550 2185
+    Cayuse Pass                 0 46.869560 -121.53434 2042
+     Darrington                 0 48.540000 -121.45000 2048
+       Paradise                 0 46.782660 -121.74767 2189
+       Quinault                 0 47.510000 -123.81000 2160
+Sourdough Gulch                 1 46.233333 -117.40000 2191
+        Spokane                 1 47.420000 -117.53000 1793
+
+Held-out-station differences: two-regime minus matched global
+           name   two_r2  global_r2  difference
+    Cayuse Pass 0.686169   0.330900    0.355269
+       Paradise 0.779974   0.738430    0.041544
+    Beaver Pass 0.753115   0.713469    0.039646
+       Quinault 0.572875   0.561885    0.010990
+     Darrington 0.694881   0.696974   -0.002094
+        Spokane 0.608266   0.627137   -0.018871
+Sourdough Gulch 0.369860   0.389365   -0.019505
+
+Provenance for every metric family:
+main_seed: notebooks/experiment/paper2-final-evidence-1.0/main_temporal_seed_comparison.csv
+global_temporal_seed: notebooks/experiment/paper2-final-evidence-1.2/global_paired_temporal_seed.csv
+loso_seed: notebooks/experiment/paper2-final-evidence-1.0/loso_seed_station.csv
+global_loso_seed: notebooks/experiment/paper2-final-evidence-1.2/global_paired_loso_seed_station.csv
+composition: notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_station_composition_Clustering_Backbone54_k2.csv
+profile: notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_profile_summary_Clustering_Backbone54_k2.csv
+ece_policy: notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/ece_policy_summary.csv
+ece_audit: notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/routing_audit.json
+ece_calibration: notebooks/experiment/paper2-final-evidence-1.1/ece_guarded/wa_calibration.csv
+Evidence validation passed: 30 paired temporal seeds; 5 seeds × 7 held-out stations.
+
+```
+
+@@cell {"cell_type":"markdown","id":"cfaebfa4-3f39-4ab5-855d-90842c221f4f","index":3}
+## 2. Poster figures
+These four figures use only saved evidence: station memberships, matched global-versus-two-regime results, station holdout differences, and ECE routing errors. The map shows points rather than invented geographic partitions; PDF and SVG exports preserve vector detail.
+
+@@cell {"cell_type":"code","execution_count":2,"id":"1338ee0c-8cc7-47b9-8b20-e2d7473795b6","index":4}
+```python
+import poster_plots
+poster_plots.generate_all(data)
+```
+
+@@output {"name":"stdout","output_type":"stream"}
+```text
+Map boundary: Natural Earth admin-1, iso_3166_2=US-WA
+
+```
+
+@@output {"name":"stdout","output_type":"stream"}
+```text
+Saved figures/washington_stations.png + vector PDF/SVG
+
+```
+
+@@output {"name":"stdout","output_type":"stream"}
+```text
+Saved figures/model_comparison.png + vector PDF/SVG
+
+```
+
+@@output {"name":"stdout","output_type":"stream"}
+```text
+Saved figures/held_out_station_effects.png + vector PDF/SVG
+
+```
+
+@@output {"name":"stdout","output_type":"stream"}
+```text
+Saved figures/ece_routing.png + vector PDF/SVG
+
+```
+
+@@cell {"cell_type":"markdown","id":"83712919-988c-450e-bc7b-22a116cca116","index":5}
+## 3. Assemble and validate the deliverables
+A single shared layout creates editable PowerPoint text and method shapes, plus a PDF with embedded fonts and vector charts. Validation checks dimensions, displayed metrics, map labels, and credit placeholders, then creates the preview for visual inspection.
+
+@@cell {"cell_type":"code","execution_count":3,"id":"a3bce697-624d-4614-b9e6-edb5432543a2","index":6}
+```python
+import build_poster
+validation = build_poster.build(data)
+```
+
+@@output {"name":"stdout","output_type":"stream"}
+```text
+Displayed regime-profile medians and provenance:
+{
+  "wettest_month_rain_mm": [
+    391.0,
+    70.0
+  ],
+  "satellite_moisture_m3m3": [
+    0.4141,
+    0.1923
+  ],
+  "group_station_counts": [
+    5,
+    2
+  ]
+}
+notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_profile_summary_Clustering_Backbone54_k2.csv
+
+```
+
+@@output {"name":"stdout","output_type":"stream"}
+```text
+Rendered poster word count (including chart labels): 497
+{
+  "slides": 1,
+  "pdf_pages": 1,
+  "dimensions_inches": [
+    36.0,
+    24.0
+  ],
+  "pdf_fonts_embedded": true,
+  "author_placeholders_editable": true,
+  "scene_items": 111,
+  "rendered_words": 497,
+  "charts": "vector PDF, 300 dpi PNG in PowerPoint",
+  "preview": "summer_showcase_preview.png"
+}
+Built summer_showcase.pptx, summer_showcase.pdf, summer_showcase_preview.png
+
+```

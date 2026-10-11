@@ -1,0 +1,29 @@
+{
+  "source_filename": "DR_Segmentation_Poster_Final.pptx",
+  "source_sha256": "e2850923950e58ccde28777e4b5254bab9f2f4b2ea547c36ca5370d81ced68e3",
+  "source_dimensions_inches": [
+    36.0,
+    24.0
+  ],
+  "purpose": "Seattle University branding supplied by the user for this poster",
+  "assets": [
+    {
+      "asset": "assets/su_monogram.png",
+      "template_shape": "Picture 43",
+      "sha256": "5f2d59d482aeb364579bcf803ed3b725ba214ca53d30b1539a40a59c360d04c7",
+      "pixel_size": [
+        250,
+        230
+      ]
+    },
+    {
+      "asset": "assets/su_college.png",
+      "template_shape": "Picture 44",
+      "sha256": "dffc50303a22536c0026aa35be17a75fd935feaec04d149ed523a78c1adfa0f0",
+      "pixel_size": [
+        269,
+        114
+      ]
+    }
+  ]
+}
