@@ -139,12 +139,12 @@
     "y": 4.8525,
     "w": 11.0,
     "h": 1.442222222222222,
-    "text": "Soil moisture is the amount of water held in soil. Daily estimates help with irrigation planning and drought monitoring. They show how moisture changes after rain and during dry periods, including places with few direct measurements.",
+    "text": "Soil moisture regulates agricultural productivity and drought resilience, making daily estimates vital for water management. High-resolution modeling tracks moisture recharge and drydown dynamics, particularly across regions lacking direct measurement infrastructure.",
     "lines": [
-      "Soil moisture is the amount of water held in soil. Daily estimates help",
-      "with irrigation planning and drought monitoring. They show how",
-      "moisture changes after rain and during dry periods, including places",
-      "with few direct measurements."
+      "Soil moisture regulates agricultural productivity and drought resilience,",
+      "making daily estimates vital for water management. High-resolution",
+      "modeling tracks moisture recharge and drydown dynamics, particularly",
+      "across regions lacking direct measurement infrastructure."
     ],
     "size": 22,
     "color": "#202B35",
@@ -159,13 +159,13 @@
     "y": 6.414722222222222,
     "w": 11.0,
     "h": 1.8027777777777776,
-    "text": "Ground sensors measure moisture at individual sites. Satellite observations cover larger areas but are intermittent, with some retrievals missing. We combine satellite, weather, and site data for daily estimates. Earlier work produced the pipeline and a global XGBoost model.",
+    "text": "While in-situ ground sensors offer accurate readings, they exist only at limited monitoring sites. Satellite observations span broader regions but remain intermittent with frequent data gaps. To generate daily estimates, multi-source modeling combines satellite, weather, and site data, extending an established pipeline and global XGBoost baseline.",
     "lines": [
-      "Ground sensors measure moisture at individual sites. Satellite",
-      "observations cover larger areas but are intermittent, with some",
-      "retrievals missing. We combine satellite, weather, and site data for",
-      "daily estimates. Earlier work produced the pipeline and a global",
-      "XGBoost model."
+      "While in-situ ground sensors offer accurate readings, they exist only at",
+      "limited monitoring sites. Satellite observations span broader regions",
+      "but remain intermittent with frequent data gaps. To generate daily",
+      "estimates, multi-source modeling combines satellite, weather, and site",
+      "data, extending an established pipeline and global XGBoost baseline."
     ],
     "size": 22,
     "color": "#202B35",
@@ -226,11 +226,11 @@
     "y": 10.004166666666666,
     "w": 11.0,
     "h": 1.0816666666666666,
-    "text": "Our comparison uses the same evaluation conditions for both models. For known stations, we fix a single specialist; tests at new sites examine how missing satellite inputs affect assignment.",
+    "text": "Both models are compared under identical benchmarks. For known stations, we assign a fixed specialist; tests at new sites evaluate dynamic routing under missing satellite inputs.",
     "lines": [
-      "Our comparison uses the same evaluation conditions for both models.",
-      "For known stations, we fix a single specialist; tests at new sites",
-      "examine how missing satellite inputs affect assignment."
+      "Both models are compared under identical benchmarks. For known",
+      "stations, we assign a fixed specialist; tests at new sites evaluate",
+      "dynamic routing under missing satellite inputs."
     ],
     "size": 22,
     "color": "#202B35",
@@ -299,27 +299,26 @@
     "x": 8.1,
     "y": 12.695833333333333,
     "w": 3.65,
-    "h": 3.605555555555555,
-    "text": "Our stations span the coast, Cascade mountains, and drier eastern Washington. They let us study how soil moisture relates to inputs under different conditions. Station holdouts test whether the models can estimate moisture at a new site.",
+    "h": 3.2777777777777777,
+    "text": "Stations span coastal areas, the Cascade mountains, and arid eastern Washington, capturing contrasting hydroclimatic regimes. Leave-one-station-out evaluations test model generalization across unseen microclimates.",
     "lines": [
-      "Our stations span the",
-      "coast, Cascade",
-      "mountains, and drier",
-      "eastern Washington.",
-      "They let us study how soil",
-      "moisture relates to inputs",
-      "under different",
-      "conditions. Station",
-      "holdouts test whether the",
-      "models can estimate",
-      "moisture at a new site."
+      "Stations span coastal",
+      "areas, the Cascade",
+      "mountains, and arid",
+      "eastern Washington,",
+      "capturing contrasting",
+      "hydroclimatic regimes.",
+      "Leave-one-station-out",
+      "evaluations test model",
+      "generalization across",
+      "unseen microclimates."
     ],
     "size": 20,
     "color": "#536875",
     "bold": false,
     "align": "left",
     "name": "Study-area interpretation",
-    "required_height": 3.605555555555555
+    "required_height": 3.2777777777777777
   },
   {
     "kind": "text",
@@ -327,10 +326,10 @@
     "y": 16.495833333333334,
     "w": 11.0,
     "h": 0.6555555555555554,
-    "text": "Figure 1. The seven training stations and their fitted groups. Colors identify station assignments, with no geographic boundaries implied.",
+    "text": "Figure 1. Seven Washington training stations and their assigned clusters. Colors designate cluster regimes, with no geographic boundaries implied.",
     "lines": [
-      "Figure 1. The seven training stations and their fitted groups. Colors identify",
-      "station assignments, with no geographic boundaries implied."
+      "Figure 1. Seven Washington training stations and their assigned clusters.",
+      "Colors designate cluster regimes, with no geographic boundaries implied."
     ],
     "size": 20,
     "color": "#536875",
@@ -344,35 +343,34 @@
     "x": 0.75,
     "y": 17.29138888888889,
     "w": 11.0,
-    "h": 2.523888888888889,
-    "text": "NOAA USCRN and SNOTEL stations provide measured soil moisture. Satellite inputs include SMAP soil moisture, Sentinel-1 radar backscatter from the land surface, and Sentinel-2 surface reflectance and indices of vegetation greenness and canopy water content. We also use MODIS land-surface temperature and vegetation indices, ERA5-Land weather, and terrain, climate, land-cover, and soil descriptors.",
+    "h": 2.163333333333333,
+    "text": "In-situ ground truth for soil moisture comes from NOAA USCRN and SNOTEL stations. Satellite inputs comprise SMAP soil moisture, Sentinel-1 radar backscatter from the land surface, and Sentinel-2 surface reflectance and indices of vegetation greenness and canopy water content. We use MODIS land-surface temperature, ERA5-Land weather, and terrain, soil, and climate descriptors.",
     "lines": [
-      "NOAA USCRN and SNOTEL stations provide measured soil moisture.",
-      "Satellite inputs include SMAP soil moisture, Sentinel-1 radar",
-      "backscatter from the land surface, and Sentinel-2 surface reflectance",
-      "and indices of vegetation greenness and canopy water content. We",
-      "also use MODIS land-surface temperature and vegetation indices,",
-      "ERA5-Land weather, and terrain, climate, land-cover, and soil",
-      "descriptors."
+      "In-situ ground truth for soil moisture comes from NOAA USCRN and",
+      "SNOTEL stations. Satellite inputs comprise SMAP soil moisture,",
+      "Sentinel-1 radar backscatter from the land surface, and Sentinel-2",
+      "surface reflectance and indices of vegetation greenness and canopy",
+      "water content. We use MODIS land-surface temperature, ERA5-Land",
+      "weather, and terrain, soil, and climate descriptors."
     ],
     "size": 22,
     "color": "#202B35",
     "bold": false,
     "align": "left",
     "name": "",
-    "required_height": 2.523888888888889
+    "required_height": 2.163333333333333
   },
   {
     "kind": "text",
     "x": 0.75,
-    "y": 19.935277777777777,
+    "y": 19.57472222222222,
     "w": 11.0,
     "h": 1.0816666666666666,
-    "text": "The pipeline puts observations on a daily grid, fills gaps, smooths the time series, and calculates features describing recent satellite readings and weather.",
+    "text": "The data pipeline aligns observations onto a daily grid, imputes missing values, smooths temporal sequences, and extracts rolling lag features capturing recent weather and satellite signals.",
     "lines": [
-      "The pipeline puts observations on a daily grid, fills gaps, smooths the",
-      "time series, and calculates features describing recent satellite readings",
-      "and weather."
+      "The data pipeline aligns observations onto a daily grid, imputes",
+      "missing values, smooths temporal sequences, and extracts rolling lag",
+      "features capturing recent weather and satellite signals."
     ],
     "size": 22,
     "color": "#202B35",
@@ -384,7 +382,7 @@
   {
     "kind": "box",
     "x": 0.8,
-    "y": 21.136944444444445,
+    "y": 20.77638888888889,
     "w": 5.1,
     "h": 1.02,
     "fill": "#EDF3F6",
@@ -395,7 +393,7 @@
   {
     "kind": "text",
     "x": 0.9500000000000001,
-    "y": 21.266944444444444,
+    "y": 20.906388888888888,
     "w": 4.8,
     "h": 0.73,
     "text": "2017 to 2022\nFinal fitting period",
@@ -413,7 +411,7 @@
   {
     "kind": "box",
     "x": 6.6,
-    "y": 21.136944444444445,
+    "y": 20.77638888888889,
     "w": 5.1,
     "h": 1.02,
     "fill": "#F5F1ED",
@@ -424,7 +422,7 @@
   {
     "kind": "text",
     "x": 6.75,
-    "y": 21.266944444444444,
+    "y": 20.906388888888888,
     "w": 4.8,
     "h": 0.73,
     "text": "2023 to 2025\nLater-year test",
@@ -442,9 +440,9 @@
   {
     "kind": "line",
     "x1": 6.04,
-    "y1": 21.646944444444447,
+    "y1": 21.28638888888889,
     "x2": 6.49,
-    "y2": 21.646944444444447,
+    "y2": 21.28638888888889,
     "color": "#919AA3",
     "width": 2,
     "arrow": true
@@ -452,14 +450,14 @@
   {
     "kind": "text",
     "x": 0.75,
-    "y": 22.336944444444445,
+    "y": 21.976388888888888,
     "w": 11.0,
     "h": 1.0816666666666666,
-    "text": "Development uses 2017 to 2020 for training and 2021 to 2022 for validation. The final fit combines both periods. We test later years and refit without each station in turn to evaluate new Washington locations.",
+    "text": "We train the models with data from 2017 to 2022. We evaluate temporal generalization on later years (2023 to 2025) and test new Washington sites using leave-one-station-out cross-validation.",
     "lines": [
-      "Development uses 2017 to 2020 for training and 2021 to 2022 for",
-      "validation. The final fit combines both periods. We test later years and",
-      "refit without each station in turn to evaluate new Washington locations."
+      "We train the models with data from 2017 to 2022. We evaluate",
+      "temporal generalization on later years (2023 to 2025) and test new",
+      "Washington sites using leave-one-station-out cross-validation."
     ],
     "size": 22,
     "color": "#202B35",
@@ -502,12 +500,12 @@
     "y": 4.19,
     "w": 11.0,
     "h": 1.442222222222222,
-    "text": "A global model learns one input-to-soil-moisture relationship from all stations. We divide observations into two groups and fit an XGBoost model to each. Each specialist predicts daily volumetric soil moisture at 5 cm depth (m\u00b3/m\u00b3).",
+    "text": "A single global model enforces one input-to-moisture mapping across all stations. We divide observations into two environmental regimes and fit a dedicated XGBoost specialist to each. Each specialist predicts daily volumetric soil moisture at 5 cm depth (m\u00b3/m\u00b3).",
     "lines": [
-      "A global model learns one input-to-soil-moisture relationship from all",
-      "stations. We divide observations into two groups and fit an XGBoost",
-      "model to each. Each specialist predicts daily volumetric soil moisture",
-      "at 5 cm depth (m\u00b3/m\u00b3)."
+      "A single global model enforces one input-to-moisture mapping across",
+      "all stations. We divide observations into two environmental regimes",
+      "and fit a dedicated XGBoost specialist to each. Each specialist predicts",
+      "daily volumetric soil moisture at 5 cm depth (m\u00b3/m\u00b3)."
     ],
     "size": 22,
     "color": "#202B35",
@@ -1005,10 +1003,10 @@
     "y": 12.232222222222223,
     "w": 11.0,
     "h": 0.6555555555555554,
-    "text": "Figure 2. Each observation uses one specialist. x denotes the inputs, s the station, g the assignment rule, and f\u1d63 the selected model.",
+    "text": "Figure 2. Two-regime routing: each observation is assigned to a specialist f\u1d63, where x denotes input features, s the station, and g the routing function.",
     "lines": [
-      "Figure 2. Each observation uses one specialist. x denotes the inputs, s the",
-      "station, g the assignment rule, and f\u1d63 the selected model."
+      "Figure 2. Two-regime routing: each observation is assigned to a specialist f\u1d63,",
+      "where x denotes input features, s the station, and g the routing function."
     ],
     "size": 20,
     "color": "#536875",
@@ -1023,12 +1021,12 @@
     "y": 13.007777777777779,
     "w": 11.0,
     "h": 1.442222222222222,
-    "text": "1. We fill missing router inputs with their fitting-data means and standardize features to comparable scales. K-means finds two cluster centers; a new observation goes to the nearest center. The router uses inputs alone, without measured target labels.",
+    "text": "1. Router inputs are imputed using training-set means and standardized to comparable scales. K-means clustering identifies two centroids, assigning unseen samples to the nearest centroid using feature inputs alone without target labels.",
     "lines": [
-      "1. We fill missing router inputs with their fitting-data means and",
-      "standardize features to comparable scales. K-means finds two cluster",
-      "centers; a new observation goes to the nearest center. The router uses",
-      "inputs alone, without measured target labels."
+      "1. Router inputs are imputed using training-set means and",
+      "standardized to comparable scales. K-means clustering identifies two",
+      "centroids, assigning unseen samples to the nearest centroid using",
+      "feature inputs alone without target labels."
     ],
     "size": 22,
     "color": "#202B35",
@@ -1043,11 +1041,11 @@
     "y": 14.57,
     "w": 11.0,
     "h": 1.0816666666666666,
-    "text": "2. For a station included in fitting, its most common group selects one specialist for all its observations. New stations receive an assignment each day. Missing routing inputs can trigger the precipitation fallback.",
+    "text": "2. For known stations, each adopts its majority cluster specialist for temporal consistency. New stations are routed dynamically each day, falling back to rainfall rules if satellite features are missing.",
     "lines": [
-      "2. For a station included in fitting, its most common group selects one",
-      "specialist for all its observations. New stations receive an assignment",
-      "each day. Missing routing inputs can trigger the precipitation fallback."
+      "2. For known stations, each adopts its majority cluster specialist for",
+      "temporal consistency. New stations are routed dynamically each day,",
+      "falling back to rainfall rules if satellite features are missing."
     ],
     "size": 22,
     "color": "#202B35",
@@ -1062,13 +1060,13 @@
     "y": 15.771666666666667,
     "w": 11.0,
     "h": 1.8027777777777776,
-    "text": "3. Both approaches use identical features, XGBoost settings, evaluation observations, and random seeds. Each specialist trains on its assigned group. Seeds control training randomness; repeated fits measure training variation, leaving uncertainty across new sites and seasons unmeasured.",
+    "text": "3. Both approaches use identical features, XGBoost settings, evaluation splits, and random seeds. Each specialist trains solely on its assigned regime. Testing 30 repeated seeds quantifies training stability, while station-holdout splits evaluate spatial generalization uncertainty.",
     "lines": [
       "3. Both approaches use identical features, XGBoost settings,",
-      "evaluation observations, and random seeds. Each specialist trains on",
-      "its assigned group. Seeds control training randomness; repeated fits",
-      "measure training variation, leaving uncertainty across new sites and",
-      "seasons unmeasured."
+      "evaluation splits, and random seeds. Each specialist trains solely on its",
+      "assigned regime. Testing 30 repeated seeds quantifies training",
+      "stability, while station-holdout splits evaluate spatial generalization",
+      "uncertainty."
     ],
     "size": 22,
     "color": "#202B35",
@@ -1297,13 +1295,13 @@
     "y": 21.42444444444444,
     "w": 11.0,
     "h": 1.8027777777777776,
-    "text": "The groups differ mainly in rainfall and SMAP soil moisture. The wetter group includes lowland and mountain stations, so elevation alone does not distinguish them. Values above are input-data medians. Two groups worked for these stations; other deployments should choose their group count using local data.",
+    "text": "The regimes separate primarily along gradients of rainfall and SMAP soil moisture. Because the wetter group includes lowland and mountain stations, elevation alone does not distinguish them. Displayed values are input medians; other deployments should select cluster counts based on local environmental data.",
     "lines": [
-      "The groups differ mainly in rainfall and SMAP soil moisture. The wetter",
-      "group includes lowland and mountain stations, so elevation alone does",
-      "not distinguish them. Values above are input-data medians. Two",
-      "groups worked for these stations; other deployments should choose",
-      "their group count using local data."
+      "The regimes separate primarily along gradients of rainfall and SMAP",
+      "soil moisture. Because the wetter group includes lowland and",
+      "mountain stations, elevation alone does not distinguish them.",
+      "Displayed values are input medians; other deployments should select",
+      "cluster counts based on local environmental data."
     ],
     "size": 22,
     "color": "#202B35",
@@ -1424,10 +1422,10 @@
     "y": 8.12,
     "w": 11.0,
     "h": 0.6555555555555554,
-    "text": "Figure 3. Mean R\u00b2 from 30 later-year runs and five per held-out station, with matched seeds. Higher is better.",
+    "text": "Figure 3. Mean R\u00b2 across 30 later-year runs and five seeds per held-out station, using matched seeds (higher is better).",
     "lines": [
-      "Figure 3. Mean R\u00b2 from 30 later-year runs and five per held-out station, with",
-      "matched seeds. Higher is better."
+      "Figure 3. Mean R\u00b2 across 30 later-year runs and five seeds per held-out",
+      "station, using matched seeds (higher is better)."
     ],
     "size": 20,
     "color": "#536875",
@@ -1442,11 +1440,11 @@
     "y": 8.915555555555555,
     "w": 11.0,
     "h": 1.0816666666666666,
-    "text": "Two-regime R\u00b2 is higher in all 30 later-year runs. Leaving out stations also favors specialization on average, although improvements vary by location.",
+    "text": "The two-regime model achieves higher R\u00b2 across all 30 later-year runs. Spatial station holdouts also favor specialization on average (+0.0581 R\u00b2), though gains vary by regional coverage.",
     "lines": [
-      "Two-regime R\u00b2 is higher in all 30 later-year runs. Leaving out stations",
-      "also favors specialization on average, although improvements vary by",
-      "location."
+      "The two-regime model achieves higher R\u00b2 across all 30 later-year runs.",
+      "Spatial station holdouts also favor specialization on average (+0.0581",
+      "R\u00b2), though gains vary by regional coverage."
     ],
     "size": 22,
     "color": "#202B35",
@@ -1471,9 +1469,9 @@
     "y": 13.437222222222221,
     "w": 11.0,
     "h": 0.3277777777777777,
-    "text": "Figure 4. Mean R\u00b2 change: four gains and three losses (five runs).",
+    "text": "Figure 4. Held-out station R\u00b2 differences (four gains and three losses).",
     "lines": [
-      "Figure 4. Mean R\u00b2 change: four gains and three losses (five runs)."
+      "Figure 4. Held-out station R\u00b2 differences (four gains and three losses)."
     ],
     "size": 20,
     "color": "#536875",
@@ -1487,23 +1485,24 @@
     "x": 24.25,
     "y": 13.905,
     "w": 11.0,
-    "h": 0.721111111111111,
-    "text": "Cayuse Pass has the largest R\u00b2 increase. Leaving out either eastern station reduces the smaller group's training coverage.",
+    "h": 1.0816666666666666,
+    "text": "Cayuse Pass gains +0.25 R\u00b2. Conversely, withholding either eastern station removes half the drier group's data, underscoring sensitivity to sparse regional coverage.",
     "lines": [
-      "Cayuse Pass has the largest R\u00b2 increase. Leaving out either eastern",
-      "station reduces the smaller group's training coverage."
+      "Cayuse Pass gains +0.25 R\u00b2. Conversely, withholding either eastern",
+      "station removes half the drier group's data, underscoring sensitivity to",
+      "sparse regional coverage."
     ],
     "size": 22,
     "color": "#202B35",
     "bold": false,
     "align": "left",
     "name": "",
-    "required_height": 0.721111111111111
+    "required_height": 1.0816666666666666
   },
   {
     "kind": "box",
     "x": 24.05,
-    "y": 14.74611111111111,
+    "y": 15.106666666666666,
     "w": 11.4,
     "h": 0.55,
     "fill": "#C00000",
@@ -1514,7 +1513,7 @@
   {
     "kind": "text",
     "x": 24.150000000000002,
-    "y": 14.76911111111111,
+    "y": 15.129666666666665,
     "w": 11.2,
     "h": 0.51,
     "text": "ECE sensor-site evaluation",
@@ -1531,15 +1530,15 @@
   {
     "kind": "text",
     "x": 24.25,
-    "y": 15.466111111111111,
+    "y": 15.826666666666666,
     "w": 11.0,
     "h": 1.442222222222222,
-    "text": "Missing SMAP inputs at five new sites deployed by Seattle University's ECE team triggered automatic assignment using an index of recent rainfall. We used Washington validation data to choose a specialist for each rainfall class.",
+    "text": "At five sensor sites deployed by Seattle University's ECE team, missing real-time SMAP retrievals triggered an automated fallback router using recent rainfall history. Regime thresholds were calibrated on Washington validation data without target labels.",
     "lines": [
-      "Missing SMAP inputs at five new sites deployed by Seattle University's",
-      "ECE team triggered automatic assignment using an index of recent",
-      "rainfall. We used Washington validation data to choose a specialist for",
-      "each rainfall class."
+      "At five sensor sites deployed by Seattle University's ECE team, missing",
+      "real-time SMAP retrievals triggered an automated fallback router using",
+      "recent rainfall history. Regime thresholds were calibrated on",
+      "Washington validation data without target labels."
     ],
     "size": 22,
     "color": "#202B35",
@@ -1551,7 +1550,7 @@
   {
     "kind": "image",
     "x": 24.3,
-    "y": 17.028333333333332,
+    "y": 17.38888888888889,
     "w": 10.9,
     "h": 2.1,
     "path": "figures/ece_routing.png",
@@ -1561,13 +1560,13 @@
   {
     "kind": "text",
     "x": 24.25,
-    "y": 19.19833333333333,
+    "y": 19.558888888888887,
     "w": 11.0,
     "h": 0.6555555555555554,
-    "text": "Figure 5. Pooled ECE RMSE. Rainfall fallback and global model errors are similar; lower is better.",
+    "text": "Figure 5. Pooled RMSE at ECE sites. The rainfall fallback matches global model error (lower is better).",
     "lines": [
-      "Figure 5. Pooled ECE RMSE. Rainfall fallback and global model errors are",
-      "similar; lower is better."
+      "Figure 5. Pooled RMSE at ECE sites. The rainfall fallback matches global model",
+      "error (lower is better)."
     ],
     "size": 20,
     "color": "#536875",
@@ -1579,14 +1578,14 @@
   {
     "kind": "text",
     "x": 24.25,
-    "y": 19.993888888888886,
+    "y": 20.354444444444443,
     "w": 11.0,
     "h": 1.0816666666666666,
-    "text": "For all 150 daily observations from July 20 to August 19, 2026, the fallback selected the same specialist. Full-season performance at these ECE sites remains untested.",
+    "text": "During the dry summer period (July 20 to August 19, 2026; 150 daily observations), the fallback assigned all dates to the drier specialist. Full-season multi-regime performance remains untested.",
     "lines": [
-      "For all 150 daily observations from July 20 to August 19, 2026, the",
-      "fallback selected the same specialist. Full-season performance at these",
-      "ECE sites remains untested."
+      "During the dry summer period (July 20 to August 19, 2026; 150 daily",
+      "observations), the fallback assigned all dates to the drier specialist.",
+      "Full-season multi-regime performance remains untested."
     ],
     "size": 22,
     "color": "#202B35",
@@ -1598,7 +1597,7 @@
   {
     "kind": "box",
     "x": 24.05,
-    "y": 21.195555555555554,
+    "y": 21.55611111111111,
     "w": 11.4,
     "h": 0.55,
     "fill": "#C00000",
@@ -1609,7 +1608,7 @@
   {
     "kind": "text",
     "x": 24.150000000000002,
-    "y": 21.218555555555554,
+    "y": 21.57911111111111,
     "w": 11.2,
     "h": 0.51,
     "text": "Discussion and next steps",
@@ -1626,21 +1625,20 @@
   {
     "kind": "text",
     "x": 24.25,
-    "y": 21.915555555555553,
+    "y": 22.27611111111111,
     "w": 11.0,
-    "h": 1.442222222222222,
-    "text": "These gains depend on reliable assignment and training sites that cover the conditions encountered. We will test more Washington sites and seasons with ECE sensors, including changes in satellite availability.",
+    "h": 1.0816666666666666,
+    "text": "Specialist gains rely on accurate routing and representative training networks. Future work evaluates multi-season ECE sensor data and strengthens router robustness under intermittent satellite availability.",
     "lines": [
-      "These gains depend on reliable assignment and training sites that",
-      "cover the conditions encountered. We will test more Washington sites",
-      "and seasons with ECE sensors, including changes in satellite",
-      "availability."
+      "Specialist gains rely on accurate routing and representative training",
+      "networks. Future work evaluates multi-season ECE sensor data and",
+      "strengthens router robustness under intermittent satellite availability."
     ],
     "size": 22,
     "color": "#202B35",
     "bold": false,
     "align": "left",
     "name": "",
-    "required_height": 1.442222222222222
+    "required_height": 1.0816666666666666
   }
 ]

@@ -8,7 +8,7 @@
   "pdf_fonts_embedded": true,
   "author_placeholders_editable": true,
   "scene_items": 108,
-  "rendered_words": 932,
+  "rendered_words": 908,
   "regime_names": {
     "0": "Wet / Mountains",
     "1": "Drier / Lowlands"
@@ -20,8 +20,8 @@
   "preview": "summer_showcase_preview.png",
   "previous_version_unchanged": true,
   "column_ends_inches": {
-    "left": 23.538611111111113,
+    "left": 23.178055555555556,
     "middle": 23.347222222222218,
-    "right": 23.477777777777774
+    "right": 23.477777777777778
   }
 }

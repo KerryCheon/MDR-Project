@@ -165,8 +165,8 @@ validation = build_poster.build(data)
 
 @@output {"name":"stdout","output_type":"stream"}
 ```text
-Draft editable-text word count: 857
-Measured column ends (inches): {"left": 23.538611111111113, "middle": 23.347222222222218, "right": 23.477777777777774}
+Draft editable-text word count: 833
+Measured column ends (inches): {"left": 23.178055555555556, "middle": 23.347222222222218, "right": 23.477777777777778}
 Displayed regime-profile medians and provenance:
 {
   "wettest_month_rain_mm": [
@@ -192,7 +192,7 @@ notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_profile_summary_Clus
 
 @@output {"name":"stdout","output_type":"stream"}
 ```text
-Rendered poster word count (including chart labels): 932
+Rendered poster word count (including chart labels): 908
 {
   "slides": 1,
   "pdf_pages": 1,
@@ -203,7 +203,7 @@ Rendered poster word count (including chart labels): 932
   "pdf_fonts_embedded": true,
   "author_placeholders_editable": true,
   "scene_items": 108,
-  "rendered_words": 932,
+  "rendered_words": 908,
   "regime_names": {
     "0": "Wet / Mountains",
     "1": "Drier / Lowlands"
@@ -215,9 +215,9 @@ Rendered poster word count (including chart labels): 932
   "preview": "summer_showcase_preview.png",
   "previous_version_unchanged": true,
   "column_ends_inches": {
-    "left": 23.538611111111113,
+    "left": 23.178055555555556,
     "middle": 23.347222222222218,
-    "right": 23.477777777777774
+    "right": 23.477777777777778
   }
 }
 Built summer_showcase.pptx, summer_showcase.pdf, summer_showcase_preview.png
