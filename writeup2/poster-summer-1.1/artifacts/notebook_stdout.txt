@@ -2,7 +2,7 @@
 
 @@cell {"cell_type":"markdown","id":"548be3b2-c742-4622-8dd2-14e79003377e","index":0}
 # Summer research poster 1.1
-This revision uses fuller research explanations and the user-selected regime names while preserving the earlier poster, report, and saved evaluation evidence. Every figure and export is generated through this notebook.
+This notebook builds the research poster from saved evaluation evidence. The language polish names the measured quantities, explains station assignment and repeated fitting seeds, and retains the earlier results and regime memberships. Every figure and export is generated here.
 
 
 @@cell {"cell_type":"markdown","id":"a2be3270-82fe-44d4-81e7-7be872413534","index":1}
@@ -165,8 +165,8 @@ validation = build_poster.build(data)
 
 @@output {"name":"stdout","output_type":"stream"}
 ```text
-Draft editable-text word count: 778
-Measured column ends (inches): {"left": 23.538611111111106, "middle": 23.527777777777775, "right": 23.477777777777778}
+Draft editable-text word count: 857
+Measured column ends (inches): {"left": 23.538611111111113, "middle": 23.347222222222218, "right": 23.477777777777774}
 Displayed regime-profile medians and provenance:
 {
   "wettest_month_rain_mm": [
@@ -192,7 +192,7 @@ notebooks/experiment/derived_8.4-gating-analysis-1.0/regime_profile_summary_Clus
 
 @@output {"name":"stdout","output_type":"stream"}
 ```text
-Rendered poster word count (including chart labels): 853
+Rendered poster word count (including chart labels): 932
 {
   "slides": 1,
   "pdf_pages": 1,
@@ -202,8 +202,8 @@ Rendered poster word count (including chart labels): 853
   ],
   "pdf_fonts_embedded": true,
   "author_placeholders_editable": true,
-  "scene_items": 109,
-  "rendered_words": 853,
+  "scene_items": 108,
+  "rendered_words": 932,
   "regime_names": {
     "0": "Wet / Mountains",
     "1": "Drier / Lowlands"
@@ -215,9 +215,9 @@ Rendered poster word count (including chart labels): 853
   "preview": "summer_showcase_preview.png",
   "previous_version_unchanged": true,
   "column_ends_inches": {
-    "left": 23.538611111111106,
-    "middle": 23.527777777777775,
-    "right": 23.477777777777778
+    "left": 23.538611111111113,
+    "middle": 23.347222222222218,
+    "right": 23.477777777777774
   }
 }
 Built summer_showcase.pptx, summer_showcase.pdf, summer_showcase_preview.png

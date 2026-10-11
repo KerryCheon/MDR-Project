@@ -116,22 +116,23 @@ class Column:
 
 def method_diagram(scene, x, y):
     """Compact editable input/router/specialist diagram and hard-assignment equation."""
-    inputs = [(0.2, "SATELLITE", "Moisture, radar,\nvegetation, heat"),
-              (4.0, "WEATHER", "Rainfall and\nrecent history"),
-              (7.8, "SITE", "Terrain, climate,\nland cover")]
+    inputs = [(0.2, "Satellite", "Moisture, backscatter,\nvegetation, land-surface\ntemperature"),
+              (4.0, "Weather", "Rainfall totals and\nrecent rainfall history"),
+              (7.8, "Site properties", "Terrain, climate,\nland cover, soil")]
     for offset, title, detail in inputs:
-        scene.box(x + offset, y, 3.4, 1.12, "#F0F3F5", stroke="#CED6DC")
+        scene.box(x + offset, y, 3.4, 1.42, "#F0F3F5", stroke="#CED6DC")
         scene.text(x + offset + 0.1, y + 0.09, 3.2, 0.33, title, size=20,
                    bold=True, color="#536875", align="center")
-        scene.text(x + offset + 0.08, y + 0.44, 3.24, 0.65, detail, size=19, align="center")
-        scene.line(x + offset + 1.7, y + 1.16, x + offset + 1.7, y + 1.33)
+        scene.text(x + offset + 0.08, y + 0.44, 3.24, 0.95, detail, size=19, align="center")
+        scene.line(x + offset + 1.7, y + 1.46, x + offset + 1.7, y + 1.63)
+    y += 0.30
     scene.line(x + 1.9, y + 1.33, x + 9.5, y + 1.33)
     scene.line(x + 5.7, y + 1.33, x + 5.7, y + 1.48, arrow=True)
     scene.box(x + 0.9, y + 1.52, 9.6, 1.12, "#EEF2F4", stroke="#92A2AD")
     scene.text(x + 1.05, y + 1.61, 9.3, 0.43, "Feature-based grouping", size=26,
                bold=True, align="center")
     scene.text(x + 1.05, y + 2.09, 9.3, 0.37,
-               "Standardize → K-means → station consistency", size=21, align="center")
+               "Standardize → K-means → fixed groups for known stations", size=21, align="center")
     scene.line(x + 5.7, y + 2.69, x + 5.7, y + 2.93)
     scene.line(x + 2.8, y + 2.93, x + 8.6, y + 2.93)
     for i, (offset, color) in enumerate([(0.3, BLUE), (6.1, OCHRE)]):
@@ -154,7 +155,7 @@ def method_diagram(scene, x, y):
     scene.text(x + 1.05, y + 5.58, 9.3, 0.38,
                "ŷ = fᵣ(x),  r = g(s, x) ∈ {A, B}", size=22, color="#FFFFFF", align="center",
                name="Editable hard-routing equation")
-    return 6.06
+    return 6.36
 
 
 def compose(data: dict) -> Scene:
@@ -169,41 +170,41 @@ def compose(data: dict) -> Scene:
                size=24, align="center", name="Editable author and mentor placeholders")
     scene.text(3.25, 2.52, 27.35, 0.44, "Department of Computer Science, Seattle University",
                size=22, align="center", name="Department affiliation")
-    scene.text(3.25, 3.00, 27.35, 0.28, "SUMMER RESEARCH SHOWCASE  ·  2026",
+    scene.text(3.25, 3.00, 27.35, 0.28, "Summer research showcase  ·  2026",
                size=15, color="#697780", bold=True, align="center")
 
-    left.section("Background & Research Question")
+    left.section("Background and research question")
     left.paragraph("Why soil moisture estimation?", size=27, bold=True, color=RED, gap=0.22)
     left.paragraph(
-        "Soil moisture describes water stored near the land surface. It informs irrigation, "
-        "drought monitoring, and our understanding of water availability. Estimates help us "
-        "follow rainfall responses and drying where direct measurements are sparse.")
+        "Soil moisture is the amount of water held in soil. Daily estimates help with irrigation planning "
+        "and drought monitoring. They show how moisture changes after rain and during dry "
+        "periods, including places with few direct measurements.")
     left.paragraph(
-        "Ground sensors measure local conditions; satellites offer broader coverage, but leave "
-        "gaps between observations and missing retrievals. Our project combines satellite, "
-        "weather, and site information for daily estimates. Earlier work established this "
-        "pipeline and a single global XGBoost predictor.")
+        "Ground sensors measure moisture at individual sites. Satellite observations cover "
+        "larger areas but are intermittent, with some retrievals missing. We combine satellite, "
+        "weather, and site data for daily estimates. Earlier work produced the pipeline "
+        "and a global XGBoost model.")
     question = "Can two specialists improve estimates across Washington's contrasting conditions?"
     question_height = len(wrap(question, 10.56, 24, True)) * 24 * 1.18 / 72
     scene.box(left.x + 0.2, left.y, 11.0, 0.66 + question_height, "#F5F1ED", stroke="#DED5CD")
     scene.text(left.x + 0.42, left.y + 0.12, 10.56, 0.34,
-               "THE SUMMER RESEARCH QUESTION", size=20, bold=True, color=RED)
+               "Summer research question", size=20, bold=True, color=RED)
     scene.text(left.x + 0.42, left.y + 0.55, 10.56, question_height,
                question, size=24, bold=True)
     left.y += 0.66 + question_height + 0.22
     left.paragraph(
-        "This summer's work tests feature-based specialization against the global predictor, "
-        "adds consistent assignment for known stations, and examines how missing routing "
-        "inputs affect estimates at new sensor sites.")
+        "Our comparison uses the same evaluation conditions for both models. For known "
+        "stations, we fix a single specialist; tests at new sites examine how missing "
+        "satellite inputs affect assignment.")
 
-    left.section("Study Area & Data")
+    left.section("Study area and data")
     scene.figure(left.x + 0.2, left.y, 7.0, 4.5, "washington_stations")
     scene.text(left.x + 7.55, left.y + 0.25, 3.65, 0.38,
                "Regional contrast", size=22, bold=True, color="#536875")
     map_note = (
-        "Washington spans coastal sites, Cascade mountains, and a drier east. We ask whether "
-        "two specialists can learn distinct soil responses in these settings. Each station "
-        "holdout tests how well these patterns carry to a new site."
+        "Our stations span the coast, Cascade mountains, and drier eastern Washington. "
+        "They let us study how soil moisture relates to inputs under different conditions. "
+        "Station holdouts test whether the models can estimate moisture at a new site."
     )
     map_note_height = len(wrap(map_note, 3.65, 20, False)) * 20 * 1.18 / 72
     assert map_note_height <= 3.73, f"Map note too tall: {map_note_height:.2f} in"
@@ -211,60 +212,62 @@ def compose(data: dict) -> Scene:
                map_note, size=20, color="#536875", name="Study-area interpretation")
     left.y += 4.57
     left.paragraph(
-        "Figure 1. Seven Washington training stations and their fitted memberships; "
-        "points do not define geographic regime boundaries.", size=20, color="#536875", gap=0.14,
+        "Figure 1. The seven training stations and their fitted groups. Colors identify "
+        "station assignments, with no geographic boundaries implied.", size=20, color="#536875", gap=0.14,
         name="Caption washington_stations")
     left.paragraph(
-        "NOAA USCRN and SNOTEL supply in-situ observations. Inputs combine SMAP moisture, "
-        "Sentinel radar and optical measurements, MODIS temperature and vegetation, ERA5-Land "
-        "weather, and terrain, climate, land-cover, and soil descriptors.")
+        "NOAA USCRN and SNOTEL stations provide measured soil moisture. Satellite inputs include "
+        "SMAP soil moisture, Sentinel-1 radar backscatter from the land surface, and Sentinel-2 "
+        "surface reflectance and indices of vegetation greenness and canopy water content. "
+        "We also use MODIS land-surface temperature and vegetation indices, ERA5-Land weather, "
+        "and terrain, climate, land-cover, and soil descriptors.")
     left.paragraph(
-        "The pipeline aligns sources daily, fills observation gaps, smooths the series, and "
-        "derives recent-history features. Both approaches receive identical prepared inputs, "
-        "keeping the comparison focused on grouping and assignment.")
-    for offset, text, fill in [(0.25, "2017–2022\nFinal fitting period", "#EDF3F6"),
-                               (6.05, "2023–2025\nLater-year test", "#F5F1ED")]:
+        "The pipeline puts observations on a daily grid, fills gaps, smooths the time "
+        "series, and calculates features describing recent satellite readings and weather.")
+    for offset, text, fill in [(0.25, "2017 to 2022\nFinal fitting period", "#EDF3F6"),
+                               (6.05, "2023 to 2025\nLater-year test", "#F5F1ED")]:
         scene.box(left.x + offset, left.y, 5.1, 1.02, fill)
         scene.text(left.x + offset + 0.15, left.y + 0.13, 4.8, 0.73,
                    text, size=21, bold=True, align="center")
     scene.line(left.x + 5.49, left.y + 0.51, left.x + 5.94, left.y + 0.51, arrow=True)
     left.y += 1.20
     left.paragraph(
-        "Development uses 2017–2020 training and 2021–2022 validation data; the final fit "
-        "combines these periods. Evaluation tests later years; leave-one-station-out "
-        "evaluation refits without each station to test new Washington locations.")
+        "Development uses 2017 to 2020 for training and 2021 to 2022 for validation. "
+        "The final fit combines both periods. We test later years and refit without "
+        "each station in turn to evaluate new Washington locations.")
 
-    middle.section("Two-Regime Modeling")
+    middle.section("Two-regime modeling")
     middle.paragraph(
-        "A global model fits all observations together. Our model groups observations by "
-        "their inputs, then fits an XGBoost specialist per group. The target is daily "
-        "volumetric soil moisture at 5 cm depth (m³/m³).")
+        "A global model learns one input-to-soil-moisture relationship from all stations. "
+        "We divide observations into two groups and fit an XGBoost model to each. "
+        "Each specialist predicts daily volumetric soil moisture at 5 cm depth (m³/m³).")
     middle.y += method_diagram(scene, middle.x, middle.y) + 0.12
     middle.paragraph(
-        "Figure 2. Hard routing. x denotes inputs, s the station, g the assignment rule, "
-        "and fᵣ the selected specialist; one observation produces one estimate.",
+        "Figure 2. Each observation uses one specialist. x denotes the inputs, s the "
+        "station, g the assignment rule, and fᵣ the selected model.",
         size=20, color="#536875")
     middle.paragraph(
-        "1. Learn groups. Fill missing router values with fitting-data means and standardize "
-        "features before K-means finds two centroids. New observations use the nearest "
-        "centroid. Clustering uses no observed in-situ targets.")
+        "1. We fill missing router inputs with their fitting-data means and standardize "
+        "features to comparable scales. K-means finds two cluster centers; a new observation "
+        "goes to the nearest center. The router uses inputs alone, without measured target labels.")
     middle.paragraph(
-        "2. Keep stations consistent. Known stations receive their majority fitting-data "
-        "group, keeping observations with one specialist. New stations use row-level "
-        "assignment; availability checks can trigger the fallback described at right.")
+        "2. For a station included in fitting, its most common group selects one specialist "
+        "for all its observations. New stations receive an assignment each day. Missing "
+        "routing inputs can trigger the precipitation fallback.")
     middle.paragraph(
-        "3. Isolate specialization. Both approaches use identical features, XGBoost settings, "
-        "evaluation rows, and matched seeds. Specialists learn only from assigned observations, "
-        "so differences reflect grouping and assignment under this protocol.")
+        "3. Both approaches use identical features, XGBoost settings, evaluation observations, "
+        "and random seeds. Each specialist trains on its assigned group. Seeds control "
+        "training randomness; repeated fits measure training variation, leaving uncertainty "
+        "across new sites and seasons unmeasured.")
 
-    middle.section("Regime Interpretation")
+    middle.section("Regime interpretation")
     profile = data["profile"]
     wet_month = [float(profile.loc["J_bio_bio13", f"median_cluster{i}"]) for i in range(2)]
     smap = [float(profile.loc["SMAP_sm_pm_interp", f"median_cluster{i}"]) for i in range(2)]
     card_y = middle.y
     for i, (offset, color, detail) in enumerate([
-        (0.2, BLUE, "Western and Cascade sites;\nmore rain and higher\nsatellite moisture."),
-        (6.0, OCHRE, "Spokane and Sourdough Gulch;\nless rain and lower\nsatellite moisture."),
+        (0.2, BLUE, "Western and Cascade sites:\nmore rain and higher\nSMAP soil moisture."),
+        (6.0, OCHRE, "Spokane and Sourdough Gulch:\nless rain and lower\nSMAP soil moisture."),
     ]):
         x = middle.x + offset
         scene.box(x, card_y, 5.2, 2.83, "#F7F9FA", stroke=color)
@@ -273,22 +276,19 @@ def compose(data: dict) -> Scene:
                    size=23, color=color, bold=True, align="center")
         n = int((data["stations"].dominant_cluster == i).sum())
         scene.text(x + 0.18, card_y + 0.65, 4.84, 0.34,
-                   f"{n} fitted stations", size=20, bold=True, align="center")
+                   f"{n} training stations", size=20, bold=True, align="center")
         scene.text(x + 0.18, card_y + 1.09, 4.84, 1.01, detail, size=19, align="center")
         scene.text(x + 0.18, card_y + 2.08, 4.84, 0.63,
-                   f"Wettest-month rain: {wet_month[i]:.0f} mm\nSatellite moisture: {smap[i]:.3f} m³/m³",
+                   f"Wettest-month rain: {wet_month[i]:.0f} mm\nSMAP soil moisture: {smap[i]:.3f} m³/m³",
                    size=18, align="center")
     middle.y += 3.01
     middle.paragraph(
-        "These names describe this Washington sample; elevation alone does not determine "
-        "membership. The wet group includes lowland and mountain stations. Medians summarize "
-        "input conditions, not measured-moisture thresholds.")
-    middle.paragraph(
-        "Specialists can learn narrower relationships, but require reliable assignment and "
-        "representative training data. Select regime counts using local data; two groups "
-        "are useful here.")
+        "The groups differ mainly in rainfall and SMAP soil moisture. The wetter group "
+        "includes lowland and mountain stations, so elevation alone does not distinguish "
+        "them. Values above are input-data medians. Two groups worked for these stations; "
+        "other deployments should choose their group count using local data.")
 
-    right.section("Evaluation & Results")
+    right.section("Evaluation and results")
     for offset, key, label in [(0.2, "temporal_difference", "Later-year R² gain"),
                                (6.0, "loso_difference", "Station-holdout R² gain")]:
         scene.text(right.x + offset, right.y, 5.2, 0.56,
@@ -297,34 +297,35 @@ def compose(data: dict) -> Scene:
                    label, size=20, align="center")
     right.y += 1.06
     right.figure("model_comparison", 2.8,
-                 "Figure 3. Mean R²: 30 matched temporal seeds; five per station holdout. "
-                 "Higher is better.")
+                 "Figure 3. Mean R² from 30 later-year runs and five per held-out station, "
+                 "with matched seeds. Higher is better.")
     right.paragraph(
-        "Two-regime R² leads in all 30 later-year runs. Station-holdout performance improves "
-        "on average, with uneven benefits across locations.")
+        "Two-regime R² is higher in all 30 later-year runs. Leaving out stations also "
+        "favors specialization on average, although improvements vary by location.")
     right.figure("held_out_station_effects", 3.25,
-                 "Figure 4. Five-seed station differences: four gains and three losses.")
+                 "Figure 4. Mean R² change: four gains and three losses (five runs).")
     right.paragraph(
-        "Cayuse Pass gains most. Eastern holdouts reduce representation of the smaller regime. "
-        "Seeds describe fitting variability, excluding uncertainty across new sites and seasons.")
+        "Cayuse Pass has the largest R² increase. Leaving out either eastern station "
+        "reduces the smaller group's training coverage.")
 
-    right.section("ECE Sensor-Site Evaluation")
+    right.section("ECE sensor-site evaluation")
     right.paragraph(
-        "Five new sites deployed by Seattle University's ECE team lacked all SMAP inputs. "
-        "An automatic availability gate switched to antecedent-precipitation routing, with "
-        "the specialist mapping selected using Washington validation.")
+        "Missing SMAP inputs at five new sites deployed by Seattle University's ECE team "
+        "triggered automatic assignment using an index of recent rainfall. We used "
+        "Washington validation data to choose a specialist for each rainfall class.")
     right.figure("ece_routing", 2.1,
-                 "Figure 5. ECE pooled RMSE: fallback approaches global-model error. Lower is better.")
+                 "Figure 5. Pooled ECE RMSE. Rainfall fallback and global model errors "
+                 "are similar; lower is better.")
     right.paragraph(
-        "Across 150 daily observations (July 20–August 19, 2026), every fallback row used "
-        "one specialist. This short summer test supports a routing lesson, without "
-        "establishing full-season superiority.")
+        "For all 150 daily observations from July 20 to August 19, 2026, the fallback "
+        "selected the same specialist. Full-season performance at these ECE sites "
+        "remains untested.")
 
-    right.section("Discussion & Next Steps")
+    right.section("Discussion and next steps")
     right.paragraph(
-        "Specialization helps with reliable assignment and representative training sites. "
-        "Next, evaluate more Washington stations and seasons with ECE sensors, and test "
-        "routing when satellite coverage changes.")
+        "These gains depend on reliable assignment and training sites that cover the "
+        "conditions encountered. We will test more Washington sites and seasons with "
+        "ECE sensors, including changes in satellite availability.")
 
     ends = {"left": left.y, "middle": middle.y, "right": right.y}
     print("Draft editable-text word count:", sum(len(item["text"].split())
@@ -490,6 +491,7 @@ def validate(scene: Scene, pptx_path: Path, pdf_path: Path) -> dict:
         assert len(document) == 1
         assert tuple(document[0].rect) == (0.0, 0.0, WIDTH * 72, HEIGHT * 72)
         text = document[0].get_text()
+        prose = " ".join(text.split())
         for station in ["Beaver Pass", "Cayuse Pass", "Darrington", "Paradise", "Quinault", "Spokane"]:
             assert station in text, station
         assert "Sourdough" in text and "Gulch" in text
@@ -502,6 +504,12 @@ def validate(scene: Scene, pptx_path: Path, pdf_path: Path) -> dict:
                          "Sources:", "shared features", "target depth", "doi:"]:
             assert obsolete not in text, obsolete
         assert text.count("5 cm") == 1
+        for term in ["Sentinel-1 radar backscatter", "Sentinel-2 surface reflectance",
+                     "canopy water content", "land-surface temperature", "SMAP soil moisture"]:
+            assert term in prose, term
+        assert "—" not in text and "–" not in text
+        for outdated in ["Sentinel radar and optical measurements", "supports a routing lesson"]:
+            assert outdated not in prose
         for index in range(1, 6):
             assert f"Figure {index}." in text
         font_embedded = []

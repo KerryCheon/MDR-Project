@@ -1,6 +1,6 @@
 # Summer research poster 1.1
 
-One **36″ wide × 24″ high** research showcase poster, using the two-regime work summarized in [technical report 1.5](../report-assemble-1.5/report.md). This revision preserves the original Seattle University branding and four evidence graphics, with more explanation of the motivation, modeling steps, evaluation, and interpretation.
+A 36″ wide × 24″ high poster about the two-regime work summarized in [technical report 1.5](../report-assemble-1.5/report.md). Version 1.1 keeps the Seattle University branding and four scientific graphics, with fuller explanations of the research question, methods, and results.
 
 ## Deliverables
 
@@ -13,16 +13,18 @@ Replace `[Author names]` and `[Mentor name, credentials]` in PowerPoint before p
 
 ## Revision choices
 
-The opening now asks **“Why soil moisture estimation?”** and explains the project's purpose before introducing the summer research question. Methods and results include the controlled comparison, station consistency, fitting/test periods, and limits of the seed and ECE evaluations. The 850–950-word budget counts the title, all text, and chart labels. Main paragraphs use 22 pt type; smaller labels and captions support the graphics.
+The opening asks "Why soil moisture estimation?" Methods and results explain how specialists are selected, how the global comparison is controlled, which periods are used for fitting and testing, and what repeated seeds and the ECE evaluation can establish. The target is 850 to 950 words, including headings and chart labels. Main paragraphs use 22 pt type, with smaller supporting labels and captions.
 
-The large feature-count and target-depth badges and the bottom citation footer are removed. The target depth appears once in ordinary methods prose, the ECE acknowledgment is part of its panel, and sources are retained below. The method diagram has less unused vertical space, allowing numbered method explanations, an editable equation, and numbered figure captions.
+The feature-count and target-depth badges and citation footer are removed. The target depth appears in the methods, and the ECE panel acknowledges the collaboration. The compact method diagram leaves room for numbered explanations, an editable equation, and figure captions. Source references are retained below.
 
-**Regime names are user-selected descriptive labels, not new clustering results.** “Wet / Mountains” and “Drier / Lowlands” replace the earlier poster's terminology throughout the map, diagram, and profiles. They are defined once in `scripts/poster_data.py`. The report's saved five-versus-two memberships are unchanged:
+"Wet / Mountains" and "Drier / Lowlands" are display names for the report's existing groups, defined in `scripts/poster_data.py`. The map, diagram, and profiles use the same names. Station memberships remain:
 
 - Wet / Mountains: Beaver Pass, Cayuse Pass, Darrington, Paradise, Quinault.
 - Drier / Lowlands: Spokane, Sourdough Gulch.
 
-Report 1.5 §§7–8 notes that the wet group contains lowland as well as mountain stations and that elevation alone weakly separates the groups. The poster briefly makes that qualification. The profile medians describe input conditions, not universal elevation classes or target-moisture thresholds. No geographic regime boundaries are inferred.
+Report 1.5 §§7 and 8 shows that the wet group includes lowland and mountain stations and that elevation alone weakly separates the groups. The profile values are medians of input conditions; they do not define universal elevation classes or thresholds on measured soil moisture. The map shows station assignments without geographic regime boundaries.
+
+The language polish specifies the observed quantities: Sentinel-1 radar backscatter from the land surface, Sentinel-2 surface reflectance and vegetation/canopy-water indices, and MODIS land-surface temperature and vegetation indices. It also explains daily assignment at new stations and the role of random seeds in repeated training runs. Section headings use sentence case and date ranges use "to". Results, memberships, and the routing equation are unchanged.
 
 ## Results from executed notebook stdout
 
@@ -39,9 +41,9 @@ These tables are copied from the evidence cell's stdout, also saved as [readme_r
 | Precipitation fallback | 0.0578 |
 | Global predictor | 0.0586 |
 
-Temporal results cover 30 matched seeds; the two-regime predictor leads in all 30. Station holdouts cover five seeds at each of seven stations, with four mean gains and three mean losses. Differences are calculated from unrounded paired values: +0.0320 temporal and +0.0581 station-holdout R². The station chart and full stdout retain all seven station differences. Seed repetition describes fitting variability, not uncertainty over independently sampled sites, seasons, or model selection.
+Temporal results cover 30 matched seeds, with higher two-regime R² in all 30 runs. Station holdouts use five seeds at each of seven stations, with four mean gains and three mean losses. Differences calculated from unrounded paired values are +0.0320 temporal and +0.0581 station-holdout R². The station chart and stdout record all seven station differences. Repeated seeds measure variation between fits; they exclude uncertainty from independently sampled sites, seasons, and model selection.
 
-ECE evaluation covers 150 daily observations at five separate sensor sites, July 20–August 19, 2026. All expected SMAP inputs are missing. The automatic precipitation-based mapping was selected using Washington validation, without ECE target labels. All fallback rows exercise one specialist; the short window therefore supports a routing/availability lesson, without establishing full-season superiority of the complete two-specialist system. The first paper's differently evaluated R² is not used in the comparison.
+The ECE evaluation covers 150 daily observations at five separate sensor sites from July 20 to August 19, 2026. All expected SMAP inputs are missing. Washington validation data determined the automatic precipitation-based mapping, without ECE target labels. All fallback predictions use the same specialist, so the test evaluates that specialist over a short summer period. Full-season superiority of the complete two-specialist system remains untested. The first paper uses a different evaluation protocol, so its R² is excluded from the comparison.
 
 ## Reproduce
 
@@ -54,7 +56,7 @@ timeout 30s uv run --no-sync python -m ipykernel install --user --name mdr-poste
 UV_NO_SYNC=1 PATH="$PWD/.venv/bin:$PATH" timeout 240s nb execute ../writeup2/poster-summer-1.1/poster_figures.ipynb --uv --kernel mdr-poster-uv -t 180 > ../writeup2/poster-summer-1.1/artifacts/notebook_stdout.txt 2>&1
 ```
 
-The explicit kernel uses this project's environment rather than a stale user-wide `python3` kernelspec. `UV_NO_SYNC=1` preserves the pinned export libraries installed above. For interactive use, select **MDR poster (uv)**, also stored in the notebook metadata.
+The explicit kernel name selects this project's environment and avoids a stale user-wide `python3` kernelspec. `UV_NO_SYNC=1` preserves the pinned export libraries installed above. For interactive use, select MDR poster (uv), also stored in the notebook metadata.
 
 All scientific figures are generated solely through notebook execution. The tracked modules handle evidence validation, plotting, and a shared layout measured in inches for both exports. Every graphic is saved as 300 dpi PNG and vector PDF/SVG. Edit `scripts/build_poster.py` for copy or geometry and rerun the notebook.
 
@@ -69,6 +71,6 @@ The report's extractor validates saved evidence before plotting. Main two-regime
 
 The notebook checks all headline values, seed/station joins, seven map labels, three consistent appearances of each regime name, numbered captions, revised opening, removal of the footer and badges, and the word budget. Export checks cover one slide/page, exact 36″ × 24″ dimensions, embedded PDF fonts, editable credits and equation, measured text fit, and print margins. Numerical results and coordinates/memberships are checked against version 1.0; its files are hashed before and after building to verify preservation.
 
-The final sequential notebook execution passed. Its stdout reports **853 rendered words**, one slide/page, embedded PDF fonts, editable placeholders/equation, and unchanged version 1.0. Both the preview and larger print-detail rendering were reviewed; no clipping or label/text collisions were found.
+The final sequential execution passed and reports 932 rendered words in [validation.json](artifacts/validation.json) and notebook stdout. Checks confirm embedded fonts, editable placeholders and equation, and preservation of version 1.0. Both preview sizes were reviewed; no clipping or overlapping text or labels were found.
 
 PDF previews are inspected for clipping, overlap, and reading order. PowerPoint receives structural checks and uses the same measured layout; no native PowerPoint/LibreOffice rendering engine is available on this host. Public in-situ observations come from NOAA USCRN and SNOTEL; the new sensor-site evaluation is in collaboration with Seattle University's ECE team.

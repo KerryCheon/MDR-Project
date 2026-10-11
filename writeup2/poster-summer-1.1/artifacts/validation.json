@@ -7,8 +7,8 @@
   ],
   "pdf_fonts_embedded": true,
   "author_placeholders_editable": true,
-  "scene_items": 109,
-  "rendered_words": 853,
+  "scene_items": 108,
+  "rendered_words": 932,
   "regime_names": {
     "0": "Wet / Mountains",
     "1": "Drier / Lowlands"
@@ -20,8 +20,8 @@
   "preview": "summer_showcase_preview.png",
   "previous_version_unchanged": true,
   "column_ends_inches": {
-    "left": 23.538611111111106,
-    "middle": 23.527777777777775,
-    "right": 23.477777777777778
+    "left": 23.538611111111113,
+    "middle": 23.347222222222218,
+    "right": 23.477777777777774
   }
 }
