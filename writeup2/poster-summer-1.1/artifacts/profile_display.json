@@ -1,0 +1,18 @@
+{
+  "wettest_month_rain_mm": [
+    391.0,
+    70.0
+  ],
+  "satellite_moisture_m3m3": [
+    0.4141,
+    0.1923
+  ],
+  "group_station_counts": [
+    5,
+    2
+  ],
+  "regime_names": {
+    "0": "Wet / Mountains",
+    "1": "Drier / Lowlands"
+  }
+}

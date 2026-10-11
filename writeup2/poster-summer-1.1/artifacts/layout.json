@@ -1,0 +1,1661 @@
+[
+  {
+    "kind": "image",
+    "x": 0.72,
+    "y": 0.32,
+    "w": 2.16,
+    "h": 1.9872,
+    "path": "assets/su_monogram.png",
+    "vector": null,
+    "name": "Seattle University monogram"
+  },
+  {
+    "kind": "image",
+    "x": 31.0,
+    "y": 0.76,
+    "w": 4.25,
+    "h": 1.8011152416356877,
+    "path": "assets/su_college.png",
+    "vector": null,
+    "name": "Seattle University college logo"
+  },
+  {
+    "kind": "text",
+    "x": 3.25,
+    "y": 0.38,
+    "w": 27.35,
+    "h": 1.63,
+    "text": "Two-Regime Models for Daily Soil-Moisture\nEstimation in Washington",
+    "lines": [
+      "Two-Regime Models for Daily Soil-Moisture",
+      "Estimation in Washington"
+    ],
+    "size": 48,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "Poster title",
+    "required_height": 1.5733333333333333
+  },
+  {
+    "kind": "text",
+    "x": 3.25,
+    "y": 2.02,
+    "w": 27.35,
+    "h": 0.48,
+    "text": "[Author names]  \u00b7  Mentored by [Mentor name, credentials]",
+    "lines": [
+      "[Author names] \u00b7 Mentored by [Mentor name, credentials]"
+    ],
+    "size": 24,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "Editable author and mentor placeholders",
+    "required_height": 0.3933333333333333
+  },
+  {
+    "kind": "text",
+    "x": 3.25,
+    "y": 2.52,
+    "w": 27.35,
+    "h": 0.44,
+    "text": "Department of Computer Science, Seattle University",
+    "lines": [
+      "Department of Computer Science, Seattle University"
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "Department affiliation",
+    "required_height": 0.3605555555555555
+  },
+  {
+    "kind": "text",
+    "x": 3.25,
+    "y": 3.0,
+    "w": 27.35,
+    "h": 0.28,
+    "text": "SUMMER RESEARCH SHOWCASE  \u00b7  2026",
+    "lines": [
+      "SUMMER RESEARCH SHOWCASE \u00b7 2026"
+    ],
+    "size": 15,
+    "color": "#697780",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.24583333333333332
+  },
+  {
+    "kind": "box",
+    "x": 0.55,
+    "y": 3.47,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Background & Research Question"
+  },
+  {
+    "kind": "text",
+    "x": 0.65,
+    "y": 3.4930000000000003,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Background & Research Question",
+    "lines": [
+      "Background & Research Question"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 4.19,
+    "w": 11.0,
+    "h": 0.4425,
+    "text": "Why soil moisture estimation?",
+    "lines": [
+      "Why soil moisture estimation?"
+    ],
+    "size": 27,
+    "color": "#C00000",
+    "bold": true,
+    "align": "left",
+    "name": "",
+    "required_height": 0.4425
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 4.8525,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "Soil moisture describes water stored near the land surface. It informs irrigation, drought monitoring, and our understanding of water availability. Estimates help us follow rainfall responses and drying where direct measurements are sparse.",
+    "lines": [
+      "Soil moisture describes water stored near the land surface. It informs",
+      "irrigation, drought monitoring, and our understanding of water",
+      "availability. Estimates help us follow rainfall responses and drying",
+      "where direct measurements are sparse."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 6.414722222222222,
+    "w": 11.0,
+    "h": 1.8027777777777776,
+    "text": "Ground sensors measure local conditions; satellites offer broader coverage, but leave gaps between observations and missing retrievals. Our project combines satellite, weather, and site information for daily estimates. Earlier work established this pipeline and a single global XGBoost predictor.",
+    "lines": [
+      "Ground sensors measure local conditions; satellites offer broader",
+      "coverage, but leave gaps between observations and missing retrievals.",
+      "Our project combines satellite, weather, and site information for daily",
+      "estimates. Earlier work established this pipeline and a single global",
+      "XGBoost predictor."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.8027777777777776
+  },
+  {
+    "kind": "box",
+    "x": 0.75,
+    "y": 8.3375,
+    "w": 11.0,
+    "h": 1.4466666666666668,
+    "fill": "#F5F1ED",
+    "stroke": "#DED5CD",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 0.97,
+    "y": 8.4575,
+    "w": 10.56,
+    "h": 0.34,
+    "text": "THE SUMMER RESEARCH QUESTION",
+    "lines": [
+      "THE SUMMER RESEARCH QUESTION"
+    ],
+    "size": 20,
+    "color": "#C00000",
+    "bold": true,
+    "align": "left",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 0.97,
+    "y": 8.887500000000001,
+    "w": 10.56,
+    "h": 0.7866666666666666,
+    "text": "Can two specialists improve estimates across Washington's contrasting conditions?",
+    "lines": [
+      "Can two specialists improve estimates across",
+      "Washington's contrasting conditions?"
+    ],
+    "size": 24,
+    "color": "#202B35",
+    "bold": true,
+    "align": "left",
+    "name": "",
+    "required_height": 0.7866666666666666
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 10.004166666666666,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "This summer's work tests feature-based specialization against the global predictor, adds consistent assignment for known stations, and examines how missing routing inputs affect estimates at new sensor sites.",
+    "lines": [
+      "This summer's work tests feature-based specialization against the",
+      "global predictor, adds consistent assignment for known stations, and",
+      "examines how missing routing inputs affect estimates at new sensor",
+      "sites."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "box",
+    "x": 0.55,
+    "y": 11.566388888888888,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Study Area & Data"
+  },
+  {
+    "kind": "text",
+    "x": 0.65,
+    "y": 11.589388888888887,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Study Area & Data",
+    "lines": [
+      "Study Area & Data"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "image",
+    "x": 0.75,
+    "y": 12.286388888888888,
+    "w": 7.0,
+    "h": 4.5,
+    "path": "figures/washington_stations.png",
+    "vector": "figures/washington_stations.pdf",
+    "name": "washington_stations"
+  },
+  {
+    "kind": "text",
+    "x": 8.1,
+    "y": 12.536388888888888,
+    "w": 3.65,
+    "h": 0.38,
+    "text": "Regional contrast",
+    "lines": [
+      "Regional contrast"
+    ],
+    "size": 22,
+    "color": "#536875",
+    "bold": true,
+    "align": "left",
+    "name": "",
+    "required_height": 0.3605555555555555
+  },
+  {
+    "kind": "text",
+    "x": 8.1,
+    "y": 13.056388888888888,
+    "w": 3.65,
+    "h": 3.2777777777777777,
+    "text": "Washington spans coastal sites, Cascade mountains, and a drier east. We ask whether two specialists can learn distinct soil responses in these settings. Each station holdout tests how well these patterns carry to a new site.",
+    "lines": [
+      "Washington spans coastal",
+      "sites, Cascade mountains,",
+      "and a drier east. We ask",
+      "whether two specialists",
+      "can learn distinct soil",
+      "responses in these",
+      "settings. Each station",
+      "holdout tests how well",
+      "these patterns carry to a",
+      "new site."
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": false,
+    "align": "left",
+    "name": "Study-area interpretation",
+    "required_height": 3.2777777777777777
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 16.856388888888887,
+    "w": 11.0,
+    "h": 0.6555555555555554,
+    "text": "Figure 1. Seven Washington training stations and their fitted memberships; points do not define geographic regime boundaries.",
+    "lines": [
+      "Figure 1. Seven Washington training stations and their fitted memberships;",
+      "points do not define geographic regime boundaries."
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": false,
+    "align": "left",
+    "name": "Caption washington_stations",
+    "required_height": 0.6555555555555554
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 17.651944444444442,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "NOAA USCRN and SNOTEL supply in-situ observations. Inputs combine SMAP moisture, Sentinel radar and optical measurements, MODIS temperature and vegetation, ERA5-Land weather, and terrain, climate, land-cover, and soil descriptors.",
+    "lines": [
+      "NOAA USCRN and SNOTEL supply in-situ observations. Inputs combine",
+      "SMAP moisture, Sentinel radar and optical measurements, MODIS",
+      "temperature and vegetation, ERA5-Land weather, and terrain, climate,",
+      "land-cover, and soil descriptors."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 19.214166666666664,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "The pipeline aligns sources daily, fills observation gaps, smooths the series, and derives recent-history features. Both approaches receive identical prepared inputs, keeping the comparison focused on grouping and assignment.",
+    "lines": [
+      "The pipeline aligns sources daily, fills observation gaps, smooths the",
+      "series, and derives recent-history features. Both approaches receive",
+      "identical prepared inputs, keeping the comparison focused on grouping",
+      "and assignment."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "box",
+    "x": 0.8,
+    "y": 20.776388888888885,
+    "w": 5.1,
+    "h": 1.02,
+    "fill": "#EDF3F6",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 0.9500000000000001,
+    "y": 20.906388888888884,
+    "w": 4.8,
+    "h": 0.73,
+    "text": "2017\u20132022\nFinal fitting period",
+    "lines": [
+      "2017\u20132022",
+      "Final fitting period"
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6883333333333332
+  },
+  {
+    "kind": "box",
+    "x": 6.6,
+    "y": 20.776388888888885,
+    "w": 5.1,
+    "h": 1.02,
+    "fill": "#F5F1ED",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 6.75,
+    "y": 20.906388888888884,
+    "w": 4.8,
+    "h": 0.73,
+    "text": "2023\u20132025\nLater-year test",
+    "lines": [
+      "2023\u20132025",
+      "Later-year test"
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6883333333333332
+  },
+  {
+    "kind": "line",
+    "x1": 6.04,
+    "y1": 21.286388888888887,
+    "x2": 6.49,
+    "y2": 21.286388888888887,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": true
+  },
+  {
+    "kind": "text",
+    "x": 0.75,
+    "y": 21.976388888888884,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "Development uses 2017\u20132020 training and 2021\u20132022 validation data; the final fit combines these periods. Evaluation tests later years; leave-one-station-out evaluation refits without each station to test new Washington locations.",
+    "lines": [
+      "Development uses 2017\u20132020 training and 2021\u20132022 validation data;",
+      "the final fit combines these periods. Evaluation tests later years;",
+      "leave-one-station-out evaluation refits without each station to test new",
+      "Washington locations."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "box",
+    "x": 12.3,
+    "y": 3.47,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Two-Regime Modeling"
+  },
+  {
+    "kind": "text",
+    "x": 12.4,
+    "y": 3.4930000000000003,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Two-Regime Modeling",
+    "lines": [
+      "Two-Regime Modeling"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 12.5,
+    "y": 4.19,
+    "w": 11.0,
+    "h": 1.0816666666666666,
+    "text": "A global model fits all observations together. Our model groups observations by their inputs, then fits an XGBoost specialist per group. The target is daily volumetric soil moisture at 5 cm depth (m\u00b3/m\u00b3).",
+    "lines": [
+      "A global model fits all observations together. Our model groups",
+      "observations by their inputs, then fits an XGBoost specialist per group.",
+      "The target is daily volumetric soil moisture at 5 cm depth (m\u00b3/m\u00b3)."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.0816666666666666
+  },
+  {
+    "kind": "box",
+    "x": 12.5,
+    "y": 5.3916666666666675,
+    "w": 3.4,
+    "h": 1.12,
+    "fill": "#F0F3F5",
+    "stroke": "#CED6DC",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 12.6,
+    "y": 5.481666666666667,
+    "w": 3.2,
+    "h": 0.33,
+    "text": "SATELLITE",
+    "lines": [
+      "SATELLITE"
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 12.58,
+    "y": 5.831666666666668,
+    "w": 3.24,
+    "h": 0.65,
+    "text": "Moisture, radar,\nvegetation, heat",
+    "lines": [
+      "Moisture, radar,",
+      "vegetation, heat"
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6227777777777778
+  },
+  {
+    "kind": "line",
+    "x1": 14.2,
+    "y1": 6.551666666666668,
+    "x2": 14.2,
+    "y2": 6.721666666666668,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "box",
+    "x": 16.3,
+    "y": 5.3916666666666675,
+    "w": 3.4,
+    "h": 1.12,
+    "fill": "#F0F3F5",
+    "stroke": "#CED6DC",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 16.400000000000002,
+    "y": 5.481666666666667,
+    "w": 3.2,
+    "h": 0.33,
+    "text": "WEATHER",
+    "lines": [
+      "WEATHER"
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 16.38,
+    "y": 5.831666666666668,
+    "w": 3.24,
+    "h": 0.65,
+    "text": "Rainfall and\nrecent history",
+    "lines": [
+      "Rainfall and",
+      "recent history"
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6227777777777778
+  },
+  {
+    "kind": "line",
+    "x1": 18.0,
+    "y1": 6.551666666666668,
+    "x2": 18.0,
+    "y2": 6.721666666666668,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "box",
+    "x": 20.1,
+    "y": 5.3916666666666675,
+    "w": 3.4,
+    "h": 1.12,
+    "fill": "#F0F3F5",
+    "stroke": "#CED6DC",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 20.200000000000003,
+    "y": 5.481666666666667,
+    "w": 3.2,
+    "h": 0.33,
+    "text": "SITE",
+    "lines": [
+      "SITE"
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 20.18,
+    "y": 5.831666666666668,
+    "w": 3.24,
+    "h": 0.65,
+    "text": "Terrain, climate,\nland cover",
+    "lines": [
+      "Terrain, climate,",
+      "land cover"
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.6227777777777778
+  },
+  {
+    "kind": "line",
+    "x1": 21.8,
+    "y1": 6.551666666666668,
+    "x2": 21.8,
+    "y2": 6.721666666666668,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 14.200000000000001,
+    "y1": 6.721666666666668,
+    "x2": 21.8,
+    "y2": 6.721666666666668,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 18.0,
+    "y1": 6.721666666666668,
+    "x2": 18.0,
+    "y2": 6.871666666666668,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": true
+  },
+  {
+    "kind": "box",
+    "x": 13.200000000000001,
+    "y": 6.911666666666667,
+    "w": 9.6,
+    "h": 1.12,
+    "fill": "#EEF2F4",
+    "stroke": "#92A2AD",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 13.350000000000001,
+    "y": 7.001666666666668,
+    "w": 9.3,
+    "h": 0.43,
+    "text": "Feature-based grouping",
+    "lines": [
+      "Feature-based grouping"
+    ],
+    "size": 26,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.4261111111111111
+  },
+  {
+    "kind": "text",
+    "x": 13.350000000000001,
+    "y": 7.481666666666667,
+    "w": 9.3,
+    "h": 0.37,
+    "text": "Standardize \u2192 K-means \u2192 station consistency",
+    "lines": [
+      "Standardize \u2192 K-means \u2192 station consistency"
+    ],
+    "size": 21,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3441666666666666
+  },
+  {
+    "kind": "line",
+    "x1": 18.0,
+    "y1": 8.081666666666667,
+    "x2": 18.0,
+    "y2": 8.321666666666667,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 15.100000000000001,
+    "y1": 8.321666666666667,
+    "x2": 20.9,
+    "y2": 8.321666666666667,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 15.100000000000001,
+    "y1": 8.321666666666667,
+    "x2": 15.100000000000001,
+    "y2": 8.561666666666667,
+    "color": "#176E9B",
+    "width": 3,
+    "arrow": true
+  },
+  {
+    "kind": "box",
+    "x": 12.600000000000001,
+    "y": 8.601666666666667,
+    "w": 5.0,
+    "h": 1.29,
+    "fill": "#176E9B",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 12.72,
+    "y": 8.711666666666668,
+    "w": 4.76,
+    "h": 0.4,
+    "text": "Specialist A",
+    "lines": [
+      "Specialist A"
+    ],
+    "size": 24,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3933333333333333
+  },
+  {
+    "kind": "text",
+    "x": 12.72,
+    "y": 9.181666666666668,
+    "w": 4.76,
+    "h": 0.36,
+    "text": "Wet / Mountains",
+    "lines": [
+      "Wet / Mountains"
+    ],
+    "size": 21,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3441666666666666
+  },
+  {
+    "kind": "text",
+    "x": 12.72,
+    "y": 9.571666666666667,
+    "w": 4.76,
+    "h": 0.29,
+    "text": "XGBoost regressor",
+    "lines": [
+      "XGBoost regressor"
+    ],
+    "size": 17.5,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.28680555555555554
+  },
+  {
+    "kind": "line",
+    "x1": 15.100000000000001,
+    "y1": 9.931666666666668,
+    "x2": 15.100000000000001,
+    "y2": 10.151666666666667,
+    "color": "#176E9B",
+    "width": 3,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 20.9,
+    "y1": 8.321666666666667,
+    "x2": 20.9,
+    "y2": 8.561666666666667,
+    "color": "#B48024",
+    "width": 3,
+    "arrow": true
+  },
+  {
+    "kind": "box",
+    "x": 18.4,
+    "y": 8.601666666666667,
+    "w": 5.0,
+    "h": 1.29,
+    "fill": "#B48024",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 18.52,
+    "y": 8.711666666666668,
+    "w": 4.76,
+    "h": 0.4,
+    "text": "Specialist B",
+    "lines": [
+      "Specialist B"
+    ],
+    "size": 24,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3933333333333333
+  },
+  {
+    "kind": "text",
+    "x": 18.52,
+    "y": 9.181666666666668,
+    "w": 4.76,
+    "h": 0.36,
+    "text": "Drier / Lowlands",
+    "lines": [
+      "Drier / Lowlands"
+    ],
+    "size": 21,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3441666666666666
+  },
+  {
+    "kind": "text",
+    "x": 18.52,
+    "y": 9.571666666666667,
+    "w": 4.76,
+    "h": 0.29,
+    "text": "XGBoost regressor",
+    "lines": [
+      "XGBoost regressor"
+    ],
+    "size": 17.5,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.28680555555555554
+  },
+  {
+    "kind": "line",
+    "x1": 20.9,
+    "y1": 9.931666666666668,
+    "x2": 20.9,
+    "y2": 10.151666666666667,
+    "color": "#B48024",
+    "width": 3,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 15.100000000000001,
+    "y1": 10.151666666666667,
+    "x2": 20.9,
+    "y2": 10.151666666666667,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": false
+  },
+  {
+    "kind": "line",
+    "x1": 18.0,
+    "y1": 10.151666666666667,
+    "x2": 18.0,
+    "y2": 10.341666666666669,
+    "color": "#919AA3",
+    "width": 2,
+    "arrow": true
+  },
+  {
+    "kind": "box",
+    "x": 13.200000000000001,
+    "y": 10.381666666666668,
+    "w": 9.6,
+    "h": 1.07,
+    "fill": "#202B35",
+    "stroke": null,
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 13.350000000000001,
+    "y": 10.461666666666668,
+    "w": 9.3,
+    "h": 0.41,
+    "text": "Daily soil-moisture estimate",
+    "lines": [
+      "Daily soil-moisture estimate"
+    ],
+    "size": 25,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.4097222222222222
+  },
+  {
+    "kind": "text",
+    "x": 13.350000000000001,
+    "y": 10.971666666666668,
+    "w": 9.3,
+    "h": 0.38,
+    "text": "\u0177 = f\u1d63(x),  r = g(s, x) \u2208 {A, B}",
+    "lines": [
+      "\u0177 = f\u1d63(x), r = g(s, x) \u2208 {A, B}"
+    ],
+    "size": 22,
+    "color": "#FFFFFF",
+    "bold": false,
+    "align": "center",
+    "name": "Editable hard-routing equation",
+    "required_height": 0.3605555555555555
+  },
+  {
+    "kind": "text",
+    "x": 12.5,
+    "y": 11.571666666666667,
+    "w": 11.0,
+    "h": 0.6555555555555554,
+    "text": "Figure 2. Hard routing. x denotes inputs, s the station, g the assignment rule, and f\u1d63 the selected specialist; one observation produces one estimate.",
+    "lines": [
+      "Figure 2. Hard routing. x denotes inputs, s the station, g the assignment rule,",
+      "and f\u1d63 the selected specialist; one observation produces one estimate."
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 0.6555555555555554
+  },
+  {
+    "kind": "text",
+    "x": 12.5,
+    "y": 12.347222222222223,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "1. Learn groups. Fill missing router values with fitting-data means and standardize features before K-means finds two centroids. New observations use the nearest centroid. Clustering uses no observed in-situ targets.",
+    "lines": [
+      "1. Learn groups. Fill missing router values with fitting-data means and",
+      "standardize features before K-means finds two centroids. New",
+      "observations use the nearest centroid. Clustering uses no observed",
+      "in-situ targets."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "text",
+    "x": 12.5,
+    "y": 13.909444444444446,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "2. Keep stations consistent. Known stations receive their majority fitting-data group, keeping observations with one specialist. New stations use row-level assignment; availability checks can trigger the fallback described at right.",
+    "lines": [
+      "2. Keep stations consistent. Known stations receive their majority",
+      "fitting-data group, keeping observations with one specialist. New",
+      "stations use row-level assignment; availability checks can trigger the",
+      "fallback described at right."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "text",
+    "x": 12.5,
+    "y": 15.471666666666668,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "3. Isolate specialization. Both approaches use identical features, XGBoost settings, evaluation rows, and matched seeds. Specialists learn only from assigned observations, so differences reflect grouping and assignment under this protocol.",
+    "lines": [
+      "3. Isolate specialization. Both approaches use identical features,",
+      "XGBoost settings, evaluation rows, and matched seeds. Specialists",
+      "learn only from assigned observations, so differences reflect grouping",
+      "and assignment under this protocol."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "box",
+    "x": 12.3,
+    "y": 17.03388888888889,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Regime Interpretation"
+  },
+  {
+    "kind": "text",
+    "x": 12.4,
+    "y": 17.05688888888889,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Regime Interpretation",
+    "lines": [
+      "Regime Interpretation"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "box",
+    "x": 12.5,
+    "y": 17.753888888888888,
+    "w": 5.2,
+    "h": 2.83,
+    "fill": "#F7F9FA",
+    "stroke": "#176E9B",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "box",
+    "x": 12.5,
+    "y": 17.753888888888888,
+    "w": 5.2,
+    "h": 0.07,
+    "fill": "#176E9B",
+    "stroke": null,
+    "rounded": false,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 12.68,
+    "y": 17.933888888888887,
+    "w": 4.84,
+    "h": 0.4,
+    "text": "Wet / Mountains",
+    "lines": [
+      "Wet / Mountains"
+    ],
+    "size": 23,
+    "color": "#176E9B",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3769444444444444
+  },
+  {
+    "kind": "text",
+    "x": 12.68,
+    "y": 18.403888888888886,
+    "w": 4.84,
+    "h": 0.34,
+    "text": "5 fitted stations",
+    "lines": [
+      "5 fitted stations"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 12.68,
+    "y": 18.843888888888888,
+    "w": 4.84,
+    "h": 1.01,
+    "text": "Western and Cascade sites;\nmore rain and higher\nsatellite moisture.",
+    "lines": [
+      "Western and Cascade sites;",
+      "more rain and higher",
+      "satellite moisture."
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.9341666666666666
+  },
+  {
+    "kind": "text",
+    "x": 12.68,
+    "y": 19.833888888888886,
+    "w": 4.84,
+    "h": 0.63,
+    "text": "Wettest-month rain: 391 mm\nSatellite moisture: 0.414 m\u00b3/m\u00b3",
+    "lines": [
+      "Wettest-month rain: 391 mm",
+      "Satellite moisture: 0.414 m\u00b3/m\u00b3"
+    ],
+    "size": 18,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.59
+  },
+  {
+    "kind": "box",
+    "x": 18.3,
+    "y": 17.753888888888888,
+    "w": 5.2,
+    "h": 2.83,
+    "fill": "#F7F9FA",
+    "stroke": "#B48024",
+    "rounded": true,
+    "name": ""
+  },
+  {
+    "kind": "box",
+    "x": 18.3,
+    "y": 17.753888888888888,
+    "w": 5.2,
+    "h": 0.07,
+    "fill": "#B48024",
+    "stroke": null,
+    "rounded": false,
+    "name": ""
+  },
+  {
+    "kind": "text",
+    "x": 18.48,
+    "y": 17.933888888888887,
+    "w": 4.84,
+    "h": 0.4,
+    "text": "Drier / Lowlands",
+    "lines": [
+      "Drier / Lowlands"
+    ],
+    "size": 23,
+    "color": "#B48024",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3769444444444444
+  },
+  {
+    "kind": "text",
+    "x": 18.48,
+    "y": 18.403888888888886,
+    "w": 4.84,
+    "h": 0.34,
+    "text": "2 fitted stations",
+    "lines": [
+      "2 fitted stations"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 18.48,
+    "y": 18.843888888888888,
+    "w": 4.84,
+    "h": 1.01,
+    "text": "Spokane and Sourdough Gulch;\nless rain and lower\nsatellite moisture.",
+    "lines": [
+      "Spokane and Sourdough Gulch;",
+      "less rain and lower",
+      "satellite moisture."
+    ],
+    "size": 19,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.9341666666666666
+  },
+  {
+    "kind": "text",
+    "x": 18.48,
+    "y": 19.833888888888886,
+    "w": 4.84,
+    "h": 0.63,
+    "text": "Wettest-month rain: 70 mm\nSatellite moisture: 0.192 m\u00b3/m\u00b3",
+    "lines": [
+      "Wettest-month rain: 70 mm",
+      "Satellite moisture: 0.192 m\u00b3/m\u00b3"
+    ],
+    "size": 18,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.59
+  },
+  {
+    "kind": "text",
+    "x": 12.5,
+    "y": 20.763888888888886,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "These names describe this Washington sample; elevation alone does not determine membership. The wet group includes lowland and mountain stations. Medians summarize input conditions, not measured-moisture thresholds.",
+    "lines": [
+      "These names describe this Washington sample; elevation alone does",
+      "not determine membership. The wet group includes lowland and",
+      "mountain stations. Medians summarize input conditions, not",
+      "measured-moisture thresholds."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "text",
+    "x": 12.5,
+    "y": 22.326111111111107,
+    "w": 11.0,
+    "h": 1.0816666666666666,
+    "text": "Specialists can learn narrower relationships, but require reliable assignment and representative training data. Select regime counts using local data; two groups are useful here.",
+    "lines": [
+      "Specialists can learn narrower relationships, but require reliable",
+      "assignment and representative training data. Select regime counts",
+      "using local data; two groups are useful here."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.0816666666666666
+  },
+  {
+    "kind": "box",
+    "x": 24.05,
+    "y": 3.47,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Evaluation & Results"
+  },
+  {
+    "kind": "text",
+    "x": 24.150000000000002,
+    "y": 3.4930000000000003,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Evaluation & Results",
+    "lines": [
+      "Evaluation & Results"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 4.19,
+    "w": 5.2,
+    "h": 0.56,
+    "text": "+0.0320",
+    "lines": [
+      "+0.0320"
+    ],
+    "size": 32,
+    "color": "#C00000",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.5244444444444444
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 4.800000000000001,
+    "w": 5.2,
+    "h": 0.34,
+    "text": "Later-year R\u00b2 gain",
+    "lines": [
+      "Later-year R\u00b2 gain"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 30.05,
+    "y": 4.19,
+    "w": 5.2,
+    "h": 0.56,
+    "text": "+0.0581",
+    "lines": [
+      "+0.0581"
+    ],
+    "size": 32,
+    "color": "#C00000",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.5244444444444444
+  },
+  {
+    "kind": "text",
+    "x": 30.05,
+    "y": 4.800000000000001,
+    "w": 5.2,
+    "h": 0.34,
+    "text": "Station-holdout R\u00b2 gain",
+    "lines": [
+      "Station-holdout R\u00b2 gain"
+    ],
+    "size": 20,
+    "color": "#202B35",
+    "bold": false,
+    "align": "center",
+    "name": "",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "image",
+    "x": 24.3,
+    "y": 5.25,
+    "w": 10.9,
+    "h": 2.8,
+    "path": "figures/model_comparison.png",
+    "vector": "figures/model_comparison.pdf",
+    "name": "model_comparison"
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 8.12,
+    "w": 11.0,
+    "h": 0.6555555555555554,
+    "text": "Figure 3. Mean R\u00b2: 30 matched temporal seeds; five per station holdout. Higher is better.",
+    "lines": [
+      "Figure 3. Mean R\u00b2: 30 matched temporal seeds; five per station holdout.",
+      "Higher is better."
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": false,
+    "align": "left",
+    "name": "Caption model_comparison",
+    "required_height": 0.6555555555555554
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 8.915555555555555,
+    "w": 11.0,
+    "h": 1.0816666666666666,
+    "text": "Two-regime R\u00b2 leads in all 30 later-year runs. Station-holdout performance improves on average, with uneven benefits across locations.",
+    "lines": [
+      "Two-regime R\u00b2 leads in all 30 later-year runs. Station-holdout",
+      "performance improves on average, with uneven benefits across",
+      "locations."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.0816666666666666
+  },
+  {
+    "kind": "image",
+    "x": 24.3,
+    "y": 10.117222222222221,
+    "w": 10.9,
+    "h": 3.25,
+    "path": "figures/held_out_station_effects.png",
+    "vector": "figures/held_out_station_effects.pdf",
+    "name": "held_out_station_effects"
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 13.437222222222221,
+    "w": 11.0,
+    "h": 0.3277777777777777,
+    "text": "Figure 4. Five-seed station differences: four gains and three losses.",
+    "lines": [
+      "Figure 4. Five-seed station differences: four gains and three losses."
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": false,
+    "align": "left",
+    "name": "Caption held_out_station_effects",
+    "required_height": 0.3277777777777777
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 13.905,
+    "w": 11.0,
+    "h": 1.0816666666666666,
+    "text": "Cayuse Pass gains most. Eastern holdouts reduce representation of the smaller regime. Seeds describe fitting variability, excluding uncertainty across new sites and seasons.",
+    "lines": [
+      "Cayuse Pass gains most. Eastern holdouts reduce representation of the",
+      "smaller regime. Seeds describe fitting variability, excluding uncertainty",
+      "across new sites and seasons."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.0816666666666666
+  },
+  {
+    "kind": "box",
+    "x": 24.05,
+    "y": 15.106666666666666,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "ECE Sensor-Site Evaluation"
+  },
+  {
+    "kind": "text",
+    "x": 24.150000000000002,
+    "y": 15.129666666666665,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "ECE Sensor-Site Evaluation",
+    "lines": [
+      "ECE Sensor-Site Evaluation"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 15.826666666666666,
+    "w": 11.0,
+    "h": 1.442222222222222,
+    "text": "Five new sites deployed by Seattle University's ECE team lacked all SMAP inputs. An automatic availability gate switched to antecedent-precipitation routing, with the specialist mapping selected using Washington validation.",
+    "lines": [
+      "Five new sites deployed by Seattle University's ECE team lacked all",
+      "SMAP inputs. An automatic availability gate switched to",
+      "antecedent-precipitation routing, with the specialist mapping selected",
+      "using Washington validation."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.442222222222222
+  },
+  {
+    "kind": "image",
+    "x": 24.3,
+    "y": 17.38888888888889,
+    "w": 10.9,
+    "h": 2.1,
+    "path": "figures/ece_routing.png",
+    "vector": "figures/ece_routing.pdf",
+    "name": "ece_routing"
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 19.558888888888887,
+    "w": 11.0,
+    "h": 0.6555555555555554,
+    "text": "Figure 5. ECE pooled RMSE: fallback approaches global-model error. Lower is better.",
+    "lines": [
+      "Figure 5. ECE pooled RMSE: fallback approaches global-model error. Lower is",
+      "better."
+    ],
+    "size": 20,
+    "color": "#536875",
+    "bold": false,
+    "align": "left",
+    "name": "Caption ece_routing",
+    "required_height": 0.6555555555555554
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 20.354444444444443,
+    "w": 11.0,
+    "h": 1.0816666666666666,
+    "text": "Across 150 daily observations (July 20\u2013August 19, 2026), every fallback row used one specialist. This short summer test supports a routing lesson, without establishing full-season superiority.",
+    "lines": [
+      "Across 150 daily observations (July 20\u2013August 19, 2026), every fallback",
+      "row used one specialist. This short summer test supports a routing",
+      "lesson, without establishing full-season superiority."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.0816666666666666
+  },
+  {
+    "kind": "box",
+    "x": 24.05,
+    "y": 21.55611111111111,
+    "w": 11.4,
+    "h": 0.55,
+    "fill": "#C00000",
+    "stroke": "#17672A",
+    "rounded": true,
+    "name": "Discussion & Next Steps"
+  },
+  {
+    "kind": "text",
+    "x": 24.150000000000002,
+    "y": 21.57911111111111,
+    "w": 11.2,
+    "h": 0.51,
+    "text": "Discussion & Next Steps",
+    "lines": [
+      "Discussion & Next Steps"
+    ],
+    "size": 30,
+    "color": "#FFFFFF",
+    "bold": true,
+    "align": "center",
+    "name": "",
+    "required_height": 0.49166666666666664
+  },
+  {
+    "kind": "text",
+    "x": 24.25,
+    "y": 22.27611111111111,
+    "w": 11.0,
+    "h": 1.0816666666666666,
+    "text": "Specialization helps with reliable assignment and representative training sites. Next, evaluate more Washington stations and seasons with ECE sensors, and test routing when satellite coverage changes.",
+    "lines": [
+      "Specialization helps with reliable assignment and representative",
+      "training sites. Next, evaluate more Washington stations and seasons",
+      "with ECE sensors, and test routing when satellite coverage changes."
+    ],
+    "size": 22,
+    "color": "#202B35",
+    "bold": false,
+    "align": "left",
+    "name": "",
+    "required_height": 1.0816666666666666
+  }
+]

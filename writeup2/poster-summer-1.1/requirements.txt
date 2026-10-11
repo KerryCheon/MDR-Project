@@ -1,0 +1,4 @@
+# Added poster-export dependencies; scientific dependencies come from notebooks/uv.lock.
+python-pptx==1.0.2
+reportlab==4.4.4
+pymupdf==1.26.4

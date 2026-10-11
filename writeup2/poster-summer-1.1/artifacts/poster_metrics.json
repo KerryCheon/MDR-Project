@@ -1,0 +1,20 @@
+{
+  "temporal_global": 0.7797940453067711,
+  "temporal_two": 0.8118429663371349,
+  "temporal_difference": 0.0320489210303636,
+  "temporal_wins": 30,
+  "loso_global": 0.5797371923742317,
+  "loso_two": 0.6378771461992312,
+  "loso_difference": 0.0581399538249995,
+  "loso_gains": 4,
+  "loso_losses": 3,
+  "ece_standard": 0.1674311718231191,
+  "ece_fallback": 0.0577680985766914,
+  "ece_global": 0.0586339626584574,
+  "features": 54,
+  "stations": 7,
+  "ece_rows": 150,
+  "ece_stations": 5,
+  "ece_start": "2026-07-20",
+  "ece_end": "2026-08-19"
+}

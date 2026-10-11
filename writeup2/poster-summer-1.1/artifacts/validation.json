@@ -1,0 +1,27 @@
+{
+  "slides": 1,
+  "pdf_pages": 1,
+  "dimensions_inches": [
+    36.0,
+    24.0
+  ],
+  "pdf_fonts_embedded": true,
+  "author_placeholders_editable": true,
+  "scene_items": 109,
+  "rendered_words": 853,
+  "regime_names": {
+    "0": "Wet / Mountains",
+    "1": "Drier / Lowlands"
+  },
+  "equation_editable": true,
+  "primary_body_font_pt": 22,
+  "citation_footer_removed": true,
+  "charts": "vector PDF, 300 dpi PNG in PowerPoint",
+  "preview": "summer_showcase_preview.png",
+  "previous_version_unchanged": true,
+  "column_ends_inches": {
+    "left": 23.538611111111106,
+    "middle": 23.527777777777775,
+    "right": 23.477777777777778
+  }
+}
